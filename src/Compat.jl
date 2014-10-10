@@ -16,4 +16,5 @@ else
     end
 end
 
+export @Dict, @AnyDict
 end # module
