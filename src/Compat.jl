@@ -7,6 +7,9 @@ if VERSION < v"0.4.0-dev+980"
     macro AnyDict(pairs...)
         esc(Expr(:typed_dict, :(Any=>Any), pairs...))
     end
+    macro TypedDict(T, pairs...)
+        esc(Expr(:typed_dict, T, pairs...))
+    end
 else
     macro Dict(pairs...)
         esc(Expr(:call, :Dict, pairs...))
