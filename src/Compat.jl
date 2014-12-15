@@ -3,7 +3,7 @@ module Compat
 using Base.Meta
 
 if VERSION < v"0.4.0-dev+1419"
-    export UInt, UInt8, UInt16, UInt32, UInt64, UInt128, IPAddr
+    export UInt, UInt8, UInt16, UInt32, UInt64, UInt128
     const UInt = Uint
     const UInt8 = Uint8
     const UInt16 = Uint16
