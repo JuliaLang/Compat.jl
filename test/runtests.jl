@@ -65,3 +65,10 @@ ns = length(d.slots)
 if VERSION < v"0.4.0-dev+1387"
     @test isdefined(Main, :AbstractString)
 end
+
+if VERSION < v"0.4.0-dev+656"
+    @test isdefined(Main, :Nullable)
+    @test isdefined(Main, :isnull)
+
+    @test isnull(Nullable{Float64}())
+end

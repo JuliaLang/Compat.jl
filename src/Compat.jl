@@ -118,6 +118,11 @@ if VERSION < v"0.4.0-dev+2056"
     end
 end
 
+if VERSION < v"0.4.0-dev+656"
+    export Nullable, isnull
+    include("nullable.jl")
+end
+
 function _compat(ex::Expr)
     if ex.head == :call
         f = ex.args[1]
