@@ -10,6 +10,7 @@ if VERSION < v"0.4.0-dev+1419"
     const UInt32 = Uint32
     const UInt64 = Uint64
     const UInt128 = Uint128
+    const IPAddr = IpAddr
 end
 
 if VERSION < v"0.4.0-dev+1387"
