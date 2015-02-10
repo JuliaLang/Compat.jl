@@ -154,6 +154,14 @@ if VERSION < v"0.4.0-dev+2485"
     export startswith
 end
 
+if VERSION < v"0.4.0-dev+3253"
+    eltype(::Type) = Any
+    eltype(::Type{Any}) = Any
+    eltype(t::DataType) = eltype(super(t))
+    eltype(x) = eltype(typeof(x))
+end
+
+
 function _compat(ex::Expr)
     if ex.head == :call
         f = ex.args[1]
