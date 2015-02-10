@@ -93,3 +93,14 @@ end
 @test CartesianTest.f(1,2,3) == (1,2,3)
 @test CartesianTest.f(1,2,3,4) == (1,2,3,4)
 @test CartesianTest.f(1,2,3,4,5) == (1,2,3,4,5)
+
+# eltype tests
+
+immutable ETest{S}
+    el::S
+end
+
+Base.eltype{S}(::Type{ETest{S}}) = S
+
+@test eltype(ETest(1)) == Int
+@test eltype(ETest("a")) == ASCIIString
