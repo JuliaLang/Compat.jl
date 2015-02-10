@@ -155,6 +155,8 @@ if VERSION < v"0.4.0-dev+2485"
 end
 
 if VERSION < v"0.4.0-dev+3253"
+    import Base.eltype
+    eltype{T<:Type}(x::(T...,)) = T
     eltype(::Type) = Any
     eltype(::Type{Any}) = Any
     eltype(t::DataType) = eltype(super(t))
