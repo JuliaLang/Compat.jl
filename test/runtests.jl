@@ -67,6 +67,11 @@ if VERSION < v"0.4.0-dev+1387"
 end
 
 @test round(Int, 3//4) == 1
+for x in [(round, iround), (ceil, iceil), (floor, ifloor), (trunc, itrunc)]
+    for v = Any[1, 1.1, [1,1], [1.1, 1.1], [1 1], [1.1 1.1]]
+        @test x[1](Int,v) == x[2](v)
+    end
+end
 
 @test IPv4("1.2.3.4") == ip"1.2.3.4"
 @test IPv6("2001:1:2:3::1") == ip"2001:1:2:3::1"
