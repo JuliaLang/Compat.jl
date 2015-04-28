@@ -54,6 +54,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `eachindex`, as in `for i in eachindex(A)`, can be used in julia 0.3. This is the recommended way to iterate over each index in an `AbstractArray`. On julia 0.3 `eachindex` just returns `1:length(A)`, but in julia 0.4 it can return a more sophisticated iterator. 
 
+* `fma(x,y,z)` and `muladd(x,y,z)` can be used in Julia 0.3 for `x*y+z`.
+
 ## Renamed functions
 
 * `itrunc`, `iround`, `iceil`, `ifloor` are now accessed via `trunc(T, x)`, etc. [#9133](https://github.com/JuliaLang/julia/pull/9133)
