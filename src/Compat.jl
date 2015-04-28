@@ -382,4 +382,14 @@ if VERSION < v"0.4.0-dev+2254"
     export Val
 end
 
+if VERSION < v"0.4.0-dev+2823"
+    fma(x::Number,y::Number,z::Number) = x*y + z
+    export fma
+end
+
+if VERSION < v"0.4.0-dev+2861"
+    muladd(x::Number,y::Number,z::Number) = x*y + z
+    export muladd
+end
+
 end # module

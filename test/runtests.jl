@@ -289,3 +289,6 @@ begin
     @test firstlast(Val{true}) == "First"
     @test firstlast(Val{false}) == "Last"
 end
+
+# fma and muladd
+@test fma(3,4,5) == 3*4+5 == muladd(3,4,5)
