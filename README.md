@@ -56,6 +56,8 @@ Currently, the `@compat` macro supports the following syntaxes:
  
 * `isdiag`, which tests whether a matrix is diagonal, can be used in julia 0.3.
 
+* `fma(x,y,z)` and `muladd(x,y,z)` can be used in Julia 0.3 for `x*y+z`.
+
 ## Renamed functions
 
 * `itrunc`, `iround`, `iceil`, `ifloor` are now accessed via `trunc(T, x)`, etc. [#9133](https://github.com/JuliaLang/julia/pull/9133)
