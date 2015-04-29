@@ -95,6 +95,11 @@ if VERSION < v"0.4.0-dev+1884"
     export randexp
 end
 
+if VERSION < v"0.4.0-dev+1971"
+    import Base.size
+    size(x, d1::Integer, d2::Integer, dx::Integer...) = tuple(size(x, d1), size(x, d2, dx...)...)
+end
+
 if VERSION < v"0.4.0-dev+2014"
     sizehint! = Base.sizehint
     export sizehint!

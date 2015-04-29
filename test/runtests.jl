@@ -108,6 +108,7 @@ end
 @test size(bitrand((3, 4))) == (3, 4)
 @test size(bitrand(MersenneTwister(), 3, 4)) == (3, 4)
 @test size(bitrand(MersenneTwister(), (3, 4))) == (3, 4)
+@test size(rand(10, 10, 3), 1, 3) == (10, 3)
 @test rand(Bool) in [false, true]
 
 module CartesianTest
