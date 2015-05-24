@@ -400,4 +400,19 @@ if VERSION < v"0.4.0-dev+2861"
     export muladd
 end
 
+if VERSION < v"0.4.0-dev+4694"
+    function mv(src::AbstractString, dst::AbstractString; remove_destination::Bool=false)
+        if ispath(dst)
+            if remove_destination
+                rm(dst; recursive=true)
+            else
+                throw(ArgumentError(string("'$dst' exists. `remove_destination=true` ",
+                                           "is required to remove '$dst' before moving.")))
+            end
+        end
+        Base.mv(src,dst)
+    end
+    export mv
+end
+
 end # module
