@@ -274,11 +274,6 @@ function _compat(ex::Expr)
             ex = Expr(:call, calltypes[ex.args[2]], ex.args[3:end]...)
         elseif VERSION < v"0.4.0-dev+1419" && isexpr(f, :curly) && f.args[1] == :Ptr && length(ex.args) == 2 && ex.args[2] == 0
             ex = Expr(:call, :zero, f)
-        elseif VERSION < v"0.4.0-dev+4356" && f == :chol
-            s = ex.args[3]
-            if isexpr(s, :curly) && s.args[1] == :Val
-                ex = Expr(:call, :chol, ex.args[2], s.args[2])
-            end
         end
     elseif ex.head == :curly
         f = ex.args[1]
@@ -291,14 +286,6 @@ function _compat(ex::Expr)
                 Expr(:call, TopNode(:tuple), args...)
             else
                 Expr(:tuple, args...)
-            end
-        end
-    elseif ex.head == :macrocall
-        f = ex.args[1]
-        if f == symbol("@generated") && VERSION < v"0.4.0-dev+4387"
-            f = ex.args[2]
-            if isexpr(f, :function)
-                ex = Expr(:stagedfunction, f.args...)
             end
         end
     end
@@ -325,6 +312,17 @@ if VERSION < v"0.4.0-dev+3864"
     function tryparse(T::Type{Float64}, s)
         r = Array(T,1)
         float64_isvalid(s, r) ? Nullable(r[1]) : Nullable{Float64}()
+    end
+
+    function tryparse{T<:Integer}(::Type{T}, s)
+        local ret
+        try
+            val = parse(T, s)
+            ret = Nullable{T}(val)
+        catch
+            ret = Nullable{T}()
+        end
+        return ret
     end
     export tryparse
 end
@@ -413,30 +411,9 @@ if VERSION < v"0.4.0-dev+2861"
     export muladd
 end
 
-if VERSION < v"0.4.0-dev+4734"
-    function is_valid_utf32(str::Union(Vector{Char}, Vector{UInt32}))
-        for i=1:length(str)
-            @inbounds if !is_valid_char(reinterpret(UInt32, str[i])) ; return false ; end
-        end
-        return true
-    end
-    is_valid_utf32(str::UTF32String) = is_valid_utf32(str.data)
-    export is_valid_utf32
-end
-
-if VERSION < v"0.4.0-dev+4939"
-    import Base.isvalid
-    isvalid(ch::Char)         = is_valid_char(ch)
-    isvalid(str::ASCIIString) = is_valid_ascii(str)
-    isvalid(str::UTF8String)  = is_valid_utf8(str)
-    isvalid(str::UTF16String) = is_valid_utf16(str)
-    isvalid(str::UTF32String) = is_valid_utf32(str)
-    isvalid(::Type{Char}, ch)         = is_valid_char(ch)
-    isvalid(::Type{ASCIIString}, str) = is_valid_ascii(str)
-    isvalid(::Type{UTF8String},  str) = is_valid_utf8(str)
-    isvalid(::Type{UTF16String}, str) = is_valid_utf16(str)
-    isvalid(::Type{UTF32String}, str) = is_valid_utf32(str)
-    export isvalid
+if VERSION < v"0.4.0-dev+1969"
+    finalize(x) = nothing
+    export finalize
 end
 
 end # module
