@@ -301,6 +301,12 @@ function _compat(ex::Expr)
                 ex = Expr(:stagedfunction, f.args...)
             end
         end
+    elseif ex.head == :using
+        if VERSION < v"0.4.0-dev+187" && ex.args[1] == :Dates
+            using Dates
+        else
+            using Base.Dates
+        end
     end
     return Expr(ex.head, map(_compat, ex.args)...)
 end
