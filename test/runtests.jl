@@ -390,3 +390,15 @@ Compat.@irrational mathconst_one 1.0 big(1.)
 
 @test @compat typeof(Array{Rational{Int}}(2,2,2,2,2)) == Array{Rational{Int},5}
 @test @compat size(Array{Rational{Int}}(2,2,2,2,2)) == (2,2,2,2,2)
+
+# JuliaLang/julia#12000
+if VERSION >= v"0.4-dev"
+    @eval begin
+        macro doc_12000()
+            error("The macro should only be documented but not called")
+        end
+
+        @compat(@doc "Document" :@doc_12000)
+        @test (@doc @doc_12000) != nothing
+    end
+end

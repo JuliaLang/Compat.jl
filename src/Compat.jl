@@ -306,6 +306,16 @@ function _compat(ex::Expr)
             if isexpr(f, :function)
                 ex = Expr(:stagedfunction, f.args...)
             end
+        elseif f == symbol("@doc") && VERSION < v"0.4.0-dev+5873"
+            # Replace the quote with a direct macrocall for the special cases
+            # `@doc "<doc string>" :(@macro)` and
+            # `@doc "<doc string>" :(str_macro"")`
+            # PR JuliaLang/julia#12000
+            if (length(ex.args) == 3 && isexpr(ex.args[3], :quote) &&
+                length(ex.args[3].args) == 1 &&
+                isexpr(ex.args[3].args[1], :macrocall))
+                ex = Expr(:macrocall, f, ex.args[2], ex.args[3].args[1])
+            end
         end
     elseif VERSION < v"0.4.0-dev+5322" && ex.head == :(::) && isa(ex.args[end], Symbol)
         # Replace Base.Timer with Compat.Timer2 in type declarations
