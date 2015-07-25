@@ -405,3 +405,5 @@ Compat.@irrational mathconst_one 1.0 big(1.)
 
 @test @compat typeof(Array{Rational{Int}}(2,2,2,2,2)) == Array{Rational{Int},5}
 @test @compat size(Array{Rational{Int}}(2,2,2,2,2)) == (2,2,2,2,2)
+
+@test isa(OutOfMemoryError(), Exception)

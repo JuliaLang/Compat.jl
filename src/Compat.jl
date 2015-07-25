@@ -498,4 +498,9 @@ if VERSION < v"0.4.0-dev+5305"
     end
 end
 
+if VERSION < v"0.4.0-dev+3837" # JuliaLang/julia#10503
+    const OutOfMemoryError = MemoryError
+    export OutOfMemoryError
+end
+
 end # module
