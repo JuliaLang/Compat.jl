@@ -498,4 +498,9 @@ if VERSION < v"0.4.0-dev+5305"
     end
 end
 
+if VERSION < v"0.4.0-dev+6075"
+    set_zero_subnormals(yes::Bool) = ccall(:jl_zero_subnormals, Bool, (Bool,), yes)
+    export set_zero_subnormals
+end
+
 end # module
