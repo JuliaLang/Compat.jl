@@ -526,4 +526,8 @@ if VERSION < v"0.4.0-dev+5697"
     export Mmap
 end
 
+if VERSION < v"0.4.0-dev+6055"
+    Base.require(s::Symbol) = Base.require(string(s))
+end
+
 end # module
