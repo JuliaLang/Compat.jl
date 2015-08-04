@@ -408,3 +408,10 @@ Compat.@irrational mathconst_one 1.0 big(1.)
 
 @compat utf8(Mmap.mmap(@__FILE__(),Vector{Uint8},11,1)) == "sing Compat"
 
+push!(LOAD_PATH, splitdir(@__FILE__)[1])
+try
+    Base.require(:DummyModule)
+    @test DummyModule.foo(1) == 5
+finally
+    pop!(LOAD_PATH)
+end
