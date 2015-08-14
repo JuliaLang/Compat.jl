@@ -566,4 +566,14 @@ if VERSION < v"0.4.0-dev+6578"
     export ≈, ≉
 end
 
+macro julia_geq(ex)
+    (Base.Meta.isexpr(ex, :if) && length(ex.args) == 3) ||
+        throw(ArgumentError("invalid syntax"))
+    version = ex.args[1]
+    (Base.Meta.isexpr(version, :macrocall) && length(version.args) == 2 && version.args[1] === symbol("@v_str")) ||
+        throw(ArgumentError("invalid syntax"))
+    VERSION >= convert(VersionNumber, version.args[2]) ? esc(ex.args[2]) : esc(ex.args[3])
+end
+export @julia_geq
+
 end # module
