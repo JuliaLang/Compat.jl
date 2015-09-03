@@ -458,3 +458,9 @@ Compat.@irrational mathconst_one 1.0 big(1.)
 @test [1,2,3] ≈ [1,2,3+1e-9]
 @test [0,1] ≈ [1e-9, 1]
 @test [0,1] ≉ [1e-3, 1]
+
+passed = false
+@julia_geq v"0.1-" ? (passed = true) : error("@julia_geq test failed")
+@test passed
+passed = false
+@julia_geq v"100" ? error("@julia_geq test failed") : (passed = true)
