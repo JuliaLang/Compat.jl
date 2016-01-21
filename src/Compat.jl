@@ -750,4 +750,26 @@ if VERSION < v"0.5.0-dev+1946"
     export supertype
 end
 
+
+if VERSION < v"0.5.0-dev+2228"
+    const readstring = readall
+    export readstring
+
+    read(s::IO, nb::Integer=typemax(Int)) = readbytes(s, nb)
+
+    write(filename::AbstractString, args...) = open(io->write(io, args...), filename, "w")
+
+    read(filename::AbstractString, args...) = open(io->read(io, args...), filename)
+    read!(filename::AbstractString, a) = open(io->read!(io, a), filename)
+    readuntil(filename::AbstractString, args...) = open(io->readuntil(io, args...), filename)
+    readline(filename::AbstractString) = open(readline, filename)
+    readlines(filename::AbstractString) = open(readlines, filename)
+
+    function write(to::IO, from::IO)
+        while !eof(from)
+            write(to, readavailable(from))
+        end
+    end
+end
+
 end # module
