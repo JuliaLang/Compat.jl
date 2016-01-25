@@ -160,7 +160,7 @@ end
 @test CartesianTest.f(1,2,3,4) == (1,2,3,4)
 @test CartesianTest.f(1,2,3,4,5) == (1,2,3,4,5)
 
-@test readall(pipeline(`echo hello`, `sort`)) == "hello\n"
+@test readall(pipeline(`echo hello`, `sort`)) == (@windows ? "hello\r\n" : "hello\n")
 @test success(pipeline(`true`, `true`))
 
 let convert_funcs_and_types =
