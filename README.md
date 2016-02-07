@@ -133,6 +133,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `super` is now `supertype` [#14338](https://github.com/JuliaLang/julia/pull/14338)
 
+* `readall` and `readbytes` are now `readstring` and `read` [#14660](https://github.com/JuliaLang/julia/pull/14660)
+
 ## New macros
 
 * `@inline` and `@noinline` have been added. On 0.3, these are "no-ops," meaning they don't actually do anything.
