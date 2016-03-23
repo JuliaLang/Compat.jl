@@ -521,6 +521,10 @@ function _compat(ex::Expr)
             callee.args[1] = :(Base.call)
             insert!(callexpr.args, 2, obj)
         end
+    elseif ex.head === :ref && (length(ex.args) > 2 || (length(ex.args) == 2 && isa(ex.args[2], Expr) && ex.args[2].head === :...))
+        if VERSION < v"0.5.0-dev+1195"
+            ex.args[1] = :(Compat.ArrayAPL($(ex.args[1])))
+        end
     end
     return Expr(ex.head, map(_compat, ex.args)...)
 end
@@ -777,6 +781,45 @@ end
 
 if !isdefined(symbol("@generated"))
     macro generated(x)
+    end
+end
+
+if VERSION < v"0.5.0-dev+1195"
+    import Base: getindex, setindex!, ndims, size
+    immutable ArrayAPL{T}
+        A::T
+    end
+
+    setindex!(A::ArrayAPL, args...) = setindex!(A.A, args...)
+    ndims(A::ArrayAPL) = ndims(A.A)
+    size(A::ArrayAPL, d::Int) = size(A.A, d)
+    getindex(A::ArrayAPL, idx...) = A.A[idx...]
+
+    if VERSION < v"0.4.0"
+        _int_dims(offset::Int) = ()
+        _int_dims(offset::Int, ::Integer, is...) = tuple(offset, _int_dims(offset+1, is...)...)
+        _int_dims(offset::Int, ::Any, is...) = _int_dims(offset+1, is...)
+        _need_squeeze() = Val{false}
+        _need_squeeze(::Any, is...) = _need_squeeze(is...)
+        _need_squeeze(::Integer, is...) = _any_non_int(is...)
+        _any_non_int() = Val{false}
+        _any_non_int(::Any, is...) = Val{true}
+        _any_non_int(::Integer, is...) = _any_non_int(is...)
+        _maybe_squeeze(::Type{Val{false}}, A, idx) = A
+        _maybe_squeeze(::Type{Val{true}}, A, idx) = squeeze(A, _int_dims(1, idx...))
+        getindex{T<:AbstractArray}(A::ArrayAPL{T}, idx::Integer...) = A.A[idx...]
+        getindex{T<:AbstractArray}(A::ArrayAPL{T}, idx...) = _maybe_squeeze(_need_squeeze(idx...), A.A[idx...], idx)
+    else
+        @generated function getindex{T<:AbstractArray}(A::ArrayAPL{T}, idx...)
+            last_nonint_dim = findlast(t -> !(t<:Integer), idx)
+            dims = tuple(find(t -> t<:Integer, collect(idx[1:last_nonint_dim]))...)
+            if isempty(dims)
+                # no need to squeeze
+                return :(A.A[idx...])
+            else
+                return :(squeeze(A.A[idx...], $dims))
+            end
+        end
     end
 end
 
