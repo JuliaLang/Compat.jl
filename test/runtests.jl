@@ -858,6 +858,20 @@ let
     @test a == [(2,10),(4,20),(6,30)]
 end
 
+# APL-style indexing
+let X = [100x+10y+z for x in 1:3, y in 1:3, z in 1:3]
+    y = @compat X[1, 1, 1]
+    @test y == 111
+    y = @compat X[:, :, :]
+    @test y == X
+    y = @compat X[1, 1, :]
+    @test size(y) == (3,)
+    @test y == [111, 112, 113]
+    y = @compat X[:, 1, :]
+    @test size(y) == (3, 3)
+    @test y == [111 112 113; 211 212 213; 311 312 313]
+end
+
 module CallTest
 
 using Base.Test, Compat
