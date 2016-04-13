@@ -775,6 +775,11 @@ else
     const linspace = Base.linspace
 end
 
+if !isdefined(symbol("@generated"))
+    macro generated(x)
+    end
+end
+
 if VERSION < v"0.4.0-dev+436"
     export UDPSocket
     const UDPSocket = UdpSocket
