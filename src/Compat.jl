@@ -1077,4 +1077,12 @@ if !isdefined(Base, :Threads)
     export Threads
 end
 
+if isdefined(Core, :String) && isdefined(Core, :AbstractString)
+    typealias String Core.String
+    export String
+else
+    typealias String Base.UTF8String
+    export String
+end
+
 end # module
