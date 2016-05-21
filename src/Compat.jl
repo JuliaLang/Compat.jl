@@ -956,6 +956,15 @@ if VERSION < v"0.5.0-dev+2228"
         s = open(filename)
         EachLine(s, ()->close(s))
     end
+
+    if VERSION < v"0.4"
+        function Base.write(to::IOBuffer, from::IOBuffer)
+            bytes = nb_available(from)
+            write(to, pointer(from.data,from.ptr), bytes)
+            from.ptr += bytes
+            return bytes
+        end
+    end
 end
 
 if VERSION < v"0.5.0-dev+2023"
