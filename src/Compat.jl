@@ -957,7 +957,7 @@ if VERSION < v"0.5.0-dev+2228"
         EachLine(s, ()->close(s))
     end
 
-    if VERSION < v"0.4"
+    if VERSION < v"0.4.0-dev+5223"
         function Base.write(to::IOBuffer, from::IOBuffer)
             bytes = nb_available(from)
             write(to, pointer(from.data,from.ptr), bytes)
