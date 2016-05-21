@@ -945,9 +945,11 @@ if VERSION < v"0.5.0-dev+2228"
     Base.readavailable(s::IOBuffer) = read(s)
 
     function Base.write(to::IO, from::IO)
+        b = 0
         while !eof(from)
-            write(to, readavailable(from))
+            b += write(to, readavailable(from))
         end
+        return b
     end
 
     function Base.eachline(filename::AbstractString)
