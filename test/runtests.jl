@@ -785,7 +785,7 @@ mktempdir() do dir
 
         verbose && println("$name write(::IOBuffer, ...)")
         @compat to = IOBuffer(UInt8[convert(UInt8, _) for _ in text], false, true)
-        write(to, io())
+        @test write(to, io()) == length(text)
         @test takebuf_string(to) == text
 
         cleanup()
@@ -1141,5 +1141,3 @@ let io = IOBuffer(), s = "hello"
     unsafe_write(io, pointer(s), length(s))
     @test takebuf_string(io) == s
 end
-
-@test write(IOBuffer(), IOBuffer("some data")) == 9
