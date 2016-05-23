@@ -1151,3 +1151,9 @@ let io = IOBuffer(), s = "hello"
     @test string(s, s, s) == "hellohellohello"
     @test String == @compat(Union{Compat.UTF8String,Compat.ASCIIString})
 end
+
+@static if VERSION ≥ v"0.4"
+    @test VERSION ≥ v"0.4"
+else
+    @test VERSION < v"0.4"
+end
