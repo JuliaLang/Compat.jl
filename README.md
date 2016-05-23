@@ -75,15 +75,13 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Type Aliases
 
-* `String` has undergone multiple changes: in julia 0.3 it was an abstract type and then got renamed to `AbstractString`; later, `ASCIIString` and `UTF8String` got merged into a concrete type, `String`.
+* `String` has undergone multiple changes: in Julia 0.3 it was an abstract type and then got renamed to `AbstractString` in 0.4; in 0.5, `ASCIIString` and `ByteString` were removed, and `UTF8String` was renamed to the (now concrete) type `String`.
 
-    For packages that still need `ASCIIString` or `UTF8String` on julia 0.4 and
-    want to avoid the deprecation warning on julia 0.5,
-    use `Compat.ASCIIString` and `Compat.UTF8String` instead.
-    Note that `Compat.ASCIIString` does **not** guarantee `isascii` on julia 0.5.
-    Use `isascii` to check if the string is pure ASCII if needed.
+    Compat provides a `String` type alias (equivalent to `UTF8String` on Julia 0.3 and 0.4), which should be used in most cases as a replacement for `ASCIIString`, `UTF8String` and `ByteString`. But note that *several particular cases should be handled with care*:
+    - Method signatures using `ASCIIString` and `ByteString` should be changed to `AbstractString` where possible. If not, use the `Compat.ASCIIString` and `Compat.ByteString` type aliases, which are equivalent to `String` on Julia 0.5, but to `ASCIIString` and `ByteString` on previous versions.
+    - Exported types with `ASCIIString` fields which are considered part of the public API should be changed to use the `Compat.ASCIIString` type to preserve compatibility on Julia 0.3 and 0.4. This type alias is equivalent to `String` on Julia 0.5, but to `ASCIIString` on previous versions. Though note that `Compat.ASCIIString` does **not** guarantee that the string only contains ASCII characters on Julia 0.5: call `isascii` to check if the string is pure ASCII if needed.
 
-* `typealias AbstractString String` - `String` has been renamed to `AbstractString` [#8872](https://github.com/JuliaLang/julia/pull/8872)
+* `typealias AbstractString String` - `String` has been renamed to `AbstractString` in Julia 0.4 [#8872](https://github.com/JuliaLang/julia/pull/8872)
 
 * `typealias AbstractFloat FloatingPoint` - `FloatingPoint` has been renamed to `AbstractFloat` [#12162](https://github.com/JuliaLang/julia/pull/12162)
 
