@@ -1131,7 +1131,7 @@ if VERSION ≥ v"0.4.0-dev+3732"
     @test Symbol(1) === Symbol("1")
 end
 
-foostring(::String) = 1
+foostring(::Compat.ByteString) = 1
 @test foostring("hello") == 1
 @test foostring("λ") == 1
 @test isa("hello", Compat.ASCIIString)

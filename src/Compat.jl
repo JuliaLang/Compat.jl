@@ -8,8 +8,9 @@ if isdefined(Core, :String) && isdefined(Core, :AbstractString)
     # Not exported in order to not break code on 0.5
     typealias UTF8String Core.String
     typealias ASCIIString Core.String
+    typealias ByteString Core.String
 else
-    typealias String Base.ByteString
+    typealias String Base.UTF8String
 end
 
 if VERSION < v"0.4.0-dev+2340"
