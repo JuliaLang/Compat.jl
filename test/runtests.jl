@@ -1162,9 +1162,9 @@ let io = IOBuffer(), s = "hello"
     @test @compat String(pointer(s.data)) == s
     @test @compat String(pointer(s.data),length(s.data)) == s
     @test string(s, s, s) == "hellohellohello"
+    @test @compat(String(s)) == s
     @test String == @compat(Union{Compat.UTF8String,Compat.ASCIIString})
 end
-@test @compat(String("foo")) == "foo"
 
 @test Compat.repeat(1:2, inner=2) == [1, 1, 2, 2]
 @test Compat.repeat(1:2, outer=[2]) == [1, 2, 1, 2]
