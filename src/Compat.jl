@@ -34,7 +34,7 @@ else
         call(::Type{Base.ByteString},io::Base.AbstractIOBuffer) = bytestring(io::Base.AbstractIOBuffer)
         call(::Type{Base.ByteString},p::Union{Ptr{Int8},Ptr{UInt8}}) = bytestring(p::Union{Ptr{Int8},Ptr{UInt8}})
         call(::Type{Base.ByteString},p::Union{Ptr{Int8},Ptr{UInt8}}, len::Integer) = bytestring(p::Union{Ptr{Int8},Ptr{UInt8}}, len::Integer)
-        call(::Type{Base.ByteString},s...) = bytestring(s::AbstractString...)
+        call(::Type{Base.ByteString},s::AbstractString) = bytestring(s)
     end
 end
 
