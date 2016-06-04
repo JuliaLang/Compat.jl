@@ -1256,3 +1256,16 @@ end
 let a = rand(10,10)
     @test view(a, :, 1) == a[:,1]
 end
+
+# Single argument 0.5-style `@boundscheck`.
+# A bit ugly since `@boundscheck` returns `nothing`.
+bounds_checked = false
+@inline checkbounds() = (global bounds_checked = true)
+bounds_checked = false
+@compat @boundscheck checkbounds()
+@test bounds_checked
+if VERSION >= v"0.5.0-dev+2129"
+    bounds_checked = false
+    @compat @inbounds @boundscheck checkbounds()
+    @test !bounds_checked
+end
