@@ -1257,15 +1257,15 @@ let a = rand(10,10)
     @test view(a, :, 1) == a[:,1]
 end
 
-# Single argument 0.5-style `@boundscheck`.
-# A bit ugly since `@boundscheck` returns `nothing`.
-bounds_checked = false
-@inline checkbounds() = (global bounds_checked = true)
-bounds_checked = false
-@compat @boundscheck checkbounds()
-@test bounds_checked
+# 0.5 style single argument `@boundscheck`
+@inline function do_boundscheck()
+    # A bit ugly since `@boundscheck` returns `nothing`.
+    checked = false
+    @compat @boundscheck (checked = true;)
+    checked
+end
+@test do_boundscheck() == true
 if VERSION >= v"0.5.0-dev+2129"
-    bounds_checked = false
-    @compat @inbounds @boundscheck checkbounds()
-    @test !bounds_checked
+    do_boundscheck2() = (@inbounds c = do_boundscheck(); c)
+    @test do_boundscheck2() == false
 end
