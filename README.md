@@ -237,7 +237,7 @@ whenever possible, especially on a released version.
 
 Although the syntax used in the most recent Julia version
 is the preferred compat syntax, there are cases where this shouldn't be used.
-Examples includ when the new syntax already has a different meaning
+Examples include when the new syntax already has a different meaning
 on previous versions of Julia, or when functions are removed from `Base`
 Julia and the alternative cannot be easily implemented on previous versions.
 In such cases, possible solutions are forcing the new feature to be used with
