@@ -1265,7 +1265,3 @@ end
     checked
 end
 @test do_boundscheck() == true
-if VERSION >= v"0.5.0-dev+2129"
-    do_boundscheck2() = (@inbounds c = do_boundscheck(); c)
-    @test do_boundscheck2() == false
-end
