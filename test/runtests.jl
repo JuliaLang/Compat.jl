@@ -1211,3 +1211,12 @@ io = IOBuffer()
 @test @compat(get(io, :limit, false)) == false
 @test @compat(get(io, :compact, false)) == false
 @test @compat(get(io, :multiline, false)) == false
+
+
+let
+    s = "test"
+    @test unsafe_wrap(String, pointer(s.data)) == "test"
+    @test unsafe_string(String, pointer(s.data)) == "test"
+    x = [1, 2]
+    @test unsafe_wrap(Array, pointer(x)) == [1, 2]
+end
