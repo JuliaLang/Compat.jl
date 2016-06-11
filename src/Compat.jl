@@ -1269,7 +1269,7 @@ else
     end
 end
 
-if VERSION < v"0.4.0-dev+4612"
+if VERSION < v"0.5.0-dev+4612"
     export unsafe_string, unsafe_wrap
     unsafe_wrap(::Type{String}, p::Ptr, own=false) = pointer_to_string(p, own)
     unsafe_wrap(::Type{String}, p::Ptr, len, own=false) = pointer_to_string(p, len, own)
