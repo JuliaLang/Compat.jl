@@ -1271,9 +1271,9 @@ end
 
 if VERSION < v"0.5.0-dev+4612"
     export unsafe_string, unsafe_wrap
-    unsafe_wrap(::Type{String}, p::Ptr, own=false) = pointer_to_string(p, own)
-    unsafe_wrap(::Type{String}, p::Ptr, len, own=false) = pointer_to_string(p, len, own)
-    unsafe_wrap(::Type{Array}, p::Ptr, dims, own=false) = pointer_to_array(p, dims, own)
+    unsafe_wrap(::Type{Compat.String}, p::Ptr, own::Bool=false) = pointer_to_string(p, own)
+    unsafe_wrap(::Type{Compat.String}, p::Ptr, len, own::Bool=false) = pointer_to_string(p, len, own)
+    unsafe_wrap(::Type{Array}, p::Ptr, dims, own::Bool=false) = pointer_to_array(p, dims, own)
     unsafe_string(p::Ptr{UInt8}) = copy(pointer_to_string(p, false))
     unsafe_string(p::Ptr{UInt8}, len) = copy(pointer_to_string(p, len, false))
 end

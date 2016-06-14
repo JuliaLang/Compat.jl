@@ -1215,7 +1215,7 @@ io = IOBuffer()
 
 let
     s = "test"
-    @test unsafe_wrap(String, pointer(s.data)) == "test"
+    @test unsafe_wrap(Compat.String, pointer(s.data)) == "test"
     @test unsafe_string(pointer(s.data)) == "test"
     x = [1, 2]
     @test unsafe_wrap(Array, pointer(x), 2) == [1, 2]
