@@ -1270,7 +1270,6 @@ else
 end
 
 if !isdefined(Base, :pointer_to_string)
-    export pointer_to_string
 
     function pointer_to_string(p::Ptr{UInt8}, len::Integer, own::Bool=false)
         a = ccall(:jl_ptr_to_array_1d, Vector{UInt8},
