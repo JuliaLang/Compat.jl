@@ -1288,8 +1288,8 @@ if VERSION < v"0.5.0-dev+4612"
     unsafe_wrap(::Type{Compat.String}, p::Ptr, own::Bool=false) = pointer_to_string(p, own)
     unsafe_wrap(::Type{Compat.String}, p::Ptr, len, own::Bool=false) = pointer_to_string(p, len, own)
     unsafe_wrap(::Type{Array}, p::Ptr, dims, own::Bool=false) = pointer_to_array(p, dims, own)
-    unsafe_string(p::Ptr{UInt8}) = copy(pointer_to_string(p, false))
-    unsafe_string(p::Ptr{UInt8}, len) = copy(pointer_to_string(p, len, false))
+    unsafe_string(p::Ptr{UInt8}) = bytestring(p)
+    unsafe_string(p::Ptr{UInt8}, len) = bytestring(p, len)
 end
 
 end # module

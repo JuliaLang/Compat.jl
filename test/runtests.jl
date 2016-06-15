@@ -1214,9 +1214,14 @@ io = IOBuffer()
 
 
 let
-    s = "test"
-    @test unsafe_wrap(Compat.String, pointer(s.data)) == "test"
-    @test unsafe_string(pointer(s.data)) == "test"
+    test_str = "test"
+    ptr = pointer(test_str.data)
+    wrapped_str = unsafe_wrap(Compat.String, ptr)
+    new_str = unsafe_string(ptr)
+    @test wrapped_str == "test"
+    @test new_str == "test"
+    @test ptr == pointer(wrapped_str)  # Test proper pointer aliasing behavior
+    @test ptr ≠ pointer(new_str)
     x = [1, 2]
     @test unsafe_wrap(Array, pointer(x), 2) == [1, 2]
 end
