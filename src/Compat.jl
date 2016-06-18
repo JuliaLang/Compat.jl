@@ -1296,4 +1296,22 @@ if !isdefined(Base, :allunique)
     export allunique
 end
 
+if !isdefined(Base, :IOContext)
+    export IOContext
+    immutable IOContext <: IO
+        io::IO
+        kv::Dict{Symbol, Any}
+    end
+
+    IOContext(x::IOContext, y::Dict{Symbol, Any}) =
+            IOContext(x.io, merge(x.kv, y))
+    IOContext(x::IO, ys::Union{Pair, Tuple}...) = IOContext(x, Dict(ys))
+    IOContext(x::IO; kw...) = IOContext(x, Dict(kw))
+
+    Base.get(io::IOContext, sym::Symbol, default) = get(io.kv, sym, default)
+    Base.get(io::IO, sym::Symbol, default) = default
+
+    Base.write(io::IOContext, b::UInt8) = write(io.io, b)
+end
+
 end # module
