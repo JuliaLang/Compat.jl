@@ -491,7 +491,7 @@ function _compat(ex::Expr)
         end
     elseif VERSION < v"0.4.0-dev+5322" && ex.head === :(::) && isa(ex.args[end], Symbol)
         # Replace Base.Timer with Compat.Timer2 in type declarations
-        if ex.args[end] === :Timer || ex.args[end] == :(Base.Timer)
+        if ex.args[end] === :Timer || macroexpand(ex.args[end]) == :(Base.Timer)
             ex.args[end] = :(Compat.Timer2)
         end
     elseif ex.head === :quote && isa(ex.args[1], Symbol)
