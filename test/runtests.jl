@@ -15,7 +15,7 @@ display(TextDisplay(myio), MIME"text/plain"(), TestCustomShowType())
 @test @compat String(myio) == "MyTestCustomShowType"
 
 type TestCustomShowType2 end
-@compat show(io::IO, ::MIME"text/plain", ::TestCustomShowType2) = print(io, "MyTestCustomShowType2")
+@compat Base.show(io::IO, ::MIME"text/plain", ::TestCustomShowType2) = print(io, "MyTestCustomShowType2")
 myio = IOBuffer()
 display(TextDisplay(myio), MIME"text/plain"(), TestCustomShowType2())
 @test @compat String(myio) == "MyTestCustomShowType2"
