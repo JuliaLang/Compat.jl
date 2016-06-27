@@ -1242,3 +1242,9 @@ end
 @test allunique(1:3)
 @test allunique(FloatRange(0.0, 0.0, 0.0, 1.0))
 @test !allunique(FloatRange(0.0, 0.0, 2.0, 1.0))
+
+# Add test for Base.view
+let a = rand(10,10)
+    import Compat.view
+    @test view(a, 1, :) == slice(a, 1, :)
+end
