@@ -1246,5 +1246,5 @@ end
 
 # Add test for Base.view
 let a = rand(10,10)
-    @test view(a, 1, :) == slice(a, 1, :)
+    @test Array(view(a, :, 1)) == a[:,1] 
 end
