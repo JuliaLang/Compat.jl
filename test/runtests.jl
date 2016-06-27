@@ -1,5 +1,6 @@
 using Compat
 import Compat.String
+import Compat.view
 @compat import Base.show
 using Base.Test
 
@@ -1245,6 +1246,5 @@ end
 
 # Add test for Base.view
 let a = rand(10,10)
-    import Compat.view
     @test view(a, 1, :) == slice(a, 1, :)
 end
