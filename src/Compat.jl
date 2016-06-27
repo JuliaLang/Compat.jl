@@ -1276,9 +1276,7 @@ else
     end
 end
 
-if isdefined(Base, :view) 
-    nothing
-else
+if !isdefined(Base, :view)
     const view = slice 
 end
 
