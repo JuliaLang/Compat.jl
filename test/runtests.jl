@@ -1142,6 +1142,12 @@ using Compat.Threads
     @test true
 end
 
+# Issue #223
+if VERSION < v"0.5"
+    @test threadid() == 1
+    @test nthreads() == 1
+end
+
 @test @compat(Symbol("foo")) === :foo
 @test @compat(Symbol("foo", "bar")) === :foobar
 @test @compat(Symbol("a_", 2)) === :a_2
