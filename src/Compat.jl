@@ -1078,8 +1078,8 @@ if !isdefined(Base, :Threads)
         macro threads(expr)
             return esc(expr)
         end
-        const threadid() = 1
-        const nthreads() = 1
+        threadid() = 1
+        nthreads() = 1
         export @threads, threadid, threadid
     end
     export Threads
