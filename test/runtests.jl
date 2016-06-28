@@ -1143,7 +1143,7 @@ using Compat.Threads
 end
 
 # Issue #223
-if VERSION < v"0.5"
+if VERSION < v"0.5.0"
     @test threadid() == 1
     @test nthreads() == 1
 end
