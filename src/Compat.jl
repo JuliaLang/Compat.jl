@@ -1080,7 +1080,7 @@ if !isdefined(Base, :Threads)
         end
         threadid() = 1
         nthreads() = 1
-        export @threads, threadid, threadid
+        export @threads, threadid, nthreads
     end
     export Threads
 end
@@ -1279,7 +1279,7 @@ else
 end
 
 if !isdefined(Base, :view)
-    const view = slice 
+    const view = slice
 end
 
 if !isdefined(Base, :pointer_to_string)
