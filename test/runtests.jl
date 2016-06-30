@@ -1160,6 +1160,8 @@ if VERSION ≥ v"0.4.0-dev+3732"
     @test Symbol("a_", 2) === :a_2
     @test Symbol('c') === :c
     @test Symbol(1) === Symbol("1")
+    # Behaviour on 0.5 might change JuliaLang/julia#7258
+    @test keytype([Symbol(k) => v for (k,v) in Dict{Any, Any}(:x=>3)]) == Symbol
 end
 
 foostring(::String) = 1
