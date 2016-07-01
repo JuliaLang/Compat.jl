@@ -1224,6 +1224,7 @@ io = IOBuffer()
 let
     test_str = "test"
     ptr = pointer(test_str.data)
+    signedptr = Ptr{Int8}(ptr)
     wrapped_str = unsafe_wrap(Compat.String, ptr)
     new_str = unsafe_string(ptr)
     cstr = convert(Cstring, ptr)
@@ -1231,6 +1232,9 @@ let
     @test wrapped_str == "test"
     @test new_str == "test"
     @test new_str2 == "test"
+    @test unsafe_string(signedptr) == test_str
+    @test unsafe_string(ptr, 4) == test_str
+    @test unsafe_string(signedptr, 4) == test_str
     @test ptr == pointer(wrapped_str)  # Test proper pointer aliasing behavior
     @test ptr ≠ pointer(new_str)
     @test ptr ≠ pointer(new_str2)
@@ -1246,5 +1250,5 @@ end
 
 # Add test for Base.view
 let a = rand(10,10)
-    @test view(a, :, 1) == a[:,1] 
+    @test view(a, :, 1) == a[:,1]
 end
