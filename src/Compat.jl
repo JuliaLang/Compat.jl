@@ -1277,7 +1277,7 @@ else
 end
 
 if !isdefined(Base, :view)
-    const view = slice 
+    const view = slice
 end
 
 if !isdefined(Base, :pointer_to_string)
@@ -1298,8 +1298,8 @@ if VERSION < v"0.5.0-dev+4612"
     unsafe_wrap(::Type{Compat.String}, p::Ptr, own::Bool=false) = pointer_to_string(p, own)
     unsafe_wrap(::Type{Compat.String}, p::Ptr, len, own::Bool=false) = pointer_to_string(p, len, own)
     unsafe_wrap(::Type{Array}, p::Ptr, dims, own::Bool=false) = pointer_to_array(p, dims, own)
-    unsafe_string(p::Ptr{UInt8}) = bytestring(p)
-    unsafe_string(p::Ptr{UInt8}, len) = bytestring(p, len)
+    unsafe_string(p::Union{Ptr{Int8},Ptr{UInt8}}) = bytestring(p)
+    unsafe_string(p::Union{Ptr{Int8},Ptr{UInt8}}, len) = bytestring(p, len)
     if Cstring != Ptr{UInt8}
         unsafe_string(p::Cstring) = unsafe_string(Ptr{UInt8}(p))
     end
