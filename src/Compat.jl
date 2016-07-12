@@ -1316,4 +1316,9 @@ if !isdefined(Base, :allunique)
     export allunique
 end
 
+if isdefined(Base, :OneTo)
+    broadcast_shape(x...) = Base.to_shape(broadcast_shape(x...))
+    export broadcast_shape
+end
+
 end # module
