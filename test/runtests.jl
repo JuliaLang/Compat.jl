@@ -1256,3 +1256,8 @@ end
 let a = rand(10,10)
     @test view(a, :, 1) == a[:,1]
 end
+
+@test broadcast_shape([1 2; 3 4], [1,1]) == (2,2)
+@test broadcast_shape([1,2,3], 4) == (3,)
+@test broadcast_shape() == ()
+@test broadcast_shape(4.3) == ()
