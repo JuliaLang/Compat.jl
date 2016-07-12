@@ -234,6 +234,10 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `OS_NAME` is now `Sys.KERNEL`. OS information available as `is_apple`, `is_bsd`, `is_linux`, `is_unix`, and `is_windows`. [16219](https://github.com/JuliaLang/julia/pull/16219)
 
+* `Base.Broadcast.broadcast_shape` now returns a tuple containing a `Base.OneTo` object rather than integers.
+  Compat provides an unexported `Compat.broadcast_shape` that mimics the behavior from 0.4.
+  [#17137](https://github.com/JuliaLang/julia/pull/17137)
+
 ## New types
 
 * [`Nullable` types](http://julia.readthedocs.org/en/latest/manual/types/?highlight=nullable#nullable-types-representing-missing-values) and their associated operations.
