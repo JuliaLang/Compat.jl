@@ -1258,3 +1258,8 @@ end
 let a = rand(10,10)
     @test view(a, :, 1) == a[:,1]
 end
+
+@test Compat.broadcast_shape([1 2; 3 4], [1,1]) == (2,2)
+@test Compat.broadcast_shape([1,2,3], 4) == (3,)
+@test Compat.broadcast_shape() == ()
+@test Compat.broadcast_shape(4.3) == ()

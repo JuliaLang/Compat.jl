@@ -1316,4 +1316,10 @@ if !isdefined(Base, :allunique)
     export allunique
 end
 
+if isdefined(Base, :OneTo) && isdefined(Base, :to_shape)
+    broadcast_shape(x...) = Base.to_shape(Base.Broadcast.broadcast_shape(x...))
+else
+    const broadcast_shape = Base.Broadcast.broadcast_shape
+end
+
 end # module
