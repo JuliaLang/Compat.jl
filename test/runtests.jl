@@ -1201,6 +1201,18 @@ let async, c = false
     @test c
 end
 
+let async, c = false
+    async = Compat.AsyncCondition()
+    @schedule begin
+        wait(async)
+        c = true
+    end
+    sleep(0.1)
+    ccall(:uv_async_send, Void, (Ptr{Void},), async.handle)
+    sleep(0.1)
+    @test c
+end
+
 let io = IOBuffer(), s = "hello"
     unsafe_write(io, pointer(s), length(s))
     @test takebuf_string(io) == s
