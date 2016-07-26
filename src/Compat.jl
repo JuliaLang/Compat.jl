@@ -347,6 +347,11 @@ if VERSION < v"0.4.0-dev+3609"
     export fieldnames
 end
 
+if VERSION < v"0.5.0-dev+2285"
+    fieldoffset(T, i) = fieldoffsets(T)[i]
+    export fieldoffset
+end
+
 if VERSION < v"0.4.0-dev+3874"
     Base.parse{T<:Integer}(::Type{T}, c::Char) = parseint(T, c)
     Base.parse{T<:Integer}(::Type{T}, c::Char, base::Integer) = parseint(T, c, base)
