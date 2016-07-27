@@ -348,7 +348,7 @@ if VERSION < v"0.4.0-dev+3609"
 end
 
 if VERSION < v"0.5.0-dev+2285"
-    fieldoffset(T, i) = fieldoffsets(T)[i]
+    fieldoffset(T, i) = UInt(fieldoffsets(T)[i])
     export fieldoffset
 end
 
