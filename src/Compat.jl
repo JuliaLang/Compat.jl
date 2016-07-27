@@ -347,11 +347,6 @@ if VERSION < v"0.4.0-dev+3609"
     export fieldnames
 end
 
-if VERSION < v"0.5.0-dev+2285"
-    fieldoffset(T, i) = UInt(fieldoffsets(T)[i])
-    export fieldoffset
-end
-
 if VERSION < v"0.4.0-dev+3874"
     Base.parse{T<:Integer}(::Type{T}, c::Char) = parseint(T, c)
     Base.parse{T<:Integer}(::Type{T}, c::Char, base::Integer) = parseint(T, c, base)
@@ -1300,6 +1295,11 @@ else
         @compat (::Type{Base.ByteString})(p::Union{Ptr{Int8},Ptr{UInt8}}, len::Integer) = bytestring(p, len)
         @compat (::Type{Base.ByteString})(s::AbstractString) = bytestring(s)
     end
+end
+
+if VERSION < v"0.5.0-dev+2285"
+    fieldoffset(T, i) = @compat UInt(fieldoffsets(T)[i])
+    export fieldoffset
 end
 
 if !isdefined(Base, :view)
