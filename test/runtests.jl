@@ -1195,22 +1195,24 @@ foostring(::String) = 1
 @test isa("λ", Compat.UTF8String)
 
 let async, c = false
-    async = Compat.AsyncCondition(x->(c = true))
+    run = Condition()
+    async = Compat.AsyncCondition(x->(c = true; notify(run)))
     ccall(:uv_async_send, Void, (Ptr{Void},), async.handle)
-    sleep(0.1)
+    wait(run)
     @test c
 end
 
 let async, c = false
     async = Compat.AsyncCondition()
-    @schedule begin
+    started = Condition()
+    task = @schedule begin
+        notify(started)
         wait(async)
-        c = true
+        true
     end
-    sleep(0.1)
+    wait(started)
     ccall(:uv_async_send, Void, (Ptr{Void},), async.handle)
-    sleep(0.1)
-    @test c
+    @test wait(task)
 end
 
 let io = IOBuffer(), s = "hello"
