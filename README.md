@@ -193,7 +193,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `istext` is now `istextmime` [#15708](https://github.com/JuliaLang/julia/pull/15708)
 
-* `symbol` is now `Symbol` [#16154](https://github.com/JuliaLang/julia/pull/16154); use `@compat Symbol(...)` if you need Julia 0.3 compatibility.
+* `symbol` is now `Symbol` [#16154](https://github.com/JuliaLang/julia/pull/16154); use `@compat Symbol(...)` if you need Julia 0.4 compatibility.
 
 * `write(::IO, ::Ptr, len)` is now `unsafe_write` [#14766](https://github.com/JuliaLang/julia/pull/14766).
 
