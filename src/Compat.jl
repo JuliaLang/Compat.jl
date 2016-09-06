@@ -321,6 +321,12 @@ if VERSION < v"0.4.0-dev+2056"
     end
 end
 
+if VERSION < v"0.4.0-dev+2675"
+    macro fastmath(ex)
+        esc(ex)
+    end
+end
+
 if VERSION < v"0.4.0-dev+2440"
     bitrand(r::AbstractRNG, dims::Dims)   = rand!(r, BitArray(dims))
     bitrand(r::AbstractRNG, dims::Int...) = rand!(r, BitArray(dims))
@@ -580,7 +586,7 @@ macro compat(ex)
     esc(_compat(ex))
 end
 
-export @compat, @inline, @noinline
+export @compat, @inline, @noinline, @fastmath
 
 if VERSION < v"0.4.0-dev+656"
     include("nullable.jl")
