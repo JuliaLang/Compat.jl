@@ -1078,14 +1078,25 @@ if VERSION < v"0.5.0-dev+2228"
     Base.readavailable(s::IOBuffer) = read(s)
 
     function Base.write(to::IO, from::IO)
+        b = 0
         while !eof(from)
-            write(to, readavailable(from))
+            b += write(to, readavailable(from))
         end
+        return b
     end
 
     function Base.eachline(filename::AbstractString)
         s = open(filename)
         EachLine(s, ()->close(s))
+    end
+
+    if VERSION < v"0.4.0-dev+5223"
+        function Base.write(to::IOBuffer, from::IOBuffer)
+            bytes = nb_available(from)
+            write(to, pointer(from.data,from.ptr), bytes)
+            from.ptr += bytes
+            return bytes
+        end
     end
 end
 
