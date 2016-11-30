@@ -1706,8 +1706,14 @@ if VERSION < v"0.5.0-dev+5380"
     transcode{T<:Compat.String}(::Type{T}, src::Vector{UInt32}) = utf8(utf32(src))
     transcode(::Type{UInt8}, src::Vector{UInt8}) = src
     transcode(::Type{UInt8}, src) = transcode(Compat.String, src).data
-    transcode(::Type{UInt16}, src::Union{Compat.String,Vector{UInt8}}) = utf16(utf8(src)).data[1:end-1]
-    transcode(::Type{UInt32}, src::Union{Compat.String,Vector{UInt8}}) = utf32(utf8(src)).data[1:end-1]
+    function transcode(::Type{UInt16}, src::Union{Compat.String,Vector{UInt8}})
+        d = utf16(utf8(src)).data
+        return resize!(d, length(d)-1) # strip off trailing NUL codeunit
+    end
+    function transcode(::Type{UInt32}, src::Union{Compat.String,Vector{UInt8}})
+        d = utf32(utf8(src)).data
+        return resize!(d, length(d)-1) # strip off trailing NUL codeunit
+    end
     if Cwchar_t == Int32
         transcode(::Type{Cwchar_t}, src::Vector{Cwchar_t}) = src
         transcode(::Type{Cwchar_t}, src) = reinterpret(Cwchar_t, transcode(UInt32, src))
