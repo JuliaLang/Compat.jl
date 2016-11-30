@@ -1525,9 +1525,12 @@ let io = IOBuffer()
     @test String(take!(io)) == "bbb"
 end
 
-s = "Koala test: 🐨"
-for T in (UInt8,UInt16,UInt32,Cwchar_t)
-    @test transcode(Compat.String, transcode(T, s)) == s
-    @test transcode(UInt8, transcode(T, s)) == s.data
-    @test transcode(T, s) == transcode(T, s.data) == transcode(T, transcode(T, s))
+let s = "Koala test: 🐨"
+    @test transcode(UInt16, s) == UInt16[75,111,97,108,97,32,116,101,115,116,58,32,55357,56360]
+    @test transcode(UInt32, s) == UInt32[75,111,97,108,97,32,116,101,115,116,58,32,128040]
+    for T in (UInt8,UInt16,UInt32,Cwchar_t)
+        @test transcode(Compat.String, transcode(T, s)) == s
+        @test transcode(UInt8, transcode(T, s)) == s.data
+        @test transcode(T, s) == transcode(T, s.data) == transcode(T, transcode(T, s))
+    end
 end
