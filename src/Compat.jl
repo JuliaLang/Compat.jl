@@ -1714,6 +1714,8 @@ if VERSION < v"0.5.0-dev+5380"
         d = utf32(utf8(src)).data
         return resize!(d, length(d)-1) # strip off trailing NUL codeunit
     end
+    transcode(::Type{UInt16}, src::Vector{UInt16}) = src
+    transcode(::Type{UInt32}, src::Vector{UInt32}) = src
     if Cwchar_t == Int32
         transcode(::Type{Cwchar_t}, src::Vector{Cwchar_t}) = src
         transcode(::Type{Cwchar_t}, src) = reinterpret(Cwchar_t, transcode(UInt32, src))
