@@ -1719,7 +1719,7 @@ if VERSION < v"0.5.0-dev+5380"
     if Cwchar_t == Int32
         transcode(::Type{Cwchar_t}, src::Vector{Cwchar_t}) = src
         transcode(::Type{Cwchar_t}, src) = reinterpret(Cwchar_t, transcode(UInt32, src))
-        transcode(::Type{UInt8}, src::Vector{Cwchar_t}) = transcode(T, reinterpret(UInt32, src))
+        transcode(::Type{UInt8}, src::Vector{Cwchar_t}) = transcode(UInt8, reinterpret(UInt32, src))
         transcode(T, src::Vector{Cwchar_t}) = transcode(T, reinterpret(UInt32, src))
     end
 end
