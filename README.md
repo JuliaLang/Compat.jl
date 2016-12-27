@@ -72,6 +72,10 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `bytestring` has been replaced in most cases with additional `String` construction methods; for 0.4 compatibility, the usage involves replacing `bytestring(args...)` with `Compat.String(args...)`. However, for converting a `Ptr{UInt8}` to a string, use the new `unsafe_string(...)` method to make a copy or `unsafe_wrap(String, ...)` to avoid a copy.
 
+* The unexported type alias `Base.ShortCircuiting` was removed in [#19543](https://github.com/JuliaLang/julia/pull/19543). On 0.4
+  it was the union of the unexported `Base.AndFun` and `Base.OrFun` functor types, then once functions became their own types, the
+  definition changed to the union of `typeof(&)` and `typeof(|)`. `ShortCircuiting` remains unexported from Compat.
+
 ## New functions
 
 * `foreach`, similar to `map` but when the return value is not needed ([#13744](https://github.com/JuliaLang/julia/pull/13774)).

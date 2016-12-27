@@ -1724,4 +1724,11 @@ if VERSION < v"0.5.0-dev+5380"
     end
 end
 
+# Julia #19543 (removes ShortCircuiting)
+if VERSION < v"0.5.0-dev+3701"
+    typealias ShortCircuiting Union{Base.AndFun, Base.OrFun}
+else
+    typealias ShortCircuiting Union{typeof(&), typeof(|)}
+end
+
 end # module

@@ -1534,3 +1534,9 @@ let s = "Koala test: 🐨"
         @test transcode(T, s) == transcode(T, s.data) == transcode(T, transcode(T, s))
     end
 end
+
+if typeof(&) == Function # before functions had their own types
+    @test Compat.ShortCircuiting === Union{Base.AndFun, Base.OrFun}
+else
+    @test Compat.ShortCircuiting === Union{typeof(&), typeof(|)}
+end
