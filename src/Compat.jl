@@ -640,6 +640,12 @@ function _compat(ex::Expr)
         elseif ex == :(Ptr{Void})
             # Do no change Ptr{Void} to Ptr{Nothing}: 0.4.0-dev+768
             return ex
+        elseif VERSION < v"0.6.0-dev.2575" #20414
+            for i = 2:length(ex.args)
+                if isexpr(ex.args[i], :call, 2) && ex.args[i].args[1] == :(<:)
+                    ex.args[i] = :($TypeVar($(QuoteNode(gensym(:T))), $(ex.args[i].args[2]), false))
+                end
+            end
         end
     elseif ex.head === :macrocall
         f = ex.args[1]
