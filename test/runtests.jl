@@ -1603,9 +1603,12 @@ A = view(rand(5,5), 1:3, 1:3)
 @test A*D == copy(A) * Diagonal(copy(x))
 
 # julia#17623
-@static if VERSION >= v"0.5.0-dev+5509" # To work around unsupported syntax on Julia 0.4
+if VERSION >= v"0.5.0-dev+5509"
+# Use include_string to work around unsupported syntax on Julia 0.4
+include_string("""
     @test [true, false] .& [true, true] == [true, false]
     @test [true, false] .| [true, true] == [true, true]
+""")
 end
 
 # julia#20022
@@ -1619,3 +1622,91 @@ end
 @test Compat.TypeUtils.isabstract(AbstractFoo20006)
 @test Compat.TypeUtils.parameter_upper_bound(ConcreteFoo20006, 1) == Int
 @test isa(Compat.TypeUtils.typename(Array), TypeName)
+
+# @view and @views tests copied from Base
+let X = reshape(1:24,2,3,4), Y = 4:-1:1
+    @test isa(@view(X[1:3]), SubArray)
+
+    @test X[1:end] == @__dot__ (@view X[1:end]) # test compatibility of @. and @view
+    @test X[1:end-3] == @view X[1:end-3]
+    @test X[1:end,2,2] == @view X[1:end,2,2]
+    @test reshape(X[1,2,1:end-2],2) == @view X[1,2,1:end-2]
+    @test reshape(X[1,2,Y[2:end]],3) == @view X[1,2,Y[2:end]]
+    @test reshape(X[1:end,2,Y[2:end]],2,3) == @view X[1:end,2,Y[2:end]]
+
+    u = (1,2:3)
+    @test reshape(X[u...,2:end],2,3) == @view X[u...,2:end]
+    @test reshape(X[(1,)...,(2,)...,2:end],3) == @view X[(1,)...,(2,)...,2:end]
+
+    # test macro hygiene
+    let size=(x,y)-> error("should not happen"), Base=nothing
+        @test X[1:end,2,2] == @view X[1:end,2,2]
+    end
+
+    # test that side effects occur only once
+    let foo = typeof(X)[X]
+        @test X[2:end-1] == @view (push!(foo,X)[1])[2:end-1]
+        @test foo == typeof(X)[X, X]
+    end
+
+    # test @views macro
+    @views let f!(x) = x[1:end-1] .+= x[2:end].^2
+        x = [1,2,3,4]
+        f!(x)
+        @test x == [5,11,19,4]
+        @test isa(x[1:3],SubArray)
+        @test x[2] === 11
+        @test Dict((1:3) => 4)[1:3] === 4
+        x[1:2] = 0
+        @test x == [0,0,19,4]
+        x[1:2] .= 5:6
+        @test x == [5,6,19,4]
+        f!(x[3:end])
+        @test x == [5,6,35,4]
+        x[Y[2:3]] .= 7:8
+        @test x == [5,8,7,4]
+        @__dot__ x[(3,)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
+        @test x == [5,8,10,4]
+        i = Int[]
+        # test that lhs expressions in update operations are evaluated only once:
+        x[push!(i,4)[1]] += 5
+        @test x == [5,8,10,9] && i == [4]
+        x[push!(i,3)[end]] += 2
+        @test x == [5,8,12,9] && i == [4,3]
+        @__dot__ x[3:end] = 0       # make sure @. works with end expressions in @views
+        @test x == [5,8,0,0]
+    end
+    @views @test isa(X[1:3], SubArray)
+    @test X[1:end] == @views X[1:end]
+    @test X[1:end-3] == @views X[1:end-3]
+    @test X[1:end,2,2] == @views X[1:end,2,2]
+    @test reshape(X[1,2,1:end-2],2) == @views X[1,2,1:end-2]
+    @test reshape(X[1,2,Y[2:end]],3) == @views X[1,2,Y[2:end]]
+    @test reshape(X[1:end,2,Y[2:end]],2,3) == @views X[1:end,2,Y[2:end]]
+    @test reshape(X[u...,2:end],2,3) == @views X[u...,2:end]
+    @test reshape(X[(1,)...,(2,)...,2:end],3) == @views X[(1,)...,(2,)...,2:end]
+
+    # test macro hygiene
+    let size=(x,y)-> error("should not happen"), Base=nothing
+        @test X[1:end,2,2] == @views X[1:end,2,2]
+    end
+end
+
+# @. (@__dot__) tests, from base:
+let x = [4, -9, 1, -16]
+    @test [2, 3, 4, 5] == @__dot__(1 + sqrt($sort(abs(x))))
+    @test @__dot__(x^2) == x.^2
+    @__dot__ x = 2
+    @test x == [2,2,2,2]
+end
+@test [1,4,9] == @__dot__ let x = [1,2,3]; x^2; end
+let x = [1,2,3], y = x
+    @__dot__ for i = 1:3
+        y = y^2 # should convert to y .= y.^2
+    end
+    @test x == [1,256,6561]
+end
+let x = [1,2,3]
+    @__dot__ f(x) = x^2
+    @test f(x) == [1,4,9]
+end
