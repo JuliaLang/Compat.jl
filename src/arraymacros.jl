@@ -1,9 +1,8 @@
 # Julia 0.6 macros to aid in vectorization: @view, @views, @__dot__ (@.),
 # backported from Julia 0.6.
 
-if isdefined(Base, :replace_ref_end!)
-    import Base.replace_ref_end!
-else
+# prior to julia#20247, the replace_ref_end! macro had hygiene bugs
+if VERSION < v"0.6.0-dev.2406"
     function trailingsize(A, n)
         s = 1
         for i=n:ndims(A)
