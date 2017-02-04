@@ -84,13 +84,13 @@ Currently, the `@compat` macro supports the following syntaxes:
 ## New functions, macros, and methods
 
 * `@views` takes an expression and converts all slices to views ([#20164]), while
-  `@view` ([#16564]) converts a single array reference to a view ([#20164]).  Using `@views`
-  automatically implies `@compat`.
+  `@view` ([#16564]) converts a single array reference to a view ([#20164]).
 
 * `@__dot__` takes an expression and converts all assignments, function calls,
   and operators to their broadcasting "dot-call" equivalents ([#20321]).   In Julia 0.6, this
   can be abbreviated `@.`, but that macro name does not parse in earlier Julia versions.
-  Using `@__dot__` automatically implies `@compat`.
+  For this to work in older versions of Julia (prior to 0.5) that don't have dot calls,
+  you should instead use `@dotcompat`, which combines the `@__dot__` and `@compat` macros.
 
 * `foreach`, similar to `map` but when the return value is not needed ([#13744])
 

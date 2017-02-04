@@ -1627,7 +1627,7 @@ end
 let X = reshape(1:24,2,3,4), Y = 4:-1:1
     @test isa(@view(X[1:3]), SubArray)
 
-    @test X[1:end] == @__dot__ (@view X[1:end]) # test compatibility of @. and @view
+    @test X[1:end] == @dotcompat (@view X[1:end]) # test compatibility of @. and @view
     @test X[1:end-3] == @view X[1:end-3]
     @test X[1:end,2,2] == @view X[1:end,2,2]
     @test reshape(X[1,2,1:end-2],2) == @view X[1,2,1:end-2]
@@ -1654,7 +1654,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
     end
 
     # test @views macro
-    @views let f!(x) = x[1:end-1] .+= x[2:end].^2
+    @views @compat let f!(x) = x[1:end-1] .+= x[2:end].^2
         x = [1,2,3,4]
         f!(x)
         @test x == [5,11,19,4]
@@ -1669,7 +1669,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test x == [5,6,35,4]
         x[Y[2:3]] .= 7:8
         @test x == [5,8,7,4]
-        @__dot__ x[(3,)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
+        @dotcompat x[(3,)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
         @test x == [5,8,10,4]
         i = Int[]
         # test that lhs expressions in update operations are evaluated only once:
@@ -1677,7 +1677,34 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test x == [5,8,10,9] && i == [4]
         x[push!(i,3)[end]] += 2
         @test x == [5,8,12,9] && i == [4,3]
-        @__dot__ x[3:end] = 0       # make sure @. works with end expressions in @views
+        @dotcompat x[3:end] = 0       # make sure @. works with end expressions in @views
+        @test x == [5,8,0,0]
+    end
+    # same tests, but make sure we can switch the order of @compat and @views
+    @compat @views let f!(x) = x[1:end-1] .+= x[2:end].^2
+        x = [1,2,3,4]
+        f!(x)
+        @test x == [5,11,19,4]
+        @test isa(x[1:3],SubArray)
+        @test x[2] === 11
+        @test Dict((1:3) => 4)[1:3] === 4
+        x[1:2] = 0
+        @test x == [0,0,19,4]
+        x[1:2] .= 5:6
+        @test x == [5,6,19,4]
+        f!(x[3:end])
+        @test x == [5,6,35,4]
+        x[Y[2:3]] .= 7:8
+        @test x == [5,8,7,4]
+        @dotcompat x[(3,)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
+        @test x == [5,8,10,4]
+        i = Int[]
+        # test that lhs expressions in update operations are evaluated only once:
+        x[push!(i,4)[1]] += 5
+        @test x == [5,8,10,9] && i == [4]
+        x[push!(i,3)[end]] += 2
+        @test x == [5,8,12,9] && i == [4,3]
+        @dotcompat x[3:end] = 0       # make sure @. works with end expressions in @views
         @test x == [5,8,0,0]
     end
     @views @test isa(X[1:3], SubArray)
@@ -1698,19 +1725,19 @@ end
 
 # @. (@__dot__) tests, from base:
 let x = [4, -9, 1, -16]
-    @test [2, 3, 4, 5] == @__dot__(1 + sqrt($sort(abs(x))))
-    @test @__dot__(x^2) == x.^2
-    @__dot__ x = 2
+    @test [2, 3, 4, 5] == @dotcompat(1 + sqrt($sort(abs(x))))
+    @test @dotcompat(x^2) == x.^2
+    @dotcompat x = 2
     @test x == [2,2,2,2]
 end
-@test [1,4,9] == @__dot__ let x = [1,2,3]; x^2; end
+@test [1,4,9] == @dotcompat let x = [1,2,3]; x^2; end
 let x = [1,2,3], y = x
-    @__dot__ for i = 1:3
+    @dotcompat for i = 1:3
         y = y^2 # should convert to y .= y.^2
     end
     @test x == [1,256,6561]
 end
 let x = [1,2,3]
-    @__dot__ f(x) = x^2
+    @dotcompat f(x) = x^2
     @test f(x) == [1,4,9]
 end

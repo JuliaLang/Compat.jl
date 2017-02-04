@@ -169,7 +169,7 @@ if !isdefined(Base, Symbol("@views"))
     end
 
     macro views(x)
-        esc(_compat(_views(replace_ref_end!(x))))
+        esc(_views(replace_ref_end!(x)))
     end
     export @views
 end
@@ -214,7 +214,16 @@ if !isdefined(Base, Symbol("@__dot__"))
         end
     end
     macro __dot__(x)
+        esc(__dot__(x))
+    end
+    macro dotcompat(x)
         esc(_compat(__dot__(x)))
     end
-    export @__dot__
+    export @__dot__, @dotcompat
+else
+    # in 0.6, use the __dot__ function from Base.Broadcast
+    macro dotcompat(x)
+        esc(_compat(Base.Broadcast.__dot__(x)))
+    end
+    export @dotcompat
 end
