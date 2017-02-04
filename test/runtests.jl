@@ -1639,8 +1639,8 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
     @test reshape(X[(1,)...,(2,)...,2:end],3) == @view X[(1,)...,(2,)...,2:end]
 
     # the following tests fail on 0.5 because of bugs in the 0.5 Base.@view
-    # macro (a bugfix is scheduled to be backported from 0.6)
-    if VERSION < v"0.5"
+    # macro (a bugfix is scheduled to be backported from 0.6: julia#20247)
+    if !isdefined(Base, Symbol("@view")) || VERSION ≥ v"0.6.0-dev.2406"
         # test macro hygiene
         let size=(x,y)-> error("should not happen"), Base=nothing
             @test X[1:end,2,2] == @view X[1:end,2,2]
