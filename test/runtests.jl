@@ -1603,3 +1603,9 @@ end
 # julia#20022
 @test !Compat.isapprox(NaN, NaN)
 @test Compat.isapprox(NaN, NaN, nans=true)
+
+# julia#13998
+for x in (3.1, -17, 3//4, big(111.1), Inf)
+    @test min(x) == max(x) == x
+    @test minmax(x) == (x, x)
+end
