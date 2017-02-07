@@ -1772,7 +1772,7 @@ if VERSION < v"0.5.0-dev+3669"
         scale!(similar(A, promote_op(*, eltype(A), eltype(D.diag))), D.diag, A)
 end
 
-if VERSION >= v"0.5.0-dev+5509" && VERSION < v"0.6.0-dev.1614"
+if VERSION >= v"0.5.0-dev+5509" && VERSION < v"0.6.0-dev.1632"
     # To work around unsupported syntax on Julia 0.4
     include_string("export .&, .|")
     include_string(".&(xs...) = broadcast(&, xs...)")
@@ -1786,6 +1786,13 @@ if VERSION < v"0.6.0-dev.2093" # Compat.isapprox to allow for NaNs
     end
 else
     import Base.isapprox
+end
+
+# julia #13998 single-argument min and max
+if VERSION < v"0.5.0-dev+1279"
+    Base.min(x::Real) = x
+    Base.max(x::Real) = x
+    Base.minmax(x::Real) = (x, x)
 end
 
 module TypeUtils
