@@ -1764,3 +1764,4 @@ let a = CompatArray.CartesianArray(rand(2,3)), b = CompatArray.LinearArray(rand(
 end
 
 include("to-be-deprecated.jl")
+include("version.jl")
