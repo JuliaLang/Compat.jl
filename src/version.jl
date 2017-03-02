@@ -1,7 +1,7 @@
 const COMPAT_REPO = abspath(@__DIR__, "..")
 const COMPAT_README_PATH = joinpath(COMPAT_REPO, "README.md")
 
-function findversion(readme, feature, occurence=1)
+function findversion(readme, feature, occurence)
     feature = strip(feature, '`')
     lines = open(readlines, readme, "r")
     idx = findline(lines, feature, occurence)
