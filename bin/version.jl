@@ -42,9 +42,9 @@ end
 function getcommit(repo, file, idx)
     lines = Vector{String}()
     cd(repo) do
-        lines = readlines(`git blame --line-porcelain -L$idx,$idx -- $file`)
+        lines = readlines(`git log -L$idx,$idx:$file`)
     end
-    split(lines[1])[1]
+    split(lines[map(x->startswith(x, "commit"), lines)][end])[end]
 end
 
 function gettag(repo, commit)
