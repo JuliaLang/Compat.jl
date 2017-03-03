@@ -284,7 +284,7 @@ script which will return the correct version.
 
 ```sh
 bash $ ./bin/version.jl @static
-v0.12.0
+v0.10.0
 ```
 
 * Alternatively follow these steps to determine the version manually:
