@@ -1412,6 +1412,5 @@ if VERSION < v"0.6.0-dev.2840"
 end
 
 include("to-be-deprecated.jl")
-include("version.jl")
 
 end # module Compat

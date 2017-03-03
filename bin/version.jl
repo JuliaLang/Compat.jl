@@ -1,5 +1,19 @@
-const COMPAT_REPO = abspath(@__DIR__, "..")
+#! /usr/bin/env julia
+
+const COMPAT_REPO = abspath(dirname(@__FILE__), "..")
 const COMPAT_README_PATH = joinpath(COMPAT_REPO, "README.md")
+
+function usage()
+    str = """
+    version.jl - Find the Compat.jl version which introduced a feature
+
+        version.jl <feature> [<occurence>]
+
+    feature - Feature code snippet copied from README.md
+    occurence - Which occurence of <feature> should be sought for (optional)
+    """
+    println(str)
+end
 
 function findversion(readme, feature, occurence)
     feature = strip(feature, '`')
@@ -13,12 +27,6 @@ function findversion(readme, feature, occurence)
     gettag(repo, commit)
 end
 
-"""
-    findversion(feature, occurence)
-
-`findversion` determines the version of `Compat` in which `feature` was
-introduced. `feature` is a string that contains
-"""
 findversion(feature, occurence=1) = findversion(COMPAT_README_PATH,
     feature, occurence)
 
@@ -45,4 +53,10 @@ function gettag(repo, commit)
         lines = readlines(`git tag --contains $commit`)
     end
     strip(lines[1])
+end
+
+if (length(ARGS) == 1 && ARGS[1] in ("--help", "-h")) || isempty(ARGS)
+    usage()
+else
+    println(findversion(ARGS...))
 end
