@@ -279,19 +279,29 @@ specify the right lower bound.
 function or feature added to `Compat` is documented in its README, so you are
 guaranteed to find it.
 
-* Navigate to the [blame page of the README](https://github.com/JuliaLang/Compat.jl/blame/master/README.md)
-by clicking on the README file on GitHub, and then clicking on the `blame` button
-which can be found in the top-right corner.
+* Copy the code snippet that describes the feature and pass it to the `bin/version.jl`
+script which will return the correct version.
 
-* Now find your fix, and then find the corresponding commit ID of that fix on the
-left-hand side. Click on the commit ID. This navigates to a page which recorded
-that particular commit.
+```sh
+bash $ ./bin/version.jl @static
+v0.12.0
+```
 
-* On the top pane, you should find the list of the tagged versions of Compat that
-includes this fix. Find the minimum version from there.
+* Alternatively follow these steps to determine the version manually:
 
-* Now specify the correct minimum version for Compat in your REQUIRE file by
-`Compat <version>`
+    * Navigate to the [blame page of the README](https://github.com/JuliaLang/Compat.jl/blame/master/README.md)
+    by clicking on the README file on GitHub, and then clicking on the `blame` button
+    which can be found in the top-right corner.
+
+    * Now find your fix, and then find the corresponding commit ID of that fix on the
+    left-hand side. Click on the commit ID. This navigates to a page which recorded
+    that particular commit.
+
+    * On the top pane, you should find the list of the tagged versions of Compat that
+    includes this fix. Find the minimum version from there.
+
+    * Now specify the correct minimum version for Compat in your REQUIRE file by
+    `Compat <version>`
 
 [#12819]: https://github.com/JuliaLang/julia/issues/12819
 [#13232]: https://github.com/JuliaLang/julia/issues/13232
