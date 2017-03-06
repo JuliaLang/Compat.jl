@@ -1416,7 +1416,7 @@ if VERSION < v"0.6.0-dev.2283"
     # not exported
     function readline(s::IO=STDIN; chomp::Bool=true)
         if chomp
-            Base.chomp(Base.readline(s))
+            Base.chomp!(Base.readline(s))
         else
             Base.readline(s)
         end
