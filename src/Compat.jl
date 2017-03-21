@@ -1159,7 +1159,9 @@ end
 
 # julia　#20407
 if !isdefined(Base, :(>:))
-    (>:)(a::ANY, b::ANY) = issubtype(b, a)
+    const >: = let
+        _issupertype(a::ANY, b::ANY) = issubtype(b, a)
+    end
     export >:
 end
 
