@@ -135,7 +135,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `∘` (typically used infix as `f ∘ g`) for function composition can be used in 0.5 and earlier ([#17155])
 
-* `>:`, a supertype operator, for symmetry with `issubtype` (`A >: B` is equivalent to `B <: A`) ([#20407])
+* `>:`, a supertype operator for symmetry with `issubtype` (`A >: B` is equivalent to `B <: A`), can be used in 0.5 and earlier ([#20407]).
 
 * The method of `!` to negate functions (typically used as a unary operator, as in `!isinteger`) can be used in 0.5 and earlier ([#17155]).
 
