@@ -1768,4 +1768,28 @@ end
 @test Compat.readline(IOBuffer("x\n"), chomp=true) == "x"
 @test Compat.readline(IOBuffer("x\n"), chomp=false) == "x\n"
 
+# PR 20418
+@mutable_struct begin MutableTestType{T<:Real} <: Real
+    x::T
+
+    MutableTestType() = new(one(T))
+end
+@test isdefined(:MutableTestType)
+@test isa(MutableTestType, Type)
+@test fieldnames(MutableTestType) == [:x]
+@test fieldtype(MutableTestType{Int}, :x) === Int
+@test fieldtype(MutableTestType{Integer}, :x) === Integer
+@test !isimmutable(MutableTestType{Int}())
+@immutable_struct begin ImmutableTestType{T<:Real} <: Real
+    x::T
+
+    ImmutableTestType() = new(one(T))
+end
+@test isdefined(:ImmutableTestType)
+@test isa(ImmutableTestType, Type)
+@test fieldnames(ImmutableTestType) == [:x]
+@test fieldtype(ImmutableTestType{Int}, :x) === Int
+@test fieldtype(ImmutableTestType{Integer}, :x) === Integer
+@test isimmutable(ImmutableTestType{Int}())
+
 include("to-be-deprecated.jl")

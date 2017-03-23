@@ -214,6 +214,8 @@ Currently, the `@compat` macro supports the following syntaxes:
   vectorized function have migrated. These macros will be dropped when the
   support for `0.6` is dropped from `Compat`.
 
+* `@struct begin ... end` is equivalent to `immutable ... end` in Julia 0.5 and `struct ... end` in Julia 0.6+. `@mutable_struct begin ... end` is equivalent to `type ... end` in Julia 0.5 and `mutable struct ... end` in Julia 0.6+.
+
 ## Other changes
 
 * `remotecall`, `remotecall_fetch`, `remotecall_wait`, and `remote_do` have the function to be executed remotely as the first argument in Julia 0.5. Loading `Compat` defines the same methods in older versions of Julia ([#13338])

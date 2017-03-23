@@ -1423,6 +1423,46 @@ if VERSION < v"0.6.0-dev.2283"
     end
 end
 
+# https://github.com/JuliaLang/julia/pull/20418
+export @immutable_struct
+macro immutable_struct(ex)
+    _struct(ex, false)
+end
+
+export @mutable_struct
+macro mutable_struct(ex)
+    _struct(ex, true)
+end
+
+function _struct(ex, mutable::Bool)
+    function macro_name()
+        "@$(mutable ? "" : "im")mutable_struct"
+    end
+
+    if ex.head !== :block
+        throw(ArgumentError("$(macro_name()) can only be applied to block expressions"))
+    end
+
+    type_name = ex.args[2]
+
+    if !isa(type_name, Symbol) && type_name.head !== :curly && type_name.head !== :(<:)
+        throw(ArgumentError(
+            "The first expression after `$(macro_name()) begin` must be the type name"
+        ))
+    end
+
+    return esc(Expr(
+        :type,
+        mutable,
+        type_name,
+        Expr(
+            :block,
+            ex.args[1],
+            ex.args[3:end]...,
+        ),
+    ))
+end
+
 include("to-be-deprecated.jl")
 
 end # module Compat
