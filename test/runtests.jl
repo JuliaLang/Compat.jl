@@ -1490,6 +1490,16 @@ end
     @test !isa([3,4im],T)
     @test f(1:3) == f([1,2]) == 1
 end
+@compat let T = Array{>:Integer}, f(x::AbstractVector{>:Integer}) = 1
+    @test isa(Integer[1,2],T)
+    @test !isa([3,4],T)
+    @test !isa([3.0,4.0],T)
+    @test f(Integer[1,2]) == f([1,'a',:sym]) == 1
+end
+
+# supertype operator
+@test !(Int >: Integer)
+@test Integer >: Int
 
 # julia#19246
 @test numerator(1//2) === 1
@@ -1773,6 +1783,11 @@ for (A,val) in ((zeros(1:5, Float32), 0),
                 (ones(1:5, Float32), 1))
     @test isa(A, Vector{Float32}) && size(A) == (5,) && all(x->x==val, A)
 end
+
+# PR 20203
+@test Compat.readline(IOBuffer("Hello, World!\n")) == "Hello, World!"
+@test Compat.readline(IOBuffer("x\n"), chomp=true) == "x"
+@test Compat.readline(IOBuffer("x\n"), chomp=false) == "x\n"
 
 include("to-be-deprecated.jl")
 

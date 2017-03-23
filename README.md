@@ -27,14 +27,14 @@ To use Compat in your Julia package, add a line `Compat` to the
 `REQUIRE` file in your package directory.  Then, in your package,
 shortly after the `module` statement include lines like these:
 
-```
+```julia
 using Compat
 import Compat.String
 ```
 
 and then as needed add
 
-```
+```julia
 @compat ...compat syntax...
 ```
 
@@ -68,7 +68,7 @@ Currently, the `@compat` macro supports the following syntaxes:
   correct order of evaluation.   Also, `x .+= y` converts to `x .= (x .+ y)`, and similarly for the other updating
   assignment operators (`.*=` and so on).
 
-* `@compat Array{<:Real}` and similar uses of `<:T` to define a set of parameterized types ([#20414]).
+* `@compat Array{<:Real}`, `@compat Array{>:Int}`, and similar uses of `<:T` (resp. `>:T`) to define a set of "covariant" (resp. "contravariant") parameterized types ([#20414]).
   In 0.4 and 0.5, this only works for non-nested usages (e.g. you can't define `Array{<:Array{<:Real}}`).
 
 * `@compat abstract type T end` and `@compat primitive type T 8 end`
@@ -135,6 +135,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `∘` (typically used infix as `f ∘ g`) for function composition can be used in 0.5 and earlier ([#17155])
 
+* `>:`, a supertype operator for symmetry with `issubtype` (`A >: B` is equivalent to `B <: A`), can be used in 0.5 and earlier ([#20407]).
+
 * The method of `!` to negate functions (typically used as a unary operator, as in `!isinteger`) can be used in 0.5 and earlier ([#17155]).
 
 * `iszero(x)` efficiently checks whether `x == zero(x)` (including arrays) can be used in 0.5 and earlier ([#19950]).
@@ -142,6 +144,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `.&` and `.|` are short syntax for `broadcast(&, xs...)` and `broadcast(|, xs...)` (respectively) in Julia 0.6 (only supported on Julia 0.5 and above) ([#17623])
 
 * `Compat.isapprox` with `nans` keyword argument ([#20022])
+
+* `Compat.readline` with `chomp` keyword argument ([#20203])
 
 * `take!` method for `Task`s since some functions now return `Channel`s instead of `Task`s ([#19841])
 
@@ -338,7 +342,9 @@ includes this fix. Find the minimum version from there.
 [#19950]: https://github.com/JuliaLang/julia/issues/19950
 [#20022]: https://github.com/JuliaLang/julia/issues/20022
 [#20164]: https://github.com/JuliaLang/julia/issues/20164
+[#20203]: https://github.com/JuliaLang/julia/issues/20203
 [#20321]: https://github.com/JuliaLang/julia/issues/20321
+[#20407]: https://github.com/JuliaLang/julia/issues/20407
 [#20414]: https://github.com/JuliaLang/julia/issues/20414
 [#20418]: https://github.com/JuliaLang/julia/issues/20418
 [#20500]: https://github.com/JuliaLang/julia/issues/20500

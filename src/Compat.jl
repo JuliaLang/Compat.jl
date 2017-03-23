@@ -384,7 +384,9 @@ function _compat(ex::Expr)
             return ex
         elseif VERSION < v"0.6.0-dev.2575" #20414
             ex = Expr(:curly, map(a -> isexpr(a, :call, 2) && a.args[1] == :(<:) ?
-                                  :($TypeVar($(QuoteNode(gensym(:T))), $(a.args[2]), false)) : a,
+                                  :($TypeVar($(QuoteNode(gensym(:T))), $(a.args[2]), false)) :
+                                  isexpr(a, :call, 2) && a.args[1] == :(>:) ?
+                                  :($TypeVar($(QuoteNode(gensym(:T))), $(a.args[2]), $Any, false)) : a,
                                   ex.args)...)
         end
     elseif ex.head === :macrocall
@@ -597,8 +599,8 @@ if VERSION < v"0.5.0-dev+2228"
     Base.read(filename::AbstractString, args...) = open(io->read(io, args...), filename)
     Base.read!(filename::AbstractString, a) = open(io->read!(io, a), filename)
     Base.readuntil(filename::AbstractString, args...) = open(io->readuntil(io, args...), filename)
-    Base.readline(filename::AbstractString) = open(readline, filename)
-    Base.readlines(filename::AbstractString) = open(readlines, filename)
+    Base.readline(filename::AbstractString) = open(Base.readline, filename)
+    Base.readlines(filename::AbstractString) = open(Base.readlines, filename)
     Base.readavailable(s::IOStream) = read!(s, @compat Vector{UInt8}(nb_available(s)))
     Base.readavailable(s::IOBuffer) = read(s)
 
@@ -1155,6 +1157,14 @@ if !isdefined(Base, :iszero)
     export iszero
 end
 
+# julia　#20407
+if !isdefined(Base, :(>:))
+    const >: = let
+        _issupertype(a::ANY, b::ANY) = issubtype(b, a)
+    end
+    export >:
+end
+
 # julia#19088
 if VERSION < v"0.6.0-dev.1256"
     Base.take!(io::Base.AbstractIOBuffer) = takebuf_array(io)
@@ -1422,6 +1432,17 @@ if VERSION < v"0.6.0-dev.1653"
     end
 end
 
+# https://github.com/JuliaLang/julia/pull/20203
+if VERSION < v"0.6.0-dev.2283"
+    # not exported
+    function readline(s::IO=STDIN; chomp::Bool=true)
+        if chomp
+            Base.chomp!(Base.readline(s))
+        else
+            Base.readline(s)
+        end
+    end
+end
 
 include("to-be-deprecated.jl")
 
