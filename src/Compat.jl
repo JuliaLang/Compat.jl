@@ -1447,7 +1447,7 @@ end
 # https://github.com/JuliaLang/julia/pull/18727
 if VERSION < v"0.6.0-dev.838"
     convert{T}(::Type{Set{T}}, s::Set{T}) = s
-    convert{T,S}(::Type{Set{T}}, x::Set{S}) = Set{T}(x)
+    convert{T}(::Type{Set{T}}, s::Set) = Set{T}(s)
 end
 
 include("to-be-deprecated.jl")
