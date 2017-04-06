@@ -1805,6 +1805,10 @@ let
     @test cssset == Set(["foo", "bar"])
 end
 
+# PR 18082
+@test !isassigned(Ref{String}())
+@test isassigned(Ref{String}("Test"))
+
 include("to-be-deprecated.jl")
 
 nothing
