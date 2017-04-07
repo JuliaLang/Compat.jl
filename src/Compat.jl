@@ -1455,6 +1455,10 @@ if VERSION < v"0.6.0-dev.2347"
     Base.isassigned(x::Base.RefValue) = isdefined(x, :x)
 end
 
+if VERSION < v"0.6.0-dev.735"
+    Base.unsafe_trunc{T<:Integer}(::Type{T}, x::Integer) = rem(x, T)
+end
+
 include("to-be-deprecated.jl")
 
 end # module Compat

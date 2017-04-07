@@ -1809,6 +1809,9 @@ end
 @test !isassigned(Ref{String}())
 @test isassigned(Ref{String}("Test"))
 
+@test unsafe_trunc(Int8, 128) === Int8(-128)
+@test_throws InexactError trunc(Int8, 128)
+
 include("to-be-deprecated.jl")
 
 nothing
