@@ -1826,7 +1826,9 @@ end
 using Compat: StringVector
 @test length(StringVector(5)) == 5
 @test String(fill!(StringVector(5), 0x61)) == "aaaaa"
-@test (x = fill!(StringVector(5), 0x61); pointer(x) == pointer(String(x)))
+let x = fill!(StringVector(5), 0x61)
+    @test pointer(x) == pointer(String(x))
+end
 
 include("to-be-deprecated.jl")
 
