@@ -163,6 +163,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `bswap` is supported for `Complex` arguments on 0.5 and below. ([#21346])
 
+* `Compat.StringVector` is supported on 0.5 and below. ([#19449])
+
 ## Renamed functions
 
 * `pointer_to_array` and `pointer_to_string` have been replaced with `unsafe_wrap(Array, ...)` and `unsafe_wrap(String, ...)` respectively
