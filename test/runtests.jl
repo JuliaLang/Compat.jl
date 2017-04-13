@@ -1826,8 +1826,11 @@ end
 using Compat: StringVector
 @test length(StringVector(5)) == 5
 @test String(fill!(StringVector(5), 0x61)) == "aaaaa"
-let x = fill!(StringVector(5), 0x61)
-    @test pointer(x) == pointer(String(x))
+
+if isdefined(Core, :String)
+    let x = fill!(StringVector(5), 0x61)
+        @test pointer(x) == pointer(String(x))
+    end
 end
 
 include("to-be-deprecated.jl")
