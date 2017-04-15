@@ -1466,7 +1466,7 @@ end
 
 # https://github.com/JuliaLang/julia/pull/19449
 if VERSION < v"0.6.0-dev.1988"
-    StringVector = Vector{UInt8}
+    StringVector(n::Integer) = Vector{UInt8}(n)
 else
     using Base: StringVector
 end
