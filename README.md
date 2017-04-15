@@ -163,7 +163,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `bswap` is supported for `Complex` arguments on 0.5 and below. ([#21346])
 
-* `Compat.StringVector` is supported on 0.5 and below. ([#19449])
+* `Compat.StringVector` is supported on 0.5 and below. On 0.6 and later, it aliases `Base.StringVector`. ([#19449])
 
 ## Renamed functions
 
