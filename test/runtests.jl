@@ -1827,10 +1827,8 @@ using Compat: StringVector
 @test length(StringVector(5)) == 5
 @test String(fill!(StringVector(5), 0x61)) == "aaaaa"
 
-if isdefined(Core, :String)
-    let x = fill!(StringVector(5), 0x61)
-        @test pointer(x) == pointer(String(x))
-    end
+let x = fill!(StringVector(5), 0x61)
+    @test pointer(x) == pointer(Compat.UTF8String(x))
 end
 
 include("to-be-deprecated.jl")
