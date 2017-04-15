@@ -163,7 +163,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `bswap` is supported for `Complex` arguments on 0.5 and below. ([#21346])
 
-* `Compat.StringVector` is supported on 0.5 and below. On 0.6 and later, it aliases `Base.StringVector`. ([#19449])
+* `Compat.StringVector` is supported on 0.5 and below. On 0.6 and later, it aliases `Base.StringVector`. This function allocates a `Vector{UInt8}` whose data can be made into a `String` in constant time; that is, without copying. On 0.5 and later, use `String(...)` with the vector allocated by `StringVector` as an argument to create a string without copying. Note that if 0.4 support is needed, `Compat.UTF8String(...)` should be used instead. ([#19449])
 
 ## Renamed functions
 
