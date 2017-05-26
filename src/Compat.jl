@@ -1418,6 +1418,9 @@ if VERSION < v"0.6.0-dev.1024"
             using Base: partition
         end
     end
+    macro TypedDict(T, pairs...)
+        esc(Expr(:typed_dict, T, pairs...))
+    end
 else
     using Base: Iterators
 end
