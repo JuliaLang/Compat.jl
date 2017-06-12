@@ -1567,8 +1567,7 @@ A = view(rand(5,5), 1:3, 1:3)
 # julia#17623
 if VERSION >= v"0.5.0-dev+5509"
 # Use include_string to work around unsupported syntax on Julia 0.4
-include_string(Main, """
-    using Base.Test
+include_string(@__MODULE__, """
     @test [true, false] .& [true, true] == [true, false]
     @test [true, false] .| [true, true] == [true, true]
 """)
