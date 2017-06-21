@@ -50,10 +50,6 @@ ns = length(d.slots)
 @test @compat rsplit("a,b,,c", ',', keep=false) == ["a", "b", "c"]
 @test @compat rsplit("a,b,,c", ',', keep=true) == ["a", "b", "", "c"]
 
-if VERSION < v"0.4.0-dev+1387"
-    @test isdefined(Main, :AbstractString)
-end
-
 @test round(Int, 3//4) == 1
 @test round(Int, 1) == 1
 @test round(Int, 1.1) == 1
@@ -172,18 +168,6 @@ let convert_funcs_and_types =
         else
             @test typeof(r1) === ty
         end
-        if VERSION <  v"0.4.0-dev+3732"
-            r2 = eval(df)(x)
-            @test r1 === r2
-            if t === :Signed || t === :Complex32
-                continue
-            end
-            x = fill(x, 10)
-            r1 = eval(:(@compat map($t, $x)))
-            r2 = eval(df)(x)
-            @test r1 == r2
-            @test typeof(r1) === typeof(r2)
-        end
     end
     @test (@compat Bool(1))
     @test !(@compat Bool(0))
@@ -206,12 +190,6 @@ eval(Expr(:type, true, :Test3609, quote
     a
     b
 end))
-
-if VERSION < v"0.4.0-dev+3609"
-    let v = Test3609(1,2)
-        @test fieldnames(Test3609) == fieldnames(v) == Symbol[:a, :b]
-    end
-end
 
 @test fieldoffset(Complex{Float32}, 2) === @compat UInt(4)
 
@@ -257,24 +235,6 @@ Compat.unsafe_convert(::Ptr{Au_c}, x) = x
 
 # Test Ptr{T}(0)
 @test @compat(Ptr{Int}(0)) == C_NULL
-
-# Test Tuple{} syntax
-if VERSION < v"0.4.0-dev+4319"
-    @test @compat Tuple{1} == (1,)
-    @test @compat Tuple{:a, :b} == (:a, :b)
-    @test @compat Tuple{:a, Tuple{:b}} == (:a, (:b,))
-    @test @compat Tuple{:a, Tuple{:b, :c}} == (:a, (:b, :c))
-    @test @compat Tuple{Int} == (Int,)
-    @test @compat Tuple{Int, Float64} == (Int, Float64)
-    @test @compat Tuple{Int, Tuple{Float64}} == (Int, (Float64,))
-    @test @compat Tuple{Int, Tuple{Float64, Char}} == (Int, (Float64, Char))
-    @test @compat Tuple{Int, Vararg{Float64}} == (Int, Float64...)
-    # Issue 81
-    a81 = [Int, Int]
-    b81 = (Int, Int)
-    @test @compat Tuple{a81..., Vararg{Float64}} == (Int, Int, Float64...)
-    @test @compat Tuple{b81..., Vararg{Float64}} == (Int, Int, Float64...)
-end
 
 # Ensure eachindex iterates over the whole array
 let A, B, s
@@ -329,12 +289,6 @@ end
 @test !isdiag([1 2; 3 4])
 @test isdiag(5)
 
-# keytype & valtype
-if VERSION < v"0.4.0-dev+4502"
-    @test keytype(@compat(Dict(1 => 1.))) == Int
-    @test valtype(@compat(Dict(1 => 1.))) == Float64
-end
-
 # Val
 begin
     local firstlast
@@ -366,49 +320,11 @@ end
 # Cstring
 let s = "foo"
     # note: need cconvert in 0.5 because of JuliaLang/julia#16893
-    @test reinterpret(Ptr{Cchar}, Compat.unsafe_convert(Cstring, VERSION < v"0.4" ? s : Base.cconvert(Cstring, s))) == pointer(s)
-    if VERSION < v"0.5.0-dev+4859"
-        let w = wstring("foo")
-            @test reinterpret(Ptr{Cwchar_t}, Compat.unsafe_convert(Cwstring, w)) == pointer(w)
-        end
-    end
+    @test reinterpret(Ptr{Cchar}, Compat.unsafe_convert(Cstring, Base.cconvert(Cstring, s))) == pointer(s)
 end
 
 # fma and muladd
 @test fma(3,4,5) == 3*4+5 == muladd(3,4,5)
-
-if VERSION < v"0.5.0-dev+5271"
-    # is_valid_utf32
-    s = utf32("abc")
-    @test isvalid(s)
-    s = utf32(UInt32[65,0x110000])
-    @test !isvalid(s)
-
-    # isvalid
-    let s = "abcdef", u8 = "abcdef\uff", u16 = utf16(u8), u32 = utf32(u8),
-        bad32 = utf32(UInt32[65,0x110000]), badch = Char[0x110000][1]
-
-        @test !isvalid(bad32)
-        @test !isvalid(badch)
-        @test isvalid(s)
-        @test isvalid(u8)
-        @test isvalid(u16)
-        @test isvalid(u32)
-        @test isvalid(Compat.ASCIIString, s)
-        @test isvalid(Compat.UTF8String,  u8)
-        @test isvalid(UTF16String, u16)
-        @test isvalid(UTF32String, u32)
-    end
-end
-
-if VERSION < v"0.5.0-dev+907"
-    # chol
-    let A = rand(2,2)
-        B = A'*A
-        U = @compat chol(B, Val{:U})
-        @test U'*U ≈ B
-    end
-end
 
 # @generated
 if VERSION > v"0.3.99"
@@ -535,11 +451,7 @@ for T = (Float32, Float64)
     @test [3u:-u:-3u;] == [Compat.linspace(3u,-3u,7);] == [3:-1:-3;].*u
 end
 
-if VERSION < v"0.4.0-dev+768"
-    @test @compat(Void) === Nothing
-else
-    @test @compat(Void) === Void
-end
+@test @compat(Void) === Void
 @test Ptr{Void} == @compat(Ptr{Void})
 
 # MemoryError -> OutOfMemoryError
