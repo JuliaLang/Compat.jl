@@ -119,6 +119,11 @@ end
 
 import Base.unsafe_convert
 
+function new_style_call_overload(ex::Expr)
+    Base.depwarn("new_style_call_overload is deprecated.", :new_style_call_overload)
+    false
+end
+
 istopsymbol(ex, mod, sym) = ex in (sym, Expr(:(.), mod, Expr(:quote, sym)))
 
 if VERSION < v"0.6.0-dev.2782"
@@ -155,30 +160,6 @@ function _compat(ex::Expr)
     elseif ex.head === :quote && isa(ex.args[1], Symbol)
         # Passthrough
         return ex
-    elseif new_style_call_overload(ex)
-        callexpr = ex.args[1]::Expr
-        callee = callexpr.args[1]::Expr
-        is_kw = (length(callexpr.args) >= 2 &&
-                 isexpr(callexpr.args[2], :parameters))
-        if callee.head === :(::)
-            # (:function, (:call, :(:(::), <1>), <2>), <body>) ->
-            # (:function, (:call, :(Base.call), :(:(::), <1>), <2>), <body>)
-            unshift!(callexpr.args, :(Base.call))
-        else
-            # (:function, (:call, :(curly, :(:(::), <1>), <3>), <2>), <body>) ->
-            # (:function, (:call, :(curly, :(Base.call), <3>), :(:(::), <1>), <2>), <body>)
-            obj = callee.args[1]::Expr
-            callee.args[1] = :(Base.call)
-            insert!(callexpr.args, 2, obj)
-        end
-        if is_kw
-            # Expr(:parameters) is moved to the 3rd argument
-            params = callexpr.args[3]
-            @assert isexpr(params, :parameters)
-            obj = callexpr.args[2]
-            callexpr.args[2] = params
-            callexpr.args[3] = obj
-        end
     elseif new_style_typealias(ex)
         ex.head = :typealias
     elseif ex.head === :const && length(ex.args) == 1 && new_style_typealias(ex.args[1])
@@ -257,6 +238,7 @@ import Base.@irrational
 
 import Base: remotecall, remotecall_fetch, remotecall_wait, remote_do
 
+import Base.Filesystem
 
 if !isdefined(Base, :istextmime)
     export istextmime
@@ -367,7 +349,12 @@ else
     import Base.AsyncCondition
 end
 
+const KERNEL = Sys.KERNEL
+
 import Base: srand, rand, rand!
+
+const UTF8String = Core.String
+const ASCIIString = Core.String
 
 if !isdefined(Base, :pointer_to_string)
 
@@ -409,6 +396,7 @@ else
     import Base.promote_eltype_op
 end
 
+import Base.LinAlg.BLAS.@blasfunc
 
 import Base: redirect_stdin, redirect_stdout, redirect_stderr
 if VERSION < v"0.6.0-dev.374"
@@ -576,6 +564,10 @@ if VERSION < v"0.6.0-dev.1024"
         using Base: countfrom, cycle, drop, enumerate, repeated, rest, take,
                     zip
         using Compat
+
+        using Base: flatten
+        using Base: product
+        using Base: partition
     end
 else
     using Base: Iterators
@@ -659,6 +651,20 @@ if isdefined(Base, :invokelatest)
     import Base.invokelatest
 else
     invokelatest(f, args...) = eval(current_module(), Expr(:call, f, map(QuoteNode, args)...))
+end
+
+# https://github.com/JuliaLang/julia/pull/21257
+if VERSION < v"0.6.0-pre.beta.28"
+    collect(A) = collect_indices(indices(A), A)
+    collect_indices(::Tuple{}, A) = copy!(Array{eltype(A)}(), A)
+    collect_indices(indsA::Tuple{Vararg{Base.OneTo}}, A) =
+        copy!(Array{eltype(A)}(map(length, indsA)), A)
+    function collect_indices(indsA, A)
+        B = Array{eltype(A)}(map(length, indsA))
+        copy!(B, CartesianRange(indices(B)), A, CartesianRange(indsA))
+    end
+else
+    const collect = Base.collect
 end
 
 # https://github.com/JuliaLang/julia/pull/21378
