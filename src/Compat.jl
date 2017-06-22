@@ -312,42 +312,7 @@ if !isdefined(Base, :normalize)
     export normalize, normalize!
 end
 
-if !isdefined(Base, :AsyncCondition)
-    include_string("""
-    type AsyncCondition
-        cond::Condition
-        handle::Ptr{Void}
-
-        function AsyncCondition(func=nothing)
-            this = new(Condition())
-            # the callback is supposed to be called with this AsyncCondition
-            # as the argument, so we need to create a wrapper callback
-            if func == nothing
-                function wrapfunc(data)
-                    notify(this.cond)
-
-                    nothing
-                end
-            else
-                function wrapfunc(data)
-                    notify(this.cond)
-                    func(this)
-
-                    nothing
-                end
-            end
-            work = Base.SingleAsyncWork(wrapfunc)
-            this.handle = work.handle
-
-            this
-        end
-    end
-    """)
-
-    Base.wait(c::AsyncCondition) = wait(c.cond)
-else
-    import Base.AsyncCondition
-end
+import Base.AsyncCondition
 
 const KERNEL = Sys.KERNEL
 
@@ -369,32 +334,7 @@ if !isdefined(Base, :pointer_to_string)
 
 end
 
-if !isdefined(Base, :allunique)
-    allunique(itr) = length(itr) == length(unique(itr))
-    export allunique
-end
-
-if !isdefined(Base, :promote_eltype_op)
-    if isdefined(Base, :promote_op)
-        promote_eltype_op(::Any) = Union{}
-        promote_eltype_op{T}(op, ::AbstractArray{T}) = Base.promote_op(op, T)
-        promote_eltype_op{T}(op, ::T               ) = Base.promote_op(op, T)
-        promote_eltype_op{R,S}(op, ::AbstractArray{R}, ::AbstractArray{S}) = Base.promote_op(op, R, S)
-        promote_eltype_op{R,S}(op, ::AbstractArray{R}, ::S) = Base.promote_op(op, R, S)
-        promote_eltype_op{R,S}(op, ::R, ::AbstractArray{S}) = Base.promote_op(op, R, S)
-        promote_eltype_op(op, A, B, C, D...) = Base.promote_op(op, eltype(A), promote_eltype_op(op, B, C, D...))
-    else
-        promote_eltype_op(::Any) = Union{}
-        promote_eltype_op{T}(op, ::AbstractArray{T}) = T
-        promote_eltype_op{T}(op, ::T               ) = T
-        promote_eltype_op{R,S}(op, ::AbstractArray{R}, ::AbstractArray{S}) = Base.promote_type(R, S)
-        promote_eltype_op{R,S}(op, ::AbstractArray{R}, ::S) = Base.promote_type(R, S)
-        promote_eltype_op{R,S}(op, ::R, ::AbstractArray{S}) = Base.promote_type(R, S)
-        promote_eltype_op(op, A, B, C, D...) = Base.promote_type(eltype(A), promote_eltype_op(op, B, C, D...))
-    end
-else
-    import Base.promote_eltype_op
-end
+import Base.promote_eltype_op
 
 import Base.LinAlg.BLAS.@blasfunc
 
@@ -535,7 +475,6 @@ else
 end
 
 module TypeUtils
-    using ..Compat: @static
     @static if isdefined(Base, :isabstract)
         using Base: isabstract, parameter_upper_bound, typename
     else

@@ -53,8 +53,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `@compat(get(io, s, false))`, with `s` equal to `:limit`, `:compact` or `:multiline`, to detect the corresponding print settings (performs useful work only on Julia 0.5, defaults to `false` otherwise)
 
-* `@compat import Base.show` and `@compat function show(args...)` for handling the deprecation of `writemime` in Julia 0.5 ([#16563]). See https://github.com/JuliaLang/Compat.jl/pull/219.
-
 * `@compat Nullable(value, hasvalue)` to handle the switch from the `Nullable` `:isnull` field to `:hasvalue` field ([#18510])
 
 * `@compat x .= y` converts to an in-place assignment to `x` (via `broadcast!`) ([#17510]).
@@ -91,12 +89,6 @@ Currently, the `@compat` macro supports the following syntaxes:
   can be abbreviated `@.`, but that macro name does not parse in earlier Julia versions.
   For this to work in older versions of Julia (prior to 0.5) that don't have dot calls,
   you should instead use `@dotcompat`, which combines the `@__dot__` and `@compat` macros.
-
-* `foreach`, similar to `map` but when the return value is not needed ([#13744])
-
-* `allunique`, checks whether all elements in an iterable appear only once ([#15914])
-
-* `Base.promote_eltype_op` is available as `Compat.promote_eltype_op`
 
 * [`normalize`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize) and [`normalize!`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize!), normalizes a vector with respect to the p-norm ([#13681])
 
@@ -151,15 +143,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Renamed functions
 
-* `qr(A, pivot=b)` is now `qr(A, Val{b})`, likewise for `qrfact` and `qrfact!`
-
-* `istext` is now `istextmime` ([#15708])
-
-* `write(::IO, ::Ptr, len)` is now `unsafe_write` ([#14766])
-
-* `print_escaped` is now another method of `escape_string`, `print_unescaped` a method of `unescape_string`, and `print_joined` a method of `join` ([#16603])
-
-* `writemime` has been merged into `show` ([#16563]). Note that to extend this function requires `@compat`; see the [Supported Syntax](#supported-syntax) section for more information
 
 * `$` is now `xor` or `⊻` ([#18977])
 
@@ -168,10 +151,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `takebuf_array` is now a method of `take!`. `takebuf_string(io)` becomes `String(take!(io))` ([#19088])
 
 ## New macros
-
-* `@functorize` (not present in any Julia version) takes a function (or operator) and turns it into a functor object if one is available in the used Julia version. E.g. something like `mapreduce(Base.AbsFun(), Base.MulFun(), x)` can now be written as `mapreduce(@functorize(abs), @functorize(*), x)`, and `f(::Base.AbsFun())` as `f(::typeof(@functorize(abs)))`, to work across different Julia versions. `Func{1}` can be written as `supertype(typeof(@functorize(abs)))` (and so on for `Func{2}`), which will fall back to `Function` on Julia 0.5.
-
-* `Compat.@blasfunc` makes functionality of `Base.LinAlg.BLAS.@blasfunc` available on older Julia versions
 
 * `@__DIR__` has been added ([#18380])
 
@@ -188,16 +167,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 ## Other changes
 
 * On versions of Julia that do not contain a Base.Threads module, Compat defines a Threads module containing a no-op `@threads` macro.
-
-* `Base.SingleAsyncWork` is now `Base.AsyncCondition`
-  Compat provides an unexported `Compat.AsyncCondition` type that is aliased to
-  `Base.AsyncCondition` on Julia 0.5.
-
-* `OS_NAME` is now `Sys.KERNEL`. OS information available as `is_apple`, `is_bsd`, `is_linux`, `is_unix`, and `is_windows` ([#16219])
-
-* `cholfact`, `cholfact!`, and `chol` require that input is either `Hermitian`, `Symmetric`
-or that the elements are perfectly symmetric or Hermitian on 0.5. Compat now defines methods
-for `HermOrSym` such that using the new methods are backward compatible.
 
 * The `Expr(:macrocall)` has an extra initial argument `__source__`, which can be tested for with `Compat.macros_have_sourceloc`.
 
