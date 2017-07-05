@@ -14,6 +14,19 @@ include("ngenerate.jl")
 using .CompatCartesian
 export @ngenerate, @nsplat
 
+export @functorize
+macro functorize(f)
+    code = f === :scalarmax          ? :(Base.scalarmax) :
+           f === :scalarmin          ? :(Base.scalarmin) :
+           f === :centralizedabs2fun ? :(primarytype(typeof(Base.centralizedabs2fun(0)))) :
+           f
+
+    return quote
+        Base.depwarn("@functorize is deprecated as functor objects are no longer supported in julia", Symbol("@functorize"))
+        $code
+    end
+end
+
 # More things that could be removed in Compat.jl
 # - new_style_call_overload
 # - import Base.Filesystem
