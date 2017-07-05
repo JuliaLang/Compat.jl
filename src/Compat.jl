@@ -612,7 +612,7 @@ if VERSION < v"0.6.0-pre.beta.455"
     isless(x::Dates.OtherPeriod, y::Dates.FixedPeriod) = throw(MethodError(isless, (x, y)))
 end
 
-include("to-be-deprecated.jl")
+include("deprecated.jl")
 
 # https://github.com/JuliaLang/julia/pull/21746
 const macros_have_sourceloc = VERSION >= v"0.7-" && length(:(@test).args) == 2
