@@ -256,10 +256,15 @@ end
 
 export @functorize
 macro functorize(f)
-    f === :scalarmax       ? :(Base.scalarmax) :
-    f === :scalarmin       ? :(Base.scalarmin) :
-    f === :centralizedabs2fun ? :(primarytype(typeof(Base.centralizedabs2fun(0)))) :
-    f
+    code = f === :scalarmax          ? :(Base.scalarmax) :
+           f === :scalarmin          ? :(Base.scalarmin) :
+           f === :centralizedabs2fun ? :(primarytype(typeof(Base.centralizedabs2fun(0)))) :
+           f
+
+    return quote
+        Base.depwarn("@functorize is deprecated as functor objects are no longer supported in julia", Symbol("@functorize"))
+        $code
+    end
 end
 
 if !isdefined(Base, :Threads)
