@@ -1889,6 +1889,6 @@ let
     @test_throws MethodError Dates.Month(1) < Dates.Day(1)
 end
 
-include("to-be-deprecated.jl")
+include("deprecated.jl")
 
 nothing
