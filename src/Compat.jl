@@ -1535,4 +1535,10 @@ include("to-be-deprecated.jl")
 # https://github.com/JuliaLang/julia/pull/21746
 const macros_have_sourceloc = VERSION >= v"0.7-" && length(:(@test).args) == 2
 
+# https://github.com/JuliaLang/julia/pull/18777
+if VERSION < v"0.6.0-dev.2376"
+    const StepRangeLen = FloatRange
+    export StepRangeLen
+end
+
 end # module Compat

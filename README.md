@@ -106,6 +106,10 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `bytestring` has been replaced in most cases with additional `String` construction methods; for 0.4 compatibility, the usage involves replacing `bytestring(args...)` with `Compat.String(args...)`. However, for converting a `Ptr{UInt8}` to a string, use the new `unsafe_string(...)` method to make a copy or `unsafe_wrap(String, ...)` to avoid a copy.
 
+* In 0.6, `FloatRange` was deprecated and superseded by `StepRangeLen`
+  [#18777]. Pre 0.6, Compat defines `const FloatRange = StepRangeLen`
+  and exports this.
+
 ## New functions, macros, and methods
 
 * `@views` takes an expression and converts all slices to views ([#20164]), while

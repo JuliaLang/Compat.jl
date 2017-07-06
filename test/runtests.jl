@@ -1895,4 +1895,6 @@ end
 
 include("to-be-deprecated.jl")
 
+@test isa(1.0:5, StepRangeLen)
+
 nothing
