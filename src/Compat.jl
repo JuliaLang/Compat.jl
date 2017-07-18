@@ -305,13 +305,8 @@ if !isdefined(Base, :normalize)
 end
 
 import Base.AsyncCondition
-
-const KERNEL = Sys.KERNEL
-
 import Base: srand, rand, rand!
 
-const UTF8String = Core.String
-const ASCIIString = Core.String
 
 if !isdefined(Base, :pointer_to_string)
 

@@ -156,10 +156,17 @@ macro functorize(f)
     end
 end
 
+if VERSION >= v"0.6.0"
+    Base.@deprecate_binding KERNEL Sys.KERNEL
+    Base.@deprecate_binding UTF8String Core.String
+    Base.@deprecate_binding ASCIIString Core.String
+else
+    const KERNEL = Sys.KERNEL
+    const UTF8String = Core.String
+    const ASCIIString = Core.String
+end
+
 # More things that could be removed in Compat.jl
 # - new_style_call_overload
 # - import Base.Filesystem
-# - UTF8String
-# - ASCIIString
-# - KERNEL
 # - import Base.LinAlg.BLAS.@blasfunc
