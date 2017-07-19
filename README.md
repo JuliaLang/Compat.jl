@@ -145,6 +145,10 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Val(x)` constructs `Val{x}()`. ([#22475])
 
+* `chol` and `chol!` for `UniformScalings` ([#22633]).
+
+* `logdet` for `Number`s ([#22629]).
+
 ## Renamed functions
 
 
@@ -286,3 +290,5 @@ includes this fix. Find the minimum version from there.
 [#21346]: https://github.com/JuliaLang/julia/issues/21346
 [#22064]: https://github.com/JuliaLang/julia/issues/22064
 [#22475]: https://github.com/JuliaLang/julia/issues/22475
+[#22633]: https://github.com/JuliaLang/julia/issues/22633
+[#22629]: https://github.com/JuliaLang/julia/issues/22629

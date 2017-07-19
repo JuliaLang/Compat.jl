@@ -1873,6 +1873,17 @@ let
     @test_throws MethodError Dates.Month(1) < Dates.Day(1)
 end
 
+# PR 22629
+@test logdet(0.5) == log(det(0.5))
+
+# PR 22633
+for T in (Float64, Complex64, BigFloat, Int)
+    λ = T(4)
+    @test chol(λ*I) ≈ √λ*I
+    @test_throws Union{ArgumentError,LinAlg.PosDefException} chol(-λ*I)
+end
+
+
 include("deprecated.jl")
 
 nothing
