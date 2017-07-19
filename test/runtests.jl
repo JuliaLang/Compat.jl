@@ -1879,7 +1879,7 @@ end
 # PR 22633
 for T in (Float64, Complex64, BigFloat, Int)
     λ = T(4)
-    @test chol(λ*I) ≈ √λ*I
+    @test chol(λ*I).λ ≈ √λ
     @test_throws Union{ArgumentError,LinAlg.PosDefException} chol(-λ*I)
 end
 
