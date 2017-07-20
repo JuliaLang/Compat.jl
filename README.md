@@ -75,6 +75,11 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.collect(A)` returns an `Array`, no matter what indices the array `A` has. [#21257]
 
+* `@compat foo(::CartesianRange{N})` to replace the former
+  `foo(::CartesianRange{CartesianIndex{N}})` ([#20974]). Note that
+  `CartesianRange` now has two type parameters, so using them as
+  fields in other `struct`s requires manual intervention.
+
 ## Module Aliases
 
 * In 0.6, some 0.5 iterator functions have been moved to the `Base.Iterators`
@@ -157,6 +162,10 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `num` and `den` are now `numerator` and `denominator` ([#19246])
 
 * `takebuf_array` is now a method of `take!`. `takebuf_string(io)` becomes `String(take!(io))` ([#19088])
+
+* `is_apple`, `is_bsd`, `is_linux`, `is_unix`, and `is_windows` are now `Sys.isapple`, `Sys.isbsd`,
+  `Sys.islinux`, `Sys.isunix`, and `Sys.iswindows`, respectively. These are available in the `Compat.Sys`
+  submodule. ([#22182])
 
 ## New macros
 
@@ -286,9 +295,11 @@ includes this fix. Find the minimum version from there.
 [#20414]: https://github.com/JuliaLang/julia/issues/20414
 [#20418]: https://github.com/JuliaLang/julia/issues/20418
 [#20500]: https://github.com/JuliaLang/julia/issues/20500
+[#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21257]: https://github.com/JuliaLang/julia/issues/21257
 [#21346]: https://github.com/JuliaLang/julia/issues/21346
 [#22064]: https://github.com/JuliaLang/julia/issues/22064
+[#22182]: https://github.com/JuliaLang/julia/issues/22182
 [#22475]: https://github.com/JuliaLang/julia/issues/22475
 [#22633]: https://github.com/JuliaLang/julia/issues/22633
 [#22629]: https://github.com/JuliaLang/julia/issues/22629

@@ -178,6 +178,14 @@ function _compat(ex::Expr)
             end
         end
     end
+    if VERSION < v"0.7.0-DEV.880"
+        if ex.head == :curly && ex.args[1] == :CartesianRange && length(ex.args) >= 2
+            a = ex.args[2]
+            if a != :CartesianIndex && !(isa(a, Expr) && a.head == :curly && a.args[1] == :CartesianIndex)
+                return Expr(:curly, :CartesianRange, Expr(:curly, :CartesianIndex, ex.args[2]))
+            end
+        end
+    end
     return Expr(ex.head, map(_compat, ex.args)...)
 end
 
@@ -630,5 +638,18 @@ include("deprecated.jl")
 
 # https://github.com/JuliaLang/julia/pull/21746
 const macros_have_sourceloc = VERSION >= v"0.7-" && length(:(@test).args) == 2
+
+# https://github.com/JuliaLang/julia/pull/22182
+module Sys
+    if VERSION < v"0.7.0-DEV.914"
+        isapple(k::Symbol=Base.Sys.KERNEL)   = k in (:Darwin, :Apple)
+        isbsd(k::Symbol=Base.Sys.KERNEL)     = isapple(k) || k in (:FreeBSD, :OpenBSD, :NetBSD, :DragonFly)
+        islinux(k::Symbol=Base.Sys.KERNEL)   = k == :Linux
+        isunix(k::Symbol=Base.Sys.KERNEL)    = isbsd(k) || islinux(k)
+        iswindows(k::Symbol=Base.Sys.KERNEL) = k in (:Windows, :NT)
+    else
+        import Base.Sys: isapple, isbsd, islinux, isunix, iswindows
+    end
+end
 
 end # module Compat
