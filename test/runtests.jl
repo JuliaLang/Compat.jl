@@ -138,11 +138,11 @@ let x = rand(rng, Int64, 3,4)
     @test x == rand(rng, Int64, (3,4))
 end
 
-extrapath = is_windows() ? joinpath(JULIA_HOME,"..","Git","usr","bin")*";" : ""
+extrapath = Compat.Sys.iswindows() ? joinpath(JULIA_HOME,"..","Git","usr","bin")*";" : ""
 @compat withenv("PATH" => extrapath * ENV["PATH"]) do
     cmd1 = pipeline(`echo hello`, `sort`)
     cmd2 = pipeline(`true`, `true`)
-    if is_windows()
+    if Compat.Sys.iswindows()
         try # use busybox-w32
             success(`busybox`)
             cmd1 = pipeline(`busybox echo hello`, `busybox sort`)
@@ -338,28 +338,33 @@ end
 # Val
 begin
     local firstlast
-    firstlast(::Type{Val{true}}) = "First"
-    firstlast(::Type{Val{false}}) = "Last"
+    firstlast(::Val{true}) = "First"
+    firstlast(::Val{false}) = "Last"
 
-    @test firstlast(Val{true}) == "First"
-    @test firstlast(Val{false}) == "Last"
+    @test firstlast(Val(true)) == "First"
+    @test firstlast(Val(false)) == "Last"
 end
+
+# The constructors for some linear algebra stuff changed to take Val{x}
+# instead of Type{Val{x}}
+const valtrue = VERSION < v"0.7.0-DEV.843" ? Val{true} : Val(true)
+const valfalse = VERSION < v"0.7.0-DEV.843" ? Val{false} : Val(false)
 
 # qr, qrfact, qrfact!
 let A = [1.0 2.0; 3.0 4.0]
-    Q, R = qr(A, Val{false})
+    Q, R = qr(A, valfalse)
     @test Q*R ≈ A
-    Q, R, p = qr(A, Val{true})
+    Q, R, p = qr(A, valtrue)
     @test Q*R ≈ A[:,p]
-    F = qrfact(A, Val{false})
+    F = qrfact(A, valfalse)
     @test F[:Q]*F[:R] ≈ A
-    F = qrfact(A, Val{true})
+    F = qrfact(A, valtrue)
     @test F[:Q]*F[:R] ≈ A[:,F[:p]]
     A_copy = copy(A)
-    F = qrfact!(A_copy, Val{false})
+    F = qrfact!(A_copy, valfalse)
     @test F[:Q]*F[:R] ≈ A
     A_copy = copy(A)
-    F = qrfact!(A_copy, Val{true})
+    F = qrfact!(A_copy, valtrue)
     @test F[:Q]*F[:R] ≈ A[:,F[:p]]
 end
 
@@ -670,10 +675,10 @@ mktempdir() do dir
 
         for text in [
             old_text,
-            convert(Compat.UTF8String, Char['A' + i % 52 for i in 1:(div(SZ_UNBUFFERED_IO,2))]),
-            convert(Compat.UTF8String, Char['A' + i % 52 for i in 1:(    SZ_UNBUFFERED_IO -1)]),
-            convert(Compat.UTF8String, Char['A' + i % 52 for i in 1:(    SZ_UNBUFFERED_IO   )]),
-            convert(Compat.UTF8String, Char['A' + i % 52 for i in 1:(    SZ_UNBUFFERED_IO +1)])
+            convert(String, Char['A' + i % 52 for i in 1:(div(SZ_UNBUFFERED_IO,2))]),
+            convert(String, Char['A' + i % 52 for i in 1:(    SZ_UNBUFFERED_IO -1)]),
+            convert(String, Char['A' + i % 52 for i in 1:(    SZ_UNBUFFERED_IO   )]),
+            convert(String, Char['A' + i % 52 for i in 1:(    SZ_UNBUFFERED_IO +1)])
         ]
 
             write(filename, text)
@@ -916,7 +921,7 @@ cd(dirwalk) do
         touch(joinpath("sub_dir1", "file$i"))
     end
     touch(joinpath("sub_dir2", "file_dir2"))
-    has_symlinks = is_unix() ? true : (isdefined(Base, :WINDOWS_VISTA_VER) && Base.windows_version() >= Base.WINDOWS_VISTA_VER)
+    has_symlinks = Compat.Sys.isunix() ? true : (isdefined(Base, :WINDOWS_VISTA_VER) && Base.windows_version() >= Base.WINDOWS_VISTA_VER)
     follow_symlink_vec = has_symlinks ? [true, false] : [false]
     has_symlinks && symlink(abspath("sub_dir2"), joinpath("sub_dir1", "link"))
     for follow_symlinks in follow_symlink_vec
@@ -1177,12 +1182,6 @@ if VERSION ≥ v"0.4.0-dev+3732"
     @test Symbol(1) === Symbol("1")
 end
 
-foostring(::String) = 1
-@test foostring("hello") == 1
-@test foostring("λ") == 1
-@test isa("hello", Compat.ASCIIString)
-@test isa("λ", Compat.UTF8String)
-
 let async, c = false
     run = Condition()
     async = Compat.AsyncCondition(x->(c = true; notify(run)))
@@ -1223,25 +1222,19 @@ let io = IOBuffer(), s = "hello"
     @test unsafe_string(pointer(s),sizeof(s)) == s
     @test string(s, s, s) == "hellohellohello"
     @test @compat(String(s)) == s
-    @test String == @compat(Union{Compat.UTF8String,Compat.ASCIIString})
 end
 
 @test Compat.repeat(1:2, inner=2) == [1, 1, 2, 2]
 @test Compat.repeat(1:2, outer=[2]) == [1, 2, 1, 2]
 @test Compat.repeat([1,2], inner=(2,)) == [1, 1, 2, 2]
 
-if VERSION < v"0.5.0-dev+4267"
-    if OS_NAME == :Windows
-        @test is_windows()
-    elseif OS_NAME == :Darwin
-        @test is_apple() && is_bsd() && is_unix()
-    elseif OS_NAME == :FreeBSD
-        @test is_bsd() && is_unix()
-    elseif OS_NAME == :Linux
-        @test is_linux() && is_unix()
+for os in [:apple, :bsd, :linux, :unix, :windows]
+    from_base = if VERSION >= v"0.7.0-DEV.914"
+        Expr(:., Expr(:., :Base, Base.Meta.quot(:Sys)), Base.Meta.quot(Symbol("is", os)))
+    else # VERSION >= v"0.5.0-dev+4267"
+        Expr(:., :Base, Base.Meta.quot(Symbol("is_", os)))
     end
-else
-    @test Compat.KERNEL == Sys.KERNEL
+    @eval @test Compat.Sys.$(Symbol("is", os))() == $from_base()
 end
 
 io = IOBuffer()
@@ -1418,11 +1411,11 @@ for A in (Hermitian(randn(5,5) + 10I),
     @test istriu(chol(A))
     @test chol(A) ≈ F[:U]
 
-    F = cholfact(A, Val{true})
+    F = cholfact(A, valtrue)
     @test F[:U]'F[:U]  ≈ A[F[:p], F[:p]]
     @test F[:L]*F[:L]' ≈ A[F[:p], F[:p]]
     Ac = copy(A)
-    F = cholfact!(Ac, Val{true})
+    F = cholfact!(Ac, valtrue)
     @test F[:U]'F[:U]  ≈ A[F[:p], F[:p]]
     @test F[:L]*F[:L]' ≈ A[F[:p], F[:p]]
 end
@@ -1839,10 +1832,6 @@ using Compat: StringVector
 @test length(StringVector(5)) == 5
 @test String(fill!(StringVector(5), 0x61)) == "aaaaa"
 
-let x = fill!(StringVector(5), 0x61)
-    @test pointer(x) == pointer(Compat.UTF8String(x))
-end
-
 # collect
 if VERSION >= v"0.5.0-rc1+46"
     using OffsetArrays
@@ -1904,6 +1893,30 @@ let c = `ls -l "foo bar"`
     @test eachindex(c) == 1:3
 end
 
-include("to-be-deprecated.jl")
+# PR 22629
+@test logdet(0.5) == log(det(0.5))
+
+# PR 22633
+for T in (Float64, Complex64, BigFloat, Int)
+    λ = T(4)
+    @test chol(λ*I).λ ≈ √λ
+    @test_throws Union{ArgumentError,LinAlg.PosDefException} chol(-λ*I)
+end
+
+let
+    @compat cr(::CartesianRange{2}) = 2
+    @test cr(CartesianRange((5, 3))) == 2
+    @test_throws MethodError cr(CartesianRange((5, 3, 2)))
+end
+if VERSION < v"0.7.0-DEV.880"
+    # ensure we don't bork any non-updated expressions
+    let
+        @compat cr(::CartesianRange{CartesianIndex{2}}) = 2
+        @test cr(CartesianRange((5, 3))) == 2
+        @test_throws MethodError cr(CartesianRange((5, 3, 2)))
+    end
+end
+
+include("deprecated.jl")
 
 nothing
