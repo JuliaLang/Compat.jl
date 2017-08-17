@@ -325,3 +325,4 @@ includes this fix. Find the minimum version from there.
 [#22761]: https://github.com/JuliaLang/julia/pull/22761
 [#22864]: https://github.com/JuliaLang/julia/pull/22864
 [#20005]: https://github.com/JuliaLang/julia/issues/20005
+[#21197]: https://github.com/JuliaLang/julia/issues/21197
