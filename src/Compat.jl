@@ -461,13 +461,11 @@ end
 if VERSION < v"0.7.0-DEV.843"
     import Base: Val
     (::Type{Val})(x) = (Base.@_pure_meta; Val{x}())
-end
-
-# Backport reshape API changes for reshaping to a given number of dimensions
-if VERSION < v"0.7.0-DEV.843" # https://github.com/JuliaLang/julia/pull/22475
-    # The machinery exists, but it's in terms of Type{Val{N}} instead of Val{N}
+    # Also add methods for Val(x) that were previously Val{x}
     import Base: reshape
-    Base.reshape{N}(parent::AbstractArray, ndims::Val{N}) = reshape(parent, Val{N})
+    reshape{N}(parent::AbstractArray, ndims::Val{N}) = reshape(parent, Val{N})
+    import Base: ntuple
+    ntuple{F,N}(f::F, ::Val{N}) = ntuple(f, Val{N})
 end
 
 # https://github.com/JuliaLang/julia/pull/22629

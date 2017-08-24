@@ -702,6 +702,12 @@ let
     end
 end
 
+# ntuple with Val(N)
+# 0.7
+@test @inferred(ntuple(x->1, Val(3))) == (1,1,1)
+@test @inferred(ntuple(x->x, Val(0))) == ()
+@test @inferred(ntuple(x->x, Val(5))) == (1,2,3,4,5)
+
 # @nospecialize
 # 0.7
 no_specialize(@nospecialize(x)) = sin(1)
