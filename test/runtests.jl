@@ -684,6 +684,24 @@ begin
     @test firstlast(Val(false)) == "Last"
 end
 
+# Reshape to a given number of dimensions using Val(N)
+# 0.7
+let
+    for A in (rand(()), rand(2), rand(2,3), rand(2,3,5), rand(2,3,5,7)), N in (1,2,3,4,5,6)
+        B = @inferred reshape(A, Val(N))
+        @test ndims(B) == N
+        if N < ndims(A)
+            new_sz = (size(A)[1:N-1]..., prod(size(A)[N:end]))
+        elseif N == ndims(A)
+            new_sz = size(A)
+        else
+            new_sz = (size(A)..., ntuple(x->1, N-ndims(A))...)
+        end
+        @test size(B) == new_sz
+        @test B == reshape(A, new_sz)
+    end
+end
+
 # @nospecialize
 # 0.7
 no_specialize(@nospecialize(x)) = sin(1)
