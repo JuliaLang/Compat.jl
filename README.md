@@ -149,7 +149,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Cmd` elements can be accessed as if the `Cmd` were an array of strings for 0.6 and below ([#21197]).
 
-* `Val(x)` constructs `Val{x}()`. The `reshape` and `ntuple` APIs are extended to support `Val{x}()` arguments on 0.6 and below. ([#22475])
+* `Val(x)` constructs `Val{x}()`. ([#22475])
+
+* The `reshape` and `ntuple` APIs are extended to support `Val{x}()` arguments on 0.6 and below.
 
 * `chol` and `chol!` for `UniformScalings` ([#22633]).
 
