@@ -219,6 +219,11 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `@nospecialize` has been added ([#22666]).
 
+* Julia 0.7 introduced `@isdefined` to replace `isdefined`, which only works for globals
+  ([#22281]). It isn't possible to achieve the 0.7 behavior in earlier versions of Julia,
+  but an `@isdefined` macro is defined here to avoid deprecation warnings when supporting
+  both 0.7 and earlier versions.
+
 ## Other changes
 
 * On versions of Julia that do not contain a Base.Threads module, Compat defines a Threads module containing a no-op `@threads` macro.
@@ -318,6 +323,7 @@ includes this fix. Find the minimum version from there.
 [#21709]: https://github.com/JuliaLang/julia/issues/21709
 [#22064]: https://github.com/JuliaLang/julia/issues/22064
 [#22182]: https://github.com/JuliaLang/julia/issues/22182
+[#22281]: https://github.com/JuliaLang/julia/issues/22281
 [#22350]: https://github.com/JuliaLang/julia/issues/22350
 [#22475]: https://github.com/JuliaLang/julia/issues/22475
 [#22629]: https://github.com/JuliaLang/julia/issues/22629

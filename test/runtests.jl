@@ -823,6 +823,11 @@ end
 # 0.7
 @test isconcrete(Int)
 
+# 0.7
+@test !@isdefined(somevar)
+somevar = 1
+@test @isdefined(somevar)
+
 if VERSION < v"0.6.0"
     include("deprecated.jl")
 end
