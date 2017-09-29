@@ -663,6 +663,14 @@ end
     export isconcrete
 end
 
+# 0.7.0-DEV.518
+@static if !isdefined(Base, Symbol("@isdefined"))
+    macro isdefined(x)
+        :(isdefined($(QuoteNode(x))))
+    end
+    export @isdefined
+end
+
 include("deprecated.jl")
 
 end # module Compat
