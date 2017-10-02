@@ -86,6 +86,31 @@ function _compat(ex::Expr)
             end
         end
     end
+    if VERSION < v"0.7.0-DEV.2005"
+        if ex.head ∈ [:using, :import] && length(ex.args) == 1
+            if ex.args[1] == :Test
+                ex = Expr(ex.head, :Base, :Test)
+            elseif ex.args[1] == :SharedArrays
+                ex = Expr(:toplevel,
+                          :(module SharedArrays
+                              if isdefined(Base, :Distributed)
+                                  using Base.Distributed.procs
+                              else
+                                  using Base.procs
+                              end
+                              export SharedArray, SharedMatrix, SharedVector, indexpids,
+                                     localindexes, sdata, procs
+                          end),
+                          Expr(ex.head, :., :SharedArrays))
+            elseif ex.args[1] == :Mmap
+                ex = Expr(ex.head, :Base, :Mmap)
+            elseif ex.args[1] == :DelimitedFiles
+                ex = Expr(:toplevel,
+                          Expr(ex.head, :Base, :DataFmt),
+                          :(const DelimitedFiles = DataFmt))
+            end
+        end
+    end
     return Expr(ex.head, map(_compat, ex.args)...)
 end
 
