@@ -677,8 +677,6 @@ end
         include_string(@__MODULE__, """
             immutable EqualTo{T} <: Function
                 x::T
-
-                EqualTo{T}(x::T) = new(x)
             end
         """)
     end
