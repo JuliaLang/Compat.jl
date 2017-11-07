@@ -736,6 +736,34 @@ end
     export textwidth
 end
 
+# 0.7.0-DEV.2116
+@static if VERSION < v"0.7.0-DEV.2116"
+    import Base.spdiagm
+    if VERSION >= v"0.6.0"
+        include_string(@__MODULE__, """
+            spdiagm(kv::Pair{<:Integer,<:AbstractArray}...) = spdiagm(last.(kv), first.(kv))
+        """)
+    else
+        include_string(@__MODULE__, """
+            spdiagm{I<:Integer,A<:AbstractArray}(kv::Pair{I,A}...) = spdiagm(last.(kv), first.(kv))
+        """)
+    end
+end
+
+# 0.7.0-DEV.2161
+@static if VERSION < v"0.7.0-DEV.2161"
+    import Base.diagm
+    if VERSION >= v"0.6.0"
+        include_string(@__MODULE__, """
+            diagm(kv::Pair{<:Integer,<:AbstractArray}...) = diagm(last.(kv), first.(kv))
+        """)
+    else
+        include_string(@__MODULE__, """
+            diagm{I<:Integer,A<:AbstractArray}(kv::Pair{I,A}...) = diagm(last.(kv), first.(kv))
+        """)
+    end
+end
+
 include("deprecated.jl")
 
 end # module Compat
