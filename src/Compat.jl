@@ -739,7 +739,11 @@ end
 # 0.7.0-DEV.2116
 @static if VERSION < v"0.7.0-DEV.2116"
     import Base: spdiagm
-    spdiagm(kv::Pair...) = spdiagm(last.(kv), first.(kv))
+    function spdiagm(kv::Pair...)
+        I, J, V = Base.SparseArrays.spdiagm_internal(last.(kv), first.(kv))
+        m = max(Base.SparseArrays.dimlub(I), Base.SparseArrays.dimlub(J))
+        return sparse(I, J, V, m, m)
+    end
 end
 
 # 0.7.0-DEV.2161
