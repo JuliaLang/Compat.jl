@@ -738,29 +738,24 @@ end
 
 # 0.7.0-DEV.2116
 @static if VERSION < v"0.7.0-DEV.2116"
-    import Base.spdiagm
-    if VERSION >= v"0.6.0"
-        include_string(@__MODULE__, """
-            spdiagm(kv::Pair{<:Integer,<:AbstractArray}...) = spdiagm(last.(kv), first.(kv))
-        """)
-    else
-        include_string(@__MODULE__, """
-            spdiagm{I<:Integer,A<:AbstractArray}(kv::Pair{I,A}...) = spdiagm(last.(kv), first.(kv))
-        """)
-    end
+    import Base: spdiagm
+    spdiagm(kv::Pair...) = spdiagm(last.(kv), first.(kv))
 end
 
 # 0.7.0-DEV.2161
 @static if VERSION < v"0.7.0-DEV.2161"
-    import Base.diagm
-    if VERSION >= v"0.6.0"
-        include_string(@__MODULE__, """
-            diagm(kv::Pair{<:Integer,<:AbstractArray}...) = diagm(last.(kv), first.(kv))
-        """)
-    else
-        include_string(@__MODULE__, """
-            diagm{I<:Integer,A<:AbstractArray}(kv::Pair{I,A}...) = diagm(last.(kv), first.(kv))
-        """)
+    import Base: diagm
+    function diagm(kv::Pair...)
+        T = promote_type(map(x -> eltype(x.second), kv)...)
+        n = mapreduce(x -> length(x.second) + abs(x.first), max, kv)
+        A = zeros(T, n, n)
+        for p in kv
+            inds = diagind(A, p.first)
+            for (i, val) in enumerate(p.second)
+                A[inds[i]] += val
+            end
+        end
+        return A
     end
 end
 
