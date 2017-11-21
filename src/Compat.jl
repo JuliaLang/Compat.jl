@@ -782,6 +782,10 @@ if VERSION < v"0.7.0-DEV.2377"
         SparseMatrixCSC{Tv,Ti}(dims..., colptr, rowval, nzval)
     end
 end
+if VERSION < v"0.7.0-DEV.2543"
+    (::Type{Array{T}}){T}(s::UniformScaling, dims::Dims{2}) = Matrix{T}(s, dims)
+    (::Type{Array{T}}){T}(s::UniformScaling, m::Integer, n::Integer) = Matrix{T}(s, m, n)
+end
 
 include("deprecated.jl")
 
