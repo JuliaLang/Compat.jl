@@ -770,8 +770,10 @@ end
 end
 
 # 0.7.0-DEV.2338
-if VERSION >= v"0.7.0-DEV.2338"
+@static if VERSION >= v"0.7.0-DEV.2338"
     import Base64
+else
+    import Base.Base64
 end
 
 if VERSION < v"0.7.0-DEV.2377"

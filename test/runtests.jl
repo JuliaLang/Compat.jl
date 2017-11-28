@@ -719,6 +719,12 @@ eval(Expr(:type, false, :TestType, Expr(:block, :(a::Int), :b)))
 # PR 22761
 @test_throws OverflowError throw(OverflowError("overflow"))
 
+# PR 24361
+module Test24361
+    using Compat
+    @test String(Compat.Base64.base64decode("SGVsbG8h")) == "Hello!"
+end
+
 let x = fill!(StringVector(5), 0x61)
     # 0.7
     @test pointer(x) == pointer(String(x))
