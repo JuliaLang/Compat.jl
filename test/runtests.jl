@@ -719,12 +719,6 @@ eval(Expr(:type, false, :TestType, Expr(:block, :(a::Int), :b)))
 # PR 22761
 @test_throws OverflowError throw(OverflowError("overflow"))
 
-# PR 24361
-module Test24361
-    using Compat
-    @test String(Compat.Base64.base64decode("SGVsbG8h")) == "Hello!"
-end
-
 let x = fill!(StringVector(5), 0x61)
     # 0.7
     @test pointer(x) == pointer(String(x))
@@ -909,6 +903,13 @@ end
 @test isa(Matrix{Float64}(uninitialized, 2, 2), Matrix{Float64})
 @test isa(Array{Float64}(uninitialized, 2, 2), Matrix{Float64})
 @test isa(Array{Float64,3}(uninitialized, 2, 2, 2), Array{Float64,3})
+
+# 0.7.0-DEV.2338
+module Test24361
+    using Compat
+    using Compat.Test
+    @test String(Compat.Base64.base64decode("SGVsbG8h")) == "Hello!"
+end
 
 if VERSION < v"0.6.0"
     include("deprecated.jl")
