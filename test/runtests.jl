@@ -900,7 +900,6 @@ let a = [1 0 0; 0 1 0; 0 0 1]
     @test SparseMatrixCSC{Complex128,Int8}(I, 3, 2)::SparseMatrixCSC{Complex128,Int8} == a[:,1:2]
 end
 
-
 # 0.7.0-DEV.2581
 @test isa(Vector(uninitialized, 2), Vector{Any})
 @test isa(Vector{Float64}(uninitialized, 2), Vector{Float64})
@@ -914,6 +913,16 @@ module Test24361
     using Compat
     using Compat.Test
     @test String(Compat.Base64.base64decode("SGVsbG8h")) == "Hello!"
+end
+# 0.7
+let A = [1]
+    local x = 0
+    finalizer(a->(x+=1), A)
+    finalize(A)
+    @test x == 1
+    A = 0
+    gc(); gc()
+    @test x == 1
 end
 
 if VERSION < v"0.6.0"
