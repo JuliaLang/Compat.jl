@@ -230,6 +230,10 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `strwidth` and `charwidth` are now merged into `textwidth` ([#23667]).
 
+* `KeyIterator{T}` has changed to `KeySet{K,T}`. This is available as
+  `Compat.KeySet{K,T}` but the first parameter `K` is ignored for
+  `VERSION < v"0.7.0-DEV.2722"` ([#24580]).
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])

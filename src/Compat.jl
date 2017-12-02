@@ -830,6 +830,13 @@ end
     export Uninitialized, uninitialized
 end
 
+# 0.7.0-DEV.2722
+@static if !isdefined(Base, :KeySet)
+    const KeySet{K,T<:Associative{K}} = Base.KeyIterator{T}
+else
+    import KeySet
+end
+
 include("deprecated.jl")
 
 end # module Compat
