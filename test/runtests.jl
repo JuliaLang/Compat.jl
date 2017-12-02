@@ -909,6 +909,7 @@ end
 @test isa(Vector{Float64}(uninitialized, 2), Vector{Float64})
 @test isa(Matrix(uninitialized, 2, 2), Matrix{Any})
 @test isa(Matrix{Float64}(uninitialized, 2, 2), Matrix{Float64})
+@test isa(Array(uninitialized, 2, 2), Matrix{Any})
 @test isa(Array{Float64}(uninitialized, 2, 2), Matrix{Float64})
 @test isa(Array{Float64,3}(uninitialized, 2, 2, 2), Array{Float64,3})
 

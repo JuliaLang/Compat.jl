@@ -812,6 +812,7 @@ end
     if VERSION >= v"0.6.0"
         include_string(@__MODULE__, """
             struct Uninitialized end
+            Array(u::Uninitialized, args...) = Array{Any}(u, args...)
             Array{T}(::Uninitialized, args...) where {T} = Array{T}(args...)
             Array{T,N}(::Uninitialized, args...) where {T,N} = Array{T,N}(args...)
             Vector(::Uninitialized, args...) = Vector(args...)
@@ -820,6 +821,7 @@ end
     else
         include_string(@__MODULE__, """
             immutable Uninitialized end
+            (::Type{Array})(u::Uninitialized, args...) = Array{Any}(u, args...)
             (::Type{Array{T}}){T}(::Uninitialized, args...) = Array{T}(args...)
             (::Type{Array{T,N}}){T,N}(::Uninitialized, args...) = Array{T,N}(args...)
             (::Type{Vector})(::Uninitialized, args...) = Vector(args...)
