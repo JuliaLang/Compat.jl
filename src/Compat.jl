@@ -752,13 +752,6 @@ end
     export BitSet
 end
 
-# 0.7.0-DEV.1930
-@static if !isdefined(Base, :textwidth)
-    textwidth(c::Char) = charwidth(c)
-    textwidth(c::AbstractString) = strwidth(c)
-    export textwidth
-end
-
 # 0.7.0-DEV.2116
 @static if VERSION < v"0.7.0-DEV.2116"
     import Base: spdiagm
@@ -872,6 +865,43 @@ end
 @static if !isdefined(Base, :ComplexF64)
     const ComplexF64 = Complex{Float64}
     export ComplexF64
+end
+
+# 0.7.0-DEV.2915
+module Unicode
+    export normalize, graphemes, isassigned, textwidth, isvalid,
+        islower, isupper, isalpha, isdigit, isxdigit, isnumeric, isalnum,
+        iscntrl, ispunct, isspace, isprint, isgraph,
+        lowercase, uppercase, titlecase, lcfirst, ucfirst
+
+    if VERSION < v"0.7.0-DEV.2915"
+        # 0.7.0-DEV.1930
+        if !isdefined(Base, :textwidth)
+            textwidth(c::Char) = charwidth(c)
+            textwidth(c::AbstractString) = strwidth(c)
+        end
+
+        isnumeric(c::Char) = isnumber(c)
+        titlecase(c::Char) = isascii(c) ? ('a' <= c <= 'z' ? c - 0x20 : c) :
+            Char(ccall(:utf8proc_totitle, UInt32, (UInt32,), c))
+
+        function titlecase(s::AbstractString)
+            startword = true
+            b = IOBuffer()
+            for c in s
+                if isspace(c)
+                    print(b, c)
+                    startword = true
+                else
+                    print(b, startword ? titlecase(c) : c)
+                    startword = false
+                end
+            end
+            return String(take!(b))
+        end
+    else
+        using Unicode
+    end
 end
 
 include("deprecated.jl")
