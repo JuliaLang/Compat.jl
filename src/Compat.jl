@@ -882,22 +882,26 @@ module Unicode
         end
 
         isnumeric(c::Char) = isnumber(c)
-        titlecase(c::Char) = isascii(c) ? ('a' <= c <= 'z' ? c - 0x20 : c) :
-            Char(ccall(:utf8proc_totitle, UInt32, (UInt32,), c))
 
-        function titlecase(s::AbstractString)
-            startword = true
-            b = IOBuffer()
-            for c in s
-                if isspace(c)
-                    print(b, c)
-                    startword = true
-                else
-                    print(b, startword ? titlecase(c) : c)
-                    startword = false
+        # 0.6.0-dev.1404 (https://github.com/JuliaLang/julia/pull/19469)
+        if !isdefined(Base, :titlecase)
+            titlecase(c::Char) = isascii(c) ? ('a' <= c <= 'z' ? c - 0x20 : c) :
+                Char(ccall(:utf8proc_totitle, UInt32, (UInt32,), c))
+
+            function titlecase(s::AbstractString)
+                startword = true
+                b = IOBuffer()
+                for c in s
+                    if isspace(c)
+                        print(b, c)
+                        startword = true
+                    else
+                        print(b, startword ? titlecase(c) : c)
+                        startword = false
+                    end
                 end
+                return String(take!(b))
             end
-            return String(take!(b))
         end
     else
         using Unicode
