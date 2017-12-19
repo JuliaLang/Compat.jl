@@ -914,6 +914,13 @@ end
     const ComplexF32 = Complex{Float32}
     export ComplexF32
 end
+
+@static if !isdefined(Base, Symbol("@isdefined"))
+macro isdefined(x)
+    return esc(:(isdefined($(QuoteNode(x)))))
+end
+end
+
 @static if !isdefined(Base, :ComplexF64)
     const ComplexF64 = Complex{Float64}
     export ComplexF64
