@@ -79,6 +79,12 @@ Currently, the `@compat` macro supports the following syntaxes:
   `CartesianRange` now has two type parameters, so using them as
   fields in other `struct`s requires manual intervention.
 
+## Module Aliases
+
+* In 0.6, some 0.5 iterator functions have been moved to the `Base.Iterators`
+  module. Code can be written to work on both 0.5 and 0.6 by `import`ing or
+  `using` the `Compat.Iterators` module instead. ([#18839])
+
 * `using Compat.Test`, `using Compat.SharedArrays`, `using Compat.Mmap`, and `using
   Compat.DelimitedFiles` are provided on versions older than 0.7, where these are not yet
   part of the standard library. ([#23931])
@@ -89,11 +95,17 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `using Compat.Dates` is provided on versions older than 0.7, where this library is not
   yet a part of the standard library. ([#24459])
 
-## Module Aliases
+* `using Compat.Unicode` is provided on versions older than 0.7, where this library is not
+  yet a part of the standard library. ([#25021])
 
-* In 0.6, some 0.5 iterator functions have been moved to the `Base.Iterators`
-  module. Code can be written to work on both 0.5 and 0.6 by `import`ing or
-  `using` the `Compat.Iterators` module instead. ([#18839])
+* `using Compat.Printf` is provided on versions older than 0.7, where this library is not
+  yet a part of the standard library. ([#25056])
+
+* `using Compat.IterativeEigensolvers` is provided on versions older than 0.7, where this
+  library is not yet a part of the standard library. ([#24714])
+
+* `using Compat.SuiteSparse` is provided on versions older than 0.7, where this library is
+  not yet part of the standard library ([#24648]).
 
 ## New functions, macros, and methods
 
@@ -205,6 +217,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `get` do-block syntax supported when using `ENV` ([#23412]).
 
+* `Some{T}` wraps `T` to signify that a result of `T<:Void` is expected ([#23642]).
+
 ## Renaming
 
 
@@ -238,12 +252,16 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `IntSet` is now `BitSet` ([#24282])
 
-* `strwidth` and `charwidth` are now merged into `textwidth` ([#23667]).
-
 * `Complex32`, `Complex64`, and `Complex128` are now `ComplexF16`, `ComplexF32`, and
   `ComplexF64`, respectively ([#24647]).
 
 * `JULIA_HOME` is now `Sys.BINDIR`, available in the `Compat.Sys` submodule. ([#25102])
+
+* `Associative` is now `AbstractDict` ([#25012]).
+
+* `indices` is now `axes` ([#25057]).
+
+* `Void` is now `Nothing` with an alias `Cvoid` for C interop ([#25162]).
 
 ## New macros
 
@@ -379,8 +397,8 @@ includes this fix. Find the minimum version from there.
 [#23412]: https://github.com/JuliaLang/julia/issues/23412
 [#23427]: https://github.com/JuliaLang/julia/issues/23427
 [#23570]: https://github.com/JuliaLang/julia/issues/23570
+[#23642]: https://github.com/JuliaLang/julia/issues/23642
 [#23666]: https://github.com/JuliaLang/julia/issues/23666
-[#23667]: https://github.com/JuliaLang/julia/issues/23667
 [#23757]: https://github.com/JuliaLang/julia/issues/23757
 [#23812]: https://github.com/JuliaLang/julia/issues/23812
 [#23931]: https://github.com/JuliaLang/julia/issues/23931
@@ -391,7 +409,14 @@ includes this fix. Find the minimum version from there.
 [#24459]: https://github.com/JuliaLang/julia/issues/24459
 [#24605]: https://github.com/JuliaLang/julia/issues/24605
 [#24647]: https://github.com/JuliaLang/julia/issues/24647
+[#24648]: https://github.com/JuliaLang/julia/issues/24648
 [#24652]: https://github.com/JuliaLang/julia/issues/24652
 [#24657]: https://github.com/JuliaLang/julia/issues/24657
+[#24714]: https://github.com/JuliaLang/julia/issues/24714
 [#24785]: https://github.com/JuliaLang/julia/issues/24785
+[#25012]: https://github.com/JuliaLang/julia/issues/25012
+[#25021]: https://github.com/JuliaLang/julia/issues/25021
+[#25056]: https://github.com/JuliaLang/julia/issues/25056
+[#25057]: https://github.com/JuliaLang/julia/issues/25057
 [#25102]: https://github.com/JuliaLang/julia/issues/25102
+[#25162]: https://github.com/JuliaLang/julia/issues/25162

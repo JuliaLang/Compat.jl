@@ -213,58 +213,60 @@ mktemp() do fname, f
     end
 end
 
-types = [
-    Bool,
-    Float16,
-    Float32,
-    Float64,
-    Int128,
-    Int16,
-    Int32,
-    Int64,
-    Int8,
-    UInt16,
-    UInt32,
-    UInt64,
-    UInt8,
-]
-for T in types
-    # julia#18510, Nullable constructors
-    x = @compat Nullable(one(T), true)
-    @test isnull(x) === false
-    @test isa(x.value, T)
-    @test eltype(x) === T
+if VERSION < v"0.7.0-DEV.3017"
+    types = [
+        Bool,
+        Float16,
+        Float32,
+        Float64,
+        Int128,
+        Int16,
+        Int32,
+        Int64,
+        Int8,
+        UInt16,
+        UInt32,
+        UInt64,
+        UInt8,
+    ]
+    for T in types
+        # julia#18510, Nullable constructors
+        x = @compat Nullable(one(T), true)
+        @test isnull(x) === false
+        @test isa(x.value, T)
+        @test eltype(x) === T
 
-    x = @compat Nullable{T}(one(T), true)
-    y = @compat Nullable{Any}(one(T), true)
-    @test isnull(x) === false
-    @test isnull(y) === false
-    @test isa(x.value, T)
-    @test eltype(x) === T
-    @test eltype(y) === Any
+        x = @compat Nullable{T}(one(T), true)
+        y = @compat Nullable{Any}(one(T), true)
+        @test isnull(x) === false
+        @test isnull(y) === false
+        @test isa(x.value, T)
+        @test eltype(x) === T
+        @test eltype(y) === Any
 
-    x = @compat Nullable{T}(one(T), false)
-    y = @compat Nullable{Any}(one(T), false)
-    @test isnull(x) === true
-    @test isnull(y) === true
-    @test eltype(x) === T
-    @test eltype(y) === Any
+        x = @compat Nullable{T}(one(T), false)
+        y = @compat Nullable{Any}(one(T), false)
+        @test isnull(x) === true
+        @test isnull(y) === true
+        @test eltype(x) === T
+        @test eltype(y) === Any
 
-    x = @compat Nullable(one(T), false)
-    @test isnull(x) === true
-    @test eltype(x) === T
+        x = @compat Nullable(one(T), false)
+        @test isnull(x) === true
+        @test eltype(x) === T
 
-    x = @compat Nullable{T}()
-    @test isnull(x) === true
-    @test eltype(x) === T
+        x = @compat Nullable{T}()
+        @test isnull(x) === true
+        @test eltype(x) === T
 
-    # julia#18484, generic isnull, unsafe_get
-    a = one(T)
-    x = @compat Nullable(a, true)
-    @test isequal(unsafe_get(x), a)
+        # julia#18484, generic isnull, unsafe_get
+        a = one(T)
+        x = @compat Nullable(a, true)
+        @test isequal(unsafe_get(x), a)
 
-    x = @compat Nullable{Array{T}}()
-    @test_throws UndefRefError unsafe_get(x)
+        x = @compat Nullable{Array{T}}()
+        @test_throws UndefRefError unsafe_get(x)
+    end
 end
 
 @test xor(1,5) == 4
@@ -320,10 +322,10 @@ let s = "Koala test: 🐨"
 end
 
 # julia#17155, tests from Base Julia
-@test (uppercase∘hex)(239487) == "3A77F"
+@test (Compat.Unicode.uppercase∘hex)(239487) == "3A77F"
 let str = randstring(20)
-    @test filter(!isupper, str) == replace(str, r"[A-Z]", "")
-    @test filter(!islower, str) == replace(str, r"[a-z]", "")
+    @test filter(!Compat.Unicode.isupper, str) == replace(str, r"[A-Z]", "")
+    @test filter(!Compat.Unicode.islower, str) == replace(str, r"[a-z]", "")
 end
 
 # julia#19950, tests from Base (#20028)
@@ -902,6 +904,34 @@ module Test24459
     @test isdefined(@__MODULE__, :Dates)
 end
 
+# 0.7
+module Test25056
+    using Compat
+    using Compat.Test
+    using Compat.Printf
+    @test isdefined(@__MODULE__, :Printf)
+    @test isdefined(@__MODULE__, Symbol("@printf"))
+    @test isdefined(@__MODULE__, Symbol("@sprintf"))
+end
+
+# 0.7
+module Test24714
+    using Compat
+    using Compat.Test
+    using Compat.IterativeEigensolvers
+    @test isdefined(@__MODULE__, :IterativeEigensolvers)
+    @test isdefined(@__MODULE__, :eigs)
+    @test isdefined(@__MODULE__, :svds)
+end
+
+# 0.7
+module Test24648
+    using Compat
+    using Compat.Test
+    using Compat.SuiteSparse
+    @test isdefined(@__MODULE__, :SuiteSparse)
+end
+
 let a = [0,1,2,3,0,1,2,3]
     @test findfirst(equalto(3), [1,2,4,1,2,3,4]) == 6
     @test findfirst(!equalto(1), [1,2,4,1,2,3,4]) == 2
@@ -919,8 +949,8 @@ end
 @test 1 in BitSet(1:10)
 
 # 0.7.0-DEV.1930
-@test textwidth("A") == 1
-@test textwidth('A') == 1
+@test Compat.Unicode.textwidth("A") == 1
+@test Compat.Unicode.textwidth('A') == 1
 
 # 0.7
 @test diagm(0 => ones(2), -1 => ones(2)) == [1.0 0.0 0.0; 1.0 1.0 0.0; 0.0 1.0 0.0]
@@ -991,6 +1021,42 @@ if VERSION < v"0.7.0-DEV.3073"
 else
     @test Compat.Sys.BINDIR == Sys.BINDIR
 end
+
+# 0.7.0-DEV.2915
+module Test25021
+    using Compat
+    using Compat.Test
+    using Compat.Unicode
+    @test isdefined(@__MODULE__, :Unicode)
+
+    @test !isnumeric('a')
+    @test isnumeric('1')
+    @test titlecase("firstname lastname") == "Firstname Lastname"
+end
+
+# 0.7.0-DEV.2951
+@test AbstractDict === (isdefined(Base, :AbstractDict) ? Base.AbstractDict : Base.Associative)
+
+# 0.7.0-DEV.2978
+@test axes === (isdefined(Base, :axes) ? Base.axes : Base.indices)
+@test axes(1) == ()
+@test axes(1,1) == 1:1
+
+# 0.7.0-DEV.3137
+@test Nothing === (isdefined(Base, :Nothing) ? Base.Nothing : Base.Void)
+@test Nothing === Cvoid
+
+# 0.7.0-DEV.3017
+@test isa(Some(1), Some{Int})
+@test convert(Some{Float64}, Some(1)) == Some(1.0)
+@test convert(Void, nothing) == nothing
+@test_throws MethodError convert(Void, 1)
+@test Some(nothing) != nothing
+@test coalesce(Some(1)) == 1
+@test coalesce(nothing) == nothing
+@test coalesce(nothing, Some(1), Some(2)) == 1
+@test Compat.notnothing(1) == 1
+@test_throws ArgumentError Compat.notnothing(nothing)
 
 if VERSION < v"0.6.0"
     include("deprecated.jl")
