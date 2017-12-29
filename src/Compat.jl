@@ -1051,6 +1051,17 @@ else
     import Base: notnothing
 end
 
+module Random
+
+    # Cope with renaming of RangeGeneratorInt to SamplerRangeInt
+    @static if !isdefined(Base.Random, :SamplerRangeInt)
+        SamplerRangeInt = Base.Random.RangeGeneratorInt
+    else
+        SamplerRangeInt = Base.Random.SamplerRangeInt
+    end
+
+end
+
 include("deprecated.jl")
 
 end # module Compat
