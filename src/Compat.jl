@@ -769,6 +769,12 @@ else
     import Dates
 end
 
+if VERSION < v"0.7.0-DEV.3216"
+    const AbstractDateTime = Dates.TimeType
+else
+    const AbstractDateTime = Dates.AbstractDateTime
+end
+
 if VERSION < v"0.7.0-DEV.3052"
     const Printf = Base.Printf
 else
