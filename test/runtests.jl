@@ -1075,6 +1075,9 @@ end
 # 0.7.0-DEV.3172
 @test replace("abcb", "b"=>"c") == "accc"
 @test replace("abcb", "b"=>"c", count=1) == "accb"
+# 0.7.0-DEV.3216
+@test Compat.AbstractDateTime === (isdefined(Compat.Dates, :AbstractDateTime) ? Compat.Dates.AbstractDateTime : Compat.Dates.TimeType)
+@test Compat.AbstractDateTime <: Compat.Dates.TimeType
 
 if VERSION < v"0.6.0"
     include("deprecated.jl")

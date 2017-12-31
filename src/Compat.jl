@@ -770,9 +770,9 @@ else
 end
 
 if VERSION < v"0.7.0-DEV.3216"
-    const AbstractDateTime = Dates.TimeType
+    const AbstractDateTime = Compat.Dates.TimeType
 else
-    const AbstractDateTime = Dates.AbstractDateTime
+    const AbstractDateTime = Compat.Dates.AbstractDateTime
 end
 
 if VERSION < v"0.7.0-DEV.3052"
