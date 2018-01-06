@@ -589,7 +589,7 @@ module Sys
     # NOTE: This needs to be in an __init__ because JULIA_HOME is not
     # defined when building system images.
     function __init__()
-        global const BINDIR = VERSION < v"0.7.0-DEV.3073" ? JULIA_HOME : Base.Sys.BINDIR
+        global BINDIR = VERSION < v"0.7.0-DEV.3073" ? JULIA_HOME : Base.Sys.BINDIR
     end
 end
 
