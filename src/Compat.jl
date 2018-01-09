@@ -33,9 +33,6 @@ end
 """Get just the function part of a function declaration."""
 withincurly(ex) = isexpr(ex, :curly) ? ex.args[1] : ex
 
-if VERSION < v"0.6.0-dev.2043"
-    Base.take!(t::Task) = consume(t)
-end
 
 is_index_style(ex::Expr) = ex == :(Compat.IndexStyle) || ex == :(Base.IndexStyle) ||
     (ex.head == :(.) && (ex.args[1] == :Compat || ex.args[1] == :Base) &&
@@ -45,15 +42,7 @@ is_index_style(arg) = false
 
 istopsymbol(ex, mod, sym) = ex in (sym, Expr(:(.), mod, Expr(:quote, sym)))
 
-if VERSION < v"0.6.0-dev.2782"
-    function new_style_typealias(ex::ANY)
-        isexpr(ex, :(=)) || return false
-        ex = ex::Expr
-        return length(ex.args) == 2 && isexpr(ex.args[1], :curly)
-    end
-else
-    new_style_typealias(ex) = false
-end
+new_style_typealias(ex) = false
 
 function _compat(ex::Expr)
     if ex.head === :call
@@ -64,14 +53,7 @@ function _compat(ex::Expr)
         end
     elseif ex.head === :curly
         f = ex.args[1]
-        if VERSION < v"0.6.0-dev.2575" #20414
-            ex = Expr(:curly, map(a -> isexpr(a, :call, 2) && a.args[1] == :(<:) ?
-                                  :($TypeVar($(QuoteNode(gensym(:T))), $(a.args[2]), false)) :
-                                  isexpr(a, :call, 2) && a.args[1] == :(>:) ?
-                                  :($TypeVar($(QuoteNode(gensym(:T))), $(a.args[2]), $Any, false)) : a,
-                                  ex.args)...)
-        end
-    elseif ex.head === :quote && isa(ex.args[1], Symbol)
+            elseif ex.head === :quote && isa(ex.args[1], Symbol)
         # Passthrough
         return ex
     elseif new_style_typealias(ex)
@@ -80,19 +62,7 @@ function _compat(ex::Expr)
         ex = ex.args[1]::Expr
         ex.head = :typealias
     end
-    if VERSION < v"0.6.0-dev.2840"
-        if ex.head == :(=) && isa(ex.args[1], Expr) && ex.args[1].head == :call
-            a = ex.args[1].args[1]
-            if is_index_style(a)
-                ex.args[1].args[1] = :(Base.linearindexing)
-            elseif isa(a, Expr) && a.head == :curly
-                if is_index_style(a.args[1])
-                    ex.args[1].args[1].args[1] = :(Base.linearindexing)
-                end
-            end
-        end
-    end
-    if VERSION < v"0.7.0-DEV.880"
+        if VERSION < v"0.7.0-DEV.880"
         if ex.head == :curly && ex.args[1] == :CartesianRange && length(ex.args) >= 2
             a = ex.args[2]
             if a != :CartesianIndex && !(isa(a, Expr) && a.head == :curly && a.args[1] == :CartesianIndex)
@@ -177,81 +147,11 @@ export @compat
         eval(mod, :(include_string($code, $fname)))
 end
 
-if VERSION < v"0.6.0-dev.2042"
-    include_string(@__MODULE__, """
-        immutable ExponentialBackOff
-            n::Int
-            first_delay::Float64
-            max_delay::Float64
-            factor::Float64
-            jitter::Float64
-
-            function ExponentialBackOff(n, first_delay, max_delay, factor, jitter)
-                all(x->x>=0, (n, first_delay, max_delay, factor, jitter)) || error("all inputs must be non-negative")
-                new(n, first_delay, max_delay, factor, jitter)
-            end
-        end
-    """)
-
-    """
-        ExponentialBackOff(; n=1, first_delay=0.05, max_delay=10.0, factor=5.0, jitter=0.1)
-
-    A [`Float64`](@ref) iterator of length `n` whose elements exponentially increase at a
-    rate in the interval `factor` * (1 ± `jitter`).  The first element is
-    `first_delay` and all elements are clamped to `max_delay`.
-    """
-    ExponentialBackOff(; n=1, first_delay=0.05, max_delay=10.0, factor=5.0, jitter=0.1) =
-        ExponentialBackOff(n, first_delay, max_delay, factor, jitter)
-    Base.start(ebo::ExponentialBackOff) = (ebo.n, min(ebo.first_delay, ebo.max_delay))
-    function Base.next(ebo::ExponentialBackOff, state)
-        next_n = state[1]-1
-        curr_delay = state[2]
-        next_delay = min(ebo.max_delay, state[2] * ebo.factor * (1.0 - ebo.jitter + (rand() * 2.0 * ebo.jitter)))
-        (curr_delay, (next_n, next_delay))
-    end
-    Base.done(ebo::ExponentialBackOff, state) = state[1]<1
-    Base.length(ebo::ExponentialBackOff) = ebo.n
-
-    function retry(f::Function;  delays=ExponentialBackOff(), check=nothing)
-        (args...; kwargs...) -> begin
-            state = start(delays)
-            while true
-                try
-                    return f(args...; kwargs...)
-                catch e
-                    done(delays, state) && rethrow(e)
-                    if check !== nothing
-                        state, retry_or_not = check(state, e)
-                        retry_or_not || rethrow(e)
-                    end
-                end
-                (delay, state) = next(delays, state)
-                sleep(delay)
-            end
-        end
-    end
-else
-    import Base.ExponentialBackOff
-    import Base.retry
-end
+import Base.ExponentialBackOff
+import Base.retry
 
 import Base: redirect_stdin, redirect_stdout, redirect_stderr
-if VERSION < v"0.6.0-dev.374"
-    for (F,S) in ((:redirect_stdin, :STDIN), (:redirect_stdout, :STDOUT), (:redirect_stderr, :STDERR))
-        @eval function $F(f::Function, stream)
-            STDOLD = $S
-            $F(stream)
-            try f() finally $F(STDOLD) end
-        end
-    end
-end
 
-@static if VERSION < v"0.6.0-dev.528"
-    macro __DIR__()
-        Base.source_dir()
-    end
-    export @__DIR__
-end
 
 # PR #17302
 # Provide a non-deprecated version of `@vectorize_(1|2)arg` macro which defines
@@ -272,7 +172,7 @@ if VERSION < v"0.7.0-DEV.1211"
         ## Depwarn to be enabled when 0.5 support is dropped.
         # depwarn("Implicit vectorized function is deprecated in favor of compact broadcast syntax.",
         #         Symbol("@dep_vectorize_1arg"))
-        :(@deprecate $f{$T<:$S}($x::$AbsArr{$T}) @compat($f.($x)))
+        :(@deprecate $f{$T<:$S}($x::$AbsArr{$T}) $f.($x))
     end
 
     macro dep_vectorize_2arg(S, f)
@@ -287,9 +187,9 @@ if VERSION < v"0.7.0-DEV.1211"
         # depwarn("Implicit vectorized function is deprecated in favor of compact broadcast syntax.",
         #         Symbol("@dep_vectorize_2arg"))
         quote
-            @deprecate $f{$T1<:$S}($x::$S, $y::$AbsArr{$T1}) @compat($f.($x,$y))
-            @deprecate $f{$T1<:$S}($x::$AbsArr{$T1}, $y::$S) @compat($f.($x,$y))
-            @deprecate $f{$T1<:$S,$T2<:$S}($x::$AbsArr{$T1}, $y::$AbsArr{$T2}) @compat($f.($x,$y))
+            @deprecate $f{$T1<:$S}($x::$S, $y::$AbsArr{$T1}) $f.($x,$y)
+            @deprecate $f{$T1<:$S}($x::$AbsArr{$T1}, $y::$S) $f.($x,$y)
+            @deprecate $f{$T1<:$S,$T2<:$S}($x::$AbsArr{$T1}, $y::$AbsArr{$T2}) $f.($x,$y)
         end
     end
 else
@@ -309,32 +209,13 @@ else
 end
 
 # broadcast over same length tuples, from julia#16986
-@static if VERSION < v"0.6.0-dev.693"
-    Base.Broadcast.broadcast{N}(f, t::NTuple{N}, ts::Vararg{NTuple{N}}) = map(f, t, ts...)
-end
 
 # julia#18510
-if VERSION < v"0.6.0-dev.826"
-    _Nullable_field2(x) = !x
-else
-    _Nullable_field2(x) = x
-end
+_Nullable_field2(x) = x
 
 # julia#18484
-@static if VERSION < v"0.6.0-dev.848"
-    unsafe_get(x::Nullable) = x.value
-    unsafe_get(x) = x
-    export unsafe_get
-    Base.isnull(x) = false
-end
 
 # julia#18977
-@static if !isdefined(Base, :xor)
-    # 0.6
-    const xor = $
-    const ⊻ = xor
-    export xor, ⊻
-end
 
 # julia#19246
 @static if !isdefined(Base, :numerator)
@@ -363,33 +244,12 @@ end
 end
 
 # julia#19088
-if VERSION < v"0.6.0-dev.1256"
-    Base.take!(io::Base.AbstractIOBuffer) = takebuf_array(io)
-end
 
 # julia #17155 function composition and negation
-@static if VERSION < v"0.6.0-dev.1883"
-    export ∘
-    ∘(f, g) = (x...)->f(g(x...))
-    @compat Base.:!(f::Function) = (x...)->!f(x...)
-end
 
 
-if VERSION < v"0.6.0-dev.1632"
-    # To work around unsupported syntax on Julia 0.4
-    include_string("export .&, .|")
-    include_string(".&(xs...) = broadcast(&, xs...)")
-    include_string(".|(xs...) = broadcast(|, xs...)")
-end
 
-@static if VERSION < v"0.6.0-dev.2093" # Compat.isapprox to allow for NaNs
-    using Base.rtoldefault
-    function isapprox(x::Number, y::Number; rtol::Real=rtoldefault(x,y), atol::Real=0, nans::Bool=false)
-        x == y || (isfinite(x) && isfinite(y) && abs(x-y) <= atol + rtol*max(abs(x), abs(y))) || (nans && isnan(x) && isnan(y))
-    end
-else
-    import Base.isapprox
-end
+import Base.isapprox
 
 module TypeUtils
     @static if isdefined(Base, :isabstract)
@@ -410,83 +270,21 @@ end # module TypeUtils
 include("arraymacros.jl")
 
 # julia #18839
-if VERSION < v"0.6.0-dev.1024"
-    @eval module Iterators
-        export countfrom, cycle, drop, enumerate, flatten, product, repeated,
-               rest, take, zip, partition
+using Base.Iterators
 
-        import Base: eltype, start, next, done, length, size, ndims
-        using Base: tuple_type_cons
-        using Base: countfrom, cycle, drop, enumerate, repeated, rest, take,
-                    zip
-        using Compat
 
-        using Base: flatten
-        using Base: product
-        using Base: partition
-    end
-else
-    using Base.Iterators
-end
-
-@static if VERSION < v"0.6.0-dev.2840"
-    export IndexStyle, IndexLinear, IndexCartesian
-    eval(Expr(:typealias, :IndexStyle, :(Base.LinearIndexing)))
-    eval(Expr(:typealias, :IndexLinear, :(Base.LinearFast)))
-    eval(Expr(:typealias, :IndexCartesian, :(Base.LinearSlow)))
-    IndexStyle{T}(::Type{T}) = Base.linearindexing(T)
-    IndexStyle(args...) = Base.linearindexing(args...)
-end
-
-if VERSION < v"0.6.0-dev.1653"
-    for (fname, felt) in ((:zeros,:zero), (:ones,:one))
-        @eval begin
-            # allow signature of similar
-            Base.$fname(a::AbstractArray, T::Type, dims::Tuple) = fill!(similar(a, T, dims), $felt(T))
-            Base.$fname(a::AbstractArray, T::Type, dims...) = fill!(similar(a,T,dims...), $felt(T))
-            Base.$fname(a::AbstractArray, T::Type=eltype(a)) = fill!(similar(a,T), $felt(T))
-        end
-    end
-end
 
 # https://github.com/JuliaLang/julia/pull/20203
-@static if VERSION < v"0.6.0-dev.2283"
-    # not exported
-    function readline(s::IO=STDIN; chomp::Bool=true)
-        if chomp
-            Base.chomp!(Base.readline(s))
-        else
-            Base.readline(s)
-        end
-    end
-end
 
 # https://github.com/JuliaLang/julia/pull/18727
-@static if VERSION < v"0.6.0-dev.838"
-    Base.convert{T}(::Type{Set{T}}, s::Set{T}) = s
-    Base.convert{T}(::Type{Set{T}}, s::Set) = Set{T}(s)
-end
 
 # https://github.com/JuliaLang/julia/pull/18082
-if VERSION < v"0.6.0-dev.2347"
-    Base.isassigned(x::Base.RefValue) = isdefined(x, :x)
-end
 
-@static if VERSION < v"0.6.0-dev.735"
-    Base.unsafe_trunc{T<:Integer}(::Type{T}, x::Integer) = rem(x, T)
-end
 
 # https://github.com/JuliaLang/julia/pull/21346
-if VERSION < v"0.6.0-pre.beta.102"
-    Base.bswap(z::Complex) = Complex(bswap(real(z)), bswap(imag(z)))
-end
 
 # https://github.com/JuliaLang/julia/pull/19449
-@static if VERSION < v"0.6.0-dev.1988"
-    StringVector(n::Integer) = Vector{UInt8}(n)
-else
-    using Base: StringVector
-end
+using Base: StringVector
 
 # https://github.com/JuliaLang/julia/pull/19784
 @static if isdefined(Base, :invokelatest)
@@ -507,18 +305,7 @@ else
 end
 
 # https://github.com/JuliaLang/julia/pull/21257
-@static if VERSION < v"0.6.0-pre.beta.28"
-    collect(A) = collect_indices(indices(A), A)
-    collect_indices(::Tuple{}, A) = copy!(Array{eltype(A)}(), A)
-    collect_indices(indsA::Tuple{Vararg{Base.OneTo}}, A) =
-        copy!(Array{eltype(A)}(map(length, indsA)), A)
-    function collect_indices(indsA, A)
-        B = Array{eltype(A)}(map(length, indsA))
-        copy!(B, CartesianRange(indices(B)), A, CartesianRange(indsA))
-    end
-else
-    const collect = Base.collect
-end
+const collect = Base.collect
 
 # https://github.com/JuliaLang/julia/pull/21197
 if VERSION < v"0.7.0-DEV.257"
@@ -532,18 +319,6 @@ if VERSION < v"0.7.0-DEV.257"
 end
 
 # https://github.com/JuliaLang/julia/pull/21378
-if VERSION < v"0.6.0-pre.beta.455"
-    import Base: ==, isless
-
-    ==(x::Dates.Period, y::Dates.Period) = (==)(promote(x, y)...)
-    isless(x::Dates.Period, y::Dates.Period) = isless(promote(x,y)...)
-
-    # disallow comparing fixed to other periods
-    ==(x::Dates.FixedPeriod, y::Dates.OtherPeriod) = throw(MethodError(==, (x, y)))
-    ==(x::Dates.OtherPeriod, y::Dates.FixedPeriod) = throw(MethodError(==, (x, y)))
-    isless(x::Dates.FixedPeriod, y::Dates.OtherPeriod) = throw(MethodError(isless, (x, y)))
-    isless(x::Dates.OtherPeriod, y::Dates.FixedPeriod) = throw(MethodError(isless, (x, y)))
-end
 
 # https://github.com/JuliaLang/julia/pull/22475
 @static if VERSION < v"0.7.0-DEV.843"
@@ -551,9 +326,9 @@ end
     (::Type{Val})(x) = (Base.@_pure_meta; Val{x}())
     # Also add methods for Val(x) that were previously Val{x}
     import Base: reshape
-    reshape{N}(parent::AbstractArray, ndims::Val{N}) = reshape(parent, Val{N})
+    reshape(parent::AbstractArray, ndims::Val{N}) where {N} = reshape(parent, Val{N})
     import Base: ntuple
-    ntuple{F,N}(f::F, ::Val{N}) = ntuple(f, Val{N})
+    ntuple(f::F, ::Val{N}) where {F,N} = ntuple(f, Val{N})
 end
 
 # https://github.com/JuliaLang/julia/pull/22629
@@ -637,11 +412,9 @@ if VERSION < v"0.7.0-DEV.755"
                 end
                 return corrected::Bool
             end
-            if VERSION >= v"0.6"
-                (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = cov(x, _get_corrected(kws))
-                (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVector, Y::AbstractVector) =
-                    cov(X, Y, _get_corrected(kws))
-            end
+            (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = cov(x, _get_corrected(kws))
+            (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVector, Y::AbstractVector) =
+                cov(X, Y, _get_corrected(kws))
             (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractMatrix, vardim::Int) =
                 cov(x, vardim, _get_corrected(kws))
             (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVecOrMat, Y::AbstractVecOrMat,
@@ -705,10 +478,10 @@ end
         end
         @inline Base.done(v::IndexValue, state) = done(v.itr, state)
 
-        Base.eltype{I,A}(::Type{IndexValue{I,A}}) = Pair{eltype(I), eltype(A)}
+        Base.eltype(::Type{IndexValue{I,A}}) where {I,A} = Pair{eltype(I), eltype(A)}
 
-        Base.iteratorsize{I}(::Type{IndexValue{I}}) = iteratorsize(I)
-        Base.iteratoreltype{I}(::Type{IndexValue{I}}) = iteratoreltype(I)
+        Base.iteratorsize(::Type{IndexValue{I}}) where {I} = iteratorsize(I)
+        Base.iteratoreltype(::Type{IndexValue{I}}) where {I} = iteratoreltype(I)
 
         Base.reverse(v::IndexValue) = IndexValue(v.data, reverse(v.itr))
     else
@@ -870,13 +643,13 @@ else
 end
 
 @static if VERSION < v"0.7.0-DEV.2377"
-    (::Type{Matrix{T}}){T}(s::UniformScaling, dims::Dims{2}) = setindex!(zeros(T, dims), T(s.λ), diagind(dims...))
-    (::Type{Matrix{T}}){T}(s::UniformScaling, m::Integer, n::Integer) = Matrix{T}(s, Dims((m, n)))
+    (::Type{Matrix{T}})(s::UniformScaling, dims::Dims{2}) where {T} = setindex!(zeros(T, dims), T(s.λ), diagind(dims...))
+    (::Type{Matrix{T}})(s::UniformScaling, m::Integer, n::Integer) where {T} = Matrix{T}(s, Dims((m, n)))
 
-    (::Type{SparseMatrixCSC{Tv,Ti}}){Tv,Ti}(s::UniformScaling, m::Integer, n::Integer) = SparseMatrixCSC{Tv,Ti}(s, Dims((m, n)))
-    (::Type{SparseMatrixCSC{Tv}}){Tv}(s::UniformScaling, m::Integer, n::Integer) = SparseMatrixCSC{Tv}(s, Dims((m, n)))
-    (::Type{SparseMatrixCSC{Tv}}){Tv}(s::UniformScaling, dims::Dims{2}) = SparseMatrixCSC{Tv,Int}(s, dims)
-    function (::Type{SparseMatrixCSC{Tv,Ti}}){Tv,Ti}(s::UniformScaling, dims::Dims{2})
+    (::Type{SparseMatrixCSC{Tv,Ti}})(s::UniformScaling, m::Integer, n::Integer) where {Tv,Ti} = SparseMatrixCSC{Tv,Ti}(s, Dims((m, n)))
+    (::Type{SparseMatrixCSC{Tv}})(s::UniformScaling, m::Integer, n::Integer) where {Tv} = SparseMatrixCSC{Tv}(s, Dims((m, n)))
+    (::Type{SparseMatrixCSC{Tv}})(s::UniformScaling, dims::Dims{2}) where {Tv} = SparseMatrixCSC{Tv,Int}(s, dims)
+    function (::Type{SparseMatrixCSC{Tv,Ti}})(s::UniformScaling, dims::Dims{2}) where {Tv,Ti}
         @boundscheck first(dims) < 0 && throw(ArgumentError("first dimension invalid ($(first(dims)) < 0)"))
         @boundscheck last(dims) < 0 && throw(ArgumentError("second dimension invalid ($(last(dims)) < 0)"))
         iszero(s.λ) && return spzeros(Tv, Ti, dims...)
@@ -889,8 +662,8 @@ end
     end
 end
 @static if VERSION < v"0.7.0-DEV.2543"
-    (::Type{Array{T}}){T}(s::UniformScaling, dims::Dims{2}) = Matrix{T}(s, dims)
-    (::Type{Array{T}}){T}(s::UniformScaling, m::Integer, n::Integer) = Matrix{T}(s, m, n)
+    (::Type{Array{T}})(s::UniformScaling, dims::Dims{2}) where {T} = Matrix{T}(s, dims)
+    (::Type{Array{T}})(s::UniformScaling, m::Integer, n::Integer) where {T} = Matrix{T}(s, m, n)
 end
 
 # https://github.com/JuliaLang/julia/pull/23271

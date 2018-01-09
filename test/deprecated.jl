@@ -27,7 +27,7 @@ end
 
 @test Compat.KERNEL == Sys.KERNEL
 
-@test String == @compat(Union{Compat.UTF8String,Compat.ASCIIString})
+@test String == Union{Compat.UTF8String,Compat.ASCIIString}
 
 @test isa("hello", Compat.ASCIIString)
 @test isa("λ", Compat.UTF8String)

@@ -7,7 +7,7 @@ const struct_sym = VERSION < v"0.7.0-DEV.1263" ? :type : :struct
 
 # Issue #291
 # 0.6
-@test (1, 2) == @compat abs.((1, -2))
+@test (1, 2) == abs.((1, -2))
 @test broadcast(+, (1.0, 1.0), (0, -2.0)) == (1.0,-1.0)
 
 # Test for `take!(::Task)`/`take!(::Channel)`
@@ -231,40 +231,40 @@ if VERSION < v"0.7.0-DEV.3017"
     ]
     for T in types
         # julia#18510, Nullable constructors
-        x = @compat Nullable(one(T), true)
+        x = Nullable(one(T), true)
         @test isnull(x) === false
         @test isa(x.value, T)
         @test eltype(x) === T
 
-        x = @compat Nullable{T}(one(T), true)
-        y = @compat Nullable{Any}(one(T), true)
+        x = Nullable{T}(one(T), true)
+        y = Nullable{Any}(one(T), true)
         @test isnull(x) === false
         @test isnull(y) === false
         @test isa(x.value, T)
         @test eltype(x) === T
         @test eltype(y) === Any
 
-        x = @compat Nullable{T}(one(T), false)
-        y = @compat Nullable{Any}(one(T), false)
+        x = Nullable{T}(one(T), false)
+        y = Nullable{Any}(one(T), false)
         @test isnull(x) === true
         @test isnull(y) === true
         @test eltype(x) === T
         @test eltype(y) === Any
 
-        x = @compat Nullable(one(T), false)
+        x = Nullable(one(T), false)
         @test isnull(x) === true
         @test eltype(x) === T
 
-        x = @compat Nullable{T}()
+        x = Nullable{T}()
         @test isnull(x) === true
         @test eltype(x) === T
 
         # julia#18484, generic isnull, unsafe_get
         a = one(T)
-        x = @compat Nullable(a, true)
+        x = Nullable(a, true)
         @test isequal(unsafe_get(x), a)
 
-        x = @compat Nullable{Array{T}}()
+        x = Nullable{Array{T}}()
         @test_throws UndefRefError unsafe_get(x)
     end
 end
@@ -273,12 +273,12 @@ end
 @test 1 ⊻ 5 == 4
 
 # julia#20414
-@compat let T = Array{<:Real}, f(x::AbstractVector{<:Real}) = 1
+let T = Array{<:Real}, f(x::AbstractVector{<:Real}) = 1
     @test isa([3,4],T)
     @test !isa([3,4im],T)
     @test f(1:3) == f([1,2]) == 1
 end
-@compat let T = Array{>:Integer}, f(x::AbstractVector{>:Integer}) = 1
+let T = Array{>:Integer}, f(x::AbstractVector{>:Integer}) = 1
     @test isa(Integer[1,2],T)
     @test !isa([3,4],T)
     @test !isa([3.0,4.0],T)
@@ -303,11 +303,11 @@ end
 
 # julia#17510
 let x = [1,2,3]
-    @compat x .= [3,4,5]
+    x .= [3,4,5]
     @test x == [3,4,5]
-    @compat x .= x .== 4
+    x .= x .== 4
     @test x == [0,1,0]
-    @compat x .= 7
+    x .= 7
     @test x == [7,7,7]
 end
 
@@ -371,7 +371,7 @@ for x in (3.1, -17, 3//4, big(111.1), Inf)
 end
 
 # julia#20006
-@compat abstract type AbstractFoo20006 end
+abstract type AbstractFoo20006 end
 eval(Expr(
     struct_sym, false,
     Expr(:(<:), :(ConcreteFoo20006{T<:Int}), :AbstractFoo20006),
@@ -380,7 +380,7 @@ eval(Expr(
     struct_sym, false,
     Expr(:(<:), :(ConcreteFoo20006N{T<:Int,N}), :AbstractFoo20006),
     quote end))
-@compat ConcreteFoo200061{T<:Int} = ConcreteFoo20006N{T,1}
+ConcreteFoo200061{T<:Int} = ConcreteFoo20006N{T,1}
 @test Compat.TypeUtils.isabstract(AbstractFoo20006)
 @test !Compat.TypeUtils.isabstract(ConcreteFoo20006)
 @test !Compat.TypeUtils.isabstract(ConcreteFoo20006N)
@@ -420,7 +420,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
     end
 
     # test @views macro
-    @views @compat let f!(x) = x[1:end-1] .+= x[2:end].^2
+    @views let f!(x) = x[1:end-1] .+= x[2:end].^2
         x = [1,2,3,4]
         f!(x)
         @test x == [5,11,19,4]
@@ -447,7 +447,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test x == [5,8,0,0]
     end
     # same tests, but make sure we can switch the order of @compat and @views
-    @compat @views let f!(x) = x[1:end-1] .+= x[2:end].^2
+    @views let f!(x) = x[1:end-1] .+= x[2:end].^2
         x = [1,2,3,4]
         f!(x)
         @test x == [5,11,19,4]
@@ -509,9 +509,9 @@ let x = [1,2,3]
 end
 
 # PR #20418
-@compat abstract type Abstract20418{T} <: Ref{T} end
+abstract type Abstract20418{T} <: Ref{T} end
 @test Compat.TypeUtils.isabstract(Abstract20418)
-@compat primitive type Primitive20418{T} <: Ref{T} 16 end
+primitive type Primitive20418{T} <: Ref{T} 16 end
 @test !Compat.TypeUtils.isabstract(Primitive20418)
 @test isbits(Primitive20418{Int})
 @test sizeof(Primitive20418{Int}) == 2
@@ -541,8 +541,8 @@ using Compat.Test
 end
 
 # PR #20500
-@compat A20500{T<:Integer} = Array{T,20500}
-@compat const A20500_2{T<:Union{Int,Float32}} = Pair{T,T}
+A20500{T<:Integer} = Array{T,20500}
+const A20500_2{T<:Union{Int,Float32}} = Pair{T,T}
 f20500() = A20500
 f20500_2() = A20500_2
 @inferred f20500()
@@ -563,7 +563,7 @@ module CompatArray
         quote
             parent::Array{T,N}
         end))
-    @compat Base.IndexStyle(::Type{<:LinearArray}) = IndexLinear()
+    Base.IndexStyle(::Type{<:LinearArray}) = IndexLinear()
 end
 @test IndexStyle(Array{Float32,2}) === IndexLinear()
 @test IndexStyle(CompatArray.CartesianArray{Float32,2}) === IndexCartesian()
@@ -573,18 +573,6 @@ let a = CompatArray.CartesianArray(rand(2,3)), b = CompatArray.LinearArray(rand(
     @test IndexStyle(b) === IndexLinear()
 end
 
-if VERSION < v"0.6.0-dev.1653"
-    for (A,val) in ((zeros(1:5, Float32, 3, 2), 0),
-                    (ones(1:5, Float32, 3, 2), 1),
-                    (zeros(1:5, Float32, (3, 2)), 0),
-                    (ones(1:5, Float32, (3, 2)), 1))
-        @test isa(A, Matrix{Float32}) && size(A) == (3,2) && all(x->x==val, A)
-    end
-    for (A,val) in ((zeros(1:5, Float32), 0),
-                    (ones(1:5, Float32), 1))
-        @test isa(A, Vector{Float32}) && size(A) == (5,) && all(x->x==val, A)
-    end
-end
 
 # PR 20203
 @test Compat.readline(IOBuffer("Hello, World!\n")) == "Hello, World!"
@@ -722,7 +710,7 @@ end
 if VERSION < v"0.7.0-DEV.880"
     # ensure we don't bork any non-updated expressions
     let
-        @compat cr(::CartesianRange{CartesianIndex{2}}) = 2
+        cr(::CartesianRange{CartesianIndex{2}}) = 2
         @test cr(CartesianRange((5, 3))) == 2
         @test_throws MethodError cr(CartesianRange((5, 3, 2)))
     end
@@ -878,12 +866,10 @@ end
 @test cov([1 2; 3 4], 1, corrected=false) == fill(1.0, 2, 2)
 @test cov([1 2; 3 4], [0 4; 8 9], 1, corrected=true) == [8.0 5.0; 8.0 5.0]
 @test cov([1 2; 3 4], [0 4; 8 9], 1, corrected=false) == [4.0 2.5; 4.0 2.5]
-if VERSION >= v"0.6"
-    @test cov([1, 2], corrected=true) === 0.5
-    @test cov([1, 2], corrected=false) === 0.25
-    @test cov([1, 2], [0, 10], corrected=true) === 5.0
-    @test cov([1, 2], [0, 10], corrected=false) === 2.5
-end
+@test cov([1, 2], corrected=true) === 0.5
+@test cov([1, 2], corrected=false) === 0.25
+@test cov([1, 2], [0, 10], corrected=true) === 5.0
+@test cov([1, 2], [0, 10], corrected=false) === 2.5
 
 # 0.7
 @test isconcrete(Int)
@@ -1001,7 +987,7 @@ end
 # 0.7
 let A = [1]
     local x = 0
-    @compat finalizer(a->(x+=1), A)
+    finalizer(a->(x+=1), A)
     finalize(A)
     @test x == 1
     A = 0
@@ -1101,8 +1087,5 @@ let c = CartesianIndices(1:3, 1:2), l = LinearIndices(1:3, 1:2)
     @test l[vec(c)] == collect(1:6)
 end
 
-if VERSION < v"0.6.0"
-    include("deprecated.jl")
-end
 
 nothing
