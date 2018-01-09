@@ -1069,6 +1069,14 @@ let coolvec = [1,2,3]
     @test popfirst!(coolvec) == 0
 end
 
+# 0.7.0-DEV.3057
+let A = [0, 0, 0], B = [1, 2, 3]
+    @test copyto!(A, B) === A == B
+end
+let A = [0, 0, 0], B = [1, 2, 3]
+    @test unsafe_copyto!(A, 2, B, 1, 1) === A == [0, 1, 0]
+end
+
 # 0.7.0-DEV.3173
 @test invpermute!(permute!([1, 2], 2:-1:1), 2:-1:1) == [1, 2]
 
