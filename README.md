@@ -7,6 +7,7 @@
 [![Compat](http://pkg.julialang.org/badges/Compat_0.4.svg)](http://pkg.julialang.org/?pkg=Compat&ver=0.4)
 [![Compat](http://pkg.julialang.org/badges/Compat_0.5.svg)](http://pkg.julialang.org/?pkg=Compat&ver=0.5)
 [![Compat](http://pkg.julialang.org/badges/Compat_0.6.svg)](http://pkg.julialang.org/?pkg=Compat&ver=0.6)
+[![Compat](http://pkg.julialang.org/badges/Compat_0.7.svg)](http://pkg.julialang.org/?pkg=Compat&ver=0.7)
 
 The **Compat** package is designed to ease interoperability between
 older and newer versions of the [Julia
@@ -48,31 +49,8 @@ Please check the list below for the specific syntax you need.
 
 Currently, the `@compat` macro supports the following syntaxes:
 
-* `@compat (a::B{T}){T}(c) = d` — the Julia 0.5-style call overload
-
-* `@compat(get(io, s, false))`, with `s` equal to `:limit`, `:compact` or `:multiline`, to detect the corresponding print settings (performs useful work only on Julia 0.5, defaults to `false` otherwise)
-
-* `@compat Nullable(value, hasvalue)` to handle the switch from the `Nullable` `:isnull` field to `:hasvalue` field ([#18510])
-
-* `@compat x .= y` converts to an in-place assignment to `x` (via `broadcast!`) ([#17510]).
-  However, beware that `.=` in Julia 0.4 has the precedence of `==`, not of assignment `=`, so if the right-hand-side `y`
-  includes expressions with lower precedence than `==` you should enclose it in parentheses `x .= (y)` to ensure the
-  correct order of evaluation.   Also, `x .+= y` converts to `x .= (x .+ y)`, and similarly for the other updating
-  assignment operators (`.*=` and so on).
-
-* `@compat Array{<:Real}`, `@compat Array{>:Int}`, and similar uses of `<:T` (resp. `>:T`) to define a set of "covariant" (resp. "contravariant") parameterized types ([#20414]).
-  In 0.5, this only works for non-nested usages (e.g. you can't define `Array{<:Array{<:Real}}`).
-
-* `@compat abstract type T end` and `@compat primitive type T 8 end`
-  to declare abstract and primitive types. [#20418]
-  This only works when `@compat` is applied directly on the declaration.
-
-* `@compat A{T} = B{T}` or `@compat const A{T} = B{T}` to declare type alias with free
-  parameters. [#20500]. Use `const A = B{T}` or `const A = B` for type alias without free parameters (i.e. no type parameter on the left hand side).
-
-* `@compat Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()` and `@compat Base.IndexStyle(::Type{<:MyArray}) = IndexCartesian()` to define traits for abstract arrays, replacing the former `Base.linearindexing{T<:MyArray}(::Type{T}) = Base.LinearFast()` and `Base.linearindexing{T<:MyArray}(::Type{T}) = Base.LinearSlow()`, respectively.
-
-* `Compat.collect(A)` returns an `Array`, no matter what indices the array `A` has. [#21257]
+* `@compat finalizer(func, obj)` with the finalizer to run as the first argument
+  and the object to be finalized as the second ([#24605]).
 
 * `@compat foo(::CartesianRange{N})` to replace the former
   `foo(::CartesianRange{CartesianIndex{N}})` ([#20974]). Note that
@@ -80,10 +58,6 @@ Currently, the `@compat` macro supports the following syntaxes:
   fields in other `struct`s requires manual intervention.
 
 ## Module Aliases
-
-* In 0.6, some 0.5 iterator functions have been moved to the `Base.Iterators`
-  module. Code can be written to work on both 0.5 and 0.6 by `import`ing or
-  `using` the `Compat.Iterators` module instead. ([#18839])
 
 * `using Compat.Test`, `using Compat.SharedArrays`, `using Compat.Mmap`, and `using
   Compat.DelimitedFiles` are provided on versions older than 0.7, where these are not yet
@@ -109,92 +83,29 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
-* `@views` takes an expression and converts all slices to views ([#20164]), while
-  `@view` ([#16564]) converts a single array reference to a view ([#20164]).
+* `Compat.invokelatest` supports keyword arguments on Julia version 0.6 ([#22646]).
 
-* `@__dot__` takes an expression and converts all assignments, function calls,
-  and operators to their broadcasting "dot-call" equivalents ([#20321]).   In Julia 0.6, this
-  can be abbreviated `@.`, but that macro name does not parse in earlier Julia versions.
-  For this to work in older versions of Julia (prior to 0.5) that don't have dot calls,
-  you should instead use `@dotcompat`, which combines the `@__dot__` and `@compat` macros.
+* `@__MODULE__` is aliased to `current_module()` for Julia version 0.6. Versions of `Base.binding_module`, `expand`, `macroexpand`, and `include_string` were added that accept a module as the first argument. ([#22064])
 
-* [`normalize`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize) and [`normalize!`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize!), normalizes a vector with respect to the p-norm ([#13681])
-
-* `redirect_stdout`, `redirect_stderr`, and `redirect_stdin` take an optional function as a first argument, `redirect_std*(f, stream)`, so that one may use `do` block syntax (as first available for Julia 0.6)
-
-* `unsafe_get` returns the `:value` field of a `Nullable` object without any null-check and has a generic fallback for non-`Nullable` argument ([#18484])
-
-* `isnull` has a generic fallback for non-`Nullable` argument
-
-* `transcode` converts between UTF-xx string encodings in Julia 0.5 (as a lightweight
-   alternative to the LegacyStrings package) ([#17323])
-
-* `∘` (typically used infix as `f ∘ g`) for function composition can be used in 0.5 and earlier ([#17155])
-
-* `>:`, a supertype operator for symmetry with `issubtype` (`A >: B` is equivalent to `B <: A`), can be used in 0.5 and earlier ([#20407]).
-
-* The method of `!` to negate functions (typically used as a unary operator, as in `!isinteger`) can be used in 0.5 and earlier ([#17155]).
-
-* `iszero(x)` efficiently checks whether `x == zero(x)` (including arrays) can be used in 0.5 and earlier ([#19950]).
-
-* `.&` and `.|` are short syntax for `broadcast(&, xs...)` and `broadcast(|, xs...)` (respectively) in Julia 0.6 (only supported on Julia 0.5 and above) ([#17623])
-
-* `Compat.isapprox` with `nans` keyword argument ([#20022])
-
-* `Compat.readline` with `chomp` keyword argument ([#20203])
-
-* `take!` method for `Task`s since some functions now return `Channel`s instead of `Task`s ([#19841])
-
-* The `isabstract`, `parameter_upper_bound`, `typename` reflection methods were added in Julia 0.6. This package re-exports these from the `Compat.TypeUtils` submodule. On earlier versions of julia, that module contains the same functions, but operating on the pre-0.6 type system representation.
-
-* `broadcast` is supported on tuples of the same lengths on 0.5. ([#16986])
-
-* `zeros` and `ones` support an interface the same as `similar` ([#19635])
-
-* `convert` can convert between different `Set` types on 0.5 and below. ([#18727])
-
-* `isassigned(::RefValue)` is supported on 0.5 and below. ([#18082])
-
-* `unsafe_trunc(::Type{<:Integer}, ::Integer)` is supported on 0.5. ([#18629])
-
-* `bswap` is supported for `Complex` arguments on 0.5 and below. ([#21346])
-
-* `Compat.invokelatest` is equivalent to `Base.invokelatest` in Julia 0.6,
-  but works in Julia 0.5+, and allows you to guarantee that a function call
-  invokes the latest version of a function ([#19784]).
-
-* `Compat.invokelatest` supports keywords ([#22646]).
-
-* `Compat.StringVector` is supported on 0.5 and below. On 0.6 and later, it aliases `Base.StringVector`. This function allocates a `Vector{UInt8}` whose data can be made into a `String` in constant time; that is, without copying. On 0.5 and later, use `String(...)` with the vector allocated by `StringVector` as an argument to create a string without copying. Note that if 0.4 support is needed, `Compat.UTF8String(...)` should be used instead. ([#19449])
-
-* `==(::Period, ::Period)` and `isless(::Period, ::Period)` is supported for 0.5 and below. Earlier versions of Julia only supported limited comparison methods between Periods which did not support comparing custom Period subtypes. ([#21378])
-
-* `@__MODULE__` is aliased to `current_module()` for Julia versions 0.6 and below. Versions of `Base.binding_module`, `expand`, `macroexpand`, and `include_string` were added that accept a module as the first argument. ([#22064])
-
-* `Cmd` elements can be accessed as if the `Cmd` were an array of strings for 0.6 and below ([#21197]).
+* `Cmd` elements can be accessed as if the `Cmd` were an array of strings for 0.6 ([#21197]).
 
 * `Val(x)` constructs `Val{x}()`. ([#22475])
 
-* The `reshape` and `ntuple` APIs are extended to support `Val{x}()` arguments on 0.6 and below.
+* The `reshape` and `ntuple` APIs are extended to support `Val{x}()` arguments on 0.6.
 
 * `chol` and `chol!` for `UniformScalings` ([#22633]).
 
 * `logdet` for `Number`s ([#22629]).
 
-* `fieldcount` is equivalent to `nfields` for Julia versions 0.6 and below and is used to
+* `fieldcount` is equivalent to `nfields` for Julia versions 0.6 and is used to
   determine the number of fields in a data type ([#22350]).
 
 * There are versions of `InexactError`, `DomainError`, and `OverflowError` that take the same arguments as introduced in Julia 0.7-DEV ([#20005], [#22751], [#22761]).
 
-* `retry` for the more flexible `retry` method introduced in 0.6 which includes support for kwargs ([#19331], [#21419]).
-
-* `Base.rtoldefault` how takes a third parameter `atol`.
+* `Base.rtoldefault` now takes a third parameter `atol`.
   The two argument form is deprecated in favor of the three arguments form with `atol=0`.
 
-* The `corrected` optional argument of `cov` becomes a keyword argument.
-  Due to conflict with 0.5 deprecation,
-  `cov(::AbstractVector; corrected=)` and `cov(::AbstractVector, ::AbstractVector; corrected=)`
-  are only available on 0.6. ([#21709])
+* The `corrected` optional argument of `cov` becomes a keyword argument ([#21709]).
 
 * `equalto` constructs an `EqualTo` object that can be used as a predicate ([#23812]).
 
@@ -207,9 +118,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Uninitialized` and `uninitialized` with corresponding `Array` constructors ([#24652]).
 
 * `BitArray` constructors for `uninitialized` ([#24785]).
-
-* `@compat finalizer(func, obj)` with the finalizer to run as the first argument and the object to be finalized
-  as the second ([#24605]).
 
 * `IOContext` accepting key-value `Pair`s ([#23271]).
 
@@ -228,11 +136,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Renaming
 
-
-* `$` is now `xor` or `⊻` ([#18977])
-
-* `num` and `den` are now `numerator` and `denominator` ([#19246])
-
 * `takebuf_array` is now a method of `take!`. `takebuf_string(io)` becomes `String(take!(io))` ([#19088])
 
 * `is_apple`, `is_bsd`, `is_linux`, `is_unix`, and `is_windows` are now `Sys.isapple`, `Sys.isbsd`,
@@ -241,10 +144,10 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `readstring` is replaced by methods of `read`. ([#22864])
 
-    `read(::IO, ::Type{String})`, `read(::AbstractString, ::Type{String})`,
-    and `read(::Cmd, ::Type{String})` are defined for 0.6 and below.
+* `read(::IO, ::Type{String})`, `read(::AbstractString, ::Type{String})`,
+  and `read(::Cmd, ::Type{String})` are defined for 0.6.
 
-* `Range` is now `AbstractRange` ([#23570])
+* `Range` is now `AbstractRange` ([#23570]).
 
 * `select`* functions (`select`, `select!`, `selectperm`, `selectperm!`) are renamed to
   `partialsort`* (`partialsort`, `partialsort!`, `partialsortperm`, `partialsortperm!`) ([#23051])
@@ -279,8 +182,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New macros
 
-* `@__DIR__` has been added ([#18380])
-
 * `@vectorize_1arg` and `@vectorize_2arg` are deprecated on Julia 0.6 in favor
   of the broadcast syntax ([#17302]). `Compat.@dep_vectorize_1arg` and
   `Compat.@dep_vectorize_2arg` are provided so that packages can still provide
@@ -294,8 +195,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `@nospecialize` has been added ([#22666]).
 
 ## Other changes
-
-* On versions of Julia that do not contain a Base.Threads module, Compat defines a Threads module containing a no-op `@threads` macro.
 
 * The `Expr(:macrocall)` has an extra initial argument `__source__`, which can be tested for with `Compat.macros_have_sourceloc`.
 
@@ -352,45 +251,11 @@ includes this fix. Find the minimum version from there.
 * Now specify the correct minimum version for Compat in your REQUIRE file by
 `Compat <version>`
 
-[#13681]: https://github.com/JuliaLang/julia/issues/13681
-[#16564]: https://github.com/JuliaLang/julia/issues/16564
-[#16986]: https://github.com/JuliaLang/julia/issues/16986
-[#17155]: https://github.com/JuliaLang/julia/issues/17155
 [#17302]: https://github.com/JuliaLang/julia/issues/17302
-[#17323]: https://github.com/JuliaLang/julia/issues/17323
-[#17510]: https://github.com/JuliaLang/julia/issues/17510
-[#17623]: https://github.com/JuliaLang/julia/issues/17623
-[#18082]: https://github.com/JuliaLang/julia/issues/18082
-[#18380]: https://github.com/JuliaLang/julia/issues/18380
-[#18484]: https://github.com/JuliaLang/julia/issues/18484
-[#18510]: https://github.com/JuliaLang/julia/issues/18510
-[#18629]: https://github.com/JuliaLang/julia/issues/18629
-[#18727]: https://github.com/JuliaLang/julia/issues/18727
-[#18839]: https://github.com/JuliaLang/julia/issues/18839
-[#18977]: https://github.com/JuliaLang/julia/issues/18977
 [#19088]: https://github.com/JuliaLang/julia/issues/19088
-[#19246]: https://github.com/JuliaLang/julia/issues/19246
-[#19331]: https://github.com/JuliaLang/julia/issues/19331
-[#19449]: https://github.com/JuliaLang/julia/issues/19449
-[#19635]: https://github.com/JuliaLang/julia/issues/19635
-[#19784]: https://github.com/JuliaLang/julia/issues/19784
-[#19841]: https://github.com/JuliaLang/julia/issues/19841
-[#19950]: https://github.com/JuliaLang/julia/issues/19950
 [#20005]: https://github.com/JuliaLang/julia/issues/20005
-[#20022]: https://github.com/JuliaLang/julia/issues/20022
-[#20164]: https://github.com/JuliaLang/julia/issues/20164
-[#20203]: https://github.com/JuliaLang/julia/issues/20203
-[#20321]: https://github.com/JuliaLang/julia/issues/20321
-[#20407]: https://github.com/JuliaLang/julia/issues/20407
-[#20414]: https://github.com/JuliaLang/julia/issues/20414
-[#20418]: https://github.com/JuliaLang/julia/issues/20418
-[#20500]: https://github.com/JuliaLang/julia/issues/20500
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
-[#21257]: https://github.com/JuliaLang/julia/issues/21257
-[#21346]: https://github.com/JuliaLang/julia/issues/21346
-[#21378]: https://github.com/JuliaLang/julia/issues/21378
-[#21419]: https://github.com/JuliaLang/julia/issues/21419
 [#21709]: https://github.com/JuliaLang/julia/issues/21709
 [#22064]: https://github.com/JuliaLang/julia/issues/22064
 [#22182]: https://github.com/JuliaLang/julia/issues/22182
@@ -428,13 +293,14 @@ includes this fix. Find the minimum version from there.
 [#24657]: https://github.com/JuliaLang/julia/issues/24657
 [#24714]: https://github.com/JuliaLang/julia/issues/24714
 [#24785]: https://github.com/JuliaLang/julia/issues/24785
+[#24808]: https://github.com/JuliaLang/julia/issues/24808
 [#25012]: https://github.com/JuliaLang/julia/issues/25012
 [#25021]: https://github.com/JuliaLang/julia/issues/25021
 [#25056]: https://github.com/JuliaLang/julia/issues/25056
 [#25057]: https://github.com/JuliaLang/julia/issues/25057
 [#25100]: https://github.com/JuliaLang/julia/issues/25100
 [#25102]: https://github.com/JuliaLang/julia/issues/25102
+[#25113]: https://github.com/JuliaLang/julia/issues/25113
 [#25162]: https://github.com/JuliaLang/julia/issues/25162
 [#25165]: https://github.com/JuliaLang/julia/issues/25165
 [#25168]: https://github.com/JuliaLang/julia/issues/25168
-[#25113]: https://github.com/JuliaLang/julia/issues/25113

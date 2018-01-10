@@ -30,39 +30,8 @@ using Base.Meta
     export @nospecialize
 end
 
-"""Get just the function part of a function declaration."""
-withincurly(ex) = isexpr(ex, :curly) ? ex.args[1] : ex
-
-
-is_index_style(ex::Expr) = ex == :(Compat.IndexStyle) || ex == :(Base.IndexStyle) ||
-    (ex.head == :(.) && (ex.args[1] == :Compat || ex.args[1] == :Base) &&
-         ex.args[2] == Expr(:quote, :IndexStyle))
-
-is_index_style(arg) = false
-
-istopsymbol(ex, mod, sym) = ex in (sym, Expr(:(.), mod, Expr(:quote, sym)))
-
-new_style_typealias(ex) = false
-
 function _compat(ex::Expr)
-    if ex.head === :call
-        f = ex.args[1]
-        if VERSION < v"0.6.0-dev.826" && length(ex.args) == 3 && # julia#18510
-                istopsymbol(withincurly(ex.args[1]), :Base, :Nullable)
-            ex = Expr(:call, f, ex.args[2], Expr(:call, :(Compat._Nullable_field2), ex.args[3]))
-        end
-    elseif ex.head === :curly
-        f = ex.args[1]
-            elseif ex.head === :quote && isa(ex.args[1], Symbol)
-        # Passthrough
-        return ex
-    elseif new_style_typealias(ex)
-        ex.head = :typealias
-    elseif ex.head === :const && length(ex.args) == 1 && new_style_typealias(ex.args[1])
-        ex = ex.args[1]::Expr
-        ex.head = :typealias
-    end
-        if VERSION < v"0.7.0-DEV.880"
+    if VERSION < v"0.7.0-DEV.880"
         if ex.head == :curly && ex.args[1] == :CartesianRange && length(ex.args) >= 2
             a = ex.args[2]
             if a != :CartesianIndex && !(isa(a, Expr) && a.head == :curly && a.args[1] == :CartesianIndex)
@@ -80,51 +49,9 @@ end
 
 _compat(ex) = ex
 
-function _get_typebody(ex::Expr)
-    args = ex.args
-    if ex.head !== :type || length(args) != 3 || args[1] !== true
-        throw(ArgumentError("Invalid usage of @compat: $ex"))
-    end
-    name = args[2]
-    if !isexpr(args[3], :block)
-        throw(ArgumentError("Invalid type declaration: $ex"))
-    end
-    body = (args[3]::Expr).args
-    filter!(body) do e
-        if isa(e, LineNumberNode) || isexpr(e, :line)
-            return false
-        end
-        return true
-    end
-    return name, body
-end
-
-function _compat_primitive(typedecl)
-    name, body = _get_typebody(typedecl)
-    if length(body) != 1
-        throw(ArgumentError("Invalid primitive type declaration: $typedecl"))
-    end
-    return Expr(:bitstype, body[1], name)
-end
-
-function _compat_abstract(typedecl)
-    name, body = _get_typebody(typedecl)
-    if length(body) != 0
-        throw(ArgumentError("Invalid abstract type declaration: $typedecl"))
-    end
-    return Expr(:abstract, name)
-end
-
 macro compat(ex...)
-    if VERSION < v"0.6.0-dev.2746" && length(ex) == 2 && ex[1] === :primitive
-        return esc(_compat_primitive(ex[2]))
-    elseif length(ex) != 1
+    if length(ex) != 1
         throw(ArgumentError("@compat called with wrong number of arguments: $ex"))
-    elseif (VERSION < v"0.6.0-dev.2746" && isexpr(ex[1], :abstract) &&
-            length(ex[1].args) == 1 && isexpr(ex[1].args[1], :type))
-        # This can in principle be handled in nested case but we do not
-        # do that to be consistent with primitive types.
-        return esc(_compat_abstract(ex[1].args[1]))
     end
     esc(_compat(ex[1]))
 end
@@ -150,9 +77,6 @@ end
 import Base.ExponentialBackOff
 import Base.retry
 
-import Base: redirect_stdin, redirect_stdout, redirect_stderr
-
-
 # PR #17302
 # Provide a non-deprecated version of `@vectorize_(1|2)arg` macro which defines
 # deprecated version of the function so that the depwarns can be fixed without
@@ -170,9 +94,9 @@ if VERSION < v"0.7.0-DEV.1211"
         x = esc(:x)
         AbsArr = esc(:AbstractArray)
         ## Depwarn to be enabled when 0.5 support is dropped.
-        # depwarn("Implicit vectorized function is deprecated in favor of compact broadcast syntax.",
-        #         Symbol("@dep_vectorize_1arg"))
-        :(@deprecate $f{$T<:$S}($x::$AbsArr{$T}) $f.($x))
+        depwarn("Implicit vectorized function is deprecated in favor of compact broadcast syntax.",
+                Symbol("@dep_vectorize_1arg"))
+        :(@deprecate $f{$T<:$S}($x::$AbsArr{$T}) @compat($f.($x)))
     end
 
     macro dep_vectorize_2arg(S, f)
@@ -184,12 +108,12 @@ if VERSION < v"0.7.0-DEV.1211"
         y = esc(:y)
         AbsArr = esc(:AbstractArray)
         ## Depwarn to be enabled when 0.5 support is dropped.
-        # depwarn("Implicit vectorized function is deprecated in favor of compact broadcast syntax.",
-        #         Symbol("@dep_vectorize_2arg"))
+        depwarn("Implicit vectorized function is deprecated in favor of compact broadcast syntax.",
+                Symbol("@dep_vectorize_2arg"))
         quote
-            @deprecate $f{$T1<:$S}($x::$S, $y::$AbsArr{$T1}) $f.($x,$y)
-            @deprecate $f{$T1<:$S}($x::$AbsArr{$T1}, $y::$S) $f.($x,$y)
-            @deprecate $f{$T1<:$S,$T2<:$S}($x::$AbsArr{$T1}, $y::$AbsArr{$T2}) $f.($x,$y)
+            @deprecate $f{$T1<:$S}($x::$S, $y::$AbsArr{$T1}) @compat($f.($x,$y))
+            @deprecate $f{$T1<:$S}($x::$AbsArr{$T1}, $y::$S) @compat($f.($x,$y))
+            @deprecate $f{$T1<:$S,$T2<:$S}($x::$AbsArr{$T1}, $y::$AbsArr{$T2}) @compat($f.($x,$y))
         end
     end
 else
@@ -208,84 +132,6 @@ else
     end
 end
 
-# broadcast over same length tuples, from julia#16986
-
-# julia#18510
-_Nullable_field2(x) = x
-
-# julia#18484
-
-# julia#18977
-
-# julia#19246
-@static if !isdefined(Base, :numerator)
-    # 0.6
-    const numerator = num
-    const denominator = den
-    export numerator, denominator
-end
-
-# julia #19950
-@static if !isdefined(Base, :iszero)
-    # 0.6
-    iszero(x) = x == zero(x)
-    iszero(x::Number) = x == 0
-    iszero(x::AbstractArray) = all(iszero, x)
-    export iszero
-end
-
-# julia　#20407
-@static if !isdefined(Base, :(>:))
-    # 0.6
-    const >: = let
-        _issupertype(a::ANY, b::ANY) = issubtype(b, a)
-    end
-    export >:
-end
-
-# julia#19088
-
-# julia #17155 function composition and negation
-
-
-
-import Base.isapprox
-
-module TypeUtils
-    @static if isdefined(Base, :isabstract)
-        using Base: isabstract, parameter_upper_bound, typename
-    else
-        isabstract(t::DataType) = t.abstract
-        if isdefined(Base, :TypeConstructor)
-            isabstract(t::TypeConstructor) = isabstract(t.body)
-        end
-        isabstract(t::ANY) = false
-        parameter_upper_bound(t::DataType, idx) = t.parameters[idx].ub
-        typename(t::DataType) = t.name
-    end
-    export isabstract, parameter_upper_bound, typename
-end # module TypeUtils
-
-# @view, @views, @__dot__
-include("arraymacros.jl")
-
-# julia #18839
-using Base.Iterators
-
-
-
-# https://github.com/JuliaLang/julia/pull/20203
-
-# https://github.com/JuliaLang/julia/pull/18727
-
-# https://github.com/JuliaLang/julia/pull/18082
-
-
-# https://github.com/JuliaLang/julia/pull/21346
-
-# https://github.com/JuliaLang/julia/pull/19449
-using Base: StringVector
-
 # https://github.com/JuliaLang/julia/pull/19784
 @static if isdefined(Base, :invokelatest)
     # https://github.com/JuliaLang/julia/pull/22646
@@ -297,15 +143,7 @@ using Base: StringVector
     else
         import Base.invokelatest
     end
-else
-    function invokelatest(f, args...; kwargs...)
-        kw = [Expr(:kw, k, QuoteNode(v)) for (k, v) in kwargs]
-        eval(current_module(), Expr(:call, f, map(QuoteNode, args)..., kw...))
-    end
 end
-
-# https://github.com/JuliaLang/julia/pull/21257
-const collect = Base.collect
 
 # https://github.com/JuliaLang/julia/pull/21197
 if VERSION < v"0.7.0-DEV.257"
@@ -317,8 +155,6 @@ if VERSION < v"0.7.0-DEV.257"
         @eval Base.$f(cmd::Cmd, i) = $f(cmd.exec, i)
     end
 end
-
-# https://github.com/JuliaLang/julia/pull/21378
 
 # https://github.com/JuliaLang/julia/pull/22475
 @static if VERSION < v"0.7.0-DEV.843"
@@ -458,38 +294,8 @@ end
     pairs(collection) = Base.Generator(=>, keys(collection), values(collection))
     pairs(a::Associative) = a
 
-    # 0.6.0-dev+2834
-    @static if !isdefined(Iterators, :IndexValue)
-        include_string(@__MODULE__, """
-            immutable IndexValue{I,A<:AbstractArray}
-                data::A
-                itr::I
-            end
-        """)
-
-        Base.length(v::IndexValue)  = length(v.itr)
-        Base.indices(v::IndexValue) = indices(v.itr)
-        Base.size(v::IndexValue)    = size(v.itr)
-        @inline Base.start(v::IndexValue) = start(v.itr)
-        Base.@propagate_inbounds function Base.next(v::IndexValue, state)
-            indx, n = next(v.itr, state)
-            item = v.data[indx]
-            (indx => item), n
-        end
-        @inline Base.done(v::IndexValue, state) = done(v.itr, state)
-
-        Base.eltype(::Type{IndexValue{I,A}}) where {I,A} = Pair{eltype(I), eltype(A)}
-
-        Base.iteratorsize(::Type{IndexValue{I}}) where {I} = iteratorsize(I)
-        Base.iteratoreltype(::Type{IndexValue{I}}) where {I} = iteratoreltype(I)
-
-        Base.reverse(v::IndexValue) = IndexValue(v.data, reverse(v.itr))
-    else
-        const IndexValue = Iterators.IndexValue
-    end
-
-    pairs(::IndexLinear,    A::AbstractArray) = IndexValue(A, linearindices(A))
-    pairs(::IndexCartesian, A::AbstractArray) = IndexValue(A, CartesianRange(indices(A)))
+    pairs(::IndexLinear,    A::AbstractArray) = Iterators.IndexValue(A, linearindices(A))
+    pairs(::IndexCartesian, A::AbstractArray) = Iterators.IndexValue(A, CartesianRange(indices(A)))
 
     Base.keys(a::AbstractArray) = CartesianRange(indices(a))
     Base.keys(a::AbstractVector) = linearindices(a)
@@ -576,20 +382,9 @@ end
 
 # 0.7.0-DEV.1993
 @static if !isdefined(Base, :EqualTo)
-    if VERSION >= v"0.6.0"
-        include_string(@__MODULE__, """
-            struct EqualTo{T} <: Function
-                x::T
-
-                EqualTo(x::T) where {T} = new{T}(x)
-            end
-        """)
-    else
-        include_string(@__MODULE__, """
-            immutable EqualTo{T} <: Function
-                x::T
-            end
-        """)
+    struct EqualTo{T} <: Function
+        x::T
+        EqualTo(x::T) where {T} = new{T}(x)
     end
     (f::EqualTo)(y) = isequal(f.x, y)
     const equalto = EqualTo
@@ -643,13 +438,13 @@ else
 end
 
 @static if VERSION < v"0.7.0-DEV.2377"
-    (::Type{Matrix{T}})(s::UniformScaling, dims::Dims{2}) where {T} = setindex!(zeros(T, dims), T(s.λ), diagind(dims...))
-    (::Type{Matrix{T}})(s::UniformScaling, m::Integer, n::Integer) where {T} = Matrix{T}(s, Dims((m, n)))
+    Matrix{T}(s::UniformScaling, dims::Dims{2}) where {T} = setindex!(zeros(T, dims), T(s.λ), diagind(dims...))
+    Matrix{T}(s::UniformScaling, m::Integer, n::Integer) where {T} = Matrix{T}(s, Dims((m, n)))
 
-    (::Type{SparseMatrixCSC{Tv,Ti}})(s::UniformScaling, m::Integer, n::Integer) where {Tv,Ti} = SparseMatrixCSC{Tv,Ti}(s, Dims((m, n)))
-    (::Type{SparseMatrixCSC{Tv}})(s::UniformScaling, m::Integer, n::Integer) where {Tv} = SparseMatrixCSC{Tv}(s, Dims((m, n)))
-    (::Type{SparseMatrixCSC{Tv}})(s::UniformScaling, dims::Dims{2}) where {Tv} = SparseMatrixCSC{Tv,Int}(s, dims)
-    function (::Type{SparseMatrixCSC{Tv,Ti}})(s::UniformScaling, dims::Dims{2}) where {Tv,Ti}
+    SparseMatrixCSC{Tv,Ti}(s::UniformScaling, m::Integer, n::Integer) where {Tv,Ti} = SparseMatrixCSC{Tv,Ti}(s, Dims((m, n)))
+    SparseMatrixCSC{Tv}(s::UniformScaling, m::Integer, n::Integer) where {Tv} = SparseMatrixCSC{Tv}(s, Dims((m, n)))
+    SparseMatrixCSC{Tv}(s::UniformScaling, dims::Dims{2}) where {Tv} = SparseMatrixCSC{Tv,Int}(s, dims)
+    function SparseMatrixCSC{Tv,Ti}(s::UniformScaling, dims::Dims{2}) where {Tv,Ti}
         @boundscheck first(dims) < 0 && throw(ArgumentError("first dimension invalid ($(first(dims)) < 0)"))
         @boundscheck last(dims) < 0 && throw(ArgumentError("second dimension invalid ($(last(dims)) < 0)"))
         iszero(s.λ) && return spzeros(Tv, Ti, dims...)
@@ -662,8 +457,8 @@ end
     end
 end
 @static if VERSION < v"0.7.0-DEV.2543"
-    (::Type{Array{T}})(s::UniformScaling, dims::Dims{2}) where {T} = Matrix{T}(s, dims)
-    (::Type{Array{T}})(s::UniformScaling, m::Integer, n::Integer) where {T} = Matrix{T}(s, m, n)
+    Array{T}(s::UniformScaling, dims::Dims{2}) where {T} = Matrix{T}(s, dims)
+    Array{T}(s::UniformScaling, m::Integer, n::Integer) where {T} = Matrix{T}(s, m, n)
 end
 
 # https://github.com/JuliaLang/julia/pull/23271
@@ -675,29 +470,15 @@ end
 
 # 0.7.0-DEV.2581
 @static if !isdefined(Base, :Uninitialized)
-    if VERSION >= v"0.6.0"
-        include_string(@__MODULE__, """
-            struct Uninitialized end
-            Array{T}(::Uninitialized, args...) where {T} = Array{T}(args...)
-            Array{T,N}(::Uninitialized, args...) where {T,N} = Array{T,N}(args...)
-            Vector(::Uninitialized, args...) = Vector(args...)
-            Matrix(::Uninitialized, args...) = Matrix(args...)
+    struct Uninitialized end
+    Array{T}(::Uninitialized, args...) where {T} = Array{T}(args...)
+    Array{T,N}(::Uninitialized, args...) where {T,N} = Array{T,N}(args...)
+    Vector(::Uninitialized, args...) = Vector(args...)
+    Matrix(::Uninitialized, args...) = Matrix(args...)
 
-            BitArray{N}(::Uninitialized, args...) where {N} = BitArray{N}(args...)
-            BitArray(::Uninitialized, args...) = BitArray(args...)
-        """)
-    else
-        include_string(@__MODULE__, """
-            immutable Uninitialized end
-            (::Type{Array{T}}){T}(::Uninitialized, args...) = Array{T}(args...)
-            (::Type{Array{T,N}}){T,N}(::Uninitialized, args...) = Array{T,N}(args...)
-            (::Type{Vector})(::Uninitialized, args...) = Vector(args...)
-            (::Type{Matrix})(::Uninitialized, args...) = Matrix(args...)
+    BitArray{N}(::Uninitialized, args...) where {N} = BitArray{N}(args...)
+    BitArray(::Uninitialized, args...) = BitArray(args...)
 
-            (::Type{BitArray{N}}){N}(::Uninitialized, args...) = BitArray{N}(args...)
-            (::Type{BitArray})(::Uninitialized, args...) = BitArray(args...)
-        """)
-    end
     const uninitialized = Uninitialized()
     export Uninitialized, uninitialized
 end
@@ -786,29 +567,15 @@ end
 
 @static if !isdefined(Base, :Some)
     import Base: promote_rule, convert
-    if VERSION >= v"0.6.0"
-        include_string(@__MODULE__, """
-            struct Some{T}
-                value::T
-            end
-            promote_rule(::Type{Some{S}}, ::Type{Some{T}}) where {S,T} = Some{promote_type(S, T)}
-            promote_rule(::Type{Some{T}}, ::Type{Nothing}) where {T} = Union{Some{T}, Nothing}
-            convert(::Type{Some{T}}, x::Some) where {T} = Some{T}(convert(T, x.value))
-            convert(::Type{Union{Some{T}, Nothing}}, x::Some) where {T} = convert(Some{T}, x)
-            convert(::Type{Union{T, Nothing}}, x::Any) where {T} = convert(T, x)
-        """)
-    else
-        include_string(@__MODULE__, """
-            immutable Some{T}
-                value::T
-            end
-            promote_rule{S,T}(::Type{Some{S}}, ::Type{Some{T}}) = Some{promote_type(S, T)}
-            promote_rule{T}(::Type{Some{T}}, ::Type{Nothing}) = Union{Some{T}, Nothing}
-            convert{T}(::Type{Some{T}}, x::Some) = Some{T}(convert(T, x.value))
-            convert{T}(::Type{Union{Some{T}, Nothing}}, x::Some) = convert(Some{T}, x)
-            convert{T}(::Type{Union{T, Nothing}}, x::Any) = convert(T, x)
-        """)
+    struct Some{T}
+        value::T
     end
+    promote_rule(::Type{Some{S}}, ::Type{Some{T}}) where {S,T} = Some{promote_type(S, T)}
+    promote_rule(::Type{Some{T}}, ::Type{Nothing}) where {T} = Union{Some{T}, Nothing}
+    convert(::Type{Some{T}}, x::Some) where {T} = Some{T}(convert(T, x.value))
+    convert(::Type{Union{Some{T}, Nothing}}, x::Some) where {T} = convert(Some{T}, x)
+    convert(::Type{Union{T, Nothing}}, x::Any) where {T} = convert(T, x)
+
     convert(::Type{Nothing}, x::Any) = throw(MethodError(convert, (Nothing, x)))
     convert(::Type{Nothing}, x::Nothing) = nothing
     coalesce(x::Any) = x
