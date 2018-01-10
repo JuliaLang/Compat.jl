@@ -269,9 +269,6 @@ if VERSION < v"0.7.0-DEV.3017"
     end
 end
 
-@test xor(1,5) == 4
-@test 1 ⊻ 5 == 4
-
 # julia#20414
 @compat let T = Array{<:Real}, f(x::AbstractVector{<:Real}) = 1
     @test isa([3,4],T)
@@ -288,10 +285,6 @@ end
 # supertype operator
 @test !(Int >: Integer)
 @test Integer >: Int
-
-# julia#19246
-@test numerator(1//2) === 1
-@test denominator(1//2) === 2
 
 # julia#19088
 let io = IOBuffer()
@@ -324,8 +317,8 @@ end
 # julia#17155, tests from Base Julia
 @test (Compat.Unicode.uppercase∘hex)(239487) == "3A77F"
 let str = randstring(20)
-    @test filter(!Compat.Unicode.isupper, str) == replace(str, r"[A-Z]", "")
-    @test filter(!Compat.Unicode.islower, str) == replace(str, r"[a-z]", "")
+    @test filter(!Compat.Unicode.isupper, str) == replace(str, r"[A-Z]" => "")
+    @test filter(!Compat.Unicode.islower, str) == replace(str, r"[a-z]" => "")
 end
 
 # julia#19950, tests from Base (#20028)
@@ -369,152 +362,6 @@ for x in (3.1, -17, 3//4, big(111.1), Inf)
     @test min(x) == max(x) == x
     @test minmax(x) == (x, x)
 end
-
-# julia#20006
-@compat abstract type AbstractFoo20006 end
-eval(Expr(
-    struct_sym, false,
-    Expr(:(<:), :(ConcreteFoo20006{T<:Int}), :AbstractFoo20006),
-    quote end))
-eval(Expr(
-    struct_sym, false,
-    Expr(:(<:), :(ConcreteFoo20006N{T<:Int,N}), :AbstractFoo20006),
-    quote end))
-@compat ConcreteFoo200061{T<:Int} = ConcreteFoo20006N{T,1}
-@test Compat.TypeUtils.isabstract(AbstractFoo20006)
-@test !Compat.TypeUtils.isabstract(ConcreteFoo20006)
-@test !Compat.TypeUtils.isabstract(ConcreteFoo20006N)
-@test !Compat.TypeUtils.isabstract(ConcreteFoo200061)
-@test !Compat.TypeUtils.isabstract(StridedArray)
-@test Compat.TypeUtils.parameter_upper_bound(ConcreteFoo20006, 1) == Int
-@test isa(Compat.TypeUtils.typename(Array), TypeName)
-
-# @view and @views tests copied from Base
-let X = reshape(1:24,2,3,4), Y = 4:-1:1
-    @test isa(@view(X[1:3]), SubArray)
-
-    @test X[1:end] == @dotcompat (@view X[1:end]) # test compatibility of @. and @view
-    @test X[1:end-3] == @view X[1:end-3]
-    @test X[1:end,2,2] == @view X[1:end,2,2]
-    @test reshape(X[1,2,1:end-2],2) == @view X[1,2,1:end-2]
-    @test reshape(X[1,2,Y[2:end]],3) == @view X[1,2,Y[2:end]]
-    @test reshape(X[1:end,2,Y[2:end]],2,3) == @view X[1:end,2,Y[2:end]]
-
-    u = (1,2:3)
-    @test reshape(X[u...,2:end],2,3) == @view X[u...,2:end]
-    @test reshape(X[(1,)...,(2,)...,2:end],3) == @view X[(1,)...,(2,)...,2:end]
-
-    # the following tests fail on 0.5 because of bugs in the 0.5 Base.@view
-    # macro (a bugfix is scheduled to be backported from 0.6: julia#20247)
-    if !isdefined(Base, Symbol("@view")) || VERSION ≥ v"0.6.0-dev.2406"
-        # test macro hygiene
-        let size=(x,y)-> error("should not happen"), Base=nothing
-            @test X[1:end,2,2] == @view X[1:end,2,2]
-        end
-
-        # test that side effects occur only once
-        let foo = typeof(X)[X]
-            @test X[2:end-1] == @view (push!(foo,X)[1])[2:end-1]
-            @test foo == typeof(X)[X, X]
-        end
-    end
-
-    # test @views macro
-    @views @compat let f!(x) = x[1:end-1] .+= x[2:end].^2
-        x = [1,2,3,4]
-        f!(x)
-        @test x == [5,11,19,4]
-        @test isa(x[1:3],SubArray)
-        @test x[2] === 11
-        @test Dict((1:3) => 4)[1:3] === 4
-        x[1:2] = 0
-        @test x == [0,0,19,4]
-        x[1:2] .= 5:6
-        @test x == [5,6,19,4]
-        f!(x[3:end])
-        @test x == [5,6,35,4]
-        x[Y[2:3]] .= 7:8
-        @test x == [5,8,7,4]
-        @dotcompat x[(3,)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
-        @test x == [5,8,10,4]
-        i = Int[]
-        # test that lhs expressions in update operations are evaluated only once:
-        x[push!(i,4)[1]] += 5
-        @test x == [5,8,10,9] && i == [4]
-        x[push!(i,3)[end]] += 2
-        @test x == [5,8,12,9] && i == [4,3]
-        @dotcompat x[3:end] = 0       # make sure @. works with end expressions in @views
-        @test x == [5,8,0,0]
-    end
-    # same tests, but make sure we can switch the order of @compat and @views
-    @compat @views let f!(x) = x[1:end-1] .+= x[2:end].^2
-        x = [1,2,3,4]
-        f!(x)
-        @test x == [5,11,19,4]
-        @test isa(x[1:3],SubArray)
-        @test x[2] === 11
-        @test Dict((1:3) => 4)[1:3] === 4
-        x[1:2] = 0
-        @test x == [0,0,19,4]
-        x[1:2] .= 5:6
-        @test x == [5,6,19,4]
-        f!(x[3:end])
-        @test x == [5,6,35,4]
-        x[Y[2:3]] .= 7:8
-        @test x == [5,8,7,4]
-        @dotcompat x[(3,)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
-        @test x == [5,8,10,4]
-        i = Int[]
-        # test that lhs expressions in update operations are evaluated only once:
-        x[push!(i,4)[1]] += 5
-        @test x == [5,8,10,9] && i == [4]
-        x[push!(i,3)[end]] += 2
-        @test x == [5,8,12,9] && i == [4,3]
-        @dotcompat x[3:end] = 0       # make sure @. works with end expressions in @views
-        @test x == [5,8,0,0]
-    end
-    @views @test isa(X[1:3], SubArray)
-    @test X[1:end] == @views X[1:end]
-    @test X[1:end-3] == @views X[1:end-3]
-    @test X[1:end,2,2] == @views X[1:end,2,2]
-    @test reshape(X[1,2,1:end-2],2) == @views X[1,2,1:end-2]
-    @test reshape(X[1,2,Y[2:end]],3) == @views X[1,2,Y[2:end]]
-    @test reshape(X[1:end,2,Y[2:end]],2,3) == @views X[1:end,2,Y[2:end]]
-    @test reshape(X[u...,2:end],2,3) == @views X[u...,2:end]
-    @test reshape(X[(1,)...,(2,)...,2:end],3) == @views X[(1,)...,(2,)...,2:end]
-
-    # test macro hygiene
-    let size=(x,y)-> error("should not happen"), Base=nothing
-        @test X[1:end,2,2] == @views X[1:end,2,2]
-    end
-end
-
-# @. (@__dot__) tests, from base:
-let x = [4, -9, 1, -16]
-    @test [2, 3, 4, 5] == @dotcompat(1 + sqrt($sort(abs(x))))
-    @test @dotcompat(x^2) == x.^2
-    @dotcompat x = 2
-    @test x == [2,2,2,2]
-end
-@test [1,4,9] == @dotcompat let x = [1,2,3]; x^2; end
-let x = [1,2,3], y = x
-    @dotcompat for i = 1:3
-        y = y^2 # should convert to y .= y.^2
-    end
-    @test x == [1,256,6561]
-end
-let x = [1,2,3]
-    @dotcompat f(x) = x^2
-    @test f(x) == [1,4,9]
-end
-
-# PR #20418
-@compat abstract type Abstract20418{T} <: Ref{T} end
-@test Compat.TypeUtils.isabstract(Abstract20418)
-@compat primitive type Primitive20418{T} <: Ref{T} 16 end
-@test !Compat.TypeUtils.isabstract(Primitive20418)
-@test isbits(Primitive20418{Int})
-@test sizeof(Primitive20418{Int}) == 2
 
 # julia #18839
 module Test18839
@@ -573,18 +420,6 @@ let a = CompatArray.CartesianArray(rand(2,3)), b = CompatArray.LinearArray(rand(
     @test IndexStyle(b) === IndexLinear()
 end
 
-if VERSION < v"0.6.0-dev.1653"
-    for (A,val) in ((zeros(1:5, Float32, 3, 2), 0),
-                    (ones(1:5, Float32, 3, 2), 1),
-                    (zeros(1:5, Float32, (3, 2)), 0),
-                    (ones(1:5, Float32, (3, 2)), 1))
-        @test isa(A, Matrix{Float32}) && size(A) == (3,2) && all(x->x==val, A)
-    end
-    for (A,val) in ((zeros(1:5, Float32), 0),
-                    (ones(1:5, Float32), 1))
-        @test isa(A, Vector{Float32}) && size(A) == (5,) && all(x->x==val, A)
-    end
-end
 
 # PR 20203
 @test Compat.readline(IOBuffer("Hello, World!\n")) == "Hello, World!"
@@ -622,23 +457,6 @@ let zbuf = IOBuffer([0xbf, 0xc0, 0x00, 0x00, 0x40, 0x20, 0x00, 0x00,
     z2 = read(zbuf, ComplexF64)
     @test bswap(z1) === -1.5f0 + 2.5f0im
     @test bswap(z2) ===  3.5 - 4.5im
-end
-
-# PR 19449
-using Compat: StringVector
-@test length(StringVector(5)) == 5
-@test String(fill!(StringVector(5), 0x61)) == "aaaaa"
-
-# collect
-if VERSION < v"0.7.0-"
-    # Note: This is disabled on 0.7, since the Compat.collect functionality is only
-    # applicable on 0.5, and OffsetArrays currently has some incompatibilities with
-    # 0.7. This can be reenabled later if needed.
-    using OffsetArrays
-    a = OffsetArray(1:3, -1:1)
-    b = Compat.collect(a)
-    @test indices(b) === (Base.OneTo(3),)
-    @test b == [1,2,3]
 end
 
 # PR 22064
@@ -715,9 +533,9 @@ for T in (Float64, ComplexF32, BigFloat, Int)
 end
 
 let
-    @compat cr(::CartesianRange{2}) = 2
-    @test cr(CartesianRange((5, 3))) == 2
-    @test_throws MethodError cr(CartesianRange((5, 3, 2)))
+    @compat cr(::CartesianIndices{2}) = 2
+    @test cr(CartesianIndices((5, 3))) == 2
+    @test_throws MethodError cr(CartesianIndices((5, 3, 2)))
 end
 if VERSION < v"0.7.0-DEV.880"
     # ensure we don't bork any non-updated expressions
@@ -743,7 +561,7 @@ eval(Expr(struct_sym, false, :TestType, Expr(:block, :(a::Int), :b)))
 # PR 22761
 @test_throws OverflowError throw(OverflowError("overflow"))
 
-let x = fill!(StringVector(5), 0x61)
+let x = fill!(Compat.StringVector(5), 0x61)
     # 0.7
     @test pointer(x) == pointer(String(x))
 end
@@ -769,7 +587,7 @@ end
 
 let
     A14 = [11 13; 12 14]
-    R = CartesianRange(indices(A14))
+    R = CartesianIndices(Compat.axes(A14))
     @test [a for (a,b) in pairs(IndexLinear(),    A14)] == [1,2,3,4]
     @test [a for (a,b) in pairs(IndexCartesian(), A14)] == vec(collect(R))
     @test [b for (a,b) in pairs(IndexLinear(),    A14)] == [11,12,13,14]
@@ -878,12 +696,10 @@ end
 @test cov([1 2; 3 4], 1, corrected=false) == fill(1.0, 2, 2)
 @test cov([1 2; 3 4], [0 4; 8 9], 1, corrected=true) == [8.0 5.0; 8.0 5.0]
 @test cov([1 2; 3 4], [0 4; 8 9], 1, corrected=false) == [4.0 2.5; 4.0 2.5]
-if VERSION >= v"0.6"
-    @test cov([1, 2], corrected=true) === 0.5
-    @test cov([1, 2], corrected=false) === 0.25
-    @test cov([1, 2], [0, 10], corrected=true) === 5.0
-    @test cov([1, 2], [0, 10], corrected=false) === 2.5
-end
+@test cov([1, 2], corrected=true) === 0.5
+@test cov([1, 2], corrected=false) === 0.25
+@test cov([1, 2], [0, 10], corrected=true) === 5.0
+@test cov([1, 2], [0, 10], corrected=false) === 2.5
 
 # 0.7
 @test isconcrete(Int)
@@ -1054,8 +870,8 @@ end
 # 0.7.0-DEV.3017
 @test isa(Some(1), Some{Int})
 @test convert(Some{Float64}, Some(1)) == Some(1.0)
-@test convert(Void, nothing) == nothing
-@test_throws MethodError convert(Void, 1)
+@test convert(Nothing, nothing) == nothing
+@test_throws MethodError convert(Nothing, 1)
 @test Some(nothing) != nothing
 @test coalesce(Some(1)) == 1
 @test coalesce(nothing) == nothing
@@ -1101,8 +917,5 @@ let c = CartesianIndices(1:3, 1:2), l = LinearIndices(1:3, 1:2)
     @test l[vec(c)] == collect(1:6)
 end
 
-if VERSION < v"0.6.0"
-    include("deprecated.jl")
-end
 
 nothing
