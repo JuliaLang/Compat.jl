@@ -941,7 +941,7 @@ let a = [0,1,2,3,0,1,2,3]
     @test findfirst(equalto(3), [1,2,4,1,2,3,4]) == 6
     @test findfirst(!equalto(1), [1,2,4,1,2,3,4]) == 2
     @test findnext(equalto(1), a, 4) == 6
-    @test findnext(equalto(5), a, 4) == 0
+    @test Compat.findnext(equalto(5), a, 4) == nothing
     @test findlast(equalto(3), [1,2,4,1,2,3,4]) == 6
     @test findprev(equalto(1), a, 4) == 2
     @test findprev(equalto(1), a, 8) == 6
@@ -1113,6 +1113,37 @@ let c = CartesianIndices(1:3, 1:2), l = LinearIndices(1:3, 1:2)
     @test l == l[c] == map(i -> l[i], c)
     @test l[vec(c)] == collect(1:6)
 end
+
+for a in ([false, false], BitVector([false, false]))
+    @test Compat.findfirst(a) == nothing
+    @test Compat.findlast(a)  == nothing
+    @test Compat.findfirst(!, a) == 1
+    @test Compat.findlast(!, a)  == 2
+end
+for a in ([true, true], BitVector([true, true]))
+    @test Compat.findfirst(a) == 1
+    @test Compat.findlast(a)  == 2
+    @test Compat.findfirst(!, a) == nothing
+    @test Compat.findlast(!, a)  == nothing
+end
+for a in ([true, false], BitVector([true, false]))
+    @test Compat.findnext(a, 1) == 1
+    @test Compat.findprev(a, 2) == 1
+    @test Compat.findnext(a, 2) == nothing
+    @test Compat.findnext(a, 1) == 1
+    @test Compat.findprev(a, 2) == 1
+    @test Compat.findprev(a, 1) == 1
+    @test Compat.findnext(!, a, 1) == 2
+    @test Compat.findprev(!, a, 2) == 2
+    @test Compat.findnext(!, a, 2) == 2
+    @test Compat.findnext(!, a, 1) == 2
+    @test Compat.findprev(!, a, 2) == 2
+    @test Compat.findprev(!, a, 1) == nothing
+end
+@test Compat.findfirst(r"test", "this is a test") == 11:14
+# @test Compat.findfirst("fo", "foo,bar,baz") == 1:2
+# @test Compat.findnext("fo", "foo,bar,baz", 3) == 0:-1
+# @test Compat.findfirst(equalto('x'), "Hello, world.\n") == nothing
 
 if VERSION < v"0.6.0"
     include("deprecated.jl")

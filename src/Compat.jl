@@ -1223,6 +1223,9 @@ end
     end
 end
 
+if VERSION < v"0.7.0-DEV.3399"
+    include("find.jl")
+end
 
 include("deprecated.jl")
 
