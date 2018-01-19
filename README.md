@@ -245,6 +245,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `codeunits(s)` returns an array-like view of the `UInt8` code units of
   a string and `ncodeunits(s)` returns the number of code units ([#25241]).
+* `Dates.Period` rounding (e.g., `round(Dates.Hour(36), Dates.Day, RoundNearestTiesUp) == Dates.Day(2)` ([##24182]).
+
 
 ## Renaming
 
