@@ -1306,7 +1306,7 @@ end
 
 @static if !isdefined(Base, :argmin)
     const argmin = indmin
-    const argmax = argmax
+    const argmax = indmax
     export argmin, argmax
 end
 
