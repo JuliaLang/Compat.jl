@@ -837,6 +837,12 @@ else
     import REPL
 end
 
+if VERSION < v"0.7.0-DEV.3476"
+    const Serialization = Base.Serializer
+else
+    import Serialization
+end
+
 # 0.7.0-DEV.1993
 @static if !isdefined(Base, :EqualTo)
     if VERSION >= v"0.6.0"

@@ -1190,6 +1190,14 @@ module TestREPL
     @test isdefined(@__MODULE__, :REPL)
 end
 
+# 0.7.0-DEV.3476
+module TestSerialization
+    using Compat
+    using Compat.Serialization
+    using Compat.Test
+    @test isdefined(@__MODULE__, :Serialization)
+end
+
 if VERSION < v"0.6.0"
     include("deprecated.jl")
 end
