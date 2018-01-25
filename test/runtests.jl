@@ -969,12 +969,15 @@ end
 let a = [1 0 0; 0 1 0; 0 0 1]
     @test Matrix{Int}(I, 3, 3)::Matrix{Int} == a
     @test Matrix{Float64}(I, (3, 2))::Matrix{Float64} == a[:,1:2]
+    @test Matrix(1I, 3, 3)::Matrix{Int} == a
     @test Array{Int}(I, (3, 3))::Matrix{Int} == a
     @test Array{Float64}(I, 3, 2)::Matrix{Float64} == a[:,1:2]
+    @test Array(1.0I, (3, 3))::Matrix{Float64} == a
     @test SparseMatrixCSC{Int}(I, 3, 3)::SparseMatrixCSC{Int,Int} == a
     @test SparseMatrixCSC{Float64}(I, (3, 2))::SparseMatrixCSC{Float64,Int} == a[:,1:2]
     @test SparseMatrixCSC{Bool,Int16}(I, (3, 3))::SparseMatrixCSC{Bool,Int16} == a
     @test SparseMatrixCSC{ComplexF64,Int8}(I, 3, 2)::SparseMatrixCSC{ComplexF64,Int8} == a[:,1:2]
+    @test SparseMatrixCSC((1.0+0.0im)I, 3, 2)::SparseMatrixCSC{ComplexF64,Int} == a[:,1:2]
 end
 
 # 0.7.0-DEV.2581

@@ -902,10 +902,12 @@ end
 @static if VERSION < v"0.7.0-DEV.2377"
     (::Type{Matrix{T}}){T}(s::UniformScaling, dims::Dims{2}) = setindex!(zeros(T, dims), T(s.λ), diagind(dims...))
     (::Type{Matrix{T}}){T}(s::UniformScaling, m::Integer, n::Integer) = Matrix{T}(s, Dims((m, n)))
+    (::Type{Matrix})(s::UniformScaling, dims...) = Matrix{eltype(s)}(s, dims...)
 
     (::Type{SparseMatrixCSC{Tv,Ti}}){Tv,Ti}(s::UniformScaling, m::Integer, n::Integer) = SparseMatrixCSC{Tv,Ti}(s, Dims((m, n)))
     (::Type{SparseMatrixCSC{Tv}}){Tv}(s::UniformScaling, m::Integer, n::Integer) = SparseMatrixCSC{Tv}(s, Dims((m, n)))
     (::Type{SparseMatrixCSC{Tv}}){Tv}(s::UniformScaling, dims::Dims{2}) = SparseMatrixCSC{Tv,Int}(s, dims)
+    (::Type{SparseMatrixCSC})(s::UniformScaling, dims...) = SparseMatrixCSC{eltype(s),Int}(s, dims...)
     function (::Type{SparseMatrixCSC{Tv,Ti}}){Tv,Ti}(s::UniformScaling, dims::Dims{2})
         @boundscheck first(dims) < 0 && throw(ArgumentError("first dimension invalid ($(first(dims)) < 0)"))
         @boundscheck last(dims) < 0 && throw(ArgumentError("second dimension invalid ($(last(dims)) < 0)"))
@@ -921,6 +923,7 @@ end
 @static if VERSION < v"0.7.0-DEV.2543"
     (::Type{Array{T}}){T}(s::UniformScaling, dims::Dims{2}) = Matrix{T}(s, dims)
     (::Type{Array{T}}){T}(s::UniformScaling, m::Integer, n::Integer) = Matrix{T}(s, m, n)
+    (::Type{Array})(s::UniformScaling, dims...) = Matrix{eltype(s)}(s, dims...)
 end
 
 # https://github.com/JuliaLang/julia/pull/23271
