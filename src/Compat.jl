@@ -838,7 +838,10 @@ else
 end
 
 if VERSION < v"0.7.0-DEV.3476"
-    const Serialization = Base.Serializer
+    @eval module Serialization
+        import Base.Serializer: serialize, deserialize, SerializationState
+        export serialize, deserialize, SerializationState
+    end
 else
     import Serialization
 end

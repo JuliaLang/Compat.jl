@@ -1196,6 +1196,9 @@ module TestSerialization
     using Compat.Serialization
     using Compat.Test
     @test isdefined(@__MODULE__, :Serialization)
+    @test isdefined(@__MODULE__, :serialize)
+    @test isdefined(@__MODULE__, :deserialize)
+    @test isdefined(@__MODULE__, :SerializationState)
 end
 
 if VERSION < v"0.6.0"
