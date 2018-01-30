@@ -283,6 +283,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isleaftype` is now `isconcrete` ([#23666])
 
+* `isconcrete` is now `isconcretetype` ([#25496])
+
 * `IntSet` is now `BitSet` ([#24282])
 
 * `Complex32`, `Complex64`, and `Complex128` are now `ComplexF16`, `ComplexF32`, and
@@ -507,3 +509,4 @@ includes this fix. Find the minimum version from there.
 [#25629]: https://github.com/JuliaLang/julia/issues/25629
 [#25654]: https://github.com/JuliaLang/julia/issues/25654
 [#24182]: https://github.com/JuliaLang/julia/issues/24182
+[#25496]: https://github.com/JuliaLang/julia/issues/25496

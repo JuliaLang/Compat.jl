@@ -888,7 +888,7 @@ if VERSION >= v"0.6"
 end
 
 # 0.7
-@test isconcrete(Int)
+@test isconcretetype(Int)
 
 # 0.7
 module Test23876

@@ -741,8 +741,13 @@ if VERSION < v"0.7.0-DEV.1325"
 end
 
 # 0.7.0-DEV.1775
+@static if !isdefined(Base, :isconcretetype)
+    const isconcretetype =  VERSION < v"0.7.0-DEV.1775" ? isleaftype : isconcrete
+    export isconcretetype
+end
+
 @static if !isdefined(Base, :isconcrete)
-    const isconcrete = isleaftype
+    @deprecate isconcrete isconcretetype
     export isconcrete
 end
 
