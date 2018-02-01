@@ -1305,4 +1305,10 @@ end
 @test lastindex(zeros(4)) == 4
 @test lastindex(zeros(4,4)) == 16
 
+# 0.7.0-DEV.3585
+let buf = IOBuffer()
+    printstyled(IOContext(buf, :color=>true), "foo", color=:red)
+    @test startswith(String(take!(buf)), Base.text_colors[:red])
+end
+
 nothing
