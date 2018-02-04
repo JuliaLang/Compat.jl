@@ -1383,6 +1383,8 @@ end
         @inbounds result = reshape(1:prod(dims), dims)[(I .- first.(iter.indices) .+ 1)...]
         return result
     end
+elseif VERSION < v"0.7.0-DEV.3395"
+    Base.size(iter::LinearIndices{N,R}) where {N,R} = length.(iter.indices)
 end
 
 @static if !isdefined(Base, Symbol("@info"))
