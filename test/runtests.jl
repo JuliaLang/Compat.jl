@@ -389,7 +389,7 @@ eval(Expr(
 @test !Compat.TypeUtils.isabstract(ConcreteFoo200061)
 @test !Compat.TypeUtils.isabstract(StridedArray)
 @test Compat.TypeUtils.parameter_upper_bound(ConcreteFoo20006, 1) == Int
-@test isa(Compat.TypeUtils.typename(Array), TypeName)
+@test isa(Compat.TypeUtils.typename(Array), Core.TypeName)
 @test isabstracttype(AbstractFoo20006)
 @test !isabstracttype(ConcreteFoo20006)
 @test !isabstracttype(ConcreteFoo20006N)
