@@ -1629,6 +1629,15 @@ else
     findall(b::OccursIn, a::Number) = a in b.x ? [1] : Vector{Int}()
 end
 
+if VERSION >= v"0.7.0-DEV.3666"
+    import UUIDs
+else
+    @eval module UUIDs
+        import ..Random: uuid1, uuid4, uuid_version, UUID
+        export uuid1, uuid4, uuid_version, UUID
+    end
+end
+
 include("deprecated.jl")
 
 end # module Compat

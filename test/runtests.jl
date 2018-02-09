@@ -1393,4 +1393,19 @@ end
 @test findall([true, false, true]) == [1, 3]
 @test findall(occursin([1, 2]), [1]) == [1]
 
+# 0.7.0-DEV.3666
+module TestUUIDs
+    using Compat
+    using Compat.UUIDs
+    using Compat.Test
+    @test isdefined(@__MODULE__, :uuid1)
+    @test isdefined(@__MODULE__, :uuid4)
+    @test isdefined(@__MODULE__, :uuid_version)
+
+    @test uuid_version(uuid1()) == 1
+    @test uuid_version(uuid4()) == 4
+    @test uuid1() isa UUID
+    @test uuid4() isa UUID
+end
+
 nothing
