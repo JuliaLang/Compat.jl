@@ -1318,6 +1318,9 @@ end
 @test !GC.enable(false)
 @test !GC.enable(true)
 @test GC.enable(true)
+let x = 1
+    @test GC.@preserve(x) == 1
+end
 
 @test eltype(Base.Multimedia.displays) <: AbstractDisplay
 
