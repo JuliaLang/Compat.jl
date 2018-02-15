@@ -1486,8 +1486,8 @@ end
         using Base: gc
         const enable = Base.gc_enable
         @static if !isdefined(Base, Symbol("@gc_preserve"))
-            macro preserve(x)
-                esc(x)
+            macro preserve(args...)
+                esc(args[end])
             end
         else
             @eval const $(Symbol("@preserve")) = Base.$(Symbol("@gc_preserve"))
