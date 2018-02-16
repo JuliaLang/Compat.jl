@@ -1408,4 +1408,8 @@ module TestUUIDs
     @test uuid4() isa UUID
 end
 
+# 0.7.0-DEV.3589
+import Compat.Markdown
+@test isa(Markdown.parse("foo"), Markdown.MD)
+
 nothing
