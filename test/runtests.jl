@@ -1413,4 +1413,12 @@ end
 import Compat.Markdown
 @test isa(Markdown.parse("foo"), Markdown.MD)
 
+# 0.7.0-DEV.3526
+module TestNames
+    export foo
+    function bar end
+end
+@test :foo in Compat.names(TestNames)
+@test :bar in Compat.names(TestNames, all=true)
+
 nothing
