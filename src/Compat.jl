@@ -1552,6 +1552,14 @@ end
 @static if !isdefined(Base, :lastindex)
     const lastindex = endof
     export lastindex
+    firstindex(a::AbstractArray) = (Base.@_inline_meta; first(linearindices(a)))
+    firstindex(c::Char) = 1
+    firstindex(c::Number) = 1
+    firstindex(p::Pair) = 1
+    firstindex(cmd::Cmd) = firstindex(cmd.exec)
+    firstindex(s::AbstractString) = 1
+    firstindex(t::Tuple) = 1
+    export firstindex
 end
 
 # 0.7.0-DEV.3585
