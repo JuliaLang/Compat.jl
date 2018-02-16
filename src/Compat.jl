@@ -939,6 +939,12 @@ else
     import Random
 end
 
+if VERSION < v"0.7.0-DEV.3589"
+    const Markdown = Base.Markdown
+else
+    import Markdown
+end
+
 if VERSION < v"0.7.0-DEV.2609"
     @eval module SuiteSparse
         if Base.USE_GPL_LIBS
