@@ -274,6 +274,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `firstindex` to obtain the first index of an iterable ([#25458]).
 
+* `Compat.names` supporting keyword arguments for `all` and `imported` ([#25647]).
+
 
 ## Renaming
 
@@ -511,6 +513,7 @@ includes this fix. Find the minimum version from there.
 [#23812]: https://github.com/JuliaLang/julia/issues/23812
 [#23931]: https://github.com/JuliaLang/julia/issues/23931
 [#24047]: https://github.com/JuliaLang/julia/issues/24047
+[#24182]: https://github.com/JuliaLang/julia/issues/24182
 [#24282]: https://github.com/JuliaLang/julia/issues/24282
 [#24361]: https://github.com/JuliaLang/julia/issues/24361
 [#24372]: https://github.com/JuliaLang/julia/issues/24372
@@ -526,6 +529,7 @@ includes this fix. Find the minimum version from there.
 [#24714]: https://github.com/JuliaLang/julia/issues/24714
 [#24785]: https://github.com/JuliaLang/julia/issues/24785
 [#24808]: https://github.com/JuliaLang/julia/issues/24808
+[#24831]: https://github.com/JuliaLang/julia/issues/24831
 [#24874]: https://github.com/JuliaLang/julia/issues/24874
 [#25012]: https://github.com/JuliaLang/julia/issues/25012
 [#25021]: https://github.com/JuliaLang/julia/issues/25021
@@ -555,9 +559,10 @@ includes this fix. Find the minimum version from there.
 [#25629]: https://github.com/JuliaLang/julia/issues/25629
 [#25634]: https://github.com/JuliaLang/julia/issues/25634
 [#25646]: https://github.com/JuliaLang/julia/issues/25646
+[#25647]: https://github.com/JuliaLang/julia/issues/25647
 [#25654]: https://github.com/JuliaLang/julia/issues/25654
 [#25705]: https://github.com/JuliaLang/julia/issues/25705
 [#25706]: https://github.com/JuliaLang/julia/issues/25706
+[#25738]: https://github.com/JuliaLang/julia/issues/25738
 [#25780]: https://github.com/JuliaLang/julia/issues/25780
-[#24182]: https://github.com/JuliaLang/julia/issues/24182
-[#24673]: https://github.com/JuliaLang/julia/issues/24673
+[#25819]: https://github.com/JuliaLang/julia/issues/25819

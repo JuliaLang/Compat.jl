@@ -1643,6 +1643,13 @@ else
     findall(b::OccursIn, a::Number) = a in b.x ? [1] : Vector{Int}()
 end
 
+# https://github.com/JuliaLang/julia/pull/25647
+@static if VERSION < v"0.7.0-DEV.3526"
+    names(m; all=true, imported=true) = Base.names(m, all, imported)
+else
+    import Base: names
+end
+
 if VERSION >= v"0.7.0-DEV.3666"
     import UUIDs
 else
