@@ -1643,6 +1643,15 @@ else
     findall(b::OccursIn, a::Number) = a in b.x ? [1] : Vector{Int}()
 end
 
+@static if VERSION < v"0.7.0-DEV.4047" #26089
+    showable(mime, x) = mimewritable(mime, x)
+    export showable
+end
+
+@static if VERSION < v"0.7.0-DEV.4010" #25990
+    Base.repr(mime::Union{AbstractString,MIME}, x) = reprmime(mime, x)
+end
+
 # https://github.com/JuliaLang/julia/pull/25647
 @static if VERSION < v"0.7.0-DEV.3526"
     names(m; all=true, imported=true) = Base.names(m, all, imported)
