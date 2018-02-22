@@ -1427,4 +1427,11 @@ end
 @test :foo in Compat.names(TestNames)
 @test :bar in Compat.names(TestNames, all=true)
 
+# 0.7.0-DEV.3734
+let buf = Compat.IOBuffer(read=true, write=false, maxsize=25)
+    @test buf.readable
+    @test !buf.writable
+    @test buf.maxsize == 25
+end
+
 nothing

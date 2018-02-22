@@ -276,6 +276,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.names` supporting keyword arguments for `all` and `imported` ([#25647]).
 
+* `Compat.IOBuffer` supporting keyword arguments ([#25873]).
+
 
 ## Renaming
 
@@ -571,5 +573,6 @@ includes this fix. Find the minimum version from there.
 [#25738]: https://github.com/JuliaLang/julia/issues/25738
 [#25780]: https://github.com/JuliaLang/julia/issues/25780
 [#25819]: https://github.com/JuliaLang/julia/issues/25819
+[#25873]: https://github.com/JuliaLang/julia/issues/25873
 [#25990]: https://github.com/JuliaLang/julia/issues/25990
 [#26089]: https://github.com/JuliaLang/julia/issues/26089
