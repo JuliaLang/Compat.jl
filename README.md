@@ -281,6 +281,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Display` is now `AbstractDisplay` ([#24831]).
 
+* `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
+
 * `$` is now `xor` or `⊻` ([#18977])
 
 * `num` and `den` are now `numerator` and `denominator` ([#19246])
@@ -566,3 +568,5 @@ includes this fix. Find the minimum version from there.
 [#25738]: https://github.com/JuliaLang/julia/issues/25738
 [#25780]: https://github.com/JuliaLang/julia/issues/25780
 [#25819]: https://github.com/JuliaLang/julia/issues/25819
+[#25990]: https://github.com/JuliaLang/julia/issues/25990
+[#26089]: https://github.com/JuliaLang/julia/issues/26089
