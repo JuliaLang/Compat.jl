@@ -4,6 +4,14 @@ module Compat
 
 using Base.Meta
 
+function __init__()
+    @static if !isdefined(Base, :devnull)
+        global stdin = STDIN
+        global stdout = STDOUT
+        global stderr = STDERR
+    end
+end
+
 @static if !isdefined(Base, Symbol("@nospecialize"))
     # 0.7
     macro nospecialize(arg)
@@ -1650,6 +1658,11 @@ end
 
 @static if VERSION < v"0.7.0-DEV.4010" #25990
     Base.repr(mime::Union{AbstractString,MIME}, x) = reprmime(mime, x)
+end
+
+@static if !isdefined(Base, :devnull)
+    export devnull, stdin, stdout, stderr
+    const devnull = DevNull
 end
 
 # https://github.com/JuliaLang/julia/pull/25647
