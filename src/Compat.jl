@@ -5,8 +5,21 @@ module Compat
 include("compatmacro.jl")
 
 @static if !isdefined(Base, :devnull) #25959
-     export devnull
-     const devnull = DevNull
+    export devnull, stdout, stdin, stderr
+    const devnull = DevNull
+    for f in (:stdout, :stdin, :stderr)
+        F = Symbol(uppercase(string(f)))
+        rf = Symbol(string("_redirect_", f))
+        @eval begin
+            $f = $F
+            # overload internal _redirect_std* functions
+            # so that they change Compat.std*
+            function Base.$rf(stream::IO)
+                invoke(Base.$rf, Tuple{Any}, stream)
+                global $f = $F
+            end
+        end
+    end
 end
 
 @static if !isdefined(Base, Symbol("@nospecialize"))

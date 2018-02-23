@@ -366,8 +366,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `object_id` is now `objectid` ([#25615]).
 
 * `DevNull`, `STDIN`, `STDOUT` and `STDERR` are now `devnull`, `stdin`, `stdout` and
-  `stderr` respectively ([#25959]).   To use `stdout`, `stdin`, or `stderr`, wrap your
-  code in the `@compat` macro.
+  `stderr` respectively ([#25959]).
 
 ## New macros
 

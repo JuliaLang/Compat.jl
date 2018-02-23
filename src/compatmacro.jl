@@ -78,12 +78,6 @@ function _compat(ex::Expr)
     return Expr(ex.head, map(_compat, ex.args)...)
 end
 
-@static if VERSION < v"0.7.0-DEV.4068" #25959
-    # stdin/stdout/stderr need to be rewritten with a macro — defining Compat.stdout=STDOUT
-    # won't work because the value of STDOUT can change at runtime via redirect_stdout etc.
-    _compat(s::Symbol) = s===:stdin ? :STDIN : s===:stdout ? :STDOUT : s===:stderr ? :STDERR : s
-end
-
 _compat(ex) = ex
 
 function _get_typebody(ex::Expr)
