@@ -365,6 +365,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `object_id` is now `objectid` ([#25615]).
 
+* `DevNull`, `STDIN`, `STDOUT` and `STDERR` are now `devnull`, `stdin`, `stdout` and
+  `stderr` respectively ([#25959]).
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])
@@ -384,7 +387,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 * The logging macros `@error`, `@warn`, `@info` and `@debug` can be used as
   `Compat.@error`, `Compat.@warn`, `Compat.@info` and `Compat.@debug` on Julia 0.6 ([#24490]).
   Note that the behavior do not mirror the logging macros in Julia 0.7, instead on Julia 0.6:
-  - Messages are printed to `STDERR` (like `info` and `warn` on Julia 0.6) and not to a
+  - Messages are printed to `stderr` (like `info` and `warn` on Julia 0.6) and not to a
     dedicated logging stream.
   - The loglevel can not be controlled, but `Compat.@debug` messages can be turned on/off
     by calling `Compat.enable_debug(true/false)`.
@@ -568,5 +571,6 @@ includes this fix. Find the minimum version from there.
 [#25738]: https://github.com/JuliaLang/julia/issues/25738
 [#25780]: https://github.com/JuliaLang/julia/issues/25780
 [#25819]: https://github.com/JuliaLang/julia/issues/25819
+[#25959]: https://github.com/JuliaLang/julia/issues/25959
 [#25990]: https://github.com/JuliaLang/julia/issues/25990
 [#26089]: https://github.com/JuliaLang/julia/issues/26089
