@@ -4,6 +4,11 @@ module Compat
 
 include("compatmacro.jl")
 
+@static if !isdefined(Base, :devnull) #25959
+     export devnull
+     const devnull = DevNull
+end
+
 @static if !isdefined(Base, Symbol("@nospecialize"))
     # 0.7
     macro nospecialize(arg)
