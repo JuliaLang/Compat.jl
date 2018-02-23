@@ -15,9 +15,9 @@ include("compatmacro.jl")
             # overload internal _redirect_std* functions
             # so that they change Compat.std*
             function Base.$rf(stream::IO)
-                invoke(Base.$rf, Tuple{Any}, stream)
+                ret = invoke(Base.$rf, Tuple{Any}, stream)
                 global $f = $F
-                nothing
+                return ret
             end
         end
     end
