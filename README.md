@@ -278,7 +278,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.trunc`, `Compat.floor`, `Compat.ceil`, `Compat.round`, `Compat.signif` take a keyword argument for `base` ([#26156]).
 
-
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
