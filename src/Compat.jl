@@ -17,6 +17,7 @@ include("compatmacro.jl")
             function Base.$rf(stream::IO)
                 invoke(Base.$rf, Tuple{Any}, stream)
                 global $f = $F
+                nothing
             end
         end
     end
