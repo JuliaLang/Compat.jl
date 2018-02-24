@@ -21,6 +21,12 @@ include("compatmacro.jl")
             end
         end
     end
+    # in __init__ because these can't be saved during precompiling
+    function __init__()
+        global stdout = STDOUT
+        global stdin = STDIN
+        global stderr = STDERR
+    end
 end
 
 @static if !isdefined(Base, Symbol("@nospecialize"))

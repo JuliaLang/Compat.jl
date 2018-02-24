@@ -1418,6 +1418,11 @@ import Compat.Markdown
 
 # 25959
 @test all(x -> isa(x, IO), (devnull, stdin, stdout, stderr))
+@static if !isdefined(Base, :devnull)
+    @test stdin === STDIN
+    @test stdout === STDOUT
+    @test stderr === STDERR
+end
 
 # 0.7.0-DEV.3526
 module TestNames
