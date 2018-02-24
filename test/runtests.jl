@@ -180,7 +180,7 @@ let filename = tempname()
     @test chomp(read(filename, String)) == "hello"
     ret = open(filename, "w") do f
         redirect_stderr(f) do
-            println(STDERR, "WARNING: hello")
+            println(stderr, "WARNING: hello")
             [2]
         end
     end
@@ -1415,6 +1415,9 @@ import Compat.Markdown
 
 @test repr("text/plain", "string") == "\"string\"" #25990
 @test showable("text/plain", 3.14159) #26089
+
+# 25959
+@test all(x -> isa(x, IO), (devnull, stdin, stdout, stderr))
 
 # 0.7.0-DEV.3526
 module TestNames

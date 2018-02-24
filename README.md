@@ -365,6 +365,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `object_id` is now `objectid` ([#25615]).
 
+* `DevNull`, `STDIN`, `STDOUT` and `STDERR` are now `devnull`, `stdin`, `stdout` and
+  `stderr` respectively ([#25959]).
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])
