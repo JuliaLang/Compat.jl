@@ -1310,7 +1310,7 @@ enable_debug(x::Bool) = DEBUG[] = x
 @static if !isdefined(Base, Symbol("@debug"))
     function debug(msg)
         DEBUG[] || return
-        buf = IOBuffer()
+        buf = Base.IOBuffer()
         iob = Base.redirect(IOContext(buf, STDERR), Base.log_info_to, :debug)
         print_with_color(:blue, iob, "Debug: "; bold = true)
         Base.println_with_color(:blue, iob, chomp(string(msg)))
@@ -1325,7 +1325,7 @@ else
 end
 @static if !isdefined(Base, Symbol("@error"))
     function _error(msg)
-        buf = IOBuffer()
+        buf = Base.IOBuffer()
         iob = Base.redirect(IOContext(buf, STDERR), Base.log_error_to, :error)
         print_with_color(Base.error_color(), iob, "Error: "; bold = true)
         Base.println_with_color(Base.error_color(), iob, chomp(string(msg)))
@@ -1519,7 +1519,7 @@ else
     Base.findnext(t::AbstractString, s::AbstractString, i::Integer) = search(s, t, i)
     Base.findfirst(t::AbstractString, s::AbstractString) = search(s, t)
 
-    Base.findfirst(delim::EqualTo{UInt8}, buf::IOBuffer) = search(buf, delim.x)
+    Base.findfirst(delim::EqualTo{UInt8}, buf::Base.IOBuffer) = search(buf, delim.x)
 
     Base.findprev(c::EqualTo{Char}, s::AbstractString, i::Integer) = rsearch(s, c.x, i)
     Base.findlast(c::EqualTo{Char}, s::AbstractString) = rsearch(s, c.x)
@@ -1562,6 +1562,37 @@ else
     @eval module UUIDs
         import ..Random: uuid1, uuid4, uuid_version, UUID
         export uuid1, uuid4, uuid_version, UUID
+    end
+end
+
+# https://github.com/JuliaLang/julia/pull/25872
+if VERSION < v"0.7.0-DEV.3734"
+    function IOBuffer(
+            data::Union{AbstractVector{UInt8},Nothing}=nothing;
+            read::Union{Bool,Nothing}=nothing,
+            write::Union{Bool,Nothing}=nothing,
+            truncate::Union{Bool,Nothing}=nothing,
+            maxsize::Integer=typemax(Int),
+            sizehint::Union{Integer,Nothing}=nothing)
+        write    === nothing && (write    = false)
+        read     === nothing && (read     = !write)
+        truncate === nothing && (truncate = false)
+        if maxsize < 0
+            throw(ArgumentError("negative maxsize: $(maxsize)"))
+        end
+        if sizehint !== nothing
+            sizehint!(data, sizehint)
+        end
+        buf = if data !== nothing
+            Base.IOBuffer(data, read, write, Int(maxsize))
+        else
+            size = maxsize == typemax(Int) ? 32 : Int(maxsize)
+            Base.IOBuffer(StringVector(size), read, write, Int(maxsize))
+        end
+        if truncate
+            buf.size = 0
+        end
+        return buf
     end
 end
 
