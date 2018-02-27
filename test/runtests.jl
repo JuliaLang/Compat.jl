@@ -1438,5 +1438,13 @@ let buf = Compat.IOBuffer(read=true, write=false, maxsize=25)
     @test !buf.writable
     @test buf.maxsize == 25
 end
+let buf = Compat.IOBuffer(zeros(UInt8, 4), write=true) # issue #502
+    write(buf, 'a')
+    @test take!(buf) == [0x61]
+end
+let buf = Compat.IOBuffer(sizehint=20)
+    println(buf, "Hello world.")
+    @test String(take!(buf)) == "Hello world.\n"
+end
 
 nothing
