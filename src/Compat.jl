@@ -1590,9 +1590,9 @@ if VERSION < v"0.7.0-DEV.3734"
     end
     function IOBuffer(
             data::Union{AbstractVector{UInt8},Nothing}=nothing;
-            read::Union{Bool,Nothing}=data===nothing?true:nothing,
-            write::Union{Bool,Nothing}=data===nothing?true:nothing,
-            truncate::Union{Bool,Nothing}=data===nothing?true:nothing,
+            read::Union{Bool,Nothing}=data === nothing ? true : nothing,
+            write::Union{Bool,Nothing}=data === nothing ? true : nothing,
+            truncate::Union{Bool,Nothing}=data === nothing ? true : nothing,
             maxsize::Integer=typemax(Int),
             sizehint::Union{Integer,Nothing}=nothing)
         flags = open_flags(read=read, write=write, append=nothing, truncate=truncate)
