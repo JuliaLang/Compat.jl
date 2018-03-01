@@ -1035,6 +1035,9 @@ module Unicode
         end
 
         isnumeric(c::Char) = isnumber(c)
+        isassigned(c) = is_assigned_char(c)
+        normalize(s::AbstractString; kws...) = normalize_string(s; kws...)
+        normalize(s::AbstractString, nf::Symbol) = normalize_string(s, nf)
 
         # 0.6.0-dev.1404 (https://github.com/JuliaLang/julia/pull/19469)
         if !isdefined(Base, :titlecase)
