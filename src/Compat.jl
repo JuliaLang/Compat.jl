@@ -1061,6 +1061,7 @@ module Unicode
         end
     else
         using Unicode
+        import Unicode: isassigned, normalize # not exported from Unicode module due to conflicts
     end
 end
 
