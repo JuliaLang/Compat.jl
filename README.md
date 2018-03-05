@@ -278,6 +278,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.IOBuffer` supporting keyword arguments ([#25873]).
 
+* `Compat.range` supporting keyword arguments ([25896]).
 
 ## Renaming
 
@@ -369,6 +370,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `DevNull`, `STDIN`, `STDOUT` and `STDERR` are now `devnull`, `stdin`, `stdout` and
   `stderr` respectively ([#25959]).
+
+* `LinSpace` is now `LinRange` ([#25896]).
 
 ## New macros
 
@@ -574,5 +577,6 @@ includes this fix. Find the minimum version from there.
 [#25780]: https://github.com/JuliaLang/julia/issues/25780
 [#25819]: https://github.com/JuliaLang/julia/issues/25819
 [#25873]: https://github.com/JuliaLang/julia/issues/25873
+[#25896]: https://github.com/JuliaLang/julia/issues/25896
 [#25990]: https://github.com/JuliaLang/julia/issues/25990
 [#26089]: https://github.com/JuliaLang/julia/issues/26089
