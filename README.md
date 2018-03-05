@@ -278,7 +278,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.IOBuffer` supporting keyword arguments ([#25873]).
 
-* `Compat.range` supporting keyword arguments ([25896]).
+* `Compat.range` supporting keyword arguments ([#25896]).
 
 ## Renaming
 

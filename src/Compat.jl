@@ -1638,7 +1638,7 @@ end
         end
 
         if have_stop && !have_length
-            return have_step ? start:step:stop : start:stop
+            return have_step ? (start:step:stop) : (start:stop)
         elseif have_length && !have_stop
             return have_step ? Base.range(start, step, length) : Base.range(start, length)
         elseif !have_step
