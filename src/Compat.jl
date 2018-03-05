@@ -2,7 +2,32 @@ __precompile__()
 
 module Compat
 
-using Base.Meta
+include("compatmacro.jl")
+
+@static if !isdefined(Base, :devnull) #25959
+    export devnull, stdout, stdin, stderr
+    const devnull = DevNull
+    for f in (:stdout, :stdin, :stderr)
+        F = Symbol(uppercase(string(f)))
+        rf = Symbol(string("_redirect_", f))
+        @eval begin
+            $f = $F
+            # overload internal _redirect_std* functions
+            # so that they change Compat.std*
+            function Base.$rf(stream::IO)
+                ret = invoke(Base.$rf, Tuple{Any}, stream)
+                global $f = $F
+                return ret
+            end
+        end
+    end
+    # in __init__ because these can't be saved during precompiling
+    function __init__()
+        global stdout = STDOUT
+        global stdin = STDIN
+        global stderr = STDERR
+    end
+end
 
 @static if !isdefined(Base, Symbol("@nospecialize"))
     # 0.7
@@ -30,137 +55,9 @@ using Base.Meta
     export @nospecialize
 end
 
-"""Get just the function part of a function declaration."""
-withincurly(ex) = isexpr(ex, :curly) ? ex.args[1] : ex
-
 if VERSION < v"0.6.0-dev.2043"
     Base.take!(t::Task) = consume(t)
 end
-
-is_index_style(ex::Expr) = ex == :(Compat.IndexStyle) || ex == :(Base.IndexStyle) ||
-    (ex.head == :(.) && (ex.args[1] == :Compat || ex.args[1] == :Base) &&
-         ex.args[2] == Expr(:quote, :IndexStyle))
-
-is_index_style(arg) = false
-
-istopsymbol(ex, mod, sym) = ex in (sym, Expr(:(.), mod, Expr(:quote, sym)))
-
-if VERSION < v"0.6.0-dev.2782"
-    function new_style_typealias(ex::ANY)
-        isexpr(ex, :(=)) || return false
-        ex = ex::Expr
-        return length(ex.args) == 2 && isexpr(ex.args[1], :curly)
-    end
-else
-    new_style_typealias(ex) = false
-end
-
-function _compat(ex::Expr)
-    if ex.head === :call
-        f = ex.args[1]
-        if VERSION < v"0.6.0-dev.826" && length(ex.args) == 3 && # julia#18510
-                istopsymbol(withincurly(ex.args[1]), :Base, :Nullable)
-            ex = Expr(:call, f, ex.args[2], Expr(:call, :(Compat._Nullable_field2), ex.args[3]))
-        end
-    elseif ex.head === :curly
-        f = ex.args[1]
-        if VERSION < v"0.6.0-dev.2575" #20414
-            ex = Expr(:curly, map(a -> isexpr(a, :call, 2) && a.args[1] == :(<:) ?
-                                  :($TypeVar($(QuoteNode(gensym(:T))), $(a.args[2]), false)) :
-                                  isexpr(a, :call, 2) && a.args[1] == :(>:) ?
-                                  :($TypeVar($(QuoteNode(gensym(:T))), $(a.args[2]), $Any, false)) : a,
-                                  ex.args)...)
-        end
-    elseif ex.head === :quote && isa(ex.args[1], Symbol)
-        # Passthrough
-        return ex
-    elseif new_style_typealias(ex)
-        ex.head = :typealias
-    elseif ex.head === :const && length(ex.args) == 1 && new_style_typealias(ex.args[1])
-        ex = ex.args[1]::Expr
-        ex.head = :typealias
-    end
-    if VERSION < v"0.6.0-dev.2840"
-        if ex.head == :(=) && isa(ex.args[1], Expr) && ex.args[1].head == :call
-            a = ex.args[1].args[1]
-            if is_index_style(a)
-                ex.args[1].args[1] = :(Base.linearindexing)
-            elseif isa(a, Expr) && a.head == :curly
-                if is_index_style(a.args[1])
-                    ex.args[1].args[1].args[1] = :(Base.linearindexing)
-                end
-            end
-        end
-    end
-    if VERSION < v"0.7.0-DEV.880"
-        if ex.head == :curly && ex.args[1] == :CartesianRange && length(ex.args) >= 2
-            a = ex.args[2]
-            if a != :CartesianIndex && !(isa(a, Expr) && a.head == :curly && a.args[1] == :CartesianIndex)
-                return Expr(:curly, :CartesianRange, Expr(:curly, :CartesianIndex, ex.args[2]))
-            end
-        end
-    end
-    if VERSION < v"0.7.0-DEV.2562"
-        if ex.head == :call && ex.args[1] == :finalizer
-            ex.args[2], ex.args[3] = ex.args[3], ex.args[2]
-        end
-    end
-    return Expr(ex.head, map(_compat, ex.args)...)
-end
-
-_compat(ex) = ex
-
-function _get_typebody(ex::Expr)
-    args = ex.args
-    if ex.head !== :type || length(args) != 3 || args[1] !== true
-        throw(ArgumentError("Invalid usage of @compat: $ex"))
-    end
-    name = args[2]
-    if !isexpr(args[3], :block)
-        throw(ArgumentError("Invalid type declaration: $ex"))
-    end
-    body = (args[3]::Expr).args
-    filter!(body) do e
-        if isa(e, LineNumberNode) || isexpr(e, :line)
-            return false
-        end
-        return true
-    end
-    return name, body
-end
-
-function _compat_primitive(typedecl)
-    name, body = _get_typebody(typedecl)
-    if length(body) != 1
-        throw(ArgumentError("Invalid primitive type declaration: $typedecl"))
-    end
-    return Expr(:bitstype, body[1], name)
-end
-
-function _compat_abstract(typedecl)
-    name, body = _get_typebody(typedecl)
-    if length(body) != 0
-        throw(ArgumentError("Invalid abstract type declaration: $typedecl"))
-    end
-    return Expr(:abstract, name)
-end
-
-macro compat(ex...)
-    if VERSION < v"0.6.0-dev.2746" && length(ex) == 2 && ex[1] === :primitive
-        return esc(_compat_primitive(ex[2]))
-    elseif length(ex) != 1
-        throw(ArgumentError("@compat called with wrong number of arguments: $ex"))
-    elseif (VERSION < v"0.6.0-dev.2746" && isexpr(ex[1], :abstract) &&
-            length(ex[1].args) == 1 && isexpr(ex[1].args[1], :type))
-        # This can in principle be handled in nested case but we do not
-        # do that to be consistent with primitive types.
-        return esc(_compat_abstract(ex[1].args[1]))
-    end
-    esc(_compat(ex[1]))
-end
-
-
-export @compat
 
 # https://github.com/JuliaLang/julia/pull/22064
 @static if !isdefined(Base, Symbol("@__MODULE__"))
@@ -1138,6 +1035,9 @@ module Unicode
         end
 
         isnumeric(c::Char) = isnumber(c)
+        isassigned(c) = is_assigned_char(c)
+        normalize(s::AbstractString; kws...) = normalize_string(s; kws...)
+        normalize(s::AbstractString, nf::Symbol) = normalize_string(s, nf)
 
         # 0.6.0-dev.1404 (https://github.com/JuliaLang/julia/pull/19469)
         if !isdefined(Base, :titlecase)
@@ -1161,6 +1061,7 @@ module Unicode
         end
     else
         using Unicode
+        import Unicode: isassigned, normalize # not exported from Unicode module due to conflicts
     end
 end
 
@@ -1413,7 +1314,7 @@ enable_debug(x::Bool) = DEBUG[] = x
 @static if !isdefined(Base, Symbol("@debug"))
     function debug(msg)
         DEBUG[] || return
-        buf = IOBuffer()
+        buf = Base.IOBuffer()
         iob = Base.redirect(IOContext(buf, STDERR), Base.log_info_to, :debug)
         print_with_color(:blue, iob, "Debug: "; bold = true)
         Base.println_with_color(:blue, iob, chomp(string(msg)))
@@ -1428,7 +1329,7 @@ else
 end
 @static if !isdefined(Base, Symbol("@error"))
     function _error(msg)
-        buf = IOBuffer()
+        buf = Base.IOBuffer()
         iob = Base.redirect(IOContext(buf, STDERR), Base.log_error_to, :error)
         print_with_color(Base.error_color(), iob, "Error: "; bold = true)
         Base.println_with_color(Base.error_color(), iob, chomp(string(msg)))
@@ -1622,7 +1523,7 @@ else
     Base.findnext(t::AbstractString, s::AbstractString, i::Integer) = search(s, t, i)
     Base.findfirst(t::AbstractString, s::AbstractString) = search(s, t)
 
-    Base.findfirst(delim::EqualTo{UInt8}, buf::IOBuffer) = search(buf, delim.x)
+    Base.findfirst(delim::EqualTo{UInt8}, buf::Base.IOBuffer) = search(buf, delim.x)
 
     Base.findprev(c::EqualTo{Char}, s::AbstractString, i::Integer) = rsearch(s, c.x, i)
     Base.findlast(c::EqualTo{Char}, s::AbstractString) = rsearch(s, c.x)
@@ -1654,7 +1555,7 @@ end
 
 # https://github.com/JuliaLang/julia/pull/25647
 @static if VERSION < v"0.7.0-DEV.3526"
-    names(m; all=true, imported=true) = Base.names(m, all, imported)
+    names(m; all=false, imported=false) = Base.names(m, all, imported)
 else
     import Base: names
 end
@@ -1675,6 +1576,57 @@ end
     ceil(x, digits; base = base) = Base.ceil(x, digits, base)
     round(x, digits; base = base) = Base.round(x, digits, base)
     signif(x, digits; base = base) = Base.signif(x, digits, base)
+end
+
+# https://github.com/JuliaLang/julia/pull/25872
+if VERSION < v"0.7.0-DEV.3734"
+    if isdefined(Base, :open_flags)
+        import Base.open_flags
+    else
+        # copied from Base:
+        function open_flags(; read=nothing, write=nothing, create=nothing, truncate=nothing, append=nothing)
+            if write === true && read !== true && append !== true
+                create   === nothing && (create   = true)
+                truncate === nothing && (truncate = true)
+            end
+            if truncate === true || append === true
+                write  === nothing && (write  = true)
+                create === nothing && (create = true)
+            end
+            write    === nothing && (write    = false)
+            read     === nothing && (read     = !write)
+            create   === nothing && (create   = false)
+            truncate === nothing && (truncate = false)
+            append   === nothing && (append   = false)
+            return (read, write, create, truncate, append)
+        end
+    end
+    function IOBuffer(
+            data::Union{AbstractVector{UInt8},Nothing}=nothing;
+            read::Union{Bool,Nothing}=data === nothing ? true : nothing,
+            write::Union{Bool,Nothing}=data === nothing ? true : nothing,
+            truncate::Union{Bool,Nothing}=data === nothing ? true : nothing,
+            maxsize::Integer=typemax(Int),
+            sizehint::Union{Integer,Nothing}=nothing)
+        flags = open_flags(read=read, write=write, append=nothing, truncate=truncate)
+        if maxsize < 0
+            throw(ArgumentError("negative maxsize: $(maxsize)"))
+        end
+        if data !== nothing
+            if sizehint !== nothing
+                sizehint!(data, sizehint)
+            end
+            buf = Base.IOBuffer(data, flags[1], flags[2], Int(maxsize))
+        else
+            size = sizehint !== nothing ? Int(sizehint) : maxsize != typemax(Int) ? Int(maxsize) : 32
+            buf = Base.IOBuffer(StringVector(size), flags[1], flags[2], Int(maxsize))
+            buf.data[:] = 0
+        end
+        if flags[4] # flags.truncate
+            buf.size = 0
+        end
+        return buf
+    end
 end
 
 include("deprecated.jl")

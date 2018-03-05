@@ -180,7 +180,7 @@ let filename = tempname()
     @test chomp(read(filename, String)) == "hello"
     ret = open(filename, "w") do f
         redirect_stderr(f) do
-            println(STDERR, "WARNING: hello")
+            println(stderr, "WARNING: hello")
             [2]
         end
     end
@@ -1049,6 +1049,9 @@ module Test25021
     @test !isnumeric('a')
     @test isnumeric('1')
     @test titlecase("firstname lastname") == "Firstname Lastname"
+    @test Compat.Unicode.isassigned('柒') && !Compat.Unicode.isassigned(0xfffe)
+    @test Compat.Unicode.normalize("\U1e9b\U0323", :NFKC) == "\U1e69"
+    @test Compat.Unicode.normalize("\t\r", stripcc=true) == "  "
 end
 
 # 0.7.0-DEV.2951
@@ -1416,6 +1419,14 @@ import Compat.Markdown
 @test repr("text/plain", "string") == "\"string\"" #25990
 @test showable("text/plain", 3.14159) #26089
 
+# 25959
+@test all(x -> isa(x, IO), (devnull, stdin, stdout, stderr))
+@static if !isdefined(Base, :devnull)
+    @test stdin === STDIN
+    @test stdout === STDOUT
+    @test stderr === STDERR
+end
+
 # 0.7.0-DEV.3526
 module TestNames
     export foo
@@ -1430,5 +1441,20 @@ end
 @test Compat.ceil(pi, 3, base = 2) == 3.25
 @test Compat.round(pi, 3, base = 2) == 3.125
 @test Compat.signif(pi, 5, base = 2) == 3.125
+
+# 0.7.0-DEV.3734
+let buf = Compat.IOBuffer(read=true, write=false, maxsize=25)
+    @test buf.readable
+    @test !buf.writable
+    @test buf.maxsize == 25
+end
+let buf = Compat.IOBuffer(zeros(UInt8, 4), write=true) # issue #502
+    write(buf, 'a')
+    @test take!(buf) == [0x61]
+end
+let buf = Compat.IOBuffer(sizehint=20)
+    println(buf, "Hello world.")
+    @test String(take!(buf)) == "Hello world.\n"
+end
 
 nothing

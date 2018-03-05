@@ -278,6 +278,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.trunc`, `Compat.floor`, `Compat.ceil`, `Compat.round`, `Compat.signif` take a keyword argument for `base` ([#26156]).
 
+* `Compat.IOBuffer` supporting keyword arguments ([#25873]).
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -365,6 +367,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `method_exists` is now `hasmethod` ([#25615]).
 
 * `object_id` is now `objectid` ([#25615]).
+
+* `DevNull`, `STDIN`, `STDOUT` and `STDERR` are now `devnull`, `stdin`, `stdout` and
+  `stderr` respectively ([#25959]).
 
 ## New macros
 
@@ -569,6 +574,7 @@ includes this fix. Find the minimum version from there.
 [#25738]: https://github.com/JuliaLang/julia/issues/25738
 [#25780]: https://github.com/JuliaLang/julia/issues/25780
 [#25819]: https://github.com/JuliaLang/julia/issues/25819
+[#25873]: https://github.com/JuliaLang/julia/issues/25873
 [#25990]: https://github.com/JuliaLang/julia/issues/25990
 [#26089]: https://github.com/JuliaLang/julia/issues/26089
 [#26156]: https://github.com/JuliaLang/julia/issues/26156
