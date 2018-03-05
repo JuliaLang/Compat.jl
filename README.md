@@ -276,9 +276,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.names` supporting keyword arguments for `all` and `imported` ([#25647]).
 
-* `Compat.trunc`, `Compat.floor`, `Compat.ceil`, `Compat.round`, `Compat.signif` take a keyword argument for `base` ([#26156]).
-
 * `Compat.IOBuffer` supporting keyword arguments ([#25873]).
+
+* `Compat.trunc`, `Compat.floor`, `Compat.ceil`, `Compat.round`, `Compat.signif` take a keyword argument for `base` ([#26156]).
 
 ## Renaming
 
