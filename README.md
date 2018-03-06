@@ -280,6 +280,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.range` supporting keyword arguments ([#25896]).
 
+* `Compat.trunc`, `Compat.floor`, `Compat.ceil`, `Compat.round`, `Compat.signif` take a keyword argument for `base` ([#26156]).
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -580,3 +582,4 @@ includes this fix. Find the minimum version from there.
 [#25896]: https://github.com/JuliaLang/julia/issues/25896
 [#25990]: https://github.com/JuliaLang/julia/issues/25990
 [#26089]: https://github.com/JuliaLang/julia/issues/26089
+[#26156]: https://github.com/JuliaLang/julia/issues/26156

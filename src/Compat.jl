@@ -731,7 +731,7 @@ if VERSION < v"0.7.0-DEV.2402"
     inconsistent length.
     """
     function Base.ceil(x::Compat.ConvertiblePeriod, precision::Compat.ConvertiblePeriod)
-        f = floor(x, precision)
+        f = Base.floor(x, precision)
         return (x == f) ? f : f + precision
     end
 
@@ -742,7 +742,7 @@ if VERSION < v"0.7.0-DEV.2402"
     than calling both `floor` and `ceil` individually.
     """
     function floorceil(x::Compat.ConvertiblePeriod, precision::Compat.ConvertiblePeriod)
-        f = floor(x, precision)
+        f = Base.floor(x, precision)
         return f, (x == f) ? f : f + precision
     end
 
@@ -1567,6 +1567,15 @@ else
         import ..Random: uuid1, uuid4, uuid_version, UUID
         export uuid1, uuid4, uuid_version, UUID
     end
+end
+
+# https://github.com/JuliaLang/julia/pull/26156
+@static if VERSION < v"0.7.0-DEV.4062"
+    trunc(x, digits; base = base) = Base.trunc(x, digits, base)
+    floor(x, digits; base = base) = Base.floor(x, digits, base)
+    ceil(x, digits; base = base) = Base.ceil(x, digits, base)
+    round(x, digits; base = base) = Base.round(x, digits, base)
+    signif(x, digits; base = base) = Base.signif(x, digits, base)
 end
 
 # https://github.com/JuliaLang/julia/pull/25872
