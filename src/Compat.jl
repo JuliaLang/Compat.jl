@@ -1658,6 +1658,13 @@ else
     import Base: range, LinRange
 end
 
+@static if VERSION < v"0.7.0-DEV.3995"
+    cp(src::AbstractString, dst::AbstractString; force::Bool=false, follow_symlinks::Bool=false) =
+        Base.cp(src, dst; remove_destination = force, follow_symlinks = follow_symlinks)
+    mv(src::AbstractString, dst::AbstractString; force::Bool=false) =
+        Base.mv(src, dst; remove_destination = force)
+end
+
 include("deprecated.jl")
 
 end # module Compat

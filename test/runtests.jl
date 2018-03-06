@@ -1467,4 +1467,24 @@ end
 @test Compat.range(2, step=2, length=8) == 2:2:16
 @test Compat.range(1.0, stop=2.0, length=3) == 1.0:0.5:2.0
 
+# 0.7.0-DEV.3995
+mktempdir(@__DIR__) do dir
+    src = joinpath(dir, "src.jl")
+    touch(src)
+    dest = joinpath(dir, "dest.jl")
+    touch(dest)
+    open(src, "w") do f
+        write(f, "Hello, world!")
+    end
+    Compat.cp(src, dest, force = true)
+    open(dest, "r") do f
+        @test read(f, String) == "Hello, world!"
+    end
+    Compat.mv(src, dest, force = true)
+    open(dest, "r") do f
+        @test read(f, String) == "Hello, world!"
+    end
+    @test readdir(dir) == ["dest.jl"]
+end
+
 nothing
