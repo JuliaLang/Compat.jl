@@ -1498,6 +1498,7 @@ else
     export occursin
 
     zero2nothing(x::Integer) = x == 0 ? nothing : x
+    zero2nothing(x::AbstractUnitRange{<:Integer}) = x == 0:-1 ? nothing : x
     zero2nothing(x) = x
 
     findnext(xs...) = zero2nothing(Base.findnext(xs...))
