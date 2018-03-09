@@ -1378,18 +1378,19 @@ for (f1, f2, i) in ((Compat.findfirst, Compat.findnext, 1),
         @test f2(occursin(chars), "bx", i) == f1(occursin(chars), "bx") == nothing
     end
 end
-for (f1, f2, i) in ((findfirst, findnext, 1),
-                    (findlast, findprev, 2),
-                    (Compat.findfirst, Compat.findnext, 1),
-                    (Compat.findlast, Compat.findprev, 2))
-    @test f2("a", "ba", i) == f1("a", "ba") == 2:2
-    @test f2("z", "ba", i) == f1("z", "ba") == 0:-1
-end
-for (f1, f2, i) in ((findfirst, findnext, 1),
-                    (Compat.findfirst, Compat.findnext, 1))
-    @test f2(r"a", "ba", 1) == f1(r"a", "ba") == 2:2
-    @test f2(r"z", "ba", 1) == f1(r"z", "ba") == 0:-1
-end
+@test findnext("a", "ba", 1) == findfirst("a", "ba") == 2:2
+@test findnext("z", "ba", 1) == findfirst("z", "ba") == (VERSION < v"0.7.0-DEV.4480" ? (0:-1) : nothing)
+@test findprev("a", "ba", 2) == findlast("a", "ba") == 2:2
+@test findprev("z", "ba", 2) == findlast("z", "ba") == (VERSION < v"0.7.0-DEV.4480" ? (0:-1) : nothing)
+@test Compat.findnext("a", "ba", 1) == Compat.findfirst("a", "ba") == 2:2
+@test Compat.findnext("z", "ba", 1) == Compat.findfirst("z", "ba") == nothing
+@test Compat.findprev("a", "ba", 2) == Compat.findlast("a", "ba") == 2:2
+@test Compat.findprev("z", "ba", 2) == Compat.findlast("z", "ba") == nothing
+
+@test findnext(r"a", "ba", 1) == findfirst(r"a", "ba") == 2:2
+@test findnext(r"z", "ba", 1) == findfirst(r"z", "ba") == (VERSION < v"0.7.0-DEV.4480" ? (0:-1) : nothing)
+@test Compat.findnext(r"a", "ba", 1) == Compat.findfirst(r"a", "ba") == 2:2
+@test Compat.findnext(r"z", "ba", 1) == Compat.findfirst(r"z", "ba") == nothing
 
 @test Compat.findfirst(equalto(UInt8(0)), IOBuffer(UInt8[1, 0])) == 2
 @test Compat.findfirst(equalto(UInt8(9)), IOBuffer(UInt8[1, 0])) == nothing
