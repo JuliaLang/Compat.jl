@@ -243,9 +243,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * Constructor for `Matrix` from `UniformScaling` ([#24372], [#24657]).
 
-* `Uninitialized` and `uninitialized` with corresponding `Array` constructors ([#24652]).
+* `UndefInitializer` and `undef` with corresponding `Array` constructors ([#24652], [#26316]).
 
-* `BitArray` constructors for `uninitialized` ([#24785]).
+* `BitArray` constructors for `undef` ([#24785], [#26316]).
 
 * `@compat finalizer(func, obj)` with the finalizer to run as the first argument and the object to be finalized
   as the second ([#24605]).
@@ -589,3 +589,4 @@ includes this fix. Find the minimum version from there.
 [#26089]: https://github.com/JuliaLang/julia/issues/26089
 [#26149]: https://github.com/JuliaLang/julia/issues/26149
 [#26156]: https://github.com/JuliaLang/julia/issues/26156
+[#26316]: https://github.com/JuliaLang/julia/issues/26316
