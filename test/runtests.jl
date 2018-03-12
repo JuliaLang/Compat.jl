@@ -987,17 +987,17 @@ let a = [1 0 0; 0 1 0; 0 0 1]
     @test Matrix(2.0I, 3, 3)::Matrix{Float64} == Matrix(2.0I, (3, 3))::Matrix{Float64} == 2a
 end
 
-# 0.7.0-DEV.2581
-@test isa(Vector(uninitialized, 2), Vector{Any})
-@test isa(Vector{Float64}(uninitialized, 2), Vector{Float64})
-@test isa(Matrix(uninitialized, 2, 2), Matrix{Any})
-@test isa(Matrix{Float64}(uninitialized, 2, 2), Matrix{Float64})
-@test isa(Array{Float64}(uninitialized, 2, 2), Matrix{Float64})
-@test isa(Array{Float64,3}(uninitialized, 2, 2, 2), Array{Float64,3})
+# 0.7.0-DEV.2581, 0.7.0-DEV.4527
+@test isa(Vector(undef, 2), Vector{Any})
+@test isa(Vector{Float64}(undef, 2), Vector{Float64})
+@test isa(Matrix(undef, 2, 2), Matrix{Any})
+@test isa(Matrix{Float64}(undef, 2, 2), Matrix{Float64})
+@test isa(Array{Float64}(undef, 2, 2), Matrix{Float64})
+@test isa(Array{Float64,3}(undef, 2, 2, 2), Array{Float64,3})
 
-# 0.7.0-DEV.2687
-@test isa(BitVector(uninitialized, 2), BitVector)
-@test isa(BitArray(uninitialized, 2, 2), BitMatrix)
+# 0.7.0-DEV.2687, 0.7.0-DEV.4527
+@test isa(BitVector(undef, 2), BitVector)
+@test isa(BitArray(undef, 2, 2), BitMatrix)
 
 # 0.7.0-DEV.1472
 @test get(IOContext(IOBuffer(), :arg1=>true, :arg2=>true, :arg3=>true), :arg3, false)

@@ -970,33 +970,31 @@ end
     Base.IOContext(io::IOContext, arg1::Pair, arg2::Pair) = IOContext(IOContext(io, arg1), arg2)
 end
 
-# 0.7.0-DEV.2581
-@static if !isdefined(Base, :Uninitialized)
-    if VERSION >= v"0.6.0"
-        include_string(@__MODULE__, """
-            struct Uninitialized end
-            Array{T}(::Uninitialized, args...) where {T} = Array{T}(args...)
-            Array{T,N}(::Uninitialized, args...) where {T,N} = Array{T,N}(args...)
-            Vector(::Uninitialized, args...) = Vector(args...)
-            Matrix(::Uninitialized, args...) = Matrix(args...)
-
-            BitArray{N}(::Uninitialized, args...) where {N} = BitArray{N}(args...)
-            BitArray(::Uninitialized, args...) = BitArray(args...)
-        """)
+# 0.7.0-DEV.4527
+@static if !isdefined(Base, :UndefInitializer)
+    import Base: Array, Matrix, Vector
+    @static if isdefined(Base, :Uninitialized)
+        useuninit(args) = (Base.uninitialized, args...)
     else
-        include_string(@__MODULE__, """
-            immutable Uninitialized end
-            (::Type{Array{T}}){T}(::Uninitialized, args...) = Array{T}(args...)
-            (::Type{Array{T,N}}){T,N}(::Uninitialized, args...) = Array{T,N}(args...)
-            (::Type{Vector})(::Uninitialized, args...) = Vector(args...)
-            (::Type{Matrix})(::Uninitialized, args...) = Matrix(args...)
-
-            (::Type{BitArray{N}}){N}(::Uninitialized, args...) = BitArray{N}(args...)
-            (::Type{BitArray})(::Uninitialized, args...) = BitArray(args...)
-        """)
+        useuninit(args) = args
     end
-    const uninitialized = Uninitialized()
-    export Uninitialized, uninitialized
+    struct UndefInitializer end
+    const undef = UndefInitializer()
+    export undef, UndefInitializer
+    Base.show(io::IO, ::UndefInitializer) =
+        print(io, "array initializer with undefined values")
+    Array{T}(::UndefInitializer, args...) where {T} = Array{T}(useuninit(args)...)
+    Array{T,N}(::UndefInitializer, args...) where {T,N} = Array{T,N}(useuninit(args)...)
+    Vector(::UndefInitializer, args...) = Vector(useuninit(args)...)
+    Matrix(::UndefInitializer, args...) = Matrix(useuninit(args)...)
+
+    BitArray{N}(::UndefInitializer, args...) where {N} = BitArray{N}(useuninit(args)...)
+    BitArray(::UndefInitializer, args...) = BitArray(useuninit(args)...)
+end
+@static if VERSION < v"0.7.0-DEV.2581"
+    export uninitialized, Uninitialized
+    const uninitialized = undef
+    const Uninitialized = UndefInitializer
 end
 
 # 0.7.0-DEV.1499
