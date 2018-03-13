@@ -360,6 +360,10 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `indmin` and `indmax` are now `argmin` and `argmax`, respectively ([#25654]).
 
+* `Compat.indexin` accepts any iterable as first argument, returns `nothing` (rather than `0`)
+   for entries with no match and gives the index of the first (rather than the last) match 
+   ([#25662], [#25998]).
+
 * `isabstract` and `isleaftype` are now `isabstracttype` and `isconcretetype`, respectively
   ([#23666], [#25496]).
 
@@ -576,6 +580,7 @@ includes this fix. Find the minimum version from there.
 [#25646]: https://github.com/JuliaLang/julia/issues/25646
 [#25647]: https://github.com/JuliaLang/julia/issues/25647
 [#25654]: https://github.com/JuliaLang/julia/issues/25654
+[#25662]: https://github.com/JuliaLang/julia/issues/25662
 [#25705]: https://github.com/JuliaLang/julia/issues/25705
 [#25706]: https://github.com/JuliaLang/julia/issues/25706
 [#25738]: https://github.com/JuliaLang/julia/issues/25738
@@ -585,6 +590,7 @@ includes this fix. Find the minimum version from there.
 [#25896]: https://github.com/JuliaLang/julia/issues/25896
 [#25959]: https://github.com/JuliaLang/julia/issues/25959
 [#25990]: https://github.com/JuliaLang/julia/issues/25990
+[#25998]: https://github.com/JuliaLang/julia/issues/25998
 [#26069]: https://github.com/JuliaLang/julia/issues/26069
 [#26089]: https://github.com/JuliaLang/julia/issues/26089
 [#26149]: https://github.com/JuliaLang/julia/issues/26149
