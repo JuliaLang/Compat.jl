@@ -382,6 +382,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `LinSpace` is now `LinRange` ([#25896]).
 
+* `isupper`, `islower`, `ucfirst` and `lcfirst` are now `isuppercase`, `islowercase`,
+  `uppercasefirst` and `lowercasefirst` ([#26442]).
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])
@@ -596,3 +599,4 @@ includes this fix. Find the minimum version from there.
 [#26149]: https://github.com/JuliaLang/julia/issues/26149
 [#26156]: https://github.com/JuliaLang/julia/issues/26156
 [#26316]: https://github.com/JuliaLang/julia/issues/26316
+[#26442]: https://github.com/JuliaLang/julia/issues/26442
