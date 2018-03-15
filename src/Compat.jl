@@ -1679,6 +1679,14 @@ else
     const indexin = Base.indexin
 end
 
+if VERSION < v"0.7.0-DEV.4585"
+    export isuppercase, islowercase, uppercasefirst, lowercasefirst
+    const isuppercase = isupper
+    const islowercase = islower
+    const uppercasefirst = ucfirst
+    const lowercasefirst = lcfirst
+end
+
 include("deprecated.jl")
 
 end # module Compat
