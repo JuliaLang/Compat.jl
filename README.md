@@ -233,7 +233,8 @@ Currently, the `@compat` macro supports the following syntaxes:
   `cov(::AbstractVector; corrected=)` and `cov(::AbstractVector, ::AbstractVector; corrected=)`
   are only available on 0.6. ([#21709])
 
-* `equalto` constructs an `EqualTo` object that can be used as a predicate ([#23812]).
+* `isequal`, `==` and `in` have one argument "curried" forms. For example `isequal(x)`
+  returns a function that compares its arguments to `x` using `isequal` ([#26436]).
 
 * `*(::Union{Char,AbstractString},::Union{Char,AbstractString})` concatenation. ([#22512])
 
@@ -350,18 +351,18 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `find` is now `findall` ([#25545]).
 
 * `search` is now `findfirst`/`findnext` and `rsearch` is now `findlast`/`findprev`,
-  sometimes combined with `equalto` or `occursin` ([#24673]).
+  sometimes combined with `isequal` or `in` ([#24673], [#26436]).
 
 * `Compat.findfirst`, `Compat.findnext`, `Compat.findlast` and `Compat.findprev`,
   return `nothing` when no match is found (rather than `0` or `0:-1`)
   as on Julia 0.7 ([#24673], [#26149]).
 
-* `findin(a, b)` is now `findall(occursin(b), a)` ([#24673]).
+* `findin(a, b)` is now `findall(in(b), a)` ([#24673]).
 
 * `indmin` and `indmax` are now `argmin` and `argmax`, respectively ([#25654]).
 
 * `Compat.indexin` accepts any iterable as first argument, returns `nothing` (rather than `0`)
-   for entries with no match and gives the index of the first (rather than the last) match 
+   for entries with no match and gives the index of the first (rather than the last) match
    ([#25662], [#25998]).
 
 * `isabstract` and `isleaftype` are now `isabstracttype` and `isconcretetype`, respectively
@@ -532,7 +533,6 @@ includes this fix. Find the minimum version from there.
 [#23642]: https://github.com/JuliaLang/julia/issues/23642
 [#23666]: https://github.com/JuliaLang/julia/issues/23666
 [#23757]: https://github.com/JuliaLang/julia/issues/23757
-[#23812]: https://github.com/JuliaLang/julia/issues/23812
 [#23931]: https://github.com/JuliaLang/julia/issues/23931
 [#24047]: https://github.com/JuliaLang/julia/issues/24047
 [#24182]: https://github.com/JuliaLang/julia/issues/24182
@@ -599,4 +599,5 @@ includes this fix. Find the minimum version from there.
 [#26149]: https://github.com/JuliaLang/julia/issues/26149
 [#26156]: https://github.com/JuliaLang/julia/issues/26156
 [#26316]: https://github.com/JuliaLang/julia/issues/26316
+[#26436]: https://github.com/JuliaLang/julia/issues/26436
 [#26442]: https://github.com/JuliaLang/julia/issues/26442

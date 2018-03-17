@@ -868,27 +868,39 @@ else
     import Serialization
 end
 
-# 0.7.0-DEV.1993
-@static if !isdefined(Base, :EqualTo)
-    if VERSION >= v"0.6.0"
-        include_string(@__MODULE__, """
-            struct EqualTo{T} <: Function
-                x::T
-
-                EqualTo(x::T) where {T} = new{T}(x)
-            end
-        """)
-    else
-        include_string(@__MODULE__, """
-            immutable EqualTo{T} <: Function
-                x::T
-            end
-        """)
+@static if VERSION < v"0.7.0-DEV.4592"
+    struct Fix2{F,T} <: Function
+        f::F
+        x::T
+        Fix2(f::F, x::T) where {F,T} = new{F,T}(f, x)
+        Fix2(f::Type{F}, x::T) where {F,T} = new{F,T}(f, x)
     end
-    (f::EqualTo)(y) = isequal(f.x, y)
-    const equalto = EqualTo
-    export equalto
+    (f::Fix2)(y) = f.f(y, f.x)
+
+    Base.:(==)(x) = Fix2(==, x)
+    @static if VERSION >= v"0.7.0-DEV.1993"
+        Base.isequal(x) = Base.equalto(x)
+    else
+        Base.isequal(x) = Fix2(isequal, x)
+    end
+    @static if VERSION >= v"0.7.0-DEV.3272"
+        Base.in(x) = Base.occursin(x)
+    else
+        Base.in(x) = Fix2(in, x)
+    end
 end
+# keep these definitions to be non breaking for 0.6 usage
+@static if VERSION < v"0.7.0-DEV.1993"
+    const EqualTo{T} = Fix2{typeof(isequal),T}
+    export equalto
+    equalto(x) = isequal(x)
+end
+@static if VERSION < v"0.7.0-DEV.3272"
+    const OccursIn{T} = Fix2{typeof(in),T}
+    export occursin
+    occursin(x) = in(x)
+end
+
 
 # 0.7.0-DEV.912
 if VERSION < v"0.7.0-DEV.912"
@@ -1486,15 +1498,6 @@ end
     findprev(xs...) = Base.findprev(xs...)
     findlast(xs...) = Base.findlast(xs...)
 else
-    struct OccursIn{T} <: Function
-        x::T
-
-        OccursIn(x::T) where {T} = new{T}(x)
-    end
-    (f::OccursIn)(y) = y in f.x
-    const occursin = OccursIn
-    export occursin
-
     zero2nothing(x::Integer) = x == 0 ? nothing : x
     zero2nothing(x::AbstractUnitRange{<:Integer}) = x == 0:-1 ? nothing : x
     zero2nothing(x) = x
@@ -1506,41 +1509,41 @@ else
 
     Base.findnext(r::Regex, s::AbstractString, idx::Integer) = search(s, r, idx)
     Base.findfirst(r::Regex, s::AbstractString) = search(s, r)
-    Base.findnext(c::EqualTo{Char}, s::AbstractString, i::Integer) = search(s, c.x, i)
-    Base.findfirst(c::EqualTo{Char}, s::AbstractString) = search(s, c.x)
-    Base.findnext(b::EqualTo{<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}, i::Integer) =
+    Base.findnext(c::Fix2{typeof(isequal),Char}, s::AbstractString, i::Integer) = search(s, c.x, i)
+    Base.findfirst(c::Fix2{typeof(isequal),Char}, s::AbstractString) = search(s, c.x)
+    Base.findnext(b::Fix2{typeof(isequal),<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}, i::Integer) =
         search(a, b.x, i)
-    Base.findfirst(b::EqualTo{<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}) =
+    Base.findfirst(b::Fix2{typeof(isequal),<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}) =
         search(a, b.x)
 
-    Base.findnext(c::OccursIn{<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
+    Base.findnext(c::Fix2{typeof(in),<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
              s::AbstractString, i::Integer) =
         search(s, c.x, i)
-    Base.findfirst(c::OccursIn{<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
+    Base.findfirst(c::Fix2{typeof(in),<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
               s::AbstractString) =
         search(s, c.x)
     Base.findnext(t::AbstractString, s::AbstractString, i::Integer) = search(s, t, i)
     Base.findfirst(t::AbstractString, s::AbstractString) = search(s, t)
 
-    Base.findfirst(delim::EqualTo{UInt8}, buf::Base.IOBuffer) = search(buf, delim.x)
+    Base.findfirst(delim::Fix2{typeof(isequal),UInt8}, buf::Base.IOBuffer) = search(buf, delim.x)
 
-    Base.findprev(c::EqualTo{Char}, s::AbstractString, i::Integer) = rsearch(s, c.x, i)
-    Base.findlast(c::EqualTo{Char}, s::AbstractString) = rsearch(s, c.x)
-    Base.findprev(b::EqualTo{<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}, i::Integer) =
+    Base.findprev(c::Fix2{typeof(isequal),Char}, s::AbstractString, i::Integer) = rsearch(s, c.x, i)
+    Base.findlast(c::Fix2{typeof(isequal),Char}, s::AbstractString) = rsearch(s, c.x)
+    Base.findprev(b::Fix2{typeof(isequal),<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}, i::Integer) =
         rsearch(a, b.x, i)
-    Base.findlast(b::EqualTo{<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}) =
+    Base.findlast(b::Fix2{typeof(isequal),<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}) =
         rsearch(a, b.x)
 
-    Base.findprev(c::OccursIn{<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
+    Base.findprev(c::Fix2{typeof(in),<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
              s::AbstractString, i::Integer) = rsearch(s, c.x, i)
-    Base.findlast(c::OccursIn{<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
+    Base.findlast(c::Fix2{typeof(in),<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
              s::AbstractString) = rsearch(s, c.x)
     Base.findprev(t::AbstractString, s::AbstractString, i::Integer) = rsearch(s, t, i)
     Base.findlast(t::AbstractString, s::AbstractString) = rsearch(s, t)
 
-    findall(b::OccursIn, a) = findin(a, b.x)
+    findall(b::Fix2{typeof(in)}, a) = findin(a, b.x)
     # To fix ambiguity
-    findall(b::OccursIn, a::Number) = a in b.x ? [1] : Vector{Int}()
+    findall(b::Fix2{typeof(in)}, a::Number) = a in b.x ? [1] : Vector{Int}()
 end
 
 @static if VERSION < v"0.7.0-DEV.4047" #26089
