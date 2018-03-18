@@ -1402,6 +1402,13 @@ end
     @eval module GC
         using Base: gc
         const enable = Base.gc_enable
+        @static if !isdefined(Base, Symbol("@gc_preserve"))
+            macro preserve(args...)
+                esc(args[end])
+            end
+        else
+            @eval const $(Symbol("@preserve")) = Base.$(Symbol("@gc_preserve"))
+        end
     end
     export GC
 end

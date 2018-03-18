@@ -368,7 +368,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `isabstract` and `isleaftype` are now `isabstracttype` and `isconcretetype`, respectively
   ([#23666], [#25496]).
 
-* `gc` and `gc_enable` are now `GC.gc` and `GC.enable`, respectively ([#25616]).
+* `gc` and `gc_enable` are now `GC.gc` and `GC.enable`, respectively. `Base.@gc_preserve`
+  is now `GC.@preserve` for versions where this is defined; `GC.@preserve` is a no-op on
+  earlier versions ([#25616]).
 
 * `endof` is now `lastindex` ([#25458]). (Note that `lastindex(A, n)` is not supported.)
 
