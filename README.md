@@ -338,7 +338,11 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `copy!` and `unsafe_copy!` are now `copyto!` and `unsafe_copyto!` ([#24808]).
 
-* `ismatch(r::Regex, str::AbstractString)` is now `contains(str, r)` ([#24673]).
+* `contains(haystack, needle)` is now `occursin(needle, haystack)` ([#26283]).
+  `occursin` also has a new method for `Char` needles ([#22435]).
+
+* `ismatch(r::Regex, str::AbstractString, offset=0)` is now `occursin(r, str)` and
+  `occursin(r, str, offset = offset)` respectively ([#24673],[#26283]).
 
 * `ipermute!` is now `invpermute!` ([#25168]).
 
@@ -514,6 +518,7 @@ includes this fix. Find the minimum version from there.
 [#22064]: https://github.com/JuliaLang/julia/issues/22064
 [#22182]: https://github.com/JuliaLang/julia/issues/22182
 [#22350]: https://github.com/JuliaLang/julia/issues/22350
+[#22435]: https://github.com/JuliaLang/julia/issues/22435
 [#22475]: https://github.com/JuliaLang/julia/issues/22475
 [#22512]: https://github.com/JuliaLang/julia/issues/22512
 [#22629]: https://github.com/JuliaLang/julia/issues/22629
@@ -598,6 +603,7 @@ includes this fix. Find the minimum version from there.
 [#26089]: https://github.com/JuliaLang/julia/issues/26089
 [#26149]: https://github.com/JuliaLang/julia/issues/26149
 [#26156]: https://github.com/JuliaLang/julia/issues/26156
+[#26283]: https://github.com/JuliaLang/julia/issues/26283
 [#26316]: https://github.com/JuliaLang/julia/issues/26316
 [#26436]: https://github.com/JuliaLang/julia/issues/26436
 [#26442]: https://github.com/JuliaLang/julia/issues/26442
