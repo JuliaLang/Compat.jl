@@ -888,6 +888,8 @@ end
     else
         Base.in(x) = Fix2(in, x)
     end
+else
+    import Base: Fix2
 end
 # keep these definitions to be non breaking for 0.6 usage
 @static if VERSION < v"0.7.0-DEV.1993"
