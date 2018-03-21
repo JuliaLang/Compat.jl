@@ -1714,45 +1714,46 @@ if VERSION < v"0.7.0-DEV.4064"
             end
         end
     end
-    @eval varm(A::AbstractArray, m; dims=nothing, kwargs...) =
-        dims===nothing ? Base.varm(A, m; kwargs...) : Base.varm(A, m, dims; kwargs...)
     for f in (:var, :std, :sort)
         @eval begin
             $f(a::AbstractArray; dims=nothing, kwargs...) =
                 dims===nothing ? Base.$f(a; kwargs...) : Base.$f(a, dims; kwargs...)
         end
     end
-    if VERSION < v"0.7.0-DEV.755"
-        @eval cov(a::AbstractMatrix; dims=1, corrected=true) = Base.cov(a, dims, corrected)
-        @eval cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=1, corrected=true) =
-            Base.cov(a, b, dims, corrected)
-    else
-        @eval cov(a::AbstractMatrix; dims=nothing, kwargs...) =
-            dims===nothing ? Base.cov(a; kwargs...) : Base.cov(a, dims; kwargs...)
-        @eval cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing, kwargs...) =
-            dims===nothing ? Base.cov(a, b; kwargs...) : Base.cov(a, b, dims; kwargs...)
-    end
-    @eval cor(a::AbstractMatrix; dims=nothing) =
-        dims===nothing ? Base.cor(a) : Base.cor(a, dims)
-    @eval cor(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing) =
-        dims===nothing ? Base.cor(a, b) : Base.cor(a, b, dims)
-    @eval mapreduce(f, op, a::AbstractArray; dims=nothing) =
-        dims===nothing ? Base.mapreduce(f, op, a) : Base.mapreducedim(f, op, a, dims)
-    @eval mapreduce(f, op, v0, a::AbstractArray; dims=nothing) =
-        dims===nothing ? Base.mapreduce(f, op, v0, a) : Base.mapreducedim(f, op, a, dims, v0)
-    @eval reduce(op, a::AbstractArray; dims=nothing) =
-        dims===nothing ? Base.reduce(op, a) : Base.reducedim(op, a, dims)
-    @eval reduce(op, v0, a::AbstractArray; dims=nothing) =
-        dims===nothing ? Base.reduce(op, v0, a) : Base.reducedim(op, a, dims, v0)
-    @eval accumulate!(op, out, a; dims=nothing) =
-        dims===nothing ? Base.accumulate!(op, out, a) : Base.accumulate!(op, out, a, dims)
     for f in (:cumsum!, :cumprod!)
         @eval $f(out, a; dims=nothing) =
             dims===nothing ? Base.$f(out, a) : Base.$f(out, a, dims)
     end
 end
+if VERSION < v"0.7.0-DEV.4064"
+    varm(A::AbstractArray, m; dims=nothing, kwargs...) =
+        dims===nothing ? Base.varm(A, m; kwargs...) : Base.varm(A, m, dims; kwargs...)
+    if VERSION < v"0.7.0-DEV.755"
+        cov(a::AbstractMatrix; dims=1, corrected=true) = Base.cov(a, dims, corrected)
+        cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=1, corrected=true) =
+            Base.cov(a, b, dims, corrected)
+    else
+        cov(a::AbstractMatrix; dims=nothing, kwargs...) =
+            dims===nothing ? Base.cov(a; kwargs...) : Base.cov(a, dims; kwargs...)
+        cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing, kwargs...) =
+            dims===nothing ? Base.cov(a, b; kwargs...) : Base.cov(a, b, dims; kwargs...)
+    end
+    cor(a::AbstractMatrix; dims=nothing) = dims===nothing ? Base.cor(a) : Base.cor(a, dims)
+    cor(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing) =
+        dims===nothing ? Base.cor(a, b) : Base.cor(a, b, dims)
+    mapreduce(f, op, a::AbstractArray; dims=nothing) =
+        dims===nothing ? Base.mapreduce(f, op, a) : Base.mapreducedim(f, op, a, dims)
+    mapreduce(f, op, v0, a::AbstractArray; dims=nothing) =
+        dims===nothing ? Base.mapreduce(f, op, v0, a) : Base.mapreducedim(f, op, a, dims, v0)
+    reduce(op, a::AbstractArray; dims=nothing) =
+        dims===nothing ? Base.reduce(op, a) : Base.reducedim(op, a, dims)
+    reduce(op, v0, a::AbstractArray; dims=nothing) =
+        dims===nothing ? Base.reduce(op, v0, a) : Base.reducedim(op, a, dims, v0)
+    accumulate!(op, out, a; dims=nothing) =
+        dims===nothing ? Base.accumulate!(op, out, a) : Base.accumulate!(op, out, a, dims)
+end
 if VERSION < v"0.7.0-DEV.4534"
-    @eval reverse(a::AbstractArray; dims=nothing) =
+    reverse(a::AbstractArray; dims=nothing) =
         dims===nothing ? Base.reverse(a) : Base.flipdim(a, dims)
 end
 
