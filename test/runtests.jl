@@ -1669,4 +1669,14 @@ end
 @test Compat.reverse([1 2; 3 4], dims=1) == [3 4; 1 2]
 @test Compat.reverse([1 2; 3 4], dims=2) == [2 1; 4 3]
 
+# 0.7.0-DEV.3976
+let A = rand(5,5)
+    @test selectdim(A, 1, 3) == A[3, :]
+    @test selectdim(A, 1, 1:3) == A[1:3, :]
+    @test selectdim(A, 2, 3) == A[:, 3]
+    @test selectdim(A, 2, 1:3) == A[:, 1:3]
+    selectdim(A, 1, 3)[3] = 42
+    @test A[3,3] == 42
+end
+
 nothing
