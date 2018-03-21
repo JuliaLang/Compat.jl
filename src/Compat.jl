@@ -1285,7 +1285,7 @@ end
     size(iter::CartesianIndices) = map(dimlength, first(iter).I, last(iter).I)
     dimlength(start, stop) = stop-start+1
 
-    length(iter::CartesianIndices) = prod(size(iter))
+    length(iter::CartesianIndices) = Base.prod(size(iter))
 
     first(iter::CartesianIndices) = CartesianIndex(map(first, iter.indices))
     last(iter::CartesianIndices)  = CartesianIndex(map(last, iter.indices))

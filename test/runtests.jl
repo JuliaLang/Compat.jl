@@ -1668,5 +1668,9 @@ end
 @test Compat.reverse([1, 2, 3, 4]) == [4, 3, 2, 1]
 @test Compat.reverse([1 2; 3 4], dims=1) == [3 4; 1 2]
 @test Compat.reverse([1 2; 3 4], dims=2) == [2 1; 4 3]
+# Issue #523
+@test length(Compat.CartesianIndices((1:1,))) == 1
+@test length(Compat.CartesianIndices((1:2,))) == 2
+@test length(Compat.CartesianIndices((1:2, -1:1))) == 6
 
 nothing
