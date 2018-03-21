@@ -1528,9 +1528,9 @@ end
 
 # 0.7.0-DEV.4064
 # some tests are behind a version check below because Julia gave
-# the wrong result between 0.7.0-DEV.4064 and 0.7.0-DEV.4646
+# the wrong result between 0.7.0-DEV.3262 and 0.7.0-DEV.4646
 # see https://github.com/JuliaLang/julia/issues/26488
-Issue26488 = VERSION < v"0.7.0-DEV.4064" || VERSION >= v"0.7.0-DEV.4646"
+Issue26488 = VERSION < v"0.7.0-DEV.3262" || VERSION >= v"0.7.0-DEV.4646"
 @test Compat.mean([1 2; 3 4]) == 2.5
 @test Compat.mean([1 2; 3 4], dims=1) == [2 3]
 @test Compat.mean([1 2; 3 4], dims=2) == hcat([1.5; 3.5])
