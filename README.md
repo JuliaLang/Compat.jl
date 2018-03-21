@@ -285,6 +285,13 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.mv` and `Compat.cp` with `force` keyword argument ([#26069]).
 
+* `Compat.accumulate`, `Compat.accumulate!`, `Compat.all`, `Compat.any`, `Compat.cor`,
+  `Compat.cov`, `Compat.cumprod`, `Compat.cumprod!`, `Compat.cumsum`, `Compat.cumsum!`,
+  `Compat.findmax`, `Compat.findmin`, `Compat.mapreduce`, `Compat.maximum`, `Compat.mean`,
+  `Compat.median`, `Compat.minimum`, `Compat.prod`, `Compat.reduce`, `Compat.sort`,
+  `Compat.std`, `Compat.sum`, `Compat.var`, and `Compat.varm` with `dims` keyword argument ([#25989],[#26369]).
+
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -597,6 +604,7 @@ includes this fix. Find the minimum version from there.
 [#25873]: https://github.com/JuliaLang/julia/issues/25873
 [#25896]: https://github.com/JuliaLang/julia/issues/25896
 [#25959]: https://github.com/JuliaLang/julia/issues/25959
+[#25989]: https://github.com/JuliaLang/julia/issues/25989
 [#25990]: https://github.com/JuliaLang/julia/issues/25990
 [#25998]: https://github.com/JuliaLang/julia/issues/25998
 [#26069]: https://github.com/JuliaLang/julia/issues/26069
@@ -605,5 +613,6 @@ includes this fix. Find the minimum version from there.
 [#26156]: https://github.com/JuliaLang/julia/issues/26156
 [#26283]: https://github.com/JuliaLang/julia/issues/26283
 [#26316]: https://github.com/JuliaLang/julia/issues/26316
+[#26369]: https://github.com/JuliaLang/julia/issues/26369
 [#26436]: https://github.com/JuliaLang/julia/issues/26436
 [#26442]: https://github.com/JuliaLang/julia/issues/26442

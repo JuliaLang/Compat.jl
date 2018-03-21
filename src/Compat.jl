@@ -513,7 +513,7 @@ if VERSION < v"0.7.0-DEV.755"
     # This is a hack to only add keyword signature that won't work on all julia versions.
     # However, since we really only need to support a few (0.5, 0.6 and early 0.7) versions
     # this should be good enough.
-    let Tf = typeof(cov), Tkw = Core.Core.kwftype(Tf)
+    let Tf = typeof(Base.cov), Tkw = Core.Core.kwftype(Tf)
         @eval begin
             @inline function _get_corrected(kws)
                 corrected = true
@@ -527,14 +527,14 @@ if VERSION < v"0.7.0-DEV.755"
                 return corrected::Bool
             end
             if VERSION >= v"0.6"
-                (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = cov(x, _get_corrected(kws))
+                (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = Base.cov(x, _get_corrected(kws))
                 (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVector, Y::AbstractVector) =
-                    cov(X, Y, _get_corrected(kws))
+                    Base.cov(X, Y, _get_corrected(kws))
             end
             (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractMatrix, vardim::Int) =
-                cov(x, vardim, _get_corrected(kws))
+                Base.cov(x, vardim, _get_corrected(kws))
             (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVecOrMat, Y::AbstractVecOrMat,
-                     vardim::Int) = cov(X, Y, vardim, _get_corrected(kws))
+                     vardim::Int) = Base.cov(X, Y, vardim, _get_corrected(kws))
         end
     end
 end
@@ -948,7 +948,7 @@ end
     import Base: diagm
     function diagm(kv::Pair...)
         T = promote_type(map(x -> eltype(x.second), kv)...)
-        n = mapreduce(x -> length(x.second) + abs(x.first), max, kv)
+        n = Base.mapreduce(x -> length(x.second) + abs(x.first), max, kv)
         A = zeros(T, n, n)
         for p in kv
             inds = diagind(A, p.first)
@@ -1255,7 +1255,7 @@ end
 
     @inline function start(iter::CartesianIndices)
         iterfirst, iterlast = first(iter), last(iter)
-        if any(map(>, iterfirst.I, iterlast.I))
+        if Base.any(map(>, iterfirst.I, iterlast.I))
             return iterlast+1
         end
         iterfirst
@@ -1316,7 +1316,7 @@ end
     @inline function Base.getindex(iter::LinearIndices{N,R}, I::Vararg{Int, N}) where {N,R}
         dims = length.(iter.indices)
         #without the inbounds, this is slower than Base._sub2ind(iter.indices, I...)
-        @inbounds result = reshape(1:prod(dims), dims)[(I .- first.(iter.indices) .+ 1)...]
+        @inbounds result = reshape(1:Base.prod(dims), dims)[(I .- first.(iter.indices) .+ 1)...]
         return result
     end
 elseif VERSION < v"0.7.0-DEV.3395"
@@ -1707,6 +1707,73 @@ if VERSION < v"0.7.0-DEV.4585"
     const islowercase = islower
     const uppercasefirst = ucfirst
     const lowercasefirst = lcfirst
+end
+
+if VERSION < v"0.7.0-DEV.4064"
+    for f in (:mean, :cumsum, :cumprod, :sum, :prod, :maximum, :minimum, :all, :any, :median)
+        @eval begin
+            $f(a::AbstractArray; dims=nothing) =
+                dims===nothing ? Base.$f(a) : Base.$f(a, dims)
+        end
+    end
+    for f in (:sum, :prod, :maximum, :minimum, :all, :any, :accumulate)
+        @eval begin
+            $f(f, a::AbstractArray; dims=nothing) =
+                dims===nothing ? Base.$f(f, a) : Base.$f(f, a, dims)
+        end
+    end
+    for f in (:findmax, :findmin)
+        @eval begin
+            $f(a::AbstractVector; dims=nothing) =
+                dims===nothing ? Base.$f(a) : Base.$f(a, dims)
+            function $f(a::AbstractArray; dims=nothing)
+                vs, inds = dims===nothing ? Base.$f(a) : Base.$f(a, dims)
+                cis = CartesianIndices(a)
+                return (vs, map(i -> cis[i], inds))
+            end
+        end
+    end
+    for f in (:var, :std, :sort)
+        @eval begin
+            $f(a::AbstractArray; dims=nothing, kwargs...) =
+                dims===nothing ? Base.$f(a; kwargs...) : Base.$f(a, dims; kwargs...)
+        end
+    end
+    for f in (:cumsum!, :cumprod!)
+        @eval $f(out, a; dims=nothing) =
+            dims===nothing ? Base.$f(out, a) : Base.$f(out, a, dims)
+    end
+end
+if VERSION < v"0.7.0-DEV.4064"
+    varm(A::AbstractArray, m; dims=nothing, kwargs...) =
+        dims===nothing ? Base.varm(A, m; kwargs...) : Base.varm(A, m, dims; kwargs...)
+    if VERSION < v"0.7.0-DEV.755"
+        cov(a::AbstractMatrix; dims=1, corrected=true) = Base.cov(a, dims, corrected)
+        cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=1, corrected=true) =
+            Base.cov(a, b, dims, corrected)
+    else
+        cov(a::AbstractMatrix; dims=nothing, kwargs...) =
+            dims===nothing ? Base.cov(a; kwargs...) : Base.cov(a, dims; kwargs...)
+        cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing, kwargs...) =
+            dims===nothing ? Base.cov(a, b; kwargs...) : Base.cov(a, b, dims; kwargs...)
+    end
+    cor(a::AbstractMatrix; dims=nothing) = dims===nothing ? Base.cor(a) : Base.cor(a, dims)
+    cor(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing) =
+        dims===nothing ? Base.cor(a, b) : Base.cor(a, b, dims)
+    mapreduce(f, op, a::AbstractArray; dims=nothing) =
+        dims===nothing ? Base.mapreduce(f, op, a) : Base.mapreducedim(f, op, a, dims)
+    mapreduce(f, op, v0, a::AbstractArray; dims=nothing) =
+        dims===nothing ? Base.mapreduce(f, op, v0, a) : Base.mapreducedim(f, op, a, dims, v0)
+    reduce(op, a::AbstractArray; dims=nothing) =
+        dims===nothing ? Base.reduce(op, a) : Base.reducedim(op, a, dims)
+    reduce(op, v0, a::AbstractArray; dims=nothing) =
+        dims===nothing ? Base.reduce(op, v0, a) : Base.reducedim(op, a, dims, v0)
+    accumulate!(op, out, a; dims=nothing) =
+        dims===nothing ? Base.accumulate!(op, out, a) : Base.accumulate!(op, out, a, dims)
+end
+if VERSION < v"0.7.0-DEV.4534"
+    reverse(a::AbstractArray; dims=nothing) =
+        dims===nothing ? Base.reverse(a) : Base.flipdim(a, dims)
 end
 
 include("deprecated.jl")
