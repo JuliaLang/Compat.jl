@@ -1527,8 +1527,10 @@ end
 @test lowercasefirst("Qwerty") == "qwerty"
 
 # 0.7.0-DEV.4064
-# some tests commented out below because Julia 0.7 presently gives wrong results due to
-# https://github.com/JuliaLang/julia/issues/26488
+# some tests are behind a version check below because Julia gave
+# the wrong result between 0.7.0-DEV.4064 and 0.7.0-DEV.4646
+# see https://github.com/JuliaLang/julia/issues/26488
+Issue26488 = VERSION < v"0.7.0-DEV.4064" || VERSION >= v"0.7.0-DEV.4646"
 @test Compat.mean([1 2; 3 4]) == 2.5
 @test Compat.mean([1 2; 3 4], dims=1) == [2 3]
 @test Compat.mean([1 2; 3 4], dims=2) == hcat([1.5; 3.5])
@@ -1540,14 +1542,14 @@ end
 @test Compat.sum([1 2; 3 4], dims=1) == [4 6]
 @test Compat.sum([1 2; 3 4], dims=2) == hcat([3; 7])
 @test Compat.sum(x -> x+1, [1 2; 3 4]) == 14
-#@test Compat.sum(x -> x+1, [1 2; 3 4], dims=1) == [6 8]
-#@test Compat.sum(x -> x+1, [1 2; 3 4], dims=2) == hcat([5; 9])
+Issue26488 && @test Compat.sum(x -> x+1, [1 2; 3 4], dims=1) == [6 8]
+Issue26488 && @test Compat.sum(x -> x+1, [1 2; 3 4], dims=2) == hcat([5; 9])
 @test Compat.prod([1 2; 3 4]) == 24
 @test Compat.prod([1 2; 3 4], dims=1) == [3 8]
 @test Compat.prod([1 2; 3 4], dims=2) == hcat([2; 12])
 @test Compat.prod(x -> x+1, [1 2; 3 4]) == 120
-#@test Compat.prod(x -> x+1, [1 2; 3 4], dims=1) == [8 15]
-#@test Compat.prod(x -> x+1, [1 2; 3 4], dims=2) == hcat([6; 20])
+Issue26488 && @test Compat.prod(x -> x+1, [1 2; 3 4], dims=1) == [8 15]
+Issue26488 && @test Compat.prod(x -> x+1, [1 2; 3 4], dims=2) == hcat([6; 20])
 @test Compat.maximum([1 2; 3 4]) == 4
 @test Compat.maximum([1 2; 3 4], dims=1) == [3 4]
 @test Compat.maximum([1 2; 3 4], dims=2) == hcat([2; 4])
@@ -1617,8 +1619,8 @@ end
 @test Compat.median([1 2; 3 4], dims=1) == [2 3]
 @test Compat.median([1 2; 3 4], dims=2) == hcat([1.5; 3.5])
 @test Compat.mapreduce(string, *, [1 2; 3 4]) == "1324"
-#@test Compat.mapreduce(string, *, [1 2; 3 4], dims=1) == ["13" "24"]
-#@test Compat.mapreduce(string, *, [1 2; 3 4], dims=2) == hcat(["12", "34"])
+Issue26488 && @test Compat.mapreduce(string, *, [1 2; 3 4], dims=1) == ["13" "24"]
+Issue26488 && @test Compat.mapreduce(string, *, [1 2; 3 4], dims=2) == hcat(["12", "34"])
 @test Compat.mapreduce(string, *, "z", [1 2; 3 4]) == "z1324"
 @test Compat.mapreduce(string, *, "z", [1 2; 3 4], dims=1) == ["z13" "z24"]
 @test Compat.mapreduce(string, *, "z", [1 2; 3 4], dims=2) == hcat(["z12", "z34"])
