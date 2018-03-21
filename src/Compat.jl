@@ -901,6 +901,25 @@ end
     occursin(x) = in(x)
 end
 
+# PR #26283
+if VERSION < v"0.7.0-DEV.4639"
+    if isdefined(Base, :occursin)
+        import Base: occursin
+    else
+        export occursin
+    end
+    occursin(needle, haystack) = contains(haystack, needle)
+    if VERSION < v"0.7.0-DEV.3272"
+        occursin(r::Regex, s::AbstractString; offset::Integer = 0) = ismatch(r, s, offset)
+    else
+        occursin(r::Regex, s::AbstractString; offset::Integer = 0) = contains(s, r, offset)
+    end
+    # PR #22435
+    if VERSION < v"0.7.0-DEV.702"
+        occursin(needle::Char, haystack::AbstractString) = searchindex(haystack,needle) != 0
+    end
+end
+
 
 # 0.7.0-DEV.912
 if VERSION < v"0.7.0-DEV.912"
@@ -1171,7 +1190,7 @@ end
     export copyto!, unsafe_copyto!
 end
 
-# 0.7.0-DEV.3272
+# 0.7.0-DEV.3272, keep this definition for 0.6 compatibility
 @static if VERSION < v"0.7.0-DEV.3272"
     Base.contains(str::AbstractString, r::Regex) = ismatch(r, str)
 end

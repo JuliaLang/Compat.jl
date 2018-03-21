@@ -185,13 +185,13 @@ let filename = tempname()
         end
     end
     @test ret == [2]
-    @test contains(read(filename, String), "WARNING: hello")
+    @test occursin("WARNING: hello", read(filename, String))
     ret = open(filename) do f
         redirect_stdin(f) do
             readline()
         end
     end
-    @test contains(ret, "WARNING: hello")
+    @test occursin("WARNING: hello", ret)
     rm(filename)
 end
 
@@ -837,7 +837,7 @@ no_specialize_kw2(@nospecialize(x::Integer=0)) = sin(2)
 
 # 0.7
 @test read(IOBuffer("aaaa"), String) == "aaaa"
-@test contains(read(@__FILE__, String), "read(@__FILE__, String)")
+@test occursin("read(@__FILE__, String)", read(@__FILE__, String))
 @test read(`$(Base.julia_cmd()) --startup-file=no -e "println(:aaaa)"`, String) == "aaaa\n"
 
 # 0.7
@@ -1115,8 +1115,17 @@ end
 using Compat.Random
 @test rand(MersenneTwister(1234)) == 0.5908446386657102
 
-# 0.7
-@test contains("Hello, World!", r"World")
+# 0.7, make sure this works on 0.6
+if VERSION < v"0.7.0-DEV.3272"
+    @test contains("Hello, World!", r"World")
+end
+
+# 0.7.0-DEV.4639
+@test occursin(r"World", "Hello, World!")
+@test occursin(r"World", "Hello, World!", offset = 4)
+@test occursin("World", "Hello, World!")
+# 0.7.0-DEV.912
+@test occursin('W', "Hello, World!")
 
 # 0.7.0-DEV.3449
 let A = [2.0 1.0; 1.0 3.0], b = [1.0, 2.0], x = [0.2, 0.6]
