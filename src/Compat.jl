@@ -1778,6 +1778,17 @@ if VERSION < v"0.7.0-DEV.4534"
         dims===nothing ? Base.reverse(a) : Base.flipdim(a, dims)
 end
 
+if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
+    export selectdim
+    @inline selectdim(A::AbstractArray, d::Integer, i) = _selectdim(A, d, i, Base.setindex(axes(A), i, d))
+    @noinline function _selectdim(A, d, i, idxs)
+        d >= 1 || throw(ArgumentError("dimension must be ≥ 1"))
+        nd = ndims(A)
+        d > nd && (i == 1 || throw(BoundsError(A, (ntuple(k->Colon(),d-1)..., i))))
+        return view(A, idxs...)
+    end
+end
+
 include("deprecated.jl")
 
 end # module Compat

@@ -1673,4 +1673,14 @@ end
 @test length(Compat.CartesianIndices((1:2,))) == 2
 @test length(Compat.CartesianIndices((1:2, -1:1))) == 6
 
+# 0.7.0-DEV.3976
+let A = rand(5,5)
+    @test selectdim(A, 1, 3) == A[3, :]
+    @test selectdim(A, 1, 1:3) == A[1:3, :]
+    @test selectdim(A, 2, 3) == A[:, 3]
+    @test selectdim(A, 2, 1:3) == A[:, 1:3]
+    selectdim(A, 1, 3)[3] = 42
+    @test A[3,3] == 42
+end
+
 nothing
