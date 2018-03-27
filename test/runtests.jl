@@ -1683,4 +1683,15 @@ let A = rand(5,5)
     @test A[3,3] == 42
 end
 
+buf = IOBuffer("abccabc")
+@test Compat.readuntil(buf, 'c') == "ab"
+@test Compat.readuntil(buf, 'c') == ""
+@test Compat.readuntil(buf, 'c') == "ab"
+@test Compat.readuntil(buf, 'c') == ""
+buf = IOBuffer("abccabc")
+@test Compat.readuntil(buf, 'c', keep = true) == "abc"
+@test Compat.readuntil(buf, 'c', keep = true) == "c"
+@test Compat.readuntil(buf, 'c', keep = true) == "abc"
+@test Compat.readuntil(buf, 'c', keep = true) == ""
+
 nothing

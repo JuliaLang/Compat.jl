@@ -493,6 +493,18 @@ if VERSION < v"0.7.0-DEV.1053"
     Base.read(obj::Cmd, ::Type{String}) = readstring(obj)
 end
 
+@static if VERSION < v"0.7.0-DEV.3509"
+    export readuntil
+    function readuntil(io, a; keep = false)
+        if keep
+            Base.readuntil(io, a)
+        else
+            r = Base.readuntil(io, a)
+            length(r) > 0 && r[end]==a ? r[1:end-1] : r
+        end
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/20005
 if VERSION < v"0.7.0-DEV.896"
     Base.InexactError(name::Symbol, T, val) = InexactError()
