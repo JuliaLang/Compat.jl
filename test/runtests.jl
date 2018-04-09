@@ -1428,9 +1428,6 @@ end
 @test Compat.findnext(r"a", "ba", 1) == Compat.findfirst(r"a", "ba") == 2:2
 @test Compat.findnext(r"z", "ba", 1) == Compat.findfirst(r"z", "ba") == nothing
 
-@test Compat.findfirst(isequal(UInt8(0)), IOBuffer(UInt8[1, 0])) == 2
-@test Compat.findfirst(isequal(UInt8(9)), IOBuffer(UInt8[1, 0])) == nothing
-
 @test findall([true, false, true]) == [1, 3]
 @test findall(in([1, 2]), [1]) == [1]
 if VERSION < v"0.7.0-DEV.4592"
