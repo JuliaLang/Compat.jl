@@ -1777,6 +1777,9 @@ if VERSION < v"0.7.0-DEV.4534"
     reverse(a::AbstractArray; dims=nothing) =
         dims===nothing ? Base.reverse(a) : Base.flipdim(a, dims)
 end
+if VERSION < v"0.7.0-DEV.4738"
+    Base.squeeze(A; dims=error("squeeze: keyword argument dims not assigned")) = squeeze(A, dims)
+end
 
 if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
     export selectdim
