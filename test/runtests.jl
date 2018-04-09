@@ -1230,7 +1230,11 @@ let c = CartesianIndices(1:3, 1:2), l = LinearIndices(1:3, 1:2)
     @test l == collect(l) == reshape(1:6, 3, 2)
     @test c[1:6] == vec(c)
     @test l[1:6] == vec(l)
-    @test l == l[c] == map(i -> l[i], c)
+    # TODO the following test fails on current Julia master (since 0.7.0-DEV.4742), and
+    # it's not clear yet whether it should work or not. See
+    # https://github.com/JuliaLang/julia/pull/26682#issuecomment-379762632 and the
+    # discussion following it
+    #@test l == l[c] == map(i -> l[i], c)
     @test l[vec(c)] == collect(1:6)
     @test CartesianIndex(1, 1) in CartesianIndices((3, 4))
 end
