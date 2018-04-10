@@ -1789,6 +1789,11 @@ if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
     end
 end
 
+if VERSION < v"0.7.0-DEV.3439"
+    export IdDict
+    IdDict = ObjectIdDict
+end
+
 include("deprecated.jl")
 
 end # module Compat
