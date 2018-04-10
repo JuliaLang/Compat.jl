@@ -1472,12 +1472,19 @@ end
 @test :foo in Compat.names(TestNames)
 @test :bar in Compat.names(TestNames, all=true)
 
-# 0.7.0-DEV.4062
+# 0.7.0-DEV.4062, but dropped in 0.7.0-DEV.4804
 @test Compat.trunc(pi, 3, base = 2) == 3.125
 @test Compat.floor(pi, 3, base = 2) == 3.125
 @test Compat.ceil(pi, 3, base = 2) == 3.25
 @test Compat.round(pi, 3, base = 2) == 3.125
-@test Compat.signif(pi, 5, base = 2) == 3.125
+@test Compat.signif(pi, 5, base = 10) == 3.1416
+
+# 0.7.0-DEV.4804
+@test Compat.trunc(pi, digits = 3, base = 2) == 3.125
+@test Compat.floor(pi, digits = 3, base = 2) == 3.125
+@test Compat.ceil(pi, digits = 3, base = 2) == 3.25
+@test Compat.round(pi, digits = 3, base = 2) == 3.125
+@test Compat.round(pi, sigdigits = 5, base = 10) == 3.1416
 
 # 0.7.0-DEV.3734
 let buf = Compat.IOBuffer(read=true, write=false, maxsize=25)

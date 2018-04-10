@@ -1592,13 +1592,53 @@ else
     end
 end
 
-# https://github.com/JuliaLang/julia/pull/26156
+# https://github.com/JuliaLang/julia/pull/26670
 @static if VERSION < v"0.7.0-DEV.4062"
-    trunc(x, digits; base = base) = Base.trunc(x, digits, base)
-    floor(x, digits; base = base) = Base.floor(x, digits, base)
-    ceil(x, digits; base = base) = Base.ceil(x, digits, base)
-    round(x, digits; base = base) = Base.round(x, digits, base)
-    signif(x, digits; base = base) = Base.signif(x, digits, base)
+    trunc(x; digits = digits, base = base) = Base.trunc(x, digits, base)
+    floor(x; digits = digits, base = base) = Base.floor(x, digits, base)
+    ceil(x; digits = digits, base = base) = Base.ceil(x, digits, base)
+    function round(x; digits = nothing, sigdigits = nothing, base = base)
+        if digits === nothing
+            if sigdigits === nothing
+                Base.round(x, 0, base)
+            else
+                Base.signif(x, sigdigits, base)
+            end
+        else
+            sigdigits === nothing || throw(AgrumentError("`round` cannot use both `digits` and `sigdigits` arguments"))
+            Base.round(x, digits, base)
+        end
+    end
+elseif VERSION < v"0.7.0-DEV.4804"
+    trunc(x; digits = digits, base = base) = Base.trunc(x, digits, base = base)
+    floor(x; digits = digits, base = base) = Base.floor(x, digits, base = base)
+    ceil(x; digits = digits, base = base) = Base.ceil(x, digits, base = base)
+    function round(x; digits = nothing, sigdigits = nothing, base = base)
+        if digits === nothing
+            if sigdigits === nothing
+                Base.round(x, 0, base = base)
+            else
+                Base.signif(x, sigdigits, base = base)
+            end
+        else
+            sigdigits === nothing || throw(AgrumentError("`round` cannot use both `digits` and `sigdigits` arguments"))
+            Base.round(x, digits, base = base)
+        end
+    end
+else
+    trunc(x; digits = digits, base = base) = Base.trunc(x, digits = digits, base = base)
+    floor(x; digits = digits, base = base) = Base.floor(x, digits = digits, base = base)
+    ceil(x; digits = digits, base = base) = Base.ceil(x, digits = digits, base = base)
+    round(x; digits = nothing, sigdigits = nothing, base = base) = Base.round(x, digits = digits, sigdigits = sigdigits, base = base)
+end
+
+# compatibiltiy with https://github.com/JuliaLang/julia/pull/26156
+if VERSION < v"0.7.0-DEV.4062" || VERSION >= v"0.7.0-DEV.4804"
+    trunc(x, digits; base = base) = trunc(x, digits = digits, base = base)
+    floor(x, digits; base = base) = floor(x, digits = digits, base = base)
+    ceil(x, digits; base = base) = ceil(x, digits = digits, base = base)
+    round(x, digits; base = base) = round(x, digits = digits, base = base)
+    signif(x, digits; base = base) = round(x, sigdigits = digits, base = base)
 end
 
 # https://github.com/JuliaLang/julia/pull/25872

@@ -281,7 +281,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.range` supporting keyword arguments ([#25896]).
 
-* `Compat.trunc`, `Compat.floor`, `Compat.ceil`, `Compat.round`, `Compat.signif` take a keyword argument for `base` ([#26156]).
+* `Compat.trunc`, `Compat.floor`, `Compat.ceil`, `Compat.round`, take a keyword argument
+  for `base` and `digits`, `Compat.round` also takes `sigdigits` ([#26156], [#26670]).
 
 * `Compat.mv` and `Compat.cp` with `force` keyword argument ([#26069]).
 
@@ -618,3 +619,4 @@ includes this fix. Find the minimum version from there.
 [#26369]: https://github.com/JuliaLang/julia/issues/26369
 [#26436]: https://github.com/JuliaLang/julia/issues/26436
 [#26442]: https://github.com/JuliaLang/julia/issues/26442
+[#26670]: https://github.com/JuliaLang/julia/issues/26670
