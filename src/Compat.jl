@@ -1780,7 +1780,7 @@ end
 
 if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
     export selectdim
-    @inline selectdim(A::AbstractArray, d::Integer, i) = _selectdim(A, d, i, Base.setindex(axes(A), i, d))
+    @inline selectdim(A::AbstractArray, d::Integer, i) = _selectdim(A, d, i, Base.setindex(map(Base.Slice, axes(A)), i, d))
     @noinline function _selectdim(A, d, i, idxs)
         d >= 1 || throw(ArgumentError("dimension must be ≥ 1"))
         nd = ndims(A)
