@@ -1678,6 +1678,7 @@ end
 @test_throws ArgumentError squeeze([1 2], dims=2)
 @test_throws ArgumentError squeeze(hcat([1, 2]), dims=1)
 @test squeeze(hcat([1, 2]), dims=2) == [1, 2]
+@test_throws Exception squeeze([1,2])
 
 # 0.7.0-DEV.3976
 let A = rand(5,5)
