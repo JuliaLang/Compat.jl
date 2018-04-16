@@ -1817,10 +1817,13 @@ if VERSION < v"0.7.0-DEV.4534"
     reverse(a::AbstractArray; dims=nothing) =
         dims===nothing ? Base.reverse(a) : Base.flipdim(a, dims)
 end
+if VERSION < v"0.7.0-DEV.4738"
+    Base.squeeze(A; dims=error("squeeze: keyword argument dims not assigned")) = squeeze(A, dims)
+end
 
 if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
     export selectdim
-    @inline selectdim(A::AbstractArray, d::Integer, i) = _selectdim(A, d, i, Base.setindex(axes(A), i, d))
+    @inline selectdim(A::AbstractArray, d::Integer, i) = _selectdim(A, d, i, Base.setindex(map(Base.Slice, axes(A)), i, d))
     @noinline function _selectdim(A, d, i, idxs)
         d >= 1 || throw(ArgumentError("dimension must be ≥ 1"))
         nd = ndims(A)

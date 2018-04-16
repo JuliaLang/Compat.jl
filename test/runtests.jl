@@ -1680,6 +1680,13 @@ end
 @test length(Compat.CartesianIndices((1:2,))) == 2
 @test length(Compat.CartesianIndices((1:2, -1:1))) == 6
 
+# 0.7.0-DEV.4738
+@test squeeze([1 2], dims=1) == [1, 2]
+@test_throws ArgumentError squeeze([1 2], dims=2)
+@test_throws ArgumentError squeeze(hcat([1, 2]), dims=1)
+@test squeeze(hcat([1, 2]), dims=2) == [1, 2]
+@test_throws Exception squeeze([1,2])
+
 # 0.7.0-DEV.3976
 let A = rand(5,5)
     @test selectdim(A, 1, 3) == A[3, :]
@@ -1688,6 +1695,13 @@ let A = rand(5,5)
     @test selectdim(A, 2, 1:3) == A[:, 1:3]
     selectdim(A, 1, 3)[3] = 42
     @test A[3,3] == 42
+    if VERSION < v"0.7.0-DEV.3976" || VERSION >= v"0.7.0-DEV.4739"
+        # in the omitted version range, Julia's selectdim always gives IndexCartesian()
+        B = rand(4, 3, 2)
+        @test IndexStyle(selectdim(B, 1, 1)) == IndexStyle(view(B, 1, :, :)) == IndexLinear()
+        @test IndexStyle(selectdim(B, 2, 1)) == IndexStyle(view(B, :, 1, :)) == IndexCartesian()
+        @test IndexStyle(selectdim(B, 3, 1)) == IndexStyle(view(B, :, :, 1)) == IndexLinear()
+    end
 end
 
 nothing
