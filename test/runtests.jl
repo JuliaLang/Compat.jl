@@ -1673,6 +1673,13 @@ end
 @test length(Compat.CartesianIndices((1:2,))) == 2
 @test length(Compat.CartesianIndices((1:2, -1:1))) == 6
 
+# 0.7.0-DEV.4738
+@test squeeze([1 2], dims=1) == [1, 2]
+@test_throws ArgumentError squeeze([1 2], dims=2)
+@test_throws ArgumentError squeeze(hcat([1, 2]), dims=1)
+@test squeeze(hcat([1, 2]), dims=2) == [1, 2]
+@test_throws Exception squeeze([1,2])
+
 # 0.7.0-DEV.3976
 let A = rand(5,5)
     @test selectdim(A, 1, 3) == A[3, :]

@@ -293,6 +293,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `selectdim` to obtain a view of an array with a specified index for a specified dimension ([#26009]).
 
+* `squeeze` with `dims` as keyword argument ([#26660]).
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -618,3 +620,4 @@ includes this fix. Find the minimum version from there.
 [#26369]: https://github.com/JuliaLang/julia/issues/26369
 [#26436]: https://github.com/JuliaLang/julia/issues/26436
 [#26442]: https://github.com/JuliaLang/julia/issues/26442
+[#26660]: https://github.com/JuliaLang/julia/issues/26660
