@@ -1633,13 +1633,11 @@ else
 end
 
 # compatibiltiy with https://github.com/JuliaLang/julia/pull/26156
-if VERSION < v"0.7.0-DEV.4062" || VERSION >= v"0.7.0-DEV.4804"
-    trunc(x, digits; base = base) = trunc(x, digits = digits, base = base)
-    floor(x, digits; base = base) = floor(x, digits = digits, base = base)
-    ceil(x, digits; base = base) = ceil(x, digits = digits, base = base)
-    round(x, digits; base = base) = round(x, digits = digits, base = base)
-    signif(x, digits; base = base) = round(x, sigdigits = digits, base = base)
-end
+trunc(x, digits; base = base) = trunc(x, digits = digits, base = base)
+floor(x, digits; base = base) = floor(x, digits = digits, base = base)
+ceil(x, digits; base = base) = ceil(x, digits = digits, base = base)
+round(x, digits; base = base) = round(x, digits = digits, base = base)
+signif(x, digits; base = base) = round(x, sigdigits = digits, base = base)
 
 # https://github.com/JuliaLang/julia/pull/25872
 if VERSION < v"0.7.0-DEV.3734"
