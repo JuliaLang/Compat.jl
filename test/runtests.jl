@@ -1705,4 +1705,26 @@ let A = rand(5,5)
     end
 end
 
+# 0.7.0-DEV.843 / 0.7.0-DEV.2337
+let A = [1 2; 1 2; 1 2]
+    f = Compat.qr(A, Val(false), full=false)
+    @test f == Compat.qr(A, Val(false))
+    @test length(f) == 2
+    @test size(f[1]) == (3, 2)
+    @test f[1] * f[2] ≈ A
+    f = Compat.qr(A, Val(false), full=true)
+    @test length(f) == 2
+    @test size(f[1]) == (3, 3)
+    @test f[1] * [f[2]; [0 0]] ≈ A
+    f = Compat.qr(A, Val(true), full=false)
+    @test f == Compat.qr(A, Val(true))
+    @test length(f) == 3
+    @test size(f[1]) == (3, 2)
+    @test f[1] * f[2] ≈ A[:,f[3]]
+    f = Compat.qr(A, Val(true), full=true)
+    @test length(f) == 3
+    @test size(f[1]) == (3, 3)
+    @test f[1] * [f[2]; [0 0]] ≈ A[:,f[3]]
+end
+
 nothing
