@@ -296,6 +296,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `squeeze` with `dims` as keyword argument ([#26660]).
 
+* `Compat.qr` takes `pivot` as a `Val` _instance_ and keyword argument `full` ([#22475], [#24279]).
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -552,6 +554,7 @@ includes this fix. Find the minimum version from there.
 [#23931]: https://github.com/JuliaLang/julia/issues/23931
 [#24047]: https://github.com/JuliaLang/julia/issues/24047
 [#24182]: https://github.com/JuliaLang/julia/issues/24182
+[#24279]: https://github.com/JuliaLang/julia/issues/24279
 [#24282]: https://github.com/JuliaLang/julia/issues/24282
 [#24361]: https://github.com/JuliaLang/julia/issues/24361
 [#24372]: https://github.com/JuliaLang/julia/issues/24372
