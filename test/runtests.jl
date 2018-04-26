@@ -1484,7 +1484,9 @@ end
 @test Compat.trunc(pi, digits = 3, base = 2) == 3.125
 @test Compat.floor(pi, digits = 3, base = 2) == 3.125
 @test Compat.ceil(pi, digits = 3, base = 2) == 3.25
+@test Compat.round(pi, digits = 3) == 3.142
 @test Compat.round(pi, digits = 3, base = 2) == 3.125
+@test Compat.round(pi, sigdigits = 5) == 3.1416
 @test Compat.round(pi, sigdigits = 5, base = 10) == 3.1416
 
 # 0.7.0-DEV.3734
