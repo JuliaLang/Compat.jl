@@ -861,7 +861,7 @@ end
 
 if VERSION < v"0.7.0-DEV.3476"
     @eval module Serialization
-        import Base.Serializer: serialize, deserialize, SerializationState
+        import Base.Serializer: serialize, deserialize, SerializationState, serialize_type
         export serialize, deserialize, SerializationState
     end
 else
