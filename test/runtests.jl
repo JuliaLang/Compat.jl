@@ -597,6 +597,9 @@ end
 @test Compat.readline(IOBuffer("Hello, World!\n")) == "Hello, World!"
 @test Compat.readline(IOBuffer("x\n"), keep=false) == "x"
 @test Compat.readline(IOBuffer("x\n"), keep=true) == "x\n"
+@test collect(Compat.eachline(IOBuffer("x\ny"))) == ["x", "y"]
+@test collect(Compat.eachline(IOBuffer("x\ny"), keep=false)) == ["x", "y"]
+@test collect(Compat.eachline(IOBuffer("x\ny"), keep=true))  == ["x\n", "y"]
 
 # PR 18727
 let
