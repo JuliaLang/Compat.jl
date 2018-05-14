@@ -1452,9 +1452,9 @@ else
 end
 
 @static if VERSION < v"0.7.0-DEV.3656"
-    const Pkg = Base.Pkg
+    const OldPkg = Base.Pkg
 else
-    import Pkg
+    import OldPkg
 end
 
 @static if VERSION < v"0.7.0-DEV.3630"
