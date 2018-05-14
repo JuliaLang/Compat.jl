@@ -1727,4 +1727,9 @@ let A = [1 2; 1 2; 1 2]
     @test f[1] * [f[2]; [0 0]] ≈ A[:,f[3]]
 end
 
+# 0.7.0-DEV.5087
+@test isletter('a')
+@test isletter('β')
+@test !isletter('3')
+
 nothing

@@ -403,6 +403,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `isupper`, `islower`, `ucfirst` and `lcfirst` are now `isuppercase`, `islowercase`,
   `uppercasefirst` and `lowercasefirst` ([#26442]).
 
+* `isalpha` is now `isletter` ([#27077]).
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])
@@ -626,3 +628,4 @@ includes this fix. Find the minimum version from there.
 [#26442]: https://github.com/JuliaLang/julia/issues/26442
 [#26660]: https://github.com/JuliaLang/julia/issues/26660
 [#26670]: https://github.com/JuliaLang/julia/issues/26670
+[#27077]: https://github.com/JuliaLang/julia/issues/27077

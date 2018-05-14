@@ -1842,6 +1842,12 @@ else
     using LinearAlgebra: qr
 end
 
+# https://github.com/JuliaLang/julia/pull/27077
+@static if VERSION < v"0.7.0-DEV.5087"
+    export isletter
+    const isletter = isalpha
+end
+
 include("deprecated.jl")
 
 end # module Compat
