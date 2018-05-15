@@ -777,10 +777,10 @@ end
 let
     A14 = [11 13; 12 14]
     R = CartesianIndices(Compat.axes(A14))
-    @test [a for (a,b) in pairs(IndexLinear(),    A14)] == [1,2,3,4]
-    @test [a for (a,b) in pairs(IndexCartesian(), A14)] == vec(collect(R))
-    @test [b for (a,b) in pairs(IndexLinear(),    A14)] == [11,12,13,14]
-    @test [b for (a,b) in pairs(IndexCartesian(), A14)] == [11,12,13,14]
+    @test vec([a for (a,b) in pairs(IndexLinear(),    A14)]) == [1,2,3,4]
+    @test vec([a for (a,b) in pairs(IndexCartesian(), A14)]) == vec(collect(R))
+    @test vec([b for (a,b) in pairs(IndexLinear(),    A14)]) == [11,12,13,14]
+    @test vec([b for (a,b) in pairs(IndexCartesian(), A14)]) == [11,12,13,14]
 end
 
 # Val(x)
