@@ -413,6 +413,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `cfunction` is now `@cfunction` ([#26486]).
 
+* `Unicode.isnumeric` is now available as `isnumeric` ([#25479]).
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])
@@ -595,6 +597,7 @@ includes this fix. Find the minimum version from there.
 [#25402]: https://github.com/JuliaLang/julia/issues/25402
 [#25458]: https://github.com/JuliaLang/julia/issues/25458
 [#25459]: https://github.com/JuliaLang/julia/issues/25459
+[#25479]: https://github.com/JuliaLang/julia/issues/25479
 [#25496]: https://github.com/JuliaLang/julia/issues/25496
 [#25522]: https://github.com/JuliaLang/julia/issues/25522
 [#25544]: https://github.com/JuliaLang/julia/issues/25544
