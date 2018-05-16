@@ -348,6 +348,7 @@ end
     # not exported
     # chomp parameter preserved for compatibility with earliear Compat versions
     readline(s::IO=STDIN; chomp::Bool=true, keep::Bool=!chomp) = Base.readline(s; chomp=!keep)
+    eachline(s; keep::Bool=false) = Base.eachline(s; chomp=!keep)
 end
 
 # https://github.com/JuliaLang/julia/pull/18727
