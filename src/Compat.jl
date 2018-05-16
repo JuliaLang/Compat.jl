@@ -8,12 +8,12 @@ if VERSION < v"0.7.0-DEV.4442"
         import Base:
             @ip_str, IPAddr, IPv4, IPv6, UDPSocket, TCPSocket,
             accept, connect, getaddrinfo, getipaddr, getsockname, listen,
-            listenany, recv, recvfrom, send
+            listenany, recv, recvfrom, send, bind
 
         export
             @ip_str, IPAddr, IPv4, IPv6, UDPSocket, TCPSocket,
             accept, connect, getaddrinfo, getipaddr, getsockname, listen,
-            listenany, recv, recvfrom, send
+            listenany, recv, recvfrom, send, bind
     end
 else
     import Sockets
