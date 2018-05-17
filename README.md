@@ -300,6 +300,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.qr` takes `pivot` as a `Val` _instance_ and keyword argument `full` ([#22475], [#24279]).
 
+* `Compat.rmul!` provides a subset of the functionality of `LinearAlgebra.rmul!` for
+  use with Julia 0.6 ([#25701], [#25812]).
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -607,10 +610,12 @@ includes this fix. Find the minimum version from there.
 [#25647]: https://github.com/JuliaLang/julia/issues/25647
 [#25654]: https://github.com/JuliaLang/julia/issues/25654
 [#25662]: https://github.com/JuliaLang/julia/issues/25662
+[#25701]: https://github.com/JuliaLang/julia/issues/25701
 [#25705]: https://github.com/JuliaLang/julia/issues/25705
 [#25706]: https://github.com/JuliaLang/julia/issues/25706
 [#25738]: https://github.com/JuliaLang/julia/issues/25738
 [#25780]: https://github.com/JuliaLang/julia/issues/25780
+[#25812]: https://github.com/JuliaLang/julia/issues/25812
 [#25819]: https://github.com/JuliaLang/julia/issues/25819
 [#25873]: https://github.com/JuliaLang/julia/issues/25873
 [#25896]: https://github.com/JuliaLang/julia/issues/25896
