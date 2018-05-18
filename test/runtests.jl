@@ -1744,6 +1744,14 @@ let A = [1 2; 1 2; 1 2]
     @test f[1] * [f[2]; [0 0]] ≈ A[:,f[3]]
 end
 
+let A = [1 2; 3 4]
+    @test Compat.rmul!(A, 2) == [2 4; 6 8]
+    @test Compat.rmul!(A, Diagonal([1, 2])) == [2 8; 6 16]
+    @test Compat.rmul!(A, UpperTriangular([2 2; 3 3])) == [4 28; 12 60]
+    @test Compat.rmul!(LowerTriangular(A), Diagonal([1, 2])) == LowerTriangular([4 0; 12 120])
+    @test Compat.rmul!(Diagonal(A), Diagonal([2, 1])) == Diagonal([8, 120])
+end
+
 # 0.7.0-DEV.5087
 @test isletter('a')
 @test isletter('β')
