@@ -144,6 +144,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `using Compat.Markdown` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25738]).
 
+* `using Compat.Sockets` is provided on versions older than 0.7, where this library is
+  not yet part of the standard library ([#25935])
+
 ## New functions, macros, and methods
 
 * `@views` takes an expression and converts all slices to views ([#20164]), while
@@ -614,6 +617,7 @@ includes this fix. Find the minimum version from there.
 [#25819]: https://github.com/JuliaLang/julia/issues/25819
 [#25873]: https://github.com/JuliaLang/julia/issues/25873
 [#25896]: https://github.com/JuliaLang/julia/issues/25896
+[#25935]: https://github.com/JuliaLang/julia/issues/25935
 [#25959]: https://github.com/JuliaLang/julia/issues/25959
 [#25989]: https://github.com/JuliaLang/julia/issues/25989
 [#25990]: https://github.com/JuliaLang/julia/issues/25990
