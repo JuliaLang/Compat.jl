@@ -1854,6 +1854,12 @@ elseif VERSION >= v"0.7.0-DEV.3665" # mul1! -> rmul!
     using LinearAlgebra: rmul!
 end
 
+@static if VERSION < v"0.7.0-DEV.3936"
+    Base.fetch(t::Task) = wait(t)
+else
+    import Base: fetch
+end
+
 # https://github.com/JuliaLang/julia/pull/27077
 @static if VERSION < v"0.7.0-DEV.5087"
     export isletter
