@@ -321,24 +321,7 @@ end # module TypeUtils
 include("arraymacros.jl")
 
 # julia #18839
-if VERSION < v"0.6.0-dev.1024"
-    @eval module Iterators
-        export countfrom, cycle, drop, enumerate, flatten, product, repeated,
-               rest, take, zip, partition
-
-        import Base: eltype, start, next, done, length, size, ndims
-        using Base: tuple_type_cons
-        using Base: countfrom, cycle, drop, enumerate, repeated, rest, take,
-                    zip
-        using Compat
-
-        using Base: flatten
-        using Base: product
-        using Base: partition
-    end
-else
-    using Base.Iterators
-end
+import Base.Iterators # TODO deprecate, remove
 
 @static if VERSION < v"0.6.0-dev.2840"
     export IndexStyle, IndexLinear, IndexCartesian

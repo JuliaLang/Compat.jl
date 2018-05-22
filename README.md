@@ -82,10 +82,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Module Aliases
 
-* In 0.6, some 0.5 iterator functions have been moved to the `Base.Iterators`
-  module. Code can be written to work on both 0.5 and 0.6 by `import`ing or
-  `using` the `Compat.Iterators` module instead. ([#18839])
-
 * `using Compat.Test`, `using Compat.SharedArrays`, `using Compat.Mmap`, and `using
   Compat.DelimitedFiles` are provided on versions older than 0.7, where these are not yet
   part of the standard library. ([#23931])
