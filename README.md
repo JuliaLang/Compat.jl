@@ -295,6 +295,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.qr` takes `pivot` as a `Val` _instance_ ([#22475]).
 
+* `Compat.Sys.which` and `Compat.Sys.isexecutable` ([#26559], [#27298]).
+
 * `Compat.rmul!` provides a subset of the functionality of `LinearAlgebra.rmul!` for
   use with Julia 0.6 ([#25701], [#25812]).
 
@@ -633,8 +635,10 @@ includes this fix. Find the minimum version from there.
 [#26436]: https://github.com/JuliaLang/julia/issues/26436
 [#26442]: https://github.com/JuliaLang/julia/issues/26442
 [#26486]: https://github.com/JuliaLang/julia/issues/26486
+[#26559]: https://github.com/JuliaLang/julia/issues/26559
 [#26660]: https://github.com/JuliaLang/julia/issues/26660
 [#26670]: https://github.com/JuliaLang/julia/issues/26670
 [#26850]: https://github.com/JuliaLang/julia/issues/26850
 [#27077]: https://github.com/JuliaLang/julia/issues/27077
 [#27258]: https://github.com/JuliaLang/julia/issues/27258
+[#27298]: https://github.com/JuliaLang/julia/issues/27298
