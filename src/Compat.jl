@@ -1452,15 +1452,9 @@ else
 end
 
 @static if VERSION < v"0.7.0-DEV.3656"
-    const OldPkg = Base.Pkg
+    const Pkg = Base.Pkg
 else
-    vers = "v$(VERSION.major).$(VERSION.minor)"
-    if isdir(abspath(Base.Sys.BINDIR, "..", "share", "julia", "stdlib", vers, "OldPkg"))
-        import OldPkg
-    else
-        import Pkg
-        const OldPkg = Pkg
-    end
+    import Pkg
 end
 
 @static if VERSION < v"0.7.0-DEV.3630"

@@ -52,8 +52,6 @@ else
     import Base.LinAlg.BLAS.@blasfunc
 end
 
-Base.@deprecate_binding Pkg OldPkg
-
 if VERSION < v"0.7.0-DEV.2915"
     const textwidth = Compat.Unicode.textwidth
     export textwidth
