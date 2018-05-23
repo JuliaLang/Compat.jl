@@ -411,6 +411,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isalpha` is now `isletter` ([#27077]).
 
+* `cfunction` is now `@cfunction` ([#26486]).
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])
@@ -635,6 +637,7 @@ includes this fix. Find the minimum version from there.
 [#26369]: https://github.com/JuliaLang/julia/issues/26369
 [#26436]: https://github.com/JuliaLang/julia/issues/26436
 [#26442]: https://github.com/JuliaLang/julia/issues/26442
+[#26486]: https://github.com/JuliaLang/julia/issues/26486
 [#26660]: https://github.com/JuliaLang/julia/issues/26660
 [#26670]: https://github.com/JuliaLang/julia/issues/26670
 [#27077]: https://github.com/JuliaLang/julia/issues/27077
