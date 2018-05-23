@@ -209,8 +209,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.StringVector` is supported on 0.5 and below. On 0.6 and later, it aliases `Base.StringVector`. This function allocates a `Vector{UInt8}` whose data can be made into a `String` in constant time; that is, without copying. On 0.5 and later, use `String(...)` with the vector allocated by `StringVector` as an argument to create a string without copying. Note that if 0.4 support is needed, `Compat.UTF8String(...)` should be used instead. ([#19449])
 
-* `==(::Period, ::Period)` and `isless(::Period, ::Period)` is supported for 0.5 and below. Earlier versions of Julia only supported limited comparison methods between Periods which did not support comparing custom Period subtypes. ([#21378])
-
 * `@__MODULE__` is aliased to `current_module()` for Julia versions 0.6 and below. Versions of `Base.binding_module`, `expand`, `macroexpand`, and `include_string` were added that accept a module as the first argument. ([#22064])
 
 * `Cmd` elements can be accessed as if the `Cmd` were an array of strings for 0.6 and below ([#21197]).
@@ -535,7 +533,6 @@ includes this fix. Find the minimum version from there.
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
 [#21257]: https://github.com/JuliaLang/julia/issues/21257
 [#21346]: https://github.com/JuliaLang/julia/issues/21346
-[#21378]: https://github.com/JuliaLang/julia/issues/21378
 [#21419]: https://github.com/JuliaLang/julia/issues/21419
 [#21709]: https://github.com/JuliaLang/julia/issues/21709
 [#22064]: https://github.com/JuliaLang/julia/issues/22064
