@@ -299,7 +299,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `fetch` for `Task`s ([#25940]).
 
-* `Compat.qr` takes `pivot` as a `Val` _instance_ and keyword argument `full` ([#22475], [#24279]).
+* `Compat.qr` takes `pivot` as a `Val` _instance_ ([#22475]).
 
 * `Compat.rmul!` provides a subset of the functionality of `LinearAlgebra.rmul!` for
   use with Julia 0.6 ([#25701], [#25812]).
@@ -511,7 +511,6 @@ includes this fix. Find the minimum version from there.
 [#18510]: https://github.com/JuliaLang/julia/issues/18510
 [#18629]: https://github.com/JuliaLang/julia/issues/18629
 [#18727]: https://github.com/JuliaLang/julia/issues/18727
-[#18839]: https://github.com/JuliaLang/julia/issues/18839
 [#18977]: https://github.com/JuliaLang/julia/issues/18977
 [#19088]: https://github.com/JuliaLang/julia/issues/19088
 [#19246]: https://github.com/JuliaLang/julia/issues/19246
@@ -561,7 +560,6 @@ includes this fix. Find the minimum version from there.
 [#23931]: https://github.com/JuliaLang/julia/issues/23931
 [#24047]: https://github.com/JuliaLang/julia/issues/24047
 [#24182]: https://github.com/JuliaLang/julia/issues/24182
-[#24279]: https://github.com/JuliaLang/julia/issues/24279
 [#24282]: https://github.com/JuliaLang/julia/issues/24282
 [#24361]: https://github.com/JuliaLang/julia/issues/24361
 [#24372]: https://github.com/JuliaLang/julia/issues/24372
