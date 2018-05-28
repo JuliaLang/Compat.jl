@@ -167,11 +167,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `transcode` converts between UTF-xx string encodings in Julia 0.5 (as a lightweight
    alternative to the LegacyStrings package) ([#17323])
 
-* `∘` (typically used infix as `f ∘ g`) for function composition can be used in 0.5 and earlier ([#17155])
-
 * `>:`, a supertype operator for symmetry with `issubtype` (`A >: B` is equivalent to `B <: A`), can be used in 0.5 and earlier ([#20407]).
-
-* The method of `!` to negate functions (typically used as a unary operator, as in `!isinteger`) can be used in 0.5 and earlier ([#17155]).
 
 * `iszero(x)` efficiently checks whether `x == zero(x)` (including arrays) can be used in 0.5 and earlier ([#19950]).
 
@@ -500,7 +496,6 @@ includes this fix. Find the minimum version from there.
 [#13681]: https://github.com/JuliaLang/julia/issues/13681
 [#16564]: https://github.com/JuliaLang/julia/issues/16564
 [#16986]: https://github.com/JuliaLang/julia/issues/16986
-[#17155]: https://github.com/JuliaLang/julia/issues/17155
 [#17302]: https://github.com/JuliaLang/julia/issues/17302
 [#17323]: https://github.com/JuliaLang/julia/issues/17323
 [#17510]: https://github.com/JuliaLang/julia/issues/17510

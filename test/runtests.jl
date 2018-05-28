@@ -323,13 +323,6 @@ let s = "Koala test: 🐨"
     end
 end
 
-# julia#17155, tests from Base Julia
-@test (Compat.Unicode.uppercase∘hex)(239487) == "3A77F"
-let str = "aBcDeFgHiJ"
-    @test filter(!Compat.Unicode.isupper, str) == replace(str, r"[A-Z]" => "")
-    @test filter(!Compat.Unicode.islower, str) == replace(str, r"[a-z]" => "")
-end
-
 # julia#19950, tests from Base (#20028)
 for T in (Float16, Float32, Float64, BigFloat, Int8, Int16, Int32, Int64, Int128,
           BigInt, UInt8, UInt16, UInt32, UInt64, UInt128)

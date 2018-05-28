@@ -281,14 +281,6 @@ if VERSION < v"0.6.0-dev.1256"
     Base.take!(io::Base.AbstractIOBuffer) = takebuf_array(io)
 end
 
-# julia #17155 function composition and negation
-@static if VERSION < v"0.6.0-dev.1883"
-    export ∘
-    ∘(f, g) = (x...)->f(g(x...))
-    @compat Base.:!(f::Function) = (x...)->!f(x...)
-end
-
-
 if VERSION < v"0.6.0-dev.1632"
     # To work around unsupported syntax on Julia 0.4
     include_string("export .&, .|")
