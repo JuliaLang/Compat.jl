@@ -1275,7 +1275,7 @@ module TestPkg
     using Compat.Pkg
     using Compat.Test
     @test isdefined(@__MODULE__, :Pkg)
-    @test isdefined(@__MODULE__, :add)
+    @test isdefined(Compat.Pkg, :add)
 end
 
 module TestInteractiveUtils
