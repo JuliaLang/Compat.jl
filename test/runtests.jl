@@ -1702,6 +1702,13 @@ let A = [1 2; 3 4]
     @test Compat.rmul!(Diagonal(A), Diagonal([2, 1])) == Diagonal([8, 120])
 end
 
+# 0.7.0-DEV.3936
+@test let ct = current_task(), t = @task true
+    schedule(ct)
+    yieldto(t)
+    fetch(t)
+end
+
 # 0.7.0-DEV.5087
 @test isletter('a')
 @test isletter('β')

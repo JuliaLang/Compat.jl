@@ -297,6 +297,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `squeeze` with `dims` as keyword argument ([#26660]).
 
+* `fetch` for `Task`s ([#25940]).
+
 * `Compat.qr` takes `pivot` as a `Val` _instance_ and keyword argument `full` ([#22475], [#24279]).
 
 * `Compat.rmul!` provides a subset of the functionality of `LinearAlgebra.rmul!` for
@@ -618,6 +620,7 @@ includes this fix. Find the minimum version from there.
 [#25873]: https://github.com/JuliaLang/julia/issues/25873
 [#25896]: https://github.com/JuliaLang/julia/issues/25896
 [#25935]: https://github.com/JuliaLang/julia/issues/25935
+[#25940]: https://github.com/JuliaLang/julia/issues/25940
 [#25959]: https://github.com/JuliaLang/julia/issues/25959
 [#25989]: https://github.com/JuliaLang/julia/issues/25989
 [#25990]: https://github.com/JuliaLang/julia/issues/25990
