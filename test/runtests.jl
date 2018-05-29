@@ -1076,8 +1076,8 @@ end
 @test occursin('W', "Hello, World!")
 
 # 0.7.0-DEV.3449
-let A = [2.0 1.0; 1.0 3.0], b = [1.0, 2.0], x = [0.2, 0.6]
-    @test cholfact(A) \ b ≈ x
+let A = [2.0 1.0; 1.0 3.0], b = [2.0, 3.0]
+    @test diag(A) == b
 end
 
 # 0.7.0-DEV.3173
