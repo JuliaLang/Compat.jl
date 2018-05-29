@@ -513,7 +513,7 @@ end
 @test Compat.TypeUtils.isabstract(Abstract20418)
 @compat primitive type Primitive20418{T} <: Ref{T} 16 end
 @test !Compat.TypeUtils.isabstract(Primitive20418)
-@test isbits(Primitive20418{Int})
+@test isbitstype(Primitive20418{Int})
 @test sizeof(Primitive20418{Int}) == 2
 
 # PR #20500
@@ -1724,5 +1724,9 @@ end
 @test isletter('a')
 @test isletter('β')
 @test !isletter('3')
+
+# 0.7.0-DEV.4905
+@test isbitstype(Int)
+@test !isbitstype(Vector{Int})
 
 nothing

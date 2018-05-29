@@ -300,6 +300,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Compat.rmul!` provides a subset of the functionality of `LinearAlgebra.rmul!` for
   use with Julia 0.6 ([#25701], [#25812]).
 
+* `isbits(t::Type)` is now `isbitstype(t)` ([#26850]).
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -630,4 +632,5 @@ includes this fix. Find the minimum version from there.
 [#26442]: https://github.com/JuliaLang/julia/issues/26442
 [#26660]: https://github.com/JuliaLang/julia/issues/26660
 [#26670]: https://github.com/JuliaLang/julia/issues/26670
+[#26850]: https://github.com/JuliaLang/julia/issues/26850
 [#27077]: https://github.com/JuliaLang/julia/issues/27077

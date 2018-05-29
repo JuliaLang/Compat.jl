@@ -1863,6 +1863,12 @@ end
     const isletter = isalpha
 end
 
+# https://github.com/JuliaLang/julia/pull/26850
+if !isdefined(Base, :isbitstype) # 0.7.0-DEV.4905
+    export isbitstype
+    isbitstype(::Type{T}) where {T} = isbits(T)
+end
+
 include("deprecated.jl")
 
 end # module Compat
