@@ -834,11 +834,13 @@ end
 @test Base.rtoldefault(Float64, Float64, 1.0) === 0.0
 
 # 0.7
-@test cov([1 2; 3 4], 1, corrected=true) == fill(2.0, 2, 2)
-@test cov([1 2; 3 4], 1, corrected=false) == fill(1.0, 2, 2)
-@test cov([1 2; 3 4], [0 4; 8 9], 1, corrected=true) == [8.0 5.0; 8.0 5.0]
-@test cov([1 2; 3 4], [0 4; 8 9], 1, corrected=false) == [4.0 2.5; 4.0 2.5]
-if VERSION >= v"0.6"
+if VERSION  < v"0.7.0-DEV.5238"
+    # Test the extended cov if cov is part of Base. In the future, this will be dealt with
+    # in StatsBase
+    @test cov([1 2; 3 4], 1, corrected=true) == fill(2.0, 2, 2)
+    @test cov([1 2; 3 4], 1, corrected=false) == fill(1.0, 2, 2)
+    @test cov([1 2; 3 4], [0 4; 8 9], 1, corrected=true) == [8.0 5.0; 8.0 5.0]
+    @test cov([1 2; 3 4], [0 4; 8 9], 1, corrected=false) == [4.0 2.5; 4.0 2.5]
     @test cov([1, 2], corrected=true) === 0.5
     @test cov([1, 2], corrected=false) === 0.25
     @test cov([1, 2], [0, 10], corrected=true) === 5.0
@@ -1569,36 +1571,40 @@ Issue26488 && @test Compat.prod(x -> x+1, [1 2; 3 4], dims=2) == hcat([6; 20])
 @test Compat.findmin([1 2; 3 4]) == (1, CartesianIndex(1, 1))
 @test Compat.findmin([1 2; 3 4], dims=1) == ([1 2], [CartesianIndex(1, 1) CartesianIndex(1, 2)])
 @test Compat.findmin([1 2; 3 4], dims=2) == (hcat([1; 3]), hcat([CartesianIndex(1, 1); CartesianIndex(2, 1)]))
-@test Compat.varm([1 2; 3 4], -1) == 18
-@test Compat.varm([1 2; 3 4], [-1 -2], dims=1) == [20 52]
-@test Compat.varm([1 2; 3 4], [-1, -2], dims=2) == hcat([13, 61])
-@test Compat.var([1 2; 3 4]) == 5/3
-@test Compat.var([1 2; 3 4], dims=1) == [2 2]
-@test Compat.var([1 2; 3 4], dims=2) == hcat([0.5, 0.5])
-@test Compat.var([1 2; 3 4], corrected=false) == 1.25
-@test Compat.var([1 2; 3 4], corrected=false, dims=1) == [1 1]
-@test Compat.var([1 2; 3 4], corrected=false, dims=2) == hcat([0.25, 0.25])
-@test Compat.std([1 2; 3 4]) == sqrt(5/3)
-@test Compat.std([1 2; 3 4], dims=1) == [sqrt(2) sqrt(2)]
-@test Compat.std([1 2; 3 4], dims=2) == hcat([sqrt(0.5), sqrt(0.5)])
-@test Compat.std([1 2; 3 4], corrected=false) == sqrt(1.25)
-@test Compat.std([1 2; 3 4], corrected=false, dims=1) == [sqrt(1) sqrt(1)]
-@test Compat.std([1 2; 3 4], corrected=false, dims=2) == hcat([sqrt(0.25), sqrt(0.25)])
-@test Compat.cov([1 2; 3 4]) == [2 2; 2 2]
-@test Compat.cov([1 2; 3 4], dims=1) == [2 2; 2 2]
-@test Compat.cov([1 2; 3 4], dims=2) == [0.5 0.5; 0.5 0.5]
-@test Compat.cov([1 2; 3 4], [4; 5]) == hcat([1; 1])
-@test Compat.cov([1 2; 3 4], [4; 5], dims=1) == hcat([1; 1])
-@test Compat.cov([1 2; 3 4], [4; 5], dims=2) == hcat([0.5; 0.5])
-@test Compat.cov([1 2; 3 4], [4; 5], corrected=false) == hcat([0.5; 0.5])
-@test Compat.cov([1 2; 3 4], [4; 5], corrected=false, dims=1) == hcat([0.5; 0.5])
-@test Compat.cov([1 2; 3 4], [4; 5], corrected=false, dims=2) == hcat([0.25; 0.25])
-@test Compat.cor([1 2; 3 4]) ≈ [1 1; 1 1]
-@test Compat.cor([1 2; 3 4], dims=1) ≈ [1 1; 1 1]
-@test Compat.cor([1 2; 3 4], dims=2) ≈ [1 1; 1 1]
-@test Compat.cor([1 2; 3 4], [4; 5]) ≈ [1; 1]
-@test Compat.cor([1 2; 3 4], [4; 5], dims=1) ≈ [1; 1]
-@test Compat.cor([1 2; 3 4], [4; 5], dims=2) ≈ [1; 1]
+if VERSION  < v"0.7.0-DEV.5238"
+    # Test these functions if their counterparts are defined in Base. In the future, this
+    # will be dealt with in StatsBase
+    @test Compat.varm([1 2; 3 4], -1) == 18
+    @test Compat.varm([1 2; 3 4], [-1 -2], dims=1) == [20 52]
+    @test Compat.varm([1 2; 3 4], [-1, -2], dims=2) == hcat([13, 61])
+    @test Compat.var([1 2; 3 4]) == 5/3
+    @test Compat.var([1 2; 3 4], dims=1) == [2 2]
+    @test Compat.var([1 2; 3 4], dims=2) == hcat([0.5, 0.5])
+    @test Compat.var([1 2; 3 4], corrected=false) == 1.25
+    @test Compat.var([1 2; 3 4], corrected=false, dims=1) == [1 1]
+    @test Compat.var([1 2; 3 4], corrected=false, dims=2) == hcat([0.25, 0.25])
+    @test Compat.std([1 2; 3 4]) == sqrt(5/3)
+    @test Compat.std([1 2; 3 4], dims=1) == [sqrt(2) sqrt(2)]
+    @test Compat.std([1 2; 3 4], dims=2) == hcat([sqrt(0.5), sqrt(0.5)])
+    @test Compat.std([1 2; 3 4], corrected=false) == sqrt(1.25)
+    @test Compat.std([1 2; 3 4], corrected=false, dims=1) == [sqrt(1) sqrt(1)]
+    @test Compat.std([1 2; 3 4], corrected=false, dims=2) == hcat([sqrt(0.25), sqrt(0.25)])
+    @test Compat.cov([1 2; 3 4]) == [2 2; 2 2]
+    @test Compat.cov([1 2; 3 4], dims=1) == [2 2; 2 2]
+    @test Compat.cov([1 2; 3 4], dims=2) == [0.5 0.5; 0.5 0.5]
+    @test Compat.cov([1 2; 3 4], [4; 5]) == hcat([1; 1])
+    @test Compat.cov([1 2; 3 4], [4; 5], dims=1) == hcat([1; 1])
+    @test Compat.cov([1 2; 3 4], [4; 5], dims=2) == hcat([0.5; 0.5])
+    @test Compat.cov([1 2; 3 4], [4; 5], corrected=false) == hcat([0.5; 0.5])
+    @test Compat.cov([1 2; 3 4], [4; 5], corrected=false, dims=1) == hcat([0.5; 0.5])
+    @test Compat.cov([1 2; 3 4], [4; 5], corrected=false, dims=2) == hcat([0.25; 0.25])
+    @test Compat.cor([1 2; 3 4]) ≈ [1 1; 1 1]
+    @test Compat.cor([1 2; 3 4], dims=1) ≈ [1 1; 1 1]
+    @test Compat.cor([1 2; 3 4], dims=2) ≈ [1 1; 1 1]
+    @test Compat.cor([1 2; 3 4], [4; 5]) ≈ [1; 1]
+    @test Compat.cor([1 2; 3 4], [4; 5], dims=1) ≈ [1; 1]
+    @test Compat.cor([1 2; 3 4], [4; 5], dims=2) ≈ [1; 1]
+end
 @test Compat.median([1 2; 3 4]) == 2.5
 @test Compat.median([1 2; 3 4], dims=1) == [2 3]
 @test Compat.median([1 2; 3 4], dims=2) == hcat([1.5; 3.5])

@@ -287,11 +287,11 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.mv` and `Compat.cp` with `force` keyword argument ([#26069]).
 
-* `Compat.accumulate`, `Compat.accumulate!`, `Compat.all`, `Compat.any`, `Compat.cor`,
-  `Compat.cov`, `Compat.cumprod`, `Compat.cumprod!`, `Compat.cumsum`, `Compat.cumsum!`,
+* `Compat.accumulate`, `Compat.accumulate!`, `Compat.all`, `Compat.any`,
+  `Compat.cumprod`, `Compat.cumprod!`, `Compat.cumsum`, `Compat.cumsum!`,
   `Compat.findmax`, `Compat.findmin`, `Compat.mapreduce`, `Compat.maximum`, `Compat.mean`,
   `Compat.median`, `Compat.minimum`, `Compat.prod`, `Compat.reduce`, `Compat.sort`,
-  `Compat.std`, `Compat.sum`, `Compat.var`, and `Compat.varm` with `dims` keyword argument ([#25989],[#26369]).
+  and `Compat.sum`  with `dims` keyword argument ([#25989],[#26369]).
 
 * `selectdim` to obtain a view of an array with a specified index for a specified dimension ([#26009]).
 
