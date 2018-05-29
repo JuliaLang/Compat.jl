@@ -1675,6 +1675,9 @@ end
 # 0.7.0-DEV.843 / 0.7.0-DEV.2337
 let A = [1 2; 1 2; 1 2]
     if VERSION < v"0.7.0-DEV.5211"
+        # the full keyword was only temporarily available in Base, so these  methods don't
+        # work on 0.7 anymore, but we test them for the time being to avoid accidentally
+        # breaking anyone's code
         f = Compat.qr(A, Val(false), full=false)
         @test f == Compat.qr(A, Val(false))
         @test length(f) == 2

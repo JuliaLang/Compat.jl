@@ -1818,6 +1818,8 @@ if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
 end
 
 if VERSION < v"0.7.0-DEV.2337"
+    # qr doesn't take the full keyword anymore since 0.7.0-DEV.5211; we still support it
+    # here to avoid unneccesary breakage
     if VERSION < v"0.7.0-DEV.843"
         qr(A::Union{Number,AbstractMatrix}, pivot::Union{Val{false},Val{true}}=Val(false); full=false) =
             Base.qr(A, typeof(pivot), thin=!full)
