@@ -199,19 +199,26 @@ end
 @test @__DIR__() == dirname(@__FILE__)
 
 # PR #17302
-# To be removed when 0.5/0.6 support is dropped.
+# To be removed when 0.6 support is dropped.
 f17302(a::Number) = a
 f17302(a::Number, b::Number) = a + b
 Compat.@dep_vectorize_1arg Real f17302
 Compat.@dep_vectorize_2arg Real f17302
 @test_throws MethodError f17302([1im])
 @test_throws MethodError f17302([1im], [1im])
-mktemp() do fname, f
-    redirect_stderr(f) do
-        @test f17302([1.0]) == [1.0]
-        @test f17302(1.0, [1]) == [2.0]
-        @test f17302([1.0], 1) == [2.0]
-        @test f17302([1.0], [1]) == [2.0]
+@static if VERSION ≥ v"0.7.0-DEV.2988"
+    @test (@test_logs (:warn, "`f17302(x::(Base.AbstractArray){T}) where T <: Real` is deprecated, use `f17302.(x)` instead.") f17302([1.0])) == [1.0]
+    @test (@test_logs (:warn, "`f17302(x::Real, y::(Base.AbstractArray){T1}) where T1 <: Real` is deprecated, use `f17302.(x, y)` instead.") f17302(1.0, [1])) == [2.0]
+    @test (@test_logs (:warn, "`f17302(x::(Base.AbstractArray){T1}, y::Real) where T1 <: Real` is deprecated, use `f17302.(x, y)` instead.") f17302([1.0], 1)) == [2.0]
+    @test (@test_logs (:warn, "`f17302(x::(Base.AbstractArray){T1}, y::(Base.AbstractArray){T2}) where {T1 <: Real, T2 <: Real}` is deprecated, use `f17302.(x, y)` instead.") f17302([1.0], [1])) == [2.0]
+else
+    mktemp() do fname, f
+        redirect_stderr(f) do
+            @test f17302([1.0]) == [1.0]
+            @test f17302(1.0, [1]) == [2.0]
+            @test f17302([1.0], 1) == [2.0]
+            @test f17302([1.0], [1]) == [2.0]
+        end
     end
 end
 
@@ -323,13 +330,6 @@ let s = "Koala test: 🐨"
     end
 end
 
-# julia#17155, tests from Base Julia
-@test (Compat.Unicode.uppercase∘hex)(239487) == "3A77F"
-let str = "aBcDeFgHiJ"
-    @test filter(!Compat.Unicode.isupper, str) == replace(str, r"[A-Z]" => "")
-    @test filter(!Compat.Unicode.islower, str) == replace(str, r"[a-z]" => "")
-end
-
 # julia#19950, tests from Base (#20028)
 for T in (Float16, Float32, Float64, BigFloat, Int8, Int16, Int32, Int64, Int128,
           BigInt, UInt8, UInt16, UInt32, UInt64, UInt128)
@@ -434,7 +434,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test isa(x[1:3],SubArray)
         @test x[2] === 11
         @test Dict((1:3) => 4)[1:3] === 4
-        x[1:2] = 0
+        x[1:2] .= 0
         @test x == [0,0,19,4]
         x[1:2] .= 5:6
         @test x == [5,6,19,4]
@@ -442,7 +442,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test x == [5,6,35,4]
         x[Y[2:3]] .= 7:8
         @test x == [5,8,7,4]
-        @dotcompat x[(3,)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
+        @dotcompat x[([3],)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
         @test x == [5,8,10,4]
         i = Int[]
         # test that lhs expressions in update operations are evaluated only once:
@@ -461,7 +461,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test isa(x[1:3],SubArray)
         @test x[2] === 11
         @test Dict((1:3) => 4)[1:3] === 4
-        x[1:2] = 0
+        x[1:2] .= 0
         @test x == [0,0,19,4]
         x[1:2] .= 5:6
         @test x == [5,6,19,4]
@@ -469,7 +469,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test x == [5,6,35,4]
         x[Y[2:3]] .= 7:8
         @test x == [5,8,7,4]
-        @dotcompat x[(3,)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
+        @dotcompat x[([3],)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
         @test x == [5,8,10,4]
         i = Int[]
         # test that lhs expressions in update operations are evaluated only once:
@@ -520,7 +520,7 @@ end
 @test Compat.TypeUtils.isabstract(Abstract20418)
 @compat primitive type Primitive20418{T} <: Ref{T} 16 end
 @test !Compat.TypeUtils.isabstract(Primitive20418)
-@test isbits(Primitive20418{Int})
+@test isbitstype(Primitive20418{Int})
 @test sizeof(Primitive20418{Int}) == 2
 
 # PR #20500
@@ -1083,8 +1083,8 @@ end
 @test occursin('W', "Hello, World!")
 
 # 0.7.0-DEV.3449
-let A = [2.0 1.0; 1.0 3.0], b = [1.0, 2.0], x = [0.2, 0.6]
-    @test cholfact(A) \ b ≈ x
+let A = [2.0 1.0; 1.0 3.0], b = [2.0, 3.0]
+    @test diag(A) == b
 end
 
 # 0.7.0-DEV.3173
@@ -1120,7 +1120,7 @@ x = Compat.Dates.Second(172799)
 @test round(x, Compat.Dates.Second) == Compat.Dates.Second(172799)
 @test round(x, Compat.Dates.Millisecond) == Compat.Dates.Millisecond(172799000)
 
-x = Dates.Nanosecond(2000999999)
+x = Compat.Dates.Nanosecond(2000999999)
 @test floor(x, Compat.Dates.Second) == Compat.Dates.Second(2)
 @test floor(x, Compat.Dates.Millisecond) == Compat.Dates.Millisecond(2000)
 @test floor(x, Compat.Dates.Microsecond) == Compat.Dates.Microsecond(2000999)
@@ -1151,7 +1151,7 @@ x = Compat.Dates.Hour(36)
 @test_throws DomainError round(x, Compat.Dates.Day, RoundNearest)
 @test_throws DomainError round(x, Compat.Dates.Day, RoundNearestTiesAway)
 @test_throws DomainError round(x, Compat.Dates.Day, RoundToZero)
-@test round(x, Dates.Day) == round(x, Compat.Dates.Day, RoundNearestTiesUp)
+@test round(x, Compat.Dates.Day) == round(x, Compat.Dates.Day, RoundNearestTiesUp)
 
 x = Compat.Dates.Hour(86399)
 for p in [Compat.Dates.Week, Compat.Dates.Day, Compat.Dates.Hour, Compat.Dates.Second, Compat.Dates.Millisecond, Compat.Dates.Microsecond, Compat.Dates.Nanosecond]
@@ -1172,7 +1172,7 @@ for p in [Compat.Dates.Year, Compat.Dates.Month]
 end
 
 # 0.7.0-DEV.3025
-let c = CartesianIndices(1:3, 1:2), l = LinearIndices(1:3, 1:2)
+let c = CartesianIndices((1:3, 1:2)), l = LinearIndices((1:3, 1:2))
     @test LinearIndices(c) == collect(l)
     @test CartesianIndices(l) == collect(c)
     @test first(c) == CartesianIndex(1, 1)
@@ -1731,6 +1731,10 @@ end
 @test isletter('a')
 @test isletter('β')
 @test !isletter('3')
+
+# 0.7.0-DEV.4905
+@test isbitstype(Int)
+@test !isbitstype(Vector{Int})
 
 # 0.7.0-DEV.4762
 let ptr = @cfunction(+, Int, (Int, Int))
