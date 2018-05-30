@@ -199,19 +199,26 @@ end
 @test @__DIR__() == dirname(@__FILE__)
 
 # PR #17302
-# To be removed when 0.5/0.6 support is dropped.
+# To be removed when 0.6 support is dropped.
 f17302(a::Number) = a
 f17302(a::Number, b::Number) = a + b
 Compat.@dep_vectorize_1arg Real f17302
 Compat.@dep_vectorize_2arg Real f17302
 @test_throws MethodError f17302([1im])
 @test_throws MethodError f17302([1im], [1im])
-mktemp() do fname, f
-    redirect_stderr(f) do
-        @test f17302([1.0]) == [1.0]
-        @test f17302(1.0, [1]) == [2.0]
-        @test f17302([1.0], 1) == [2.0]
-        @test f17302([1.0], [1]) == [2.0]
+@static if VERSION ≥ v"0.7.0-DEV.2988"
+    @test (@test_logs (:warn, "`f17302(x::(Base.AbstractArray){T}) where T <: Real` is deprecated, use `f17302.(x)` instead.") f17302([1.0])) == [1.0]
+    @test (@test_logs (:warn, "`f17302(x::Real, y::(Base.AbstractArray){T1}) where T1 <: Real` is deprecated, use `f17302.(x, y)` instead.") f17302(1.0, [1])) == [2.0]
+    @test (@test_logs (:warn, "`f17302(x::(Base.AbstractArray){T1}, y::Real) where T1 <: Real` is deprecated, use `f17302.(x, y)` instead.") f17302([1.0], 1)) == [2.0]
+    @test (@test_logs (:warn, "`f17302(x::(Base.AbstractArray){T1}, y::(Base.AbstractArray){T2}) where {T1 <: Real, T2 <: Real}` is deprecated, use `f17302.(x, y)` instead.") f17302([1.0], [1])) == [2.0]
+else
+    mktemp() do fname, f
+        redirect_stderr(f) do
+            @test f17302([1.0]) == [1.0]
+            @test f17302(1.0, [1]) == [2.0]
+            @test f17302([1.0], 1) == [2.0]
+            @test f17302([1.0], [1]) == [2.0]
+        end
     end
 end
 
