@@ -500,6 +500,7 @@ if VERSION < v"0.7.0-DEV.755"
     # This is a hack to only add keyword signature that won't work on all julia versions.
     # However, since we really only need to support a few (0.5, 0.6 and early 0.7) versions
     # this should be good enough.
+    # TODO add deprecation warning to switch to StatsBase
     let Tf = typeof(Base.cov), Tkw = Core.Core.kwftype(Tf)
         @eval begin
             @inline function _get_corrected(kws)
@@ -1760,6 +1761,7 @@ if VERSION < v"0.7.0-DEV.4064"
             end
         end
     end
+    # TODO add deprecation warning to switch to StatsBase to var and std
     for f in (:var, :std, :sort)
         @eval begin
             $f(a::AbstractArray; dims=nothing, kwargs...) =
@@ -1772,6 +1774,7 @@ if VERSION < v"0.7.0-DEV.4064"
     end
 end
 if VERSION < v"0.7.0-DEV.4064"
+    # TODO add deprecation warning to switch to StatsBase to varm, cov, and cor
     varm(A::AbstractArray, m; dims=nothing, kwargs...) =
         dims===nothing ? Base.varm(A, m; kwargs...) : Base.varm(A, m, dims; kwargs...)
     if VERSION < v"0.7.0-DEV.755"
