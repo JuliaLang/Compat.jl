@@ -1,6 +1,6 @@
 name = "Compat"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
-version = "v0.65.0"
+version = "v0.66.0"
 
 [deps]
 Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
@@ -14,7 +14,7 @@ Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
 Mmap = "a63ad114-7e13-5084-954f-fe012c677804"
-Pkg = "fe1c5a76-5840-53d2-82f9-288dd83ce2ce"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
