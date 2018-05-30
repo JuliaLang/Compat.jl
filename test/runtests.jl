@@ -1165,7 +1165,7 @@ for p in [Compat.Dates.Year, Compat.Dates.Month]
 end
 
 # 0.7.0-DEV.3025
-let c = CartesianIndices(1:3, 1:2), l = LinearIndices(1:3, 1:2)
+let c = CartesianIndices((1:3, 1:2)), l = LinearIndices((1:3, 1:2))
     @test LinearIndices(c) == collect(l)
     @test CartesianIndices(l) == collect(c)
     @test first(c) == CartesianIndex(1, 1)
