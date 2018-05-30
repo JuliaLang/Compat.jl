@@ -1732,4 +1732,11 @@ end
 @test isletter('β')
 @test !isletter('3')
 
+# 0.7.0-DEV.4762
+let ptr = @cfunction(+, Int, (Int, Int))
+    @test ptr isa Ptr{Cvoid}
+    @test ptr != C_NULL
+    @test ccall(ptr, Int, (Int, Int), 2, 3) == 5
+end
+
 nothing
