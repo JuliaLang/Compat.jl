@@ -427,7 +427,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test isa(x[1:3],SubArray)
         @test x[2] === 11
         @test Dict((1:3) => 4)[1:3] === 4
-        x[1:2] = 0
+        x[1:2] .= 0
         @test x == [0,0,19,4]
         x[1:2] .= 5:6
         @test x == [5,6,19,4]
@@ -435,7 +435,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test x == [5,6,35,4]
         x[Y[2:3]] .= 7:8
         @test x == [5,8,7,4]
-        @dotcompat x[(3,)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
+        @dotcompat x[([3],)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
         @test x == [5,8,10,4]
         i = Int[]
         # test that lhs expressions in update operations are evaluated only once:
@@ -454,7 +454,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test isa(x[1:3],SubArray)
         @test x[2] === 11
         @test Dict((1:3) => 4)[1:3] === 4
-        x[1:2] = 0
+        x[1:2] .= 0
         @test x == [0,0,19,4]
         x[1:2] .= 5:6
         @test x == [5,6,19,4]
@@ -462,7 +462,7 @@ let X = reshape(1:24,2,3,4), Y = 4:-1:1
         @test x == [5,6,35,4]
         x[Y[2:3]] .= 7:8
         @test x == [5,8,7,4]
-        @dotcompat x[(3,)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
+        @dotcompat x[([3],)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
         @test x == [5,8,10,4]
         i = Int[]
         # test that lhs expressions in update operations are evaluated only once:
