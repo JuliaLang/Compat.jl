@@ -1113,7 +1113,7 @@ x = Compat.Dates.Second(172799)
 @test round(x, Compat.Dates.Second) == Compat.Dates.Second(172799)
 @test round(x, Compat.Dates.Millisecond) == Compat.Dates.Millisecond(172799000)
 
-x = Dates.Nanosecond(2000999999)
+x = Compat.Dates.Nanosecond(2000999999)
 @test floor(x, Compat.Dates.Second) == Compat.Dates.Second(2)
 @test floor(x, Compat.Dates.Millisecond) == Compat.Dates.Millisecond(2000)
 @test floor(x, Compat.Dates.Microsecond) == Compat.Dates.Microsecond(2000999)
@@ -1144,7 +1144,7 @@ x = Compat.Dates.Hour(36)
 @test_throws DomainError round(x, Compat.Dates.Day, RoundNearest)
 @test_throws DomainError round(x, Compat.Dates.Day, RoundNearestTiesAway)
 @test_throws DomainError round(x, Compat.Dates.Day, RoundToZero)
-@test round(x, Dates.Day) == round(x, Compat.Dates.Day, RoundNearestTiesUp)
+@test round(x, Compat.Dates.Day) == round(x, Compat.Dates.Day, RoundNearestTiesUp)
 
 x = Compat.Dates.Hour(86399)
 for p in [Compat.Dates.Week, Compat.Dates.Day, Compat.Dates.Hour, Compat.Dates.Second, Compat.Dates.Millisecond, Compat.Dates.Microsecond, Compat.Dates.Nanosecond]
