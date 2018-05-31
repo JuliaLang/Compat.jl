@@ -302,6 +302,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isbits(t::Type)` is now `isbitstype(t)` ([#26850]).
 
+* `something` to get the first argument different from `nothing`, unwrapping those
+  of the `Some` type ([#27258]).
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -637,3 +640,4 @@ includes this fix. Find the minimum version from there.
 [#26670]: https://github.com/JuliaLang/julia/issues/26670
 [#26850]: https://github.com/JuliaLang/julia/issues/26850
 [#27077]: https://github.com/JuliaLang/julia/issues/27077
+[#27258]: https://github.com/JuliaLang/julia/issues/27258
