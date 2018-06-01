@@ -1044,9 +1044,12 @@ end
 @test convert(Nothing, nothing) == nothing
 @test_throws MethodError convert(Nothing, 1)
 @test Some(nothing) != nothing
-@test coalesce(Some(1)) == 1
-@test coalesce(nothing) == nothing
-@test coalesce(nothing, Some(1), Some(2)) == 1
+if VERSION < v"0.7.0-DEV.5278"
+    # coalesce has changed; old behavior kept and tested to avoid accidental breakage
+    @test coalesce(Some(1)) == 1
+    @test coalesce(nothing) == nothing
+    @test coalesce(nothing, Some(1), Some(2)) == 1
+end
 @test Compat.notnothing(1) == 1
 @test_throws ArgumentError Compat.notnothing(nothing)
 

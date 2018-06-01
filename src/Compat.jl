@@ -1125,6 +1125,9 @@ end
     end
     convert(::Type{Nothing}, x::Any) = throw(MethodError(convert, (Nothing, x)))
     convert(::Type{Nothing}, x::Nothing) = nothing
+
+    # Note: this is the definition of coalasce prior to 0.7.0-DEV.5278; kept to avoid
+    # breakage in packages already using it
     coalesce(x::Any) = x
     coalesce(x::Some) = x.value
     coalesce(x::Nothing) = nothing
@@ -1133,6 +1136,7 @@ end
     coalesce(x::Some, y...) = x.value
     coalesce(x::Nothing, y...) = coalesce(y...)
     #coalesce(x::Union{Nothing, Missing}, y...) = coalesce(y...)
+
     notnothing(x::Any) = x
     notnothing(::Nothing) = throw(ArgumentError("nothing passed to notnothing"))
     export Some, coalesce
