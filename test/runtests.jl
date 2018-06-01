@@ -668,10 +668,14 @@ end
 @test logdet(0.5) == log(det(0.5))
 
 # PR 22633
-for T in (Float64, ComplexF32, BigFloat, Int)
-    λ = T(4)
-    @test chol(λ*I).λ ≈ √λ
-    @test_throws Union{ArgumentError,Compat.LinearAlgebra.PosDefException} chol(-λ*I)
+if VERSION < v"0.7.0-DEV.5272"
+    # chol(A::UniformScaling) has been deprecated in Julia, we still test it to avoid
+    # accidental breakage in packages using the Compat vesion of it on Julia 0.6
+    for T in (Float64, ComplexF32, BigFloat, Int)
+        λ = T(4)
+        @test chol(λ*I).λ ≈ √λ
+        @test_throws Union{ArgumentError,Compat.LinearAlgebra.PosDefException} chol(-λ*I)
+    end
 end
 
 let

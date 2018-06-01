@@ -211,8 +211,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * The `reshape` and `ntuple` APIs are extended to support `Val{x}()` arguments on 0.6 and below.
 
-* `chol` and `chol!` for `UniformScalings` ([#22633]).
-
 * `logdet` for `Number`s ([#22629]).
 
 * `fieldcount` is equivalent to `nfields` for Julia versions 0.6 and below and is used to
@@ -540,7 +538,6 @@ includes this fix. Find the minimum version from there.
 [#22475]: https://github.com/JuliaLang/julia/issues/22475
 [#22512]: https://github.com/JuliaLang/julia/issues/22512
 [#22629]: https://github.com/JuliaLang/julia/issues/22629
-[#22633]: https://github.com/JuliaLang/julia/issues/22633
 [#22646]: https://github.com/JuliaLang/julia/issues/22646
 [#22666]: https://github.com/JuliaLang/julia/issues/22666
 [#22751]: https://github.com/JuliaLang/julia/issues/22751
