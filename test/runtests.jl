@@ -1743,4 +1743,10 @@ let ptr = @cfunction(+, Int, (Int, Int))
     @test ccall(ptr, Int, (Int, Int), 2, 3) == 5
 end
 
+# 0.7.0-DEV.5278
+@test something(nothing, 1) === 1
+@test something(Some(2)) === 2
+@test something(Some(2), 1) === 2
+@test something(nothing, Some(1)) === 1
+
 nothing

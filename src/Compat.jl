@@ -1877,6 +1877,14 @@ end
     export @cfunction
 end
 
+if VERSION < v"0.7.0-DEV.5278"
+    something() = throw(ArgumentError("No value arguments present"))
+    something(x::Nothing, y...) = something(y...)
+    something(x::Some, y...) = x.value
+    something(x::Any, y...) = x
+    export something
+end
+
 include("deprecated.jl")
 
 end # module Compat
