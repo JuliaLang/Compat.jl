@@ -1100,29 +1100,15 @@ end
 
 @static if !isdefined(Base, :Some)
     import Base: promote_rule, convert
-    if VERSION >= v"0.6.0"
-        include_string(@__MODULE__, """
-            struct Some{T}
-                value::T
-            end
-            promote_rule(::Type{Some{S}}, ::Type{Some{T}}) where {S,T} = Some{promote_type(S, T)}
-            promote_rule(::Type{Some{T}}, ::Type{Nothing}) where {T} = Union{Some{T}, Nothing}
-            convert(::Type{Some{T}}, x::Some) where {T} = Some{T}(convert(T, x.value))
-            convert(::Type{Union{Some{T}, Nothing}}, x::Some) where {T} = convert(Some{T}, x)
-            convert(::Type{Union{T, Nothing}}, x::Any) where {T} = convert(T, x)
-        """)
-    else
-        include_string(@__MODULE__, """
-            immutable Some{T}
-                value::T
-            end
-            promote_rule{S,T}(::Type{Some{S}}, ::Type{Some{T}}) = Some{promote_type(S, T)}
-            promote_rule{T}(::Type{Some{T}}, ::Type{Nothing}) = Union{Some{T}, Nothing}
-            convert{T}(::Type{Some{T}}, x::Some) = Some{T}(convert(T, x.value))
-            convert{T}(::Type{Union{Some{T}, Nothing}}, x::Some) = convert(Some{T}, x)
-            convert{T}(::Type{Union{T, Nothing}}, x::Any) = convert(T, x)
-        """)
+    struct Some{T}
+        value::T
     end
+    promote_rule(::Type{Some{T}}, ::Type{Some{S}}) where {T,S<:T} = Some{T}
+    promote_rule(::Type{Some{T}}, ::Type{Nothing}) where {T} = Union{Some{T}, Nothing}
+    convert(::Type{Some{T}}, x::Some) where {T} = Some{T}(convert(T, x.value))
+    convert(::Type{Union{Some{T}, Nothing}}, x::Some) where {T} = convert(Some{T}, x)
+
+    convert(::Type{Union{T, Nothing}}, x::Any) where {T} = convert(T, x)
     convert(::Type{Nothing}, x::Any) = throw(MethodError(convert, (Nothing, x)))
     convert(::Type{Nothing}, x::Nothing) = nothing
 
