@@ -432,6 +432,8 @@ end
 
 # https://github.com/JuliaLang/julia/pull/22633
 if VERSION < v"0.7.0-DEV.1041"
+    # these have been deprecated in Julia 0.7.0-DEV.5272; we keep them here to avoid
+    # breakage in packages already using them on Julia 0.6
     import Base.LinAlg: chol, chol!
     chol!(J::UniformScaling, uplo) = UniformScaling(chol!(J.λ, uplo))
     chol(J::UniformScaling, args...) = UniformScaling(chol(J.λ, args...))
@@ -1098,31 +1100,20 @@ end
 
 @static if !isdefined(Base, :Some)
     import Base: promote_rule, convert
-    if VERSION >= v"0.6.0"
-        include_string(@__MODULE__, """
-            struct Some{T}
-                value::T
-            end
-            promote_rule(::Type{Some{S}}, ::Type{Some{T}}) where {S,T} = Some{promote_type(S, T)}
-            promote_rule(::Type{Some{T}}, ::Type{Nothing}) where {T} = Union{Some{T}, Nothing}
-            convert(::Type{Some{T}}, x::Some) where {T} = Some{T}(convert(T, x.value))
-            convert(::Type{Union{Some{T}, Nothing}}, x::Some) where {T} = convert(Some{T}, x)
-            convert(::Type{Union{T, Nothing}}, x::Any) where {T} = convert(T, x)
-        """)
-    else
-        include_string(@__MODULE__, """
-            immutable Some{T}
-                value::T
-            end
-            promote_rule{S,T}(::Type{Some{S}}, ::Type{Some{T}}) = Some{promote_type(S, T)}
-            promote_rule{T}(::Type{Some{T}}, ::Type{Nothing}) = Union{Some{T}, Nothing}
-            convert{T}(::Type{Some{T}}, x::Some) = Some{T}(convert(T, x.value))
-            convert{T}(::Type{Union{Some{T}, Nothing}}, x::Some) = convert(Some{T}, x)
-            convert{T}(::Type{Union{T, Nothing}}, x::Any) = convert(T, x)
-        """)
+    struct Some{T}
+        value::T
     end
+    promote_rule(::Type{Some{T}}, ::Type{Some{S}}) where {T,S<:T} = Some{T}
+    promote_rule(::Type{Some{T}}, ::Type{Nothing}) where {T} = Union{Some{T}, Nothing}
+    convert(::Type{Some{T}}, x::Some) where {T} = Some{T}(convert(T, x.value))
+    convert(::Type{Union{Some{T}, Nothing}}, x::Some) where {T} = convert(Some{T}, x)
+
+    convert(::Type{Union{T, Nothing}}, x::Any) where {T} = convert(T, x)
     convert(::Type{Nothing}, x::Any) = throw(MethodError(convert, (Nothing, x)))
     convert(::Type{Nothing}, x::Nothing) = nothing
+
+    # Note: this is the definition of coalasce prior to 0.7.0-DEV.5278; kept to avoid
+    # breakage in packages already using it
     coalesce(x::Any) = x
     coalesce(x::Some) = x.value
     coalesce(x::Nothing) = nothing
@@ -1131,6 +1122,7 @@ end
     coalesce(x::Some, y...) = x.value
     coalesce(x::Nothing, y...) = coalesce(y...)
     #coalesce(x::Union{Nothing, Missing}, y...) = coalesce(y...)
+
     notnothing(x::Any) = x
     notnothing(::Nothing) = throw(ArgumentError("nothing passed to notnothing"))
     export Some, coalesce
