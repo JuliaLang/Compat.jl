@@ -1756,4 +1756,14 @@ end
 @test something(Some(2), 1) === 2
 @test something(nothing, Some(1)) === 1
 
+# 0.7.0-DEV.5171
+let sep = Compat.Sys.iswindows() ? ';' : ':'
+    withenv("PATH" => string(Compat.Sys.BINDIR, sep, get(ENV, "PATH", ""))) do
+        jl = joinpath(Compat.Sys.BINDIR, "julia") * (Compat.Sys.iswindows() ? ".exe" : "")
+        @test Compat.Sys.which("julia") == realpath(jl)
+        @test Compat.Sys.isexecutable(jl)
+        @test Compat.Sys.which("reallyseriouslynotathingyoushouldhave") === nothing
+    end
+end
+
 nothing

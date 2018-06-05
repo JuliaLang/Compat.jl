@@ -442,6 +442,13 @@ end
 # https://github.com/JuliaLang/julia/pull/21746
 const macros_have_sourceloc = VERSION >= v"0.7-" && length(:(@test).args) == 2
 
+# 0.7.0-DEV.3155
+@static if !isdefined(Base, :pushfirst!)
+    const pushfirst! = unshift!
+    const popfirst! = shift!
+    export pushfirst!, popfirst!
+end
+
 # https://github.com/JuliaLang/julia/pull/22182
 module Sys
     const KERNEL = Base.Sys.KERNEL
@@ -453,6 +460,56 @@ module Sys
         iswindows(k::Symbol=KERNEL) = k in (:Windows, :NT)
     else
         import Base.Sys: isapple, isbsd, islinux, isunix, iswindows
+    end
+
+    @static if VERSION < v"0.7.0-DEV.5171"
+        using ..Compat: pushfirst!
+
+        function isexecutable(path::AbstractString)
+            if iswindows()
+                isfile(path)
+            else
+                ccall(:access, Cint, (Ptr{UInt8}, Cint), path, 0x01) == 0
+            end
+        end
+
+        function which(program::AbstractString)
+            progs = String[]
+            base = basename(program)
+            if iswindows()
+                isempty(last(splitext(base))) || push!(progs, base)
+                for p = [".exe", ".com"]
+                    push!(progs, base * p)
+                end
+            else
+                push!(progs, base)
+            end
+            dirs = String[]
+            dir = dirname(program)
+            if isempty(dir)
+                pathsep = iswindows() ? ';' : ':'
+                append!(dirs, map(abspath, split(get(ENV, "PATH", ""), pathsep)))
+                iswindows() && pushfirst!(dirs, pwd())
+            else
+                push!(dirs, abspath(dir))
+            end
+            for d in dirs, p in progs
+                path = joinpath(d, p)
+                isexecutable(path) && return realpath(path)
+            end
+            nothing
+        end
+    elseif VERSION < v"0.7.0-alpha.6"
+        import Base.Sys: isexecutable
+
+        which(program::AbstractString) = try
+            Base.Sys.which(program)
+        catch err
+            err isa ErrorException || rethrow(err)
+            nothing
+        end
+    else
+        import Base.Sys: which, isexecutable
     end
 
     # https://github.com/JuliaLang/julia/pull/25102
@@ -1128,13 +1185,6 @@ end
     export Some, coalesce
 else
     import Base: notnothing
-end
-
-# 0.7.0-DEV.3155
-@static if !isdefined(Base, :pushfirst!)
-    const pushfirst! = unshift!
-    const popfirst! = shift!
-    export pushfirst!, popfirst!
 end
 
 # 0.7.0-DEV.3309
