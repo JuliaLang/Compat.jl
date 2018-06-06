@@ -1750,7 +1750,9 @@ let ptr = @cfunction(+, Int, (Int, Int))
     @test ccall(ptr, Int, (Int, Int), 2, 3) == 5
 end
 # issue #565
-let foo(x)=x+1, Foo=Int, bar() = @cfunction(foo, Foo, (Foo,)), ptr = bar()
+issue565(x) = x + 1
+const Issue565 = Int
+let bar() = @cfunction(issue565, Issue565, (Issue565,)), ptr = bar()
     @test ptr isa Ptr{Cvoid}
     @test ptr != C_NULL
     @test ccall(ptr, Int, (Int,), 2) === 3
