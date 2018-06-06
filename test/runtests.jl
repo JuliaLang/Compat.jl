@@ -1749,6 +1749,12 @@ let ptr = @cfunction(+, Int, (Int, Int))
     @test ptr != C_NULL
     @test ccall(ptr, Int, (Int, Int), 2, 3) == 5
 end
+# issue #565
+let foo(x)=x+1, Foo=Int, bar() = @cfunction(foo, Foo, (Foo,)), ptr = bar()
+    @test ptr isa Ptr{Cvoid}
+    @test ptr != C_NULL
+    @test ccall(ptr, Int, (Int,), 2) === 3
+end
 
 # 0.7.0-DEV.5278
 @test something(nothing, 1) === 1
