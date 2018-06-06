@@ -1914,7 +1914,7 @@ end
 # 0.7.0-DEV.4762
 @static if !isdefined(Base, Symbol("@cfunction"))
     macro cfunction(f, rt, tup)
-        :(Base.cfunction($f, $rt, Tuple{$tup...}))
+        :(Base.cfunction($(esc(f)), $(esc(rt)), Tuple{$(esc(tup))...}))
     end
     export @cfunction
 end
