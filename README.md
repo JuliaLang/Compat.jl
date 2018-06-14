@@ -416,6 +416,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Unicode.isnumeric` is now available as `isnumeric` ([#25479]).
 
+* `atan2` is now a 2-argument method of `atan` ([#27253]).
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])
@@ -645,3 +647,4 @@ includes this fix. Find the minimum version from there.
 [#27077]: https://github.com/JuliaLang/julia/issues/27077
 [#27258]: https://github.com/JuliaLang/julia/issues/27258
 [#27298]: https://github.com/JuliaLang/julia/issues/27298
+[#27253]: https://github.com/JuliaLang/julia/issues/27253

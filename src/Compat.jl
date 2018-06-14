@@ -1933,6 +1933,11 @@ if VERSION < v"0.7.0-DEV.5278"
     export something
 end
 
+# https://github.com/JuliaLang/julia/pull/27253
+@static if VERSION < v"0.7.0-alpha.44"
+    Base.atan(x::Real, y::Real) = atan2(x, y)
+end
+
 include("deprecated.jl")
 
 end # module Compat
