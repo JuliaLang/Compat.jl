@@ -530,6 +530,39 @@ end
 @test collect(Compat.eachline(IOBuffer("x\ny"), keep=false)) == ["x", "y"]
 @test collect(Compat.eachline(IOBuffer("x\ny"), keep=true))  == ["x\n", "y"]
 
+# PR 25646
+for (t, s, m, kept) in [
+        ("a", "ab", "a", "a"),
+        ("b", "ab", "b", "b"),
+        ("α", "αγ", "α", "α"),
+        ("ab", "abc", "ab", "ab"),
+        ("bc", "abc", "bc", "bc"),
+        ("αβ", "αβγ", "αβ", "αβ"),
+        ("aaabc", "ab", "aa", "aaab"),
+        ("aaabc", "ac", "aaabc", "aaabc"),
+        ("aaabc", "aab", "a", "aaab"),
+        ("aaabc", "aac", "aaabc", "aaabc"),
+        ("αααβγ", "αβ", "αα", "αααβ"),
+        ("αααβγ", "ααβ", "α", "αααβ"),
+        ("αααβγ", "αγ", "αααβγ", "αααβγ"),
+        ("barbarbarians", "barbarian", "bar", "barbarbarian"),
+        ("abcaabcaabcxl", "abcaabcx", "abca", "abcaabcaabcx"),
+        ("abbaabbaabbabbaax", "abbaabbabbaax", "abba", "abbaabbaabbabbaax"),
+        ("abbaabbabbaabbaabbabbaax", "abbaabbabbaax", "abbaabbabba", "abbaabbabbaabbaabbabbaax"),
+       ]
+    local t, s, m, kept
+    @test Compat.readuntil(IOBuffer(t), s) == m
+    @test Compat.readuntil(IOBuffer(t), s, keep=true) == kept
+    @test Compat.readuntil(IOBuffer(t), SubString(s, firstindex(s))) == m
+    @test Compat.readuntil(IOBuffer(t), SubString(s, firstindex(s)), keep=true) == kept
+    @test Compat.readuntil(IOBuffer(t), GenericString(s)) == m
+    @test Compat.readuntil(IOBuffer(t), GenericString(s), keep=true) == kept
+    @test Compat.readuntil(IOBuffer(t), Vector{UInt8}(codeunits(s))) == Vector{UInt8}(codeunits(m))
+    @test Compat.readuntil(IOBuffer(t), Vector{UInt8}(codeunits(s)), keep=true) == Vector{UInt8}(codeunits(kept))
+    @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}) == Vector{Char}(m)
+    @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}, keep=true) == Vector{Char}(kept)
+end
+
 # PR 18727
 let
     iset = Set([17, 4711])

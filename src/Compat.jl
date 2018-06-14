@@ -283,6 +283,18 @@ end
     # chomp parameter preserved for compatibility with earliear Compat versions
     readline(s::IO=STDIN; chomp::Bool=true, keep::Bool=!chomp) = Base.readline(s; chomp=!keep)
     eachline(s; keep::Bool=false) = Base.eachline(s; chomp=!keep)
+
+    stripdelim(s, d::Union{Char,UInt8}) = s[end] == Char(d) ? s[1:prevind(s,lastindex(s))] : s
+    stripdelim(s, d::AbstractString) = endswith(s, d) ? s[1:prevind(s,lastindex(s),length(d))] : s
+    function readuntil(f, d; keep::Bool = false)
+        s = Base.readuntil(f, d)
+        if keep || isempty(s)
+            return s
+        else
+            return stripdelim(s, d)
+        end
+    end
+    readuntil(f, d::Vector{T}; keep::Bool = false) where {T<:Union{UInt8,Char}} = convert(Vector{T}, readuntil(f, String(d), keep=keep))
 end
 
 # https://github.com/JuliaLang/julia/pull/18727
