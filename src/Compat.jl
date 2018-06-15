@@ -1935,12 +1935,14 @@ end
 
 if !isdefined(LinearAlgebra, :opnorm) # julia#27401
     opnorm(A::AbstractMatrix, p::Real=2) = LinearAlgebra.norm(A, p)
-    norm(x, p::Real=2) = LinearAlgebra.vecnorm(x, p)
-    dot(x, y) = LinearAlgebra.vecdot(x, y)
-    const ⋅ = dot
+    const norm = LinearAlgebra.vecnorm
+    const dot = LinearAlgebra.vecdot
 else
     const opnorm = LinearAlgebra.opnorm
+    const norm = LinearAlgebra.norm
+    const dot = LinearAlgebra.dot
 end
+const ⋅ = dot
 
 # https://github.com/JuliaLang/julia/pull/27253
 @static if VERSION < v"0.7.0-alpha.44"
