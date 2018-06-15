@@ -263,6 +263,11 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `codeunits(s)` returns an array-like view of the `UInt8` code units of
   a string and `ncodeunits(s)` returns the number of code units ([#25241]).
+  `codeunit(s)` returns the type of the code units of `s` ([#24999]).
+
+* `thisind(s, i)` returns the character index for codeunit `i` ([#24414]).
+
+* Three-argument methods `prevind(s,i,n)`, `nextind(s,i,n)` ([#23805]), and `length(s,i,j)` ([#24999]); the latter two replace `chr2ind` and `ind2chr` in Julia 0.7, respectively.
 
 * `printstyled` prints to a given stream optionally in color and/or bolded ([#25522]).
 
@@ -562,12 +567,14 @@ includes this fix. Find the minimum version from there.
 [#23642]: https://github.com/JuliaLang/julia/issues/23642
 [#23666]: https://github.com/JuliaLang/julia/issues/23666
 [#23757]: https://github.com/JuliaLang/julia/issues/23757
+[#23805]: https://github.com/JuliaLang/julia/issues/23805
 [#23931]: https://github.com/JuliaLang/julia/issues/23931
 [#24047]: https://github.com/JuliaLang/julia/issues/24047
 [#24182]: https://github.com/JuliaLang/julia/issues/24182
 [#24282]: https://github.com/JuliaLang/julia/issues/24282
 [#24361]: https://github.com/JuliaLang/julia/issues/24361
 [#24372]: https://github.com/JuliaLang/julia/issues/24372
+[#24414]: https://github.com/JuliaLang/julia/issues/24414
 [#24443]: https://github.com/JuliaLang/julia/issues/24443
 [#24459]: https://github.com/JuliaLang/julia/issues/24459
 [#24490]: https://github.com/JuliaLang/julia/issues/24490
@@ -582,6 +589,7 @@ includes this fix. Find the minimum version from there.
 [#24808]: https://github.com/JuliaLang/julia/issues/24808
 [#24831]: https://github.com/JuliaLang/julia/issues/24831
 [#24874]: https://github.com/JuliaLang/julia/issues/24874
+[#24999]: https://github.com/JuliaLang/julia/issues/24999
 [#25012]: https://github.com/JuliaLang/julia/issues/25012
 [#25021]: https://github.com/JuliaLang/julia/issues/25021
 [#25056]: https://github.com/JuliaLang/julia/issues/25056
