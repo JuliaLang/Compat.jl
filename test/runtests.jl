@@ -1778,6 +1778,14 @@ let sep = Compat.Sys.iswindows() ? ';' : ':'
     end
 end
 
+# julia#27401
+import Compat: ⋅
+@test Compat.opnorm([1 2;3 4]) ≈ 5.464985704219043
+@test Compat.opnorm([1 2;3 4], 1) ≈ 6
+@test Compat.norm([1 2;3 4]) ≈ 5.477225575051661
+@test Compat.norm([1 2;3 4], 1) ≈ 10
+@test Compat.dot([1 2;3 4], [5 6;7 8]) == [1 2;3 4] ⋅ [5 6;7 8] ≈ 70
+
 # 0.7.0-alpha.44
 @test atan(1, 2) == atan(0.5)
 @test atan(1.0, 2.0) == atan(0.5)

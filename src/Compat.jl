@@ -1933,6 +1933,15 @@ if VERSION < v"0.7.0-DEV.5278"
     export something
 end
 
+if !isdefined(LinearAlgebra, :opnorm) # julia#27401
+    opnorm(A::AbstractMatrix, p::Real=2) = LinearAlgebra.norm(A, p)
+    norm(x, p::Real=2) = LinearAlgebra.vecnorm(x, p)
+    dot(x, y) = LinearAlgebra.vecdot(x, y)
+    const ⋅ = dot
+else
+    const opnorm = LinearAlgebra.opnorm
+end
+
 # https://github.com/JuliaLang/julia/pull/27253
 @static if VERSION < v"0.7.0-alpha.44"
     Base.atan(x::Real, y::Real) = atan2(x, y)
