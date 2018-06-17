@@ -888,22 +888,6 @@ module Test25056
 end
 
 # 0.7
-module Test24714
-    using Compat
-    using Compat.Test
-    using Compat.IterativeEigensolvers
-    @test isdefined(@__MODULE__, :IterativeEigensolvers)
-    @test isdefined(@__MODULE__, :eigs)
-    @test isdefined(@__MODULE__, :svds)
-end
-
-# 0.7
-module Test24648
-    using Compat
-    using Compat.Test
-    using Compat.SuiteSparse
-    @test isdefined(@__MODULE__, :SuiteSparse)
-end
 
 let a = [0,1,2,3,0,1,2,3]
     # curried isequal

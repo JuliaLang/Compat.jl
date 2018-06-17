@@ -853,8 +853,6 @@ elseif VERSION < v"0.7.0-DEV.3019"
         using IterativeEigenSolvers: eigs, svds
         export eigs, svds
     end
-else
-    import IterativeEigensolvers
 end
 
 @static if VERSION < v"0.7.0-DEV.3449"
@@ -888,8 +886,6 @@ if VERSION < v"0.7.0-DEV.2609"
         end
         using Compat.SparseArrays: increment, increment!, decrement, decrement!
     end
-else
-    import SuiteSparse
 end
 
 @static if VERSION < v"0.7.0-DEV.3500"
