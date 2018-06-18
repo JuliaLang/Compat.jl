@@ -98,12 +98,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `using Compat.Printf` is provided on versions older than 0.7, where this library is not
   yet a part of the standard library. ([#25056])
 
-* `using Compat.IterativeEigensolvers` is provided on versions older than 0.7, where this
-  library is not yet a part of the standard library. ([#24714])
-
-* `using Compat.SuiteSparse` is provided on versions older than 0.7, where this library is
-  not yet part of the standard library ([#24648]).
-
 * `using Compat.SparseArrays` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25249]).
 
