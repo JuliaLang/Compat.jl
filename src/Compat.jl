@@ -1992,6 +1992,14 @@ end
     Base.atan(x::Real, y::Real) = atan2(x, y)
 end
 
+# https://github.com/JuliaLang/julia/pull/26647
+@static if VERSION < v"0.7.0-DEV.4724"
+    rsplit(s::AbstractString, splitter; limit::Integer=0, keepempty::Bool=false) =
+        Base.rsplit(s, splitter; limit=limit, keep=keepempty)
+    split(s::AbstractString, splitter; limit::Integer=0, keepempty::Bool=false) =
+        Base.split(s, splitter; limit=limit, keep=keepempty)
+end
+
 include("deprecated.jl")
 
 end # module Compat

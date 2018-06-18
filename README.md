@@ -415,6 +415,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `isupper`, `islower`, `ucfirst` and `lcfirst` are now `isuppercase`, `islowercase`,
   `uppercasefirst` and `lowercasefirst` ([#26442]).
 
+* `Compat.split` and `Compat.rsplit` accept `keepempty` keyword argument
+  if `splitter` is given as second argument ([#26634])
+
 * `isalpha` is now `isletter` ([#27077]).
 
 * `cfunction` is now `@cfunction` ([#26486]).
@@ -649,6 +652,7 @@ includes this fix. Find the minimum version from there.
 [#26442]: https://github.com/JuliaLang/julia/issues/26442
 [#26486]: https://github.com/JuliaLang/julia/issues/26486
 [#26559]: https://github.com/JuliaLang/julia/issues/26559
+[#26634]: https://github.com/JuliaLang/julia/issues/26634
 [#26660]: https://github.com/JuliaLang/julia/issues/26660
 [#26670]: https://github.com/JuliaLang/julia/issues/26670
 [#26850]: https://github.com/JuliaLang/julia/issues/26850
