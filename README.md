@@ -212,8 +212,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * There are versions of `InexactError`, `DomainError`, and `OverflowError` that take the same arguments as introduced in Julia 0.7-DEV ([#20005], [#22751], [#22761]).
 
-* `retry` for the more flexible `retry` method introduced in 0.6 which includes support for kwargs ([#19331], [#21419]).
-
 * `Base.rtoldefault` how takes a third parameter `atol`.
   The two argument form is deprecated in favor of the three arguments form with `atol=0`.
 
@@ -519,7 +517,6 @@ includes this fix. Find the minimum version from there.
 [#18977]: https://github.com/JuliaLang/julia/issues/18977
 [#19088]: https://github.com/JuliaLang/julia/issues/19088
 [#19246]: https://github.com/JuliaLang/julia/issues/19246
-[#19331]: https://github.com/JuliaLang/julia/issues/19331
 [#19449]: https://github.com/JuliaLang/julia/issues/19449
 [#19635]: https://github.com/JuliaLang/julia/issues/19635
 [#19784]: https://github.com/JuliaLang/julia/issues/19784
@@ -537,7 +534,6 @@ includes this fix. Find the minimum version from there.
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
 [#21257]: https://github.com/JuliaLang/julia/issues/21257
 [#21346]: https://github.com/JuliaLang/julia/issues/21346
-[#21419]: https://github.com/JuliaLang/julia/issues/21419
 [#21709]: https://github.com/JuliaLang/julia/issues/21709
 [#22064]: https://github.com/JuliaLang/julia/issues/22064
 [#22182]: https://github.com/JuliaLang/julia/issues/22182
@@ -574,11 +570,9 @@ includes this fix. Find the minimum version from there.
 [#24490]: https://github.com/JuliaLang/julia/issues/24490
 [#24605]: https://github.com/JuliaLang/julia/issues/24605
 [#24647]: https://github.com/JuliaLang/julia/issues/24647
-[#24648]: https://github.com/JuliaLang/julia/issues/24648
 [#24652]: https://github.com/JuliaLang/julia/issues/24652
 [#24657]: https://github.com/JuliaLang/julia/issues/24657
 [#24673]: https://github.com/JuliaLang/julia/issues/24673
-[#24714]: https://github.com/JuliaLang/julia/issues/24714
 [#24785]: https://github.com/JuliaLang/julia/issues/24785
 [#24808]: https://github.com/JuliaLang/julia/issues/24808
 [#24831]: https://github.com/JuliaLang/julia/issues/24831
@@ -647,6 +641,6 @@ includes this fix. Find the minimum version from there.
 [#26670]: https://github.com/JuliaLang/julia/issues/26670
 [#26850]: https://github.com/JuliaLang/julia/issues/26850
 [#27077]: https://github.com/JuliaLang/julia/issues/27077
+[#27253]: https://github.com/JuliaLang/julia/issues/27253
 [#27258]: https://github.com/JuliaLang/julia/issues/27258
 [#27298]: https://github.com/JuliaLang/julia/issues/27298
-[#27253]: https://github.com/JuliaLang/julia/issues/27253
