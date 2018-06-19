@@ -111,53 +111,6 @@ cd(dirwalk) do
 end
 rm(dirwalk, recursive=true)
 
-let
-    # Subset of tests copied from base test/error.jl
-    function foo_error(c, n)
-        c[1] += 1
-        if c[1] <= n
-            error("foo")
-        end
-        return 7
-    end
-
-    # Success on first attempt
-    c = [0]
-    @test Compat.retry(foo_error)(c, 0) == 7
-    @test c[1] == 1
-
-    # Success on second attempt
-    c = [0]
-    @test Compat.retry(foo_error)(c,1) == 7
-    @test c[1] == 2
-
-    # 2 failed retry attempts, so exception is raised
-    c = [0]
-    ex = try
-        Compat.retry(foo_error, delays=Compat.ExponentialBackOff(n=2))(c, 3)
-    catch e
-        e
-    end
-
-    c = [0]
-    ex = try
-        Compat.retry(
-            foo_error,
-            check=(s,e)->(s, try e.http_status_code == "503" end != true)
-        )(c, 2)
-    catch e
-        e
-    end
-    @test typeof(ex) == ErrorException
-    @test ex.msg == "foo"
-    @test c[1] == 2
-
-    # Functions with keyword arguments
-    foo_kwargs(x; y=5) = x + y
-    @test Compat.retry(foo_kwargs)(3) == 8
-    @test Compat.retry(foo_kwargs)(3; y=4) == 7
-end
-
 for os in [:apple, :bsd, :linux, :unix, :windows]
     from_base = if VERSION >= v"0.7.0-DEV.914"
         Expr(:., Expr(:., :Base, Base.Meta.quot(:Sys)), Base.Meta.quot(Symbol("is", os)))
@@ -888,22 +841,6 @@ module Test25056
 end
 
 # 0.7
-module Test24714
-    using Compat
-    using Compat.Test
-    using Compat.IterativeEigensolvers
-    @test isdefined(@__MODULE__, :IterativeEigensolvers)
-    @test isdefined(@__MODULE__, :eigs)
-    @test isdefined(@__MODULE__, :svds)
-end
-
-# 0.7
-module Test24648
-    using Compat
-    using Compat.Test
-    using Compat.SuiteSparse
-    @test isdefined(@__MODULE__, :SuiteSparse)
-end
 
 let a = [0,1,2,3,0,1,2,3]
     # curried isequal
@@ -1238,6 +1175,7 @@ end
 
 @test codeunits("foo") == [0x66,0x6f,0x6f] == codeunits(SubString("fooαβγ",1,3))
 @test ncodeunits("αβγ") == 6 == ncodeunits(SubString("fooαβγ",4,8))
+@test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
 # 0.7.0-DEV.3539
 @test nameof(Compat.Sys) == :Sys
@@ -1767,6 +1705,103 @@ end
 @test something(Some(2)) === 2
 @test something(Some(2), 1) === 2
 @test something(nothing, Some(1)) === 1
+
+# julia#24999
+let s = "∀α>β:α+"
+    @test [length(s,i,j) for i=1:ncodeunits(s)+1, j=0:ncodeunits(s)] ==
+        [0 1 1 1 2 2 3 4 4 5 6 6 7; 0 0 0 0 1 1 2 3 3 4 5 5 6; 0 0 0 0 1 1 2 3 3 4 5 5 6; 0 0 0 0 1 1 2 3 3 4 5 5 6; 0 0 0 0 0 0 1 2 2 3 4 4 5; 0 0 0 0 0 0 1 2 2 3 4 4 5; 0 0 0 0 0 0 0 1 1 2 3 3 4; 0 0 0 0 0 0 0 0 0 1 2 2 3; 0 0 0 0 0 0 0 0 0 1 2 2 3; 0 0 0 0 0 0 0 0 0 0 1 1 2; 0 0 0 0 0 0 0 0 0 0 0 0 1; 0 0 0 0 0 0 0 0 0 0 0 0 1; 0 0 0 0 0 0 0 0 0 0 0 0 0]
+end
+@test_throws BoundsError length("hello", 1, -1)
+@test_throws BoundsError length("hellø", 1, -1)
+@test_throws BoundsError length("hello", 1, 10)
+@test_throws BoundsError length("hellø", 1, 10) == 9
+@test_throws BoundsError prevind("hello", 0, 1)
+@test_throws BoundsError prevind("hellø", 0, 1)
+@test nextind("hello", 0, 10) == 10
+# julia#24414
+let strs = Any["∀α>β:α+1>β", SubString("123∀α>β:α+1>β123", 4, 18)]
+    for s in strs
+        @test_throws BoundsError thisind(s, -2)
+        @test_throws BoundsError thisind(s, -1)
+        @test thisind(s, 0) == 0
+        @test thisind(s, 1) == 1
+        @test thisind(s, 2) == 1
+        @test thisind(s, 3) == 1
+        @test thisind(s, 4) == 4
+        @test thisind(s, 5) == 4
+        @test thisind(s, 6) == 6
+        @test thisind(s, 15) == 15
+        @test thisind(s, 16) == 15
+        @test thisind(s, 17) == 17
+        @test_throws BoundsError thisind(s, 18)
+        @test_throws BoundsError thisind(s, 19)
+    end
+end
+let strs = Any["", SubString("123", 2, 1)]
+    for s in strs
+        @test_throws BoundsError thisind(s, -1)
+        @test thisind(s, 0) == 0
+        @test thisind(s, 1) == 1
+        @test_throws BoundsError thisind(s, 2)
+    end
+end
+# prevind and nextind, julia#23805
+let s = "∀α>β:α+1>β"
+    @test_throws BoundsError prevind(s, 0, 0)
+    @test_throws BoundsError prevind(s, 0, 1)
+    @test prevind(s, 1, 1) == 0
+    @test prevind(s, 1, 0) == 1
+    @test prevind(s, 2, 1) == 1
+    @test prevind(s, 4, 1) == 1
+    @test prevind(s, 5, 1) == 4
+    @test prevind(s, 5, 2) == 1
+    @test prevind(s, 5, 3) == 0
+    @test prevind(s, 15, 1) == 14
+    @test prevind(s, 15, 2) == 13
+    @test prevind(s, 15, 3) == 12
+    @test prevind(s, 15, 4) == 10
+    @test prevind(s, 15, 10) == 0
+    @test prevind(s, 15, 9) == 1
+    @test prevind(s, 16, 1) == 15
+    @test prevind(s, 16, 2) == 14
+    @test prevind(s, 17, 1) == 15
+    @test prevind(s, 17, 2) == 14
+    @test_throws BoundsError prevind(s, 18, 0)
+    @test_throws BoundsError prevind(s, 18, 1)
+    @test_throws BoundsError nextind(s, -1, 0)
+    @test_throws BoundsError nextind(s, -1, 1)
+    @test nextind(s, 0, 2) == 4
+    @test nextind(s, 0, 20) == 26
+    @test nextind(s, 0, 10) == 15
+    @test nextind(s, 1, 1) == 4
+    @test nextind(s, 1, 2) == 6
+    @test nextind(s, 1, 9) == 15
+    @test nextind(s, 1, 10) == 17
+    @test nextind(s, 2, 1) == 4
+    @test nextind(s, 3, 1) == 4
+    @test nextind(s, 4, 1) == 6
+    @test nextind(s, 14, 1) == 15
+    @test nextind(s, 15, 1) == 17
+    @test nextind(s, 15, 2) == 18
+    @test nextind(s, 16, 1) == 17
+    @test nextind(s, 16, 2) == 18
+    @test nextind(s, 16, 3) == 19
+    @test_throws BoundsError nextind(s, 17, 0)
+    @test_throws BoundsError nextind(s, 17, 1)
+    for k in 0:ncodeunits(s)+1
+        n = p = k
+        for j in 1:40
+            if 1 ≤ p
+                p = prevind(s, p)
+                @test prevind(s, k, j) == p
+            end
+            if n ≤ ncodeunits(s)
+                n = nextind(s, n)
+                @test nextind(s, k, j) == n
+            end
+        end
+    end
+end
 
 # 0.7.0-DEV.5171
 let sep = Compat.Sys.iswindows() ? ';' : ':'

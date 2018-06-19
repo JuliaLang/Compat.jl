@@ -98,12 +98,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `using Compat.Printf` is provided on versions older than 0.7, where this library is not
   yet a part of the standard library. ([#25056])
 
-* `using Compat.IterativeEigensolvers` is provided on versions older than 0.7, where this
-  library is not yet a part of the standard library. ([#24714])
-
-* `using Compat.SuiteSparse` is provided on versions older than 0.7, where this library is
-  not yet part of the standard library ([#24648]).
-
 * `using Compat.SparseArrays` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25249]).
 
@@ -218,8 +212,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * There are versions of `InexactError`, `DomainError`, and `OverflowError` that take the same arguments as introduced in Julia 0.7-DEV ([#20005], [#22751], [#22761]).
 
-* `retry` for the more flexible `retry` method introduced in 0.6 which includes support for kwargs ([#19331], [#21419]).
-
 * `Base.rtoldefault` how takes a third parameter `atol`.
   The two argument form is deprecated in favor of the three arguments form with `atol=0`.
 
@@ -263,6 +255,11 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `codeunits(s)` returns an array-like view of the `UInt8` code units of
   a string and `ncodeunits(s)` returns the number of code units ([#25241]).
+  `codeunit(s)` returns the type of the code units of `s` ([#24999]).
+
+* `thisind(s, i)` returns the character index for codeunit `i` ([#24414]).
+
+* Three-argument methods `prevind(s,i,n)`, `nextind(s,i,n)` ([#23805]), and `length(s,i,j)` ([#24999]); the latter two replace `chr2ind` and `ind2chr` in Julia 0.7, respectively.
 
 * `printstyled` prints to a given stream optionally in color and/or bolded ([#25522]).
 
@@ -524,7 +521,6 @@ includes this fix. Find the minimum version from there.
 [#18977]: https://github.com/JuliaLang/julia/issues/18977
 [#19088]: https://github.com/JuliaLang/julia/issues/19088
 [#19246]: https://github.com/JuliaLang/julia/issues/19246
-[#19331]: https://github.com/JuliaLang/julia/issues/19331
 [#19449]: https://github.com/JuliaLang/julia/issues/19449
 [#19635]: https://github.com/JuliaLang/julia/issues/19635
 [#19784]: https://github.com/JuliaLang/julia/issues/19784
@@ -542,7 +538,6 @@ includes this fix. Find the minimum version from there.
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
 [#21257]: https://github.com/JuliaLang/julia/issues/21257
 [#21346]: https://github.com/JuliaLang/julia/issues/21346
-[#21419]: https://github.com/JuliaLang/julia/issues/21419
 [#21709]: https://github.com/JuliaLang/julia/issues/21709
 [#22064]: https://github.com/JuliaLang/julia/issues/22064
 [#22182]: https://github.com/JuliaLang/julia/issues/22182
@@ -566,26 +561,27 @@ includes this fix. Find the minimum version from there.
 [#23642]: https://github.com/JuliaLang/julia/issues/23642
 [#23666]: https://github.com/JuliaLang/julia/issues/23666
 [#23757]: https://github.com/JuliaLang/julia/issues/23757
+[#23805]: https://github.com/JuliaLang/julia/issues/23805
 [#23931]: https://github.com/JuliaLang/julia/issues/23931
 [#24047]: https://github.com/JuliaLang/julia/issues/24047
 [#24182]: https://github.com/JuliaLang/julia/issues/24182
 [#24282]: https://github.com/JuliaLang/julia/issues/24282
 [#24361]: https://github.com/JuliaLang/julia/issues/24361
 [#24372]: https://github.com/JuliaLang/julia/issues/24372
+[#24414]: https://github.com/JuliaLang/julia/issues/24414
 [#24443]: https://github.com/JuliaLang/julia/issues/24443
 [#24459]: https://github.com/JuliaLang/julia/issues/24459
 [#24490]: https://github.com/JuliaLang/julia/issues/24490
 [#24605]: https://github.com/JuliaLang/julia/issues/24605
 [#24647]: https://github.com/JuliaLang/julia/issues/24647
-[#24648]: https://github.com/JuliaLang/julia/issues/24648
 [#24652]: https://github.com/JuliaLang/julia/issues/24652
 [#24657]: https://github.com/JuliaLang/julia/issues/24657
 [#24673]: https://github.com/JuliaLang/julia/issues/24673
-[#24714]: https://github.com/JuliaLang/julia/issues/24714
 [#24785]: https://github.com/JuliaLang/julia/issues/24785
 [#24808]: https://github.com/JuliaLang/julia/issues/24808
 [#24831]: https://github.com/JuliaLang/julia/issues/24831
 [#24874]: https://github.com/JuliaLang/julia/issues/24874
+[#24999]: https://github.com/JuliaLang/julia/issues/24999
 [#25012]: https://github.com/JuliaLang/julia/issues/25012
 [#25021]: https://github.com/JuliaLang/julia/issues/25021
 [#25056]: https://github.com/JuliaLang/julia/issues/25056
@@ -649,7 +645,7 @@ includes this fix. Find the minimum version from there.
 [#26670]: https://github.com/JuliaLang/julia/issues/26670
 [#26850]: https://github.com/JuliaLang/julia/issues/26850
 [#27077]: https://github.com/JuliaLang/julia/issues/27077
+[#27253]: https://github.com/JuliaLang/julia/issues/27253
 [#27258]: https://github.com/JuliaLang/julia/issues/27258
 [#27298]: https://github.com/JuliaLang/julia/issues/27298
-[#27253]: https://github.com/JuliaLang/julia/issues/27253
 [#27401]: https://github.com/JuliaLang/julia/issues/27401
