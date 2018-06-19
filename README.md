@@ -413,6 +413,10 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Unicode.isnumeric` is now available as `isnumeric` ([#25479]).
 
+* `vecnorm` and `vecdot` are now `Compat.norm` and `Compat.dot`, respectively, while the
+  old `norm(A::AbstractMatrix, p=2)` is now `Compat.opnorm` ([#27401]).  `import Compat: ⋅`
+  to get `Compat.dot` as the binary operator `⋅`.
+
 * `atan2` is now a 2-argument method of `atan` ([#27253]).
 
 ## New macros
@@ -644,3 +648,4 @@ includes this fix. Find the minimum version from there.
 [#27253]: https://github.com/JuliaLang/julia/issues/27253
 [#27258]: https://github.com/JuliaLang/julia/issues/27258
 [#27298]: https://github.com/JuliaLang/julia/issues/27298
+[#27401]: https://github.com/JuliaLang/julia/issues/27401
