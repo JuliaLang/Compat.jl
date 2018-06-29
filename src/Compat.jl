@@ -1780,16 +1780,19 @@ if VERSION < v"0.7.0-DEV.4064"
     cor(a::AbstractMatrix; dims=nothing) = dims===nothing ? Base.cor(a) : Base.cor(a, dims)
     cor(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing) =
         dims===nothing ? Base.cor(a, b) : Base.cor(a, b, dims)
-    mapreduce(f, op, a::AbstractArray; dims=nothing) =
-        dims===nothing ? Base.mapreduce(f, op, a) : Base.mapreducedim(f, op, a, dims)
-    mapreduce(f, op, v0, a::AbstractArray; dims=nothing) =
-        dims===nothing ? Base.mapreduce(f, op, v0, a) : Base.mapreducedim(f, op, a, dims, v0)
-    reduce(op, a::AbstractArray; dims=nothing) =
-        dims===nothing ? Base.reduce(op, a) : Base.reducedim(op, a, dims)
-    reduce(op, v0, a::AbstractArray; dims=nothing) =
-        dims===nothing ? Base.reduce(op, v0, a) : Base.reducedim(op, a, dims, v0)
+    mapreduce(f, op, a::AbstractArray; dims=nothing, init=nothing) =
+        init === nothing ? (dims===nothing ? Base.mapreduce(f, op, a) : Base.mapreducedim(f, op, a, dims)) :
+                           (dims===nothing ? Base.mapreduce(f, op, init, a) : Base.mapreducedim(f, op, a, dims, init))
+    reduce(op, a::AbstractArray; dims=nothing, init=nothing) =
+        init === nothing ? (dims===nothing ? Base.reduce(op, a) : Base.reducedim(op, a, dims)) :
+                           (dims===nothing ? Base.reduce(op, init, a) : Base.reducedim(op, a, dims, init))
     accumulate!(op, out, a; dims=nothing) =
         dims===nothing ? Base.accumulate!(op, out, a) : Base.accumulate!(op, out, a, dims)
+elseif VERSION < v"0.7.0-beta.81" # julia#27711
+    mapreduce(f, op, a::AbstractArray; dims=nothing, init=nothing) =
+        init === nothing ? Base.mapreduce(f, op, a; dims=dims) : Base.mapreduce(f, op, init, a; dims=dims)
+    reduce(op, a::AbstractArray; dims=nothing, init=nothing) =
+        init === nothing ? Base.reduce(op, a; dims=dims) : Base.reduce(op, init, a; dims=dims)
 end
 if VERSION < v"0.7.0-DEV.4534"
     reverse(a::AbstractArray; dims=nothing) =
