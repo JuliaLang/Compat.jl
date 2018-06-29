@@ -881,9 +881,6 @@ if VERSION < v"0.7.0-beta.85"
                 dims===nothing ? Base.var(a; kwargs...) : Base.var(a, dims; kwargs...)
             std(a::AbstractArray; dims=nothing, kwargs...) =
                 dims===nothing ? Base.std(a; kwargs...) : Base.std(a, dims; kwargs...)
-            import Base: stdm, varm, mean!, median!, middle, quantile!, quantile
-        else
-            import Base: cor, cov, std, stdm, var, varm, mean!, mean, median!, median, middle, quantile!, quantile
         end
         export cor, cov, std, stdm, var, varm, mean!, mean, median!, median, middle, quantile!, quantile
     end
@@ -1785,7 +1782,7 @@ if VERSION < v"0.7.0-DEV.4064"
             end
         end
     end
-    sort(a::AbstractArray; dims=nothing, kwargs...) =
+    @eval sort(a::AbstractArray; dims=nothing, kwargs...) =
         dims===nothing ? Base.sort(a; kwargs...) : Base.sort(a, dims; kwargs...)
     for f in (:cumsum!, :cumprod!)
         @eval $f(out, a; dims=nothing) =
