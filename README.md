@@ -139,6 +139,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `using Compat.Sockets` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25935])
 
+* `using Compat.Statistics` is provided on versions older than 0.7, where this library is
+  not yet part of the standard library ([#27834]).
+
 ## New functions, macros, and methods
 
 * `@views` takes an expression and converts all slices to views ([#20164]), while
