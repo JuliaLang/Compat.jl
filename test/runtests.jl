@@ -1856,4 +1856,35 @@ let
     @test Compat.split(str, r"\.+:\.+"; limit=3, keepempty=true) == ["a","ba","cba.:.:.dcba.:."]
 end
 
+# test required keyword arguments
+@compat func1() = 1
+@test func1() == 1 # using the function works
+@compat func2(x) = x
+@test func2(3) == 3 # using the function works
+@compat func3(;y) = y
+@test func3(y=2) == 2 # using the function works
+try
+    func3()
+catch e
+    @test isa(e, ErrorException)
+    @test e.msg == Compat.rka_error_message(:y)
+end
+@compat func4(x; z) = x*z
+@test func4(2,z=3) == 6 # using the function works
+try
+    func4(2)
+catch e
+    @test isa(e, ErrorException)
+    @test e.msg == Compat.rka_error_message(:z)
+end
+@compat func5(;x=1, y) = x*y
+@test func5(y=3) == 3
+@test func5(y=3, x=2) == 6
+try
+    func5(x=2)
+catch e
+    @test isa(e, ErrorException)
+    @test e.msg == Compat.rka_error_message(:y)
+end
+
 nothing
