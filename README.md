@@ -321,7 +321,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `readstring` is replaced by methods of `read`. ([#22864])
 
     `read(::IO, ::Type{String})`, `read(::AbstractString, ::Type{String})`,
-    and `read(::Cmd, ::Type{String})` are defined for 0.6 and below.
+    and `read(::AbstractCmd, ::Type{String})` are defined for 0.6 and below.
 
 * `Range` is now `AbstractRange` ([#23570])
 

@@ -748,7 +748,10 @@ no_specialize_kw2(@nospecialize(x::Integer=0)) = sin(2)
 # 0.7
 @test read(IOBuffer("aaaa"), String) == "aaaa"
 @test occursin("read(@__FILE__, String)", read(@__FILE__, String))
-@test read(`$(Base.julia_cmd()) --startup-file=no -e "println(:aaaa)"`, String) == "aaaa\n"
+let cmd = `$(Base.julia_cmd()) --startup-file=no -e "println(:aaaa)"`
+    @test read(cmd, String) == "aaaa\n"
+    @test read(pipeline(cmd, stderr=devnull), String) == "aaaa\n"
+end
 
 # 0.7
 @test isa(1:2, AbstractRange)

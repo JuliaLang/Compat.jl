@@ -470,7 +470,7 @@ end
 if VERSION < v"0.7.0-DEV.1053"
     Base.read(obj::IO, ::Type{String}) = readstring(obj)
     Base.read(obj::AbstractString, ::Type{String}) = readstring(obj)
-    Base.read(obj::Cmd, ::Type{String}) = readstring(obj)
+    Base.read(obj::Base.AbstractCmd, ::Type{String}) = readstring(obj)
 end
 
 # https://github.com/JuliaLang/julia/pull/20005
