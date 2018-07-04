@@ -25,11 +25,13 @@ else
     new_style_typealias(ex) = false
 end
 
-struct UndefKeywordError <: Exception
-    kw
+if !isdefined(Base, :UndefKeywordError)
+    struct UndefKeywordError <: Exception
+        kw
+    end
+    Base.showerror(io::IO, e::UndefKeywordError) = print(io, "keyword argument $(e.kw) not assigned")
+    export UndefKeywordError
 end
-Base.showerror(io::IO, e::UndefKeywordError) = print(io, "keyword argument $(e.kw) not assigned")
-export UndefKeywordError
 
 "Convert a functions symbol argument to the corresponding required keyword argument."
 function symbol2kw(sym::Symbol)
@@ -44,7 +46,7 @@ function _compat(ex::Expr)
                 istopsymbol(withincurly(ex.args[1]), :Base, :Nullable)
             ex = Expr(:call, f, ex.args[2], Expr(:call, :(Compat._Nullable_field2), ex.args[3]))
         end
-        if length(ex.args) > 1 && isexpr(ex.args[2], :parameters)
+        if !isdefined(Base, :UndefKeywordError) && length(ex.args) > 1 && isexpr(ex.args[2], :parameters)
             params = ex.args[2]
             params.args = map(symbol2kw, params.args)
         end
