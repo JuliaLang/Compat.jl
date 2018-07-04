@@ -25,12 +25,15 @@ else
     new_style_typealias(ex) = false
 end
 
-"Provides the error message if no required keyword argument is given."
-rka_error_message(sym) = string("RequiredKeywordArgumentError: `", sym, "` is a required keyword argument, please provide `", sym, " = ...`.")
+struct UndefKeywordError <: Exception
+    kw
+end
+Base.showerror(io::IO, e::UndefKeywordError) = print(io, "keyword argument $(e.kw) not assigned")
+export UndefKeywordError
 
 "Convert a functions symbol argument to the corresponding required keyword argument."
 function symbol2kw(sym::Symbol)
-    Expr(:kw, sym, Expr(:call, error, rka_error_message(sym)))
+    Expr(:kw, sym, Expr(:call, throw, UndefKeywordError(sym)))
 end
 symbol2kw(arg) = arg
 

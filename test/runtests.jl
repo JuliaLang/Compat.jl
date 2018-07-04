@@ -1863,28 +1863,13 @@ end
 @test func2(3) == 3 # using the function works
 @compat func3(;y) = y
 @test func3(y=2) == 2 # using the function works
-try
-    func3()
-catch e
-    @test isa(e, ErrorException)
-    @test e.msg == Compat.rka_error_message(:y)
-end
+@test_throws UndefKeywordError func3()
 @compat func4(x; z) = x*z
 @test func4(2,z=3) == 6 # using the function works
-try
-    func4(2)
-catch e
-    @test isa(e, ErrorException)
-    @test e.msg == Compat.rka_error_message(:z)
-end
+@test_throws UndefKeywordError func4(2)
 @compat func5(;x=1, y) = x*y
 @test func5(y=3) == 3
 @test func5(y=3, x=2) == 6
-try
-    func5(x=2)
-catch e
-    @test isa(e, ErrorException)
-    @test e.msg == Compat.rka_error_message(:y)
-end
+@test_throws UndefKeywordError func5(x=2)
 
 nothing
