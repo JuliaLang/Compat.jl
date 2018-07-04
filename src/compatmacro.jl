@@ -29,7 +29,7 @@ if !isdefined(Base, :UndefKeywordError)
     struct UndefKeywordError <: Exception
         kw
     end
-    Base.showerror(io::IO, e::UndefKeywordError) = print(io, "keyword argument $(e.kw) not assigned")
+    Base.showerror(io::IO, e::UndefKeywordError) = print(io, "UndefKeywordError: keyword argument $(e.kw) not assigned")
     export UndefKeywordError
 end
 
