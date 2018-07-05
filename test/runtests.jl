@@ -1896,4 +1896,15 @@ let
     @test Compat.split(str, r"\.+:\.+"; limit=3, keepempty=true) == ["a","ba","cba.:.:.dcba.:."]
 end
 
+buf = IOBuffer("abccabc")
+@test Compat.readuntil(buf, 'c') == "ab"
+@test Compat.readuntil(buf, 'c') == ""
+@test Compat.readuntil(buf, 'c') == "ab"
+@test Compat.readuntil(buf, 'c') == ""
+buf = IOBuffer("abccabc")
+@test Compat.readuntil(buf, 'c', keep = true) == "abc"
+@test Compat.readuntil(buf, 'c', keep = true) == "c"
+@test Compat.readuntil(buf, 'c', keep = true) == "abc"
+@test Compat.readuntil(buf, 'c', keep = true) == ""
+
 nothing
