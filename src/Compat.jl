@@ -1759,7 +1759,7 @@ if VERSION < v"0.7.0-DEV.4585"
 end
 
 if VERSION < v"0.7.0-DEV.4064"
-    for f in (:mean, :median, :var, :std, :cov, :cor)
+    for f in (:mean, :median, :var, :varm, :std, :cov, :cor)
         @eval import .Statistics: $f # compatibility with old Compat versions
     end
     for f in (:cumsum, :cumprod, :sum, :prod, :maximum, :minimum, :all, :any)
