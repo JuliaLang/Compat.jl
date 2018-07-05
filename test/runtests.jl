@@ -1816,6 +1816,10 @@ let sep = Compat.Sys.iswindows() ? ';' : ':'
     end
 end
 
+# julia#24839
+@test permutedims([1 2; 3 4]) == [1 3; 2 4]
+@test permutedims([1,2,3]) == [1 2 3]
+
 # julia#27401
 import Compat: ⋅
 @test Compat.opnorm([1 2;3 4]) ≈ 5.464985704219043

@@ -288,6 +288,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `squeeze` with `dims` as keyword argument ([#26660]).
 
+* Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
+
 * `fetch` for `Task`s ([#25940]).
 
 * `Compat.qr` takes `pivot` as a `Val` _instance_ ([#22475]).
@@ -583,6 +585,7 @@ includes this fix. Find the minimum version from there.
 [#24785]: https://github.com/JuliaLang/julia/issues/24785
 [#24808]: https://github.com/JuliaLang/julia/issues/24808
 [#24831]: https://github.com/JuliaLang/julia/issues/24831
+[#24839]: https://github.com/JuliaLang/julia/issues/24839
 [#24874]: https://github.com/JuliaLang/julia/issues/24874
 [#24999]: https://github.com/JuliaLang/julia/issues/24999
 [#25012]: https://github.com/JuliaLang/julia/issues/25012
