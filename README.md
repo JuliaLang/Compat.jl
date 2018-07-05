@@ -173,6 +173,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.eachline` with `keep` keyword argument ([#25646])
 
+* `Compat.readuntil` with `keep` keyword argument ([#25646])
+
 * `take!` method for `Task`s since some functions now return `Channel`s instead of `Task`s ([#19841])
 
 * The `isabstract`, `parameter_upper_bound`, `typename` reflection methods were added in Julia 0.6. This package re-exports these from the `Compat.TypeUtils` submodule. On earlier versions of julia, that module contains the same functions, but operating on the pre-0.6 type system representation.
