@@ -220,10 +220,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Base.rtoldefault` how takes a third parameter `atol`.
   The two argument form is deprecated in favor of the three arguments form with `atol=0`.
 
-* The `corrected` optional argument of `cov` becomes a keyword argument.
-  Due to conflict with 0.5 deprecation,
-  `cov(::AbstractVector; corrected=)` and `cov(::AbstractVector, ::AbstractVector; corrected=)`
-  are only available on 0.6. ([#21709])
+* The `corrected` optional argument of `cov` becomes a keyword argument of `Compat.Statistics.cov` ([#21709]).
 
 * `isequal`, `==` and `in` have one argument "curried" forms. For example `isequal(x)`
   returns a function that compares its arguments to `x` using `isequal` ([#26436]).
@@ -285,8 +282,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.accumulate`, `Compat.accumulate!`, `Compat.all`, `Compat.any`,
   `Compat.cumprod`, `Compat.cumprod!`, `Compat.cumsum`, `Compat.cumsum!`,
-  `Compat.findmax`, `Compat.findmin`, `Compat.mapreduce`, `Compat.maximum`, `Compat.mean`,
-  `Compat.median`, `Compat.minimum`, `Compat.prod`, `Compat.reduce`, `Compat.sort`,
+  `Compat.findmax`, `Compat.findmin`, `Compat.mapreduce`, `Compat.maximum`, `Compat.Statistics.mean`,
+  `Compat.Statistics.median`, `Compat.minimum`, `Compat.prod`, `Compat.reduce`, `Compat.sort`,
   and `Compat.sum`  with `dims` keyword argument ([#25989],[#26369]).
 
 * `Compat.mapreduce` and `Compat.reduce` with `init` keyword argument ([#27711]).
