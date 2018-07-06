@@ -79,6 +79,8 @@ Currently, the `@compat` macro supports the following syntaxes:
   `foo(::CartesianRange{CartesianIndex{N}})` ([#20974]). Note that
   `CartesianRange` now has two type parameters, so using them as
   fields in other `struct`s requires manual intervention.
+  
+* required keyword arguments: e.g. `@compat foo(;x, y)` makes `x` and `y` required keyword arguments. When calling `foo` an error is thrown if `x` and `y` are not explictly provided
 
 ## Module Aliases
 
