@@ -1788,6 +1788,11 @@ if VERSION < v"0.7.0-DEV.4064"
                            (dims===nothing ? Base.reduce(op, init, a) : Base.reducedim(op, a, dims, init))
     accumulate!(op, out, a; dims=nothing) =
         dims===nothing ? Base.accumulate!(op, out, a) : Base.accumulate!(op, out, a, dims)
+    # kept for compatibility with early adopters
+    mapreduce(f, op, v0, a::AbstractArray; dims=nothing) =
+        mapreduce(f, op, a, dims=dims, init=v0)
+    reduce(op, v0, a::AbstractArray; dims=nothing) =
+        reduce(op, a, dims=dims, init=v0)
 elseif VERSION < v"0.7.0-beta.81" # julia#27711
     mapreduce(f, op, a::AbstractArray; dims=nothing, init=nothing) =
         init === nothing ? Base.mapreduce(f, op, a; dims=dims) : Base.mapreduce(f, op, init, a; dims=dims)
