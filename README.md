@@ -306,6 +306,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `something` to get the first argument different from `nothing`, unwrapping those
   of the `Some` type ([#27258]).
 
+* `mapslices` with `dims` keyword argument ([#27828]).
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -658,3 +660,4 @@ includes this fix. Find the minimum version from there.
 [#27258]: https://github.com/JuliaLang/julia/issues/27258
 [#27298]: https://github.com/JuliaLang/julia/issues/27298
 [#27401]: https://github.com/JuliaLang/julia/issues/27401
+[#27828]: https://github.com/JuliaLang/julia/issues/27828
