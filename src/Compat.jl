@@ -283,6 +283,18 @@ end
     # chomp parameter preserved for compatibility with earliear Compat versions
     readline(s::IO=STDIN; chomp::Bool=true, keep::Bool=!chomp) = Base.readline(s; chomp=!keep)
     eachline(s; keep::Bool=false) = Base.eachline(s; chomp=!keep)
+
+    stripdelim(s, d::Union{Char,UInt8}) = s[end] == Char(d) ? s[1:prevind(s,lastindex(s))] : s
+    stripdelim(s, d::AbstractString) = endswith(s, d) ? s[1:prevind(s,lastindex(s),length(d))] : s
+    function readuntil(f, d; keep::Bool = false)
+        s = Base.readuntil(f, d)
+        if keep || isempty(s)
+            return s
+        else
+            return stripdelim(s, d)
+        end
+    end
+    readuntil(f, d::Vector{T}; keep::Bool = false) where {T<:Union{UInt8,Char}} = convert(Vector{T}, readuntil(f, String(d), keep=keep))
 end
 
 # https://github.com/JuliaLang/julia/pull/18727
@@ -470,7 +482,7 @@ end
 if VERSION < v"0.7.0-DEV.1053"
     Base.read(obj::IO, ::Type{String}) = readstring(obj)
     Base.read(obj::AbstractString, ::Type{String}) = readstring(obj)
-    Base.read(obj::Cmd, ::Type{String}) = readstring(obj)
+    Base.read(obj::Base.AbstractCmd, ::Type{String}) = readstring(obj)
 end
 
 # https://github.com/JuliaLang/julia/pull/20005
@@ -1936,6 +1948,11 @@ else
 end
 const ⋅ = dot
 
+if VERSION < v"0.7.0-DEV.2956" # julia#24839
+    Base.permutedims(A::AbstractMatrix) = permutedims(A, (2,1))
+    Base.permutedims(v::AbstractVector) = reshape(v, (1, length(v)))
+end
+
 # https://github.com/JuliaLang/julia/pull/27253
 @static if VERSION < v"0.7.0-alpha.44"
     Base.atan(x::Real, y::Real) = atan2(x, y)
@@ -1947,6 +1964,12 @@ end
         Base.rsplit(s, splitter; limit=limit, keep=keepempty)
     split(s::AbstractString, splitter; limit::Integer=0, keepempty::Bool=false) =
         Base.split(s, splitter; limit=limit, keep=keepempty)
+end
+
+# https://github.com/JuliaLang/julia/pull/27828
+if VERSION < v"0.7.0-beta.73"
+    Base.mapslices(f, A::AbstractArray; dims=error("required keyword argument `dims` missing")) =
+        mapslices(f, A, dims)
 end
 
 include("deprecated.jl")

@@ -530,6 +530,39 @@ end
 @test collect(Compat.eachline(IOBuffer("x\ny"), keep=false)) == ["x", "y"]
 @test collect(Compat.eachline(IOBuffer("x\ny"), keep=true))  == ["x\n", "y"]
 
+# PR 25646
+for (t, s, m, kept) in [
+        ("a", "ab", "a", "a"),
+        ("b", "ab", "b", "b"),
+        ("α", "αγ", "α", "α"),
+        ("ab", "abc", "ab", "ab"),
+        ("bc", "abc", "bc", "bc"),
+        ("αβ", "αβγ", "αβ", "αβ"),
+        ("aaabc", "ab", "aa", "aaab"),
+        ("aaabc", "ac", "aaabc", "aaabc"),
+        ("aaabc", "aab", "a", "aaab"),
+        ("aaabc", "aac", "aaabc", "aaabc"),
+        ("αααβγ", "αβ", "αα", "αααβ"),
+        ("αααβγ", "ααβ", "α", "αααβ"),
+        ("αααβγ", "αγ", "αααβγ", "αααβγ"),
+        ("barbarbarians", "barbarian", "bar", "barbarbarian"),
+        ("abcaabcaabcxl", "abcaabcx", "abca", "abcaabcaabcx"),
+        ("abbaabbaabbabbaax", "abbaabbabbaax", "abba", "abbaabbaabbabbaax"),
+        ("abbaabbabbaabbaabbabbaax", "abbaabbabbaax", "abbaabbabba", "abbaabbabbaabbaabbabbaax"),
+       ]
+    local t, s, m, kept
+    @test Compat.readuntil(IOBuffer(t), s) == m
+    @test Compat.readuntil(IOBuffer(t), s, keep=true) == kept
+    @test Compat.readuntil(IOBuffer(t), SubString(s, firstindex(s))) == m
+    @test Compat.readuntil(IOBuffer(t), SubString(s, firstindex(s)), keep=true) == kept
+    @test Compat.readuntil(IOBuffer(t), GenericString(s)) == m
+    @test Compat.readuntil(IOBuffer(t), GenericString(s), keep=true) == kept
+    @test Compat.readuntil(IOBuffer(t), Vector{UInt8}(codeunits(s))) == Vector{UInt8}(codeunits(m))
+    @test Compat.readuntil(IOBuffer(t), Vector{UInt8}(codeunits(s)), keep=true) == Vector{UInt8}(codeunits(kept))
+    @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}) == Vector{Char}(m)
+    @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}, keep=true) == Vector{Char}(kept)
+end
+
 # PR 18727
 let
     iset = Set([17, 4711])
@@ -748,7 +781,10 @@ no_specialize_kw2(@nospecialize(x::Integer=0)) = sin(2)
 # 0.7
 @test read(IOBuffer("aaaa"), String) == "aaaa"
 @test occursin("read(@__FILE__, String)", read(@__FILE__, String))
-@test read(`$(Base.julia_cmd()) --startup-file=no -e "println(:aaaa)"`, String) == "aaaa\n"
+let cmd = `$(Base.julia_cmd()) --startup-file=no -e "println(:aaaa)"`
+    @test read(cmd, String) == "aaaa\n"
+    @test read(pipeline(cmd, stderr=devnull), String) == "aaaa\n"
+end
 
 # 0.7
 @test isa(1:2, AbstractRange)
@@ -1813,6 +1849,10 @@ let sep = Compat.Sys.iswindows() ? ';' : ':'
     end
 end
 
+# julia#24839
+@test permutedims([1 2; 3 4]) == [1 3; 2 4]
+@test permutedims([1,2,3]) == [1 2 3]
+
 # julia#27401
 import Compat: ⋅
 @test Compat.opnorm([1 2;3 4]) ≈ 5.464985704219043
@@ -1856,20 +1896,32 @@ let
     @test Compat.split(str, r"\.+:\.+"; limit=3, keepempty=true) == ["a","ba","cba.:.:.dcba.:."]
 end
 
-# test required keyword arguments
-@compat func1() = 1
-@test func1() == 1 # using the function works
-@compat func2(x) = x
-@test func2(3) == 3 # using the function works
-@compat func3(;y) = y
-@test func3(y=2) == 2 # using the function works
-@test_throws UndefKeywordError func3()
-@compat func4(x; z) = x*z
-@test func4(2,z=3) == 6 # using the function works
-@test_throws UndefKeywordError func4(2)
-@compat func5(;x=1, y) = x*y
-@test func5(y=3) == 3
-@test func5(y=3, x=2) == 6
-@test_throws UndefKeywordError func5(x=2)
+let
+    # test required keyword arguments
+    @compat func1() = 1
+    @test func1() == 1 # using the function works
+    @compat func2(x) = x
+    @test func2(3) == 3 # using the function works
+    @compat func3(;y) = y
+    @test func3(y=2) == 2 # using the function works
+    @test_throws UndefKeywordError func3()
+    @compat func4(x; z) = x*z
+    @test func4(2,z=3) == 6 # using the function works
+    @test_throws UndefKeywordError func4(2)
+    @compat func5(;x=1, y) = x*y
+    @test func5(y=3) == 3
+    @test func5(y=3, x=2) == 6
+    @test_throws UndefKeywordError func5(x=2)
+end
+
+# 0.7.0-beta.73
+let a = rand(5,5)
+    s = mapslices(sort, a, dims=[1])
+    S = mapslices(sort, a, dims=[2])
+    for i = 1:5
+        @test s[:,i] == sort(a[:,i])
+        @test vec(S[i,:]) == sort(vec(a[i,:]))
+    end
+end
 
 nothing

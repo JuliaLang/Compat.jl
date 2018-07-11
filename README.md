@@ -175,6 +175,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.eachline` with `keep` keyword argument ([#25646])
 
+* `Compat.readuntil` with `keep` keyword argument ([#25646])
+
 * `take!` method for `Task`s since some functions now return `Channel`s instead of `Task`s ([#19841])
 
 * The `isabstract`, `parameter_upper_bound`, `typename` reflection methods were added in Julia 0.6. This package re-exports these from the `Compat.TypeUtils` submodule. On earlier versions of julia, that module contains the same functions, but operating on the pre-0.6 type system representation.
@@ -290,6 +292,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `squeeze` with `dims` as keyword argument ([#26660]).
 
+* Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
+
 * `fetch` for `Task`s ([#25940]).
 
 * `Compat.qr` takes `pivot` as a `Val` _instance_ ([#22475]).
@@ -303,6 +307,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `something` to get the first argument different from `nothing`, unwrapping those
   of the `Some` type ([#27258]).
+
+* `mapslices` with `dims` keyword argument ([#27828]).
 
 ## Renaming
 
@@ -323,7 +329,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `readstring` is replaced by methods of `read`. ([#22864])
 
     `read(::IO, ::Type{String})`, `read(::AbstractString, ::Type{String})`,
-    and `read(::Cmd, ::Type{String})` are defined for 0.6 and below.
+    and `read(::AbstractCmd, ::Type{String})` are defined for 0.6 and below.
 
 * `Range` is now `AbstractRange` ([#23570])
 
@@ -585,6 +591,7 @@ includes this fix. Find the minimum version from there.
 [#24785]: https://github.com/JuliaLang/julia/issues/24785
 [#24808]: https://github.com/JuliaLang/julia/issues/24808
 [#24831]: https://github.com/JuliaLang/julia/issues/24831
+[#24839]: https://github.com/JuliaLang/julia/issues/24839
 [#24874]: https://github.com/JuliaLang/julia/issues/24874
 [#24999]: https://github.com/JuliaLang/julia/issues/24999
 [#25012]: https://github.com/JuliaLang/julia/issues/25012
@@ -655,3 +662,4 @@ includes this fix. Find the minimum version from there.
 [#27258]: https://github.com/JuliaLang/julia/issues/27258
 [#27298]: https://github.com/JuliaLang/julia/issues/27298
 [#27401]: https://github.com/JuliaLang/julia/issues/27401
+[#27828]: https://github.com/JuliaLang/julia/issues/27828
