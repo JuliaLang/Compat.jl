@@ -286,6 +286,8 @@ Currently, the `@compat` macro supports the following syntaxes:
   `Compat.median`, `Compat.minimum`, `Compat.prod`, `Compat.reduce`, `Compat.sort`,
   and `Compat.sum`  with `dims` keyword argument ([#25989],[#26369]).
 
+* `Compat.mapreduce` and `Compat.reduce` with `init` keyword argument ([#27711]).
+
 * `selectdim` to obtain a view of an array with a specified index for a specified dimension ([#26009]).
 
 * `squeeze` with `dims` as keyword argument ([#26660]).
@@ -660,4 +662,6 @@ includes this fix. Find the minimum version from there.
 [#27258]: https://github.com/JuliaLang/julia/issues/27258
 [#27298]: https://github.com/JuliaLang/julia/issues/27298
 [#27401]: https://github.com/JuliaLang/julia/issues/27401
+[#27711]: https://github.com/JuliaLang/julia/issues/27711
 [#27828]: https://github.com/JuliaLang/julia/issues/27828
+[#27834]: https://github.com/JuliaLang/julia/issues/27834
