@@ -1795,9 +1795,11 @@ if VERSION < v"0.7.0-DEV.4064"
         reduce(op, a, dims=dims, init=v0)
 elseif VERSION < v"0.7.0-beta.81" # julia#27711
     mapreduce(f, op, a::AbstractArray; dims=nothing, init=nothing) =
-        init === nothing ? Base.mapreduce(f, op, a; dims=dims) : Base.mapreduce(f, op, init, a; dims=dims)
+        init === nothing ? (dims===nothing ? Base.mapreduce(f, op, a) : Base.mapreduce(f, op, a, dims=dims)) :
+                           (dims===nothing ? Base.mapreduce(f, op, init, a) : Base.mapreduce(f, op, init, a, dims=dims))
     reduce(op, a::AbstractArray; dims=nothing, init=nothing) =
-        init === nothing ? Base.reduce(op, a; dims=dims) : Base.reduce(op, init, a; dims=dims)
+        init === nothing ? (dims===nothing ? Base.reduce(op, a) : Base.reduce(op, a, dims=dims)) :
+                           (dims===nothing ? Base.reduce(op, init, a) : Base.reduce(op, init, a, dims=dims))
 end
 if VERSION < v"0.7.0-DEV.4534"
     reverse(a::AbstractArray; dims=nothing) =
