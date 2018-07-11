@@ -1896,4 +1896,14 @@ let
     @test Compat.split(str, r"\.+:\.+"; limit=3, keepempty=true) == ["a","ba","cba.:.:.dcba.:."]
 end
 
+# 0.7.0-beta.73
+let a = rand(5,5)
+    s = mapslices(sort, a, dims=[1])
+    S = mapslices(sort, a, dims=[2])
+    for i = 1:5
+        @test s[:,i] == sort(a[:,i])
+        @test vec(S[i,:]) == sort(vec(a[i,:]))
+    end
+end
+
 nothing

@@ -1966,6 +1966,12 @@ end
         Base.split(s, splitter; limit=limit, keep=keepempty)
 end
 
+# https://github.com/JuliaLang/julia/pull/27828
+if VERSION < v"0.7.0-beta.73"
+    Base.mapslices(f, A::AbstractArray; dims=error("required keyword argument `dims` missing")) =
+        mapslices(f, A, dims)
+end
+
 include("deprecated.jl")
 
 end # module Compat
