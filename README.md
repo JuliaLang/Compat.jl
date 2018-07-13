@@ -80,7 +80,7 @@ Currently, the `@compat` macro supports the following syntaxes:
   `CartesianRange` now has two type parameters, so using them as
   fields in other `struct`s requires manual intervention.
   
-* required keyword arguments: e.g. `@compat foo(;x, y)` makes `x` and `y` required keyword arguments. When calling `foo` an error is thrown if `x` and `y` are not explictly provided
+* Required keyword arguments ([#25830]). For example, `@compat foo(; x, y)` makes `x` and `y` required keyword arguments: when calling `foo`, an error is thrown if `x` or `y` is not explicitly provided.
 
 ## Module Aliases
 
