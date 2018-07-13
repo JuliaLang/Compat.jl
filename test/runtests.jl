@@ -1597,12 +1597,14 @@ end
 Issue26488 && @test Compat.mapreduce(string, *, [1 2; 3 4], dims=1) == ["13" "24"]
 Issue26488 && @test Compat.mapreduce(string, *, [1 2; 3 4], dims=2) == hcat(["12", "34"])
 @test Compat.mapreduce(string, *, [1 2; 3 4], init="z") == "z1324"
+@test Compat.mapreduce(string, *, (1, 2, 3, 4), init="z") == "z1234"
 @test Compat.mapreduce(string, *, [1 2; 3 4], dims=1, init="z") == ["z13" "z24"]
 @test Compat.mapreduce(string, *, [1 2; 3 4], dims=2, init="z") == hcat(["z12", "z34"])
 @test Compat.reduce(*, [1 2; 3 4]) == 24
 @test Compat.reduce(*, [1 2; 3 4], dims=1) == [3 8]
 @test Compat.reduce(*, [1 2; 3 4], dims=2) == hcat([2, 12])
 @test Compat.reduce(*, [1 2; 3 4], init=10) == 240
+@test Compat.reduce(*, (1, 2, 3, 4), init=10) == 240
 @test Compat.reduce(*, [1 2; 3 4], dims=1, init=10) == [30 80]
 @test Compat.reduce(*, [1 2; 3 4], dims=2, init=10) == hcat([20, 120])
 @test Compat.sort([1, 2, 3, 4]) == [1, 2, 3, 4]
