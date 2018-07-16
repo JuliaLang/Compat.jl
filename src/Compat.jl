@@ -857,6 +857,37 @@ else
     import Serialization
 end
 
+if VERSION < v"0.7.0-beta.85"
+    @eval module Statistics
+        if VERSION < v"0.7.0-DEV.4064"
+            varm(A::AbstractArray, m; dims=nothing, kwargs...) =
+                dims===nothing ? Base.varm(A, m; kwargs...) : Base.varm(A, m, dims; kwargs...)
+            if VERSION < v"0.7.0-DEV.755"
+                cov(a::AbstractMatrix; dims=1, corrected=true) = Base.cov(a, dims, corrected)
+                cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=1, corrected=true) =
+                    Base.cov(a, b, dims, corrected)
+            else
+                cov(a::AbstractMatrix; dims=nothing, kwargs...) =
+                    dims===nothing ? Base.cov(a; kwargs...) : Base.cov(a, dims; kwargs...)
+                cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing, kwargs...) =
+                    dims===nothing ? Base.cov(a, b; kwargs...) : Base.cov(a, b, dims; kwargs...)
+            end
+            cor(a::AbstractMatrix; dims=nothing) = dims===nothing ? Base.cor(a) : Base.cor(a, dims)
+            cor(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing) =
+                dims===nothing ? Base.cor(a, b) : Base.cor(a, b, dims)
+            mean(a::AbstractArray; dims=nothing) = dims===nothing ? Base.mean(a) : Base.mean(a, dims)
+            median(a::AbstractArray; dims=nothing) = dims===nothing ? Base.median(a) : Base.median(a, dims)
+            var(a::AbstractArray; dims=nothing, kwargs...) =
+                dims===nothing ? Base.var(a; kwargs...) : Base.var(a, dims; kwargs...)
+            std(a::AbstractArray; dims=nothing, kwargs...) =
+                dims===nothing ? Base.std(a; kwargs...) : Base.std(a, dims; kwargs...)
+        end
+        export cor, cov, std, stdm, var, varm, mean!, mean, median!, median, middle, quantile!, quantile
+    end
+else
+    import Statistics
+end
+
 @static if VERSION < v"0.7.0-DEV.4592"
     struct Fix2{F,T} <: Function
         f::F
@@ -1728,7 +1759,10 @@ if VERSION < v"0.7.0-DEV.4585"
 end
 
 if VERSION < v"0.7.0-DEV.4064"
-    for f in (:mean, :cumsum, :cumprod, :sum, :prod, :maximum, :minimum, :all, :any, :median)
+    for f in (:mean, :median, :var, :varm, :std, :cov, :cor)
+        @eval import .Statistics: $f # compatibility with old Compat versions
+    end
+    for f in (:cumsum, :cumprod, :sum, :prod, :maximum, :minimum, :all, :any)
         @eval begin
             $f(a::AbstractArray; dims=nothing) =
                 dims===nothing ? Base.$f(a) : Base.$f(a, dims)
@@ -1751,35 +1785,14 @@ if VERSION < v"0.7.0-DEV.4064"
             end
         end
     end
-    # TODO add deprecation warning to switch to StatsBase to var and std
-    for f in (:var, :std, :sort)
-        @eval begin
-            $f(a::AbstractArray; dims=nothing, kwargs...) =
-                dims===nothing ? Base.$f(a; kwargs...) : Base.$f(a, dims; kwargs...)
-        end
-    end
+    @eval sort(a::AbstractArray; dims=nothing, kwargs...) =
+        dims===nothing ? Base.sort(a; kwargs...) : Base.sort(a, dims; kwargs...)
     for f in (:cumsum!, :cumprod!)
         @eval $f(out, a; dims=nothing) =
             dims===nothing ? Base.$f(out, a) : Base.$f(out, a, dims)
     end
 end
 if VERSION < v"0.7.0-DEV.4064"
-    # TODO add deprecation warning to switch to StatsBase to varm, cov, and cor
-    varm(A::AbstractArray, m; dims=nothing, kwargs...) =
-        dims===nothing ? Base.varm(A, m; kwargs...) : Base.varm(A, m, dims; kwargs...)
-    if VERSION < v"0.7.0-DEV.755"
-        cov(a::AbstractMatrix; dims=1, corrected=true) = Base.cov(a, dims, corrected)
-        cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=1, corrected=true) =
-            Base.cov(a, b, dims, corrected)
-    else
-        cov(a::AbstractMatrix; dims=nothing, kwargs...) =
-            dims===nothing ? Base.cov(a; kwargs...) : Base.cov(a, dims; kwargs...)
-        cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing, kwargs...) =
-            dims===nothing ? Base.cov(a, b; kwargs...) : Base.cov(a, b, dims; kwargs...)
-    end
-    cor(a::AbstractMatrix; dims=nothing) = dims===nothing ? Base.cor(a) : Base.cor(a, dims)
-    cor(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing) =
-        dims===nothing ? Base.cor(a, b) : Base.cor(a, b, dims)
     mapreduce(f, op, a::AbstractArray; dims=nothing, init=nothing) =
         init === nothing ? (dims===nothing ? Base.mapreduce(f, op, a) : Base.mapreducedim(f, op, a, dims)) :
                            (dims===nothing ? Base.mapreduce(f, op, init, a) : Base.mapreducedim(f, op, a, dims, init))

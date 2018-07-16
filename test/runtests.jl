@@ -1502,9 +1502,9 @@ end
 # the wrong result between 0.7.0-DEV.3262 and 0.7.0-DEV.4646
 # see https://github.com/JuliaLang/julia/issues/26488
 Issue26488 = VERSION < v"0.7.0-DEV.3262" || VERSION >= v"0.7.0-DEV.4646"
-@test Compat.mean([1 2; 3 4]) == 2.5
-@test Compat.mean([1 2; 3 4], dims=1) == [2 3]
-@test Compat.mean([1 2; 3 4], dims=2) == hcat([1.5; 3.5])
+@test Compat.Statistics.mean([1 2; 3 4]) == 2.5
+@test Compat.Statistics.mean([1 2; 3 4], dims=1) == [2 3]
+@test Compat.Statistics.mean([1 2; 3 4], dims=2) == hcat([1.5; 3.5])
 @test Compat.cumsum([1 2; 3 4], dims=1) == [1 2; 4 6]
 @test Compat.cumsum([1 2; 3 4], dims=2) == [1 3; 3 7]
 @test Compat.cumprod([1 2; 3 4], dims=1) == [1 2; 3 8]
@@ -1559,40 +1559,40 @@ Issue26488 && @test Compat.prod(x -> x+1, [1 2; 3 4], dims=2) == hcat([6; 20])
 if VERSION  < v"0.7.0-DEV.5238"
     # Test these functions if their counterparts are defined in Base. In the future, this
     # will be dealt with in StatsBase
-    @test Compat.varm([1 2; 3 4], -1) == 18
-    @test Compat.varm([1 2; 3 4], [-1 -2], dims=1) == [20 52]
-    @test Compat.varm([1 2; 3 4], [-1, -2], dims=2) == hcat([13, 61])
-    @test Compat.var([1 2; 3 4]) == 5/3
-    @test Compat.var([1 2; 3 4], dims=1) == [2 2]
-    @test Compat.var([1 2; 3 4], dims=2) == hcat([0.5, 0.5])
-    @test Compat.var([1 2; 3 4], corrected=false) == 1.25
-    @test Compat.var([1 2; 3 4], corrected=false, dims=1) == [1 1]
-    @test Compat.var([1 2; 3 4], corrected=false, dims=2) == hcat([0.25, 0.25])
-    @test Compat.std([1 2; 3 4]) == sqrt(5/3)
-    @test Compat.std([1 2; 3 4], dims=1) == [sqrt(2) sqrt(2)]
-    @test Compat.std([1 2; 3 4], dims=2) == hcat([sqrt(0.5), sqrt(0.5)])
-    @test Compat.std([1 2; 3 4], corrected=false) == sqrt(1.25)
-    @test Compat.std([1 2; 3 4], corrected=false, dims=1) == [sqrt(1) sqrt(1)]
-    @test Compat.std([1 2; 3 4], corrected=false, dims=2) == hcat([sqrt(0.25), sqrt(0.25)])
-    @test Compat.cov([1 2; 3 4]) == [2 2; 2 2]
-    @test Compat.cov([1 2; 3 4], dims=1) == [2 2; 2 2]
-    @test Compat.cov([1 2; 3 4], dims=2) == [0.5 0.5; 0.5 0.5]
-    @test Compat.cov([1 2; 3 4], [4; 5]) == hcat([1; 1])
-    @test Compat.cov([1 2; 3 4], [4; 5], dims=1) == hcat([1; 1])
-    @test Compat.cov([1 2; 3 4], [4; 5], dims=2) == hcat([0.5; 0.5])
-    @test Compat.cov([1 2; 3 4], [4; 5], corrected=false) == hcat([0.5; 0.5])
-    @test Compat.cov([1 2; 3 4], [4; 5], corrected=false, dims=1) == hcat([0.5; 0.5])
-    @test Compat.cov([1 2; 3 4], [4; 5], corrected=false, dims=2) == hcat([0.25; 0.25])
-    @test Compat.cor([1 2; 3 4]) ≈ [1 1; 1 1]
-    @test Compat.cor([1 2; 3 4], dims=1) ≈ [1 1; 1 1]
-    @test Compat.cor([1 2; 3 4], dims=2) ≈ [1 1; 1 1]
-    @test Compat.cor([1 2; 3 4], [4; 5]) ≈ [1; 1]
-    @test Compat.cor([1 2; 3 4], [4; 5], dims=1) ≈ [1; 1]
-    @test Compat.cor([1 2; 3 4], [4; 5], dims=2) ≈ [1; 1]
+    @test Compat.Statistics.varm([1 2; 3 4], -1) == 18
+    @test Compat.Statistics.varm([1 2; 3 4], [-1 -2], dims=1) == [20 52]
+    @test Compat.Statistics.varm([1 2; 3 4], [-1, -2], dims=2) == hcat([13, 61])
+    @test Compat.Statistics.var([1 2; 3 4]) == 5/3
+    @test Compat.Statistics.var([1 2; 3 4], dims=1) == [2 2]
+    @test Compat.Statistics.var([1 2; 3 4], dims=2) == hcat([0.5, 0.5])
+    @test Compat.Statistics.var([1 2; 3 4], corrected=false) == 1.25
+    @test Compat.Statistics.var([1 2; 3 4], corrected=false, dims=1) == [1 1]
+    @test Compat.Statistics.var([1 2; 3 4], corrected=false, dims=2) == hcat([0.25, 0.25])
+    @test Compat.Statistics.std([1 2; 3 4]) == sqrt(5/3)
+    @test Compat.Statistics.std([1 2; 3 4], dims=1) == [sqrt(2) sqrt(2)]
+    @test Compat.Statistics.std([1 2; 3 4], dims=2) == hcat([sqrt(0.5), sqrt(0.5)])
+    @test Compat.Statistics.std([1 2; 3 4], corrected=false) == sqrt(1.25)
+    @test Compat.Statistics.std([1 2; 3 4], corrected=false, dims=1) == [sqrt(1) sqrt(1)]
+    @test Compat.Statistics.std([1 2; 3 4], corrected=false, dims=2) == hcat([sqrt(0.25), sqrt(0.25)])
+    @test Compat.Statistics.cov([1 2; 3 4]) == [2 2; 2 2]
+    @test Compat.Statistics.cov([1 2; 3 4], dims=1) == [2 2; 2 2]
+    @test Compat.Statistics.cov([1 2; 3 4], dims=2) == [0.5 0.5; 0.5 0.5]
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5]) == hcat([1; 1])
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5], dims=1) == hcat([1; 1])
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5], dims=2) == hcat([0.5; 0.5])
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5], corrected=false) == hcat([0.5; 0.5])
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5], corrected=false, dims=1) == hcat([0.5; 0.5])
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5], corrected=false, dims=2) == hcat([0.25; 0.25])
+    @test Compat.Statistics.cor([1 2; 3 4]) ≈ [1 1; 1 1]
+    @test Compat.Statistics.cor([1 2; 3 4], dims=1) ≈ [1 1; 1 1]
+    @test Compat.Statistics.cor([1 2; 3 4], dims=2) ≈ [1 1; 1 1]
+    @test Compat.Statistics.cor([1 2; 3 4], [4; 5]) ≈ [1; 1]
+    @test Compat.Statistics.cor([1 2; 3 4], [4; 5], dims=1) ≈ [1; 1]
+    @test Compat.Statistics.cor([1 2; 3 4], [4; 5], dims=2) ≈ [1; 1]
 end
-@test Compat.median([1 2; 3 4]) == 2.5
-@test Compat.median([1 2; 3 4], dims=1) == [2 3]
-@test Compat.median([1 2; 3 4], dims=2) == hcat([1.5; 3.5])
+@test Compat.Statistics.median([1 2; 3 4]) == 2.5
+@test Compat.Statistics.median([1 2; 3 4], dims=1) == [2 3]
+@test Compat.Statistics.median([1 2; 3 4], dims=2) == hcat([1.5; 3.5])
 @test Compat.mapreduce(string, *, [1 2; 3 4]) == "1324"
 Issue26488 && @test Compat.mapreduce(string, *, [1 2; 3 4], dims=1) == ["13" "24"]
 Issue26488 && @test Compat.mapreduce(string, *, [1 2; 3 4], dims=2) == hcat(["12", "34"])
