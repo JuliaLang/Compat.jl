@@ -139,6 +139,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `using Compat.Sockets` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25935])
 
+* `using Compat.Statistics` is provided on versions older than 0.7, where this library is
+  not yet part of the standard library ([#27834]).
+
 ## New functions, macros, and methods
 
 * `@views` takes an expression and converts all slices to views ([#20164]), while
@@ -217,10 +220,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Base.rtoldefault` how takes a third parameter `atol`.
   The two argument form is deprecated in favor of the three arguments form with `atol=0`.
 
-* The `corrected` optional argument of `cov` becomes a keyword argument.
-  Due to conflict with 0.5 deprecation,
-  `cov(::AbstractVector; corrected=)` and `cov(::AbstractVector, ::AbstractVector; corrected=)`
-  are only available on 0.6. ([#21709])
+* The `corrected` optional argument of `cov` becomes a keyword argument of `Compat.Statistics.cov` ([#21709]).
 
 * `isequal`, `==` and `in` have one argument "curried" forms. For example `isequal(x)`
   returns a function that compares its arguments to `x` using `isequal` ([#26436]).
@@ -282,9 +282,11 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.accumulate`, `Compat.accumulate!`, `Compat.all`, `Compat.any`,
   `Compat.cumprod`, `Compat.cumprod!`, `Compat.cumsum`, `Compat.cumsum!`,
-  `Compat.findmax`, `Compat.findmin`, `Compat.mapreduce`, `Compat.maximum`, `Compat.mean`,
-  `Compat.median`, `Compat.minimum`, `Compat.prod`, `Compat.reduce`, `Compat.sort`,
+  `Compat.findmax`, `Compat.findmin`, `Compat.mapreduce`, `Compat.maximum`, `Compat.Statistics.mean`,
+  `Compat.Statistics.median`, `Compat.minimum`, `Compat.prod`, `Compat.reduce`, `Compat.sort`,
   and `Compat.sum`  with `dims` keyword argument ([#25989],[#26369]).
+
+* `Compat.mapreduce` and `Compat.reduce` with `init` keyword argument ([#27711]).
 
 * `selectdim` to obtain a view of an array with a specified index for a specified dimension ([#26009]).
 
@@ -305,6 +307,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `something` to get the first argument different from `nothing`, unwrapping those
   of the `Some` type ([#27258]).
+
+* `mapslices` with `dims` keyword argument ([#27828]).
 
 ## Renaming
 
@@ -658,3 +662,6 @@ includes this fix. Find the minimum version from there.
 [#27258]: https://github.com/JuliaLang/julia/issues/27258
 [#27298]: https://github.com/JuliaLang/julia/issues/27298
 [#27401]: https://github.com/JuliaLang/julia/issues/27401
+[#27711]: https://github.com/JuliaLang/julia/issues/27711
+[#27828]: https://github.com/JuliaLang/julia/issues/27828
+[#27834]: https://github.com/JuliaLang/julia/issues/27834
