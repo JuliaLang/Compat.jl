@@ -25,12 +25,30 @@ else
     new_style_typealias(ex) = false
 end
 
+if !isdefined(Base, :UndefKeywordError)
+    struct UndefKeywordError <: Exception
+        kw
+    end
+    Base.showerror(io::IO, e::UndefKeywordError) = print(io, "UndefKeywordError: keyword argument $(e.kw) not assigned")
+    export UndefKeywordError
+end
+
+"Convert a functions symbol argument to the corresponding required keyword argument."
+function symbol2kw(sym::Symbol)
+    Expr(:kw, sym, Expr(:call, throw, UndefKeywordError(sym)))
+end
+symbol2kw(arg) = arg
+
 function _compat(ex::Expr)
     if ex.head === :call
         f = ex.args[1]
         if VERSION < v"0.6.0-dev.826" && length(ex.args) == 3 && # julia#18510
                 istopsymbol(withincurly(ex.args[1]), :Base, :Nullable)
             ex = Expr(:call, f, ex.args[2], Expr(:call, :(Compat._Nullable_field2), ex.args[3]))
+        end
+        if !isdefined(Base, :UndefKeywordError) && length(ex.args) > 1 && isexpr(ex.args[2], :parameters)
+            params = ex.args[2]
+            params.args = map(symbol2kw, params.args)
         end
     elseif ex.head === :curly
         f = ex.args[1]

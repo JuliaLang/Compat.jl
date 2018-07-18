@@ -79,6 +79,8 @@ Currently, the `@compat` macro supports the following syntaxes:
   `foo(::CartesianRange{CartesianIndex{N}})` ([#20974]). Note that
   `CartesianRange` now has two type parameters, so using them as
   fields in other `struct`s requires manual intervention.
+  
+* Required keyword arguments ([#25830]). For example, `@compat foo(; x, y)` makes `x` and `y` required keyword arguments: when calling `foo`, an error is thrown if `x` or `y` is not explicitly provided.
 
 ## Module Aliases
 
@@ -633,6 +635,7 @@ includes this fix. Find the minimum version from there.
 [#25780]: https://github.com/JuliaLang/julia/issues/25780
 [#25812]: https://github.com/JuliaLang/julia/issues/25812
 [#25819]: https://github.com/JuliaLang/julia/issues/25819
+[#25830]: https://github.com/JuliaLang/julia/issues/25830
 [#25873]: https://github.com/JuliaLang/julia/issues/25873
 [#25896]: https://github.com/JuliaLang/julia/issues/25896
 [#25935]: https://github.com/JuliaLang/julia/issues/25935
