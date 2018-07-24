@@ -6,7 +6,7 @@ module Compat
 if VERSION < v"0.7.0-DEV.4442"
     @eval module Sockets
         import Base:
-            @ip_str, IPAddr, IPv4, IPv6, UDPSocket, TCPSocket,
+            @ip_str, IPAddr, IPv4, IPv6, UDPSocket, TCPSocket, DNSError,
             accept, connect, getaddrinfo, getipaddr, getsockname, listen,
             listenany, recv, recvfrom, send, bind
 
