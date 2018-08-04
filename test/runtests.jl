@@ -1926,4 +1926,10 @@ let a = rand(5,5)
     end
 end
 
+# 0.7.0-beta2.171
+Random.seed!(1)
+rng = MersenneTwister(0)
+Random.seed!(rng, 1)
+@test rand(rng) ≈ 0.23603334566204692
+
 nothing

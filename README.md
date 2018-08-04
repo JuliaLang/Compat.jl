@@ -79,7 +79,7 @@ Currently, the `@compat` macro supports the following syntaxes:
   `foo(::CartesianRange{CartesianIndex{N}})` ([#20974]). Note that
   `CartesianRange` now has two type parameters, so using them as
   fields in other `struct`s requires manual intervention.
-  
+
 * Required keyword arguments ([#25830]). For example, `@compat foo(; x, y)` makes `x` and `y` required keyword arguments: when calling `foo`, an error is thrown if `x` or `y` is not explicitly provided.
 
 ## Module Aliases
@@ -432,6 +432,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `atan2` is now a 2-argument method of `atan` ([#27253]).
 
+* `srand` is now `Compat.Random.seed!` ([#28295])
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])
@@ -668,3 +670,4 @@ includes this fix. Find the minimum version from there.
 [#27711]: https://github.com/JuliaLang/julia/issues/27711
 [#27828]: https://github.com/JuliaLang/julia/issues/27828
 [#27834]: https://github.com/JuliaLang/julia/issues/27834
+[#28295]: https://github.com/JuliaLang/julia/issues/28295

@@ -821,8 +821,21 @@ else
     import SparseArrays
 end
 
-if VERSION < v"0.7.0-DEV.3406"
-    const Random = Base.Random
+if VERSION < v"0.7.0-beta2.171"
+    @eval module Random
+        if VERSION < v"0.7.0-DEV.3406"
+            using Base.Random
+        else
+            using Random
+        end
+
+        const seed! = srand
+
+        export AbstractRNG, GLOBAL_RNG, MersenneTwister, Random, RandomDevice,
+               bitrand, rand, rand!, randcycle, randexp, randexp!, randjump,
+               randn, randn!, randperm, randstring, randsubseq, randsubseq!,
+               shuffle, shuffle!, srand,
+    end
 else
     import Random
 end
