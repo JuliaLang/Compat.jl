@@ -834,7 +834,7 @@ if VERSION < v"0.7.0-beta2.171"
         export AbstractRNG, GLOBAL_RNG, MersenneTwister, Random, RandomDevice,
                bitrand, rand, rand!, randcycle, randexp, randexp!, randjump,
                randn, randn!, randperm, randstring, randsubseq, randsubseq!,
-               shuffle, shuffle!, srand,
+               shuffle, shuffle!, srand
     end
 else
     import Random
