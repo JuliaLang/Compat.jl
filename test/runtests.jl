@@ -1254,7 +1254,9 @@ module TestSerialization
     @test isdefined(@__MODULE__, :Serialization)
     @test isdefined(@__MODULE__, :serialize)
     @test isdefined(@__MODULE__, :deserialize)
-    @test isdefined(@__MODULE__, :SerializationState)
+    if VERSION < v"1.0.0-DEV.44"
+        @test isdefined(@__MODULE__, :SerializationState)
+    end
 end
 
 module TestPkg
@@ -1642,11 +1644,13 @@ end
 @test length(Compat.CartesianIndices((1:2, -1:1))) == 6
 
 # 0.7.0-DEV.4738
-@test squeeze([1 2], dims=1) == [1, 2]
-@test_throws ArgumentError squeeze([1 2], dims=2)
-@test_throws ArgumentError squeeze(hcat([1, 2]), dims=1)
-@test squeeze(hcat([1, 2]), dims=2) == [1, 2]
-@test_throws Exception squeeze([1,2])
+if VERSION < v"0.7.0-beta2.143"
+    @test squeeze([1 2], dims=1) == [1, 2]
+    @test_throws ArgumentError squeeze([1 2], dims=2)
+    @test_throws ArgumentError squeeze(hcat([1, 2]), dims=1)
+    @test squeeze(hcat([1, 2]), dims=2) == [1, 2]
+    @test_throws Exception squeeze([1,2])
+end
 
 # 0.7.0-DEV.3976
 let A = rand(5,5)
