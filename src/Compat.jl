@@ -821,23 +821,37 @@ else
     import SparseArrays
 end
 
-if VERSION < v"0.7.0-beta2.171"
+
+# v"0.7.0-beta.234" introduced Random.gentype (formerly Base.eltype)
+# v"0.7.0-beta2.171" deprecated Random.srand in favor of Random.seed! (unexported)
+# v"0.7.0-DEV.3406" moved Base.Random to stdlib Random
+if VERSION >= v"0.7.0-beta.234"
+    import Random
+else
+    const random_fields = [
+        :AbstractRNG, :MersenneTwister, :RandomDevice, :bitrand, :rand, :rand!,
+        :randcycle, :randexp, :randexp!, :randjump, :randn!,
+        :randperm, :randstring, :randsubseq, :randsubseq!, :shuffle,
+        :shuffle!
+    ]
     @eval module Random
         if VERSION < v"0.7.0-DEV.3406"
-            using Base.Random
+            $((:(using Base.Random: $f) for f in random_fields)...)
+            const seed! = Base.Random.srand
         else
-            using Random
+            $((:(using Random: $f) for f in random_fields)...)
+            import Random
+            if VERSION < v"0.7.0-beta2.171"
+                const seed! = Random.srand
+            else
+                using Random: seed!
+            end
         end
 
-        const seed! = srand
+        gentype(args...) = eltype(args...)
 
-        export AbstractRNG, GLOBAL_RNG, MersenneTwister, Random, RandomDevice,
-               bitrand, rand, rand!, randcycle, randexp, randexp!, randjump,
-               randn, randn!, randperm, randstring, randsubseq, randsubseq!,
-               shuffle, shuffle!, srand
+        export $(random_fields...)
     end
-else
-    import Random
 end
 
 if VERSION < v"0.7.0-DEV.3589"
@@ -1609,7 +1623,11 @@ if VERSION >= v"0.7.0-DEV.3666"
     import UUIDs
 else
     @eval module UUIDs
-        import ..Random: uuid1, uuid4, uuid_version, UUID
+        if VERSION < v"0.7.0-DEV.3406"
+            import Base.Random: uuid1, uuid4, uuid_version, UUID
+        else
+            import Random: uuid1, uuid4, uuid_version, UUID
+        end
         export uuid1, uuid4, uuid_version, UUID
     end
 end
