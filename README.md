@@ -432,6 +432,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `atan2` is now a 2-argument method of `atan` ([#27253]).
 
+* `realmin` and `realmax` are now `floatmin` and `floatmax` ([#28302])
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])
@@ -668,3 +670,4 @@ includes this fix. Find the minimum version from there.
 [#27711]: https://github.com/JuliaLang/julia/issues/27711
 [#27828]: https://github.com/JuliaLang/julia/issues/27828
 [#27834]: https://github.com/JuliaLang/julia/issues/27834
+[#28302]: https://github.com/JuliaLang/julia/issues/28302

@@ -1930,4 +1930,9 @@ let a = rand(5,5)
     end
 end
 
+# 0.7.0-beta2.169
+@test floatmin(Float16) == @eval $(Core.Intrinsics.bitcast(Float16, 0x0400))
+@test floatmax(Float32) == @eval $(Core.Intrinsics.bitcast(Float32, 0x7f7fffff))
+@test floatmin(zero(Float64)) == floatmin(Float64)
+
 nothing
