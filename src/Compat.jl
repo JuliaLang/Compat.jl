@@ -1830,6 +1830,9 @@ end
 if VERSION < v"0.7.0-DEV.4738"
     Base.squeeze(A; dims=error("squeeze: keyword argument dims not assigned")) = squeeze(A, dims)
 end
+if VERSION < v"0.7.0-DEV.5165" # julia#27163
+    cat(X...; dims = throw(UndefKeywordError("cat: keyword argument dims not assigned"))) = Base.cat(dims, X...)
+end
 
 if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
     export selectdim
