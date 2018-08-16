@@ -2004,6 +2004,13 @@ if VERSION < v"0.7.0-beta.73"
         mapslices(f, A, dims)
 end
 
+# https://github.com/JuliaLang/julia/pull/28302
+if VERSION < v"0.7.0-beta2.169"
+    const floatmin = realmin
+    const floatmax = realmax
+    export floatmin, floatmax
+end
+
 include("deprecated.jl")
 
 end # module Compat
