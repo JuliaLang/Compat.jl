@@ -2011,6 +2011,11 @@ if VERSION < v"0.7.0-beta2.169"
     export floatmin, floatmax
 end
 
+# https://github.com/JuliaLang/julia/pull/28303
+if VERSION < v"0.7.0-beta2.143"
+    dropdims(X; dims = throw(UndefKeywordError("dropdims: keyword argument dims not assigned"))) = squeeze(X, dims)
+end
+
 include("deprecated.jl")
 
 end # module Compat

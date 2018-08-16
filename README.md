@@ -434,6 +434,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `realmin` and `realmax` are now `floatmin` and `floatmax` ([#28302])
 
+* `squeeze` is now `dropdims` ([#28303]).
+
 ## New macros
 
 * `@__DIR__` has been added ([#18380])
@@ -671,3 +673,4 @@ includes this fix. Find the minimum version from there.
 [#27828]: https://github.com/JuliaLang/julia/issues/27828
 [#27834]: https://github.com/JuliaLang/julia/issues/27834
 [#28302]: https://github.com/JuliaLang/julia/issues/28302
+[#28303]: https://github.com/JuliaLang/julia/issues/28303

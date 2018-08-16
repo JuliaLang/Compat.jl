@@ -1935,4 +1935,12 @@ end
 @test floatmax(Float32) == @eval $(Core.Intrinsics.bitcast(Float32, 0x7f7fffff))
 @test floatmin(zero(Float64)) == floatmin(Float64)
 
+# 0.7.0-beta2.143
+if VERSION < v"0.7.0-beta2.143"
+    let a = reshape(Vector(1:4),(2,2,1,1)), b = reshape(Vector(1:4), (2,2,1))
+        @test Compat.dropdims(a; dims=3) == b
+        @test_throws UndefKeywordError Compat.dropdims(a)
+    end
+end
+
 nothing
