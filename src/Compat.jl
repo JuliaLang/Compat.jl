@@ -2013,7 +2013,20 @@ end
 
 # https://github.com/JuliaLang/julia/pull/28303
 if VERSION < v"0.7.0-beta2.143"
-    dropdims(X; dims = throw(UndefKeywordError("dropdims: keyword argument dims not assigned"))) = squeeze(X, dims)
+    # https://github.com/JuliaLang/julia/pull/26660
+    if VERSION >= v"0.7.0-DEV.4738"
+        dropdims(
+            X;
+            dims = throw(
+                UndefKeywordError("dropdims: keyword argument dims not assigned"))
+        ) = squeeze(X, dims = dims)
+    else
+        dropdims(
+            X;
+            dims = throw(
+                UndefKeywordError("dropdims: keyword argument dims not assigned"))
+        ) = squeeze(X, dims)
+    end
 end
 
 include("deprecated.jl")

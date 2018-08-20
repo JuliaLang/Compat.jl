@@ -292,8 +292,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `selectdim` to obtain a view of an array with a specified index for a specified dimension ([#26009]).
 
-* `squeeze` with `dims` as keyword argument ([#26660]).
-
 * Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
 
 * `fetch` for `Task`s ([#25940]).
@@ -434,7 +432,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `realmin` and `realmax` are now `floatmin` and `floatmax` ([#28302])
 
-* `squeeze` is now `dropdims` ([#28303]).
+* `squeeze` is now `dropdims` ([#28303], [#26660]).
 
 ## New macros
 
