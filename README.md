@@ -294,7 +294,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `squeeze` with `dims` as keyword argument ([#26660]).
 
-* `cat` with `dims` as keyword argument ([#27163])
+* `Compat.cat` with `dims` as keyword argument ([#27163])
 
 * Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
 
