@@ -2007,6 +2007,32 @@ if VERSION < v"0.7.0-beta.73"
         mapslices(f, A, dims)
 end
 
+# https://github.com/JuliaLang/julia/pull/28302
+if VERSION < v"0.7.0-beta2.169"
+    const floatmin = realmin
+    const floatmax = realmax
+    export floatmin, floatmax
+end
+
+# https://github.com/JuliaLang/julia/pull/28303
+if VERSION < v"0.7.0-beta2.143"
+    export dropdims
+    # https://github.com/JuliaLang/julia/pull/26660
+    if VERSION >= v"0.7.0-DEV.4738"
+        dropdims(
+            X;
+            dims = throw(
+                UndefKeywordError("dropdims: keyword argument dims not assigned"))
+        ) = squeeze(X, dims = dims)
+    else
+        dropdims(
+            X;
+            dims = throw(
+                UndefKeywordError("dropdims: keyword argument dims not assigned"))
+        ) = squeeze(X, dims)
+    end
+end
+
 include("deprecated.jl")
 
 end # module Compat
