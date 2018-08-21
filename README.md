@@ -292,8 +292,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `selectdim` to obtain a view of an array with a specified index for a specified dimension ([#26009]).
 
-* `squeeze` with `dims` as keyword argument ([#26660]).
-
 * Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
 
 * `fetch` for `Task`s ([#25940]).
@@ -433,6 +431,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `atan2` is now a 2-argument method of `atan` ([#27253]).
 
 * `realmin` and `realmax` are now `floatmin` and `floatmax` ([#28302])
+
+* `squeeze` is now `dropdims` ([#28303], [#26660]).
 
 ## New macros
 
@@ -671,3 +671,4 @@ includes this fix. Find the minimum version from there.
 [#27828]: https://github.com/JuliaLang/julia/issues/27828
 [#27834]: https://github.com/JuliaLang/julia/issues/27834
 [#28302]: https://github.com/JuliaLang/julia/issues/28302
+[#28303]: https://github.com/JuliaLang/julia/issues/28303
