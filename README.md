@@ -292,6 +292,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `selectdim` to obtain a view of an array with a specified index for a specified dimension ([#26009]).
 
+* `Compat.cat` with `dims` as keyword argument ([#27163])
+
 * Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
 
 * `fetch` for `Task`s ([#25940]).
@@ -663,6 +665,7 @@ includes this fix. Find the minimum version from there.
 [#26670]: https://github.com/JuliaLang/julia/issues/26670
 [#26850]: https://github.com/JuliaLang/julia/issues/26850
 [#27077]: https://github.com/JuliaLang/julia/issues/27077
+[#27163]: https://github.com/JuliaLang/julia/issues/27163
 [#27253]: https://github.com/JuliaLang/julia/issues/27253
 [#27258]: https://github.com/JuliaLang/julia/issues/27258
 [#27298]: https://github.com/JuliaLang/julia/issues/27298

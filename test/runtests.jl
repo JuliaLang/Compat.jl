@@ -1652,6 +1652,13 @@ if VERSION < v"0.7.0-beta2.143"
     @test_throws Exception squeeze([1,2])
 end
 
+# 0.7.0-DEV.5165
+@test Compat.cat([1, 2], [3, 4, 5], dims = 1) == [1, 2, 3, 4, 5]
+@test Compat.cat([1, 2], [3, 4], dims = 2) == [1 3; 2 4]
+if VERSION < v"0.7.0-DEV.5165"
+    @test_throws UndefKeywordError Compat.cat([1, 2], [3, 4])
+end
+
 # 0.7.0-DEV.3976
 let A = rand(5,5)
     @test selectdim(A, 1, 3) == A[3, :]
