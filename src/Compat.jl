@@ -1606,10 +1606,10 @@ end
 
 # https://github.com/JuliaLang/julia/pull/26670
 @static if VERSION < v"0.7.0-DEV.4062"
-    trunc(x; digits = digits, base = base) = Base.trunc(x, digits, base)
-    floor(x; digits = digits, base = base) = Base.floor(x, digits, base)
-    ceil(x; digits = digits, base = base) = Base.ceil(x, digits, base)
-    function round(x; digits = nothing, sigdigits = nothing, base = base)
+    trunc(x; digits = 0, base = 10) = Base.trunc(x, digits, base)
+    floor(x; digits = 0, base = 10) = Base.floor(x, digits, base)
+    ceil(x; digits = 0, base = 10) = Base.ceil(x, digits, base)
+    function round(x; digits = nothing, sigdigits = nothing, base = 10)
         if digits === nothing
             if sigdigits === nothing
                 Base.round(x, 0, base)
@@ -1622,10 +1622,10 @@ end
         end
     end
 elseif VERSION < v"0.7.0-DEV.4804"
-    trunc(x; digits = digits, base = base) = Base.trunc(x, digits, base = base)
-    floor(x; digits = digits, base = base) = Base.floor(x, digits, base = base)
-    ceil(x; digits = digits, base = base) = Base.ceil(x, digits, base = base)
-    function round(x; digits = nothing, sigdigits = nothing, base = base)
+    trunc(x; digits = 0, base = 10) = Base.trunc(x, digits, base = base)
+    floor(x; digits = 0, base = 10) = Base.floor(x, digits, base = base)
+    ceil(x; digits = 0, base = 10) = Base.ceil(x, digits, base = base)
+    function round(x; digits = nothing, sigdigits = nothing, base = 10)
         if digits === nothing
             if sigdigits === nothing
                 Base.round(x, 0, base = base)
@@ -1637,19 +1637,31 @@ elseif VERSION < v"0.7.0-DEV.4804"
             Base.round(x, digits, base = base)
         end
     end
+elseif VERSION < v"0.7.0-beta2.86"
+    # https://github.com/JuliaLang/julia/pull/28199
+    trunc(x; digits = 0, base = 10) = Base.trunc(x, digits = digits, base = base)
+    floor(x; digits = 0, base = 10) = Base.floor(x, digits = digits, base = base)
+    ceil(x; digits = 0, base = 10) = Base.ceil(x, digits = digits, base = base)
+    function round(x; digits = nothing, sigdigits = nothing, base = 10)
+        if digits === nothing && sigdigits === nothing
+            Base.round(x, digits = 0, base = base)
+        else
+            Base.round(x, digits = digits, sigdigits = sigdigits, base = base)
+        end
+    end
 else
-    trunc(x; digits = digits, base = base) = Base.trunc(x, digits = digits, base = base)
-    floor(x; digits = digits, base = base) = Base.floor(x, digits = digits, base = base)
-    ceil(x; digits = digits, base = base) = Base.ceil(x, digits = digits, base = base)
-    round(x; digits = nothing, sigdigits = nothing, base = base) = Base.round(x, digits = digits, sigdigits = sigdigits, base = base)
+    trunc(x; digits = 0, base = 10) = Base.trunc(x, digits = digits, base = base)
+    floor(x; digits = 0, base = 10) = Base.floor(x, digits = digits, base = base)
+    ceil(x; digits = 0, base = 10) = Base.ceil(x, digits = digits, base = base)
+    round(x; digits = nothing, sigdigits = nothing, base = 10) = Base.round(x, digits = digits, sigdigits = sigdigits, base = base)
 end
 
 # compatibiltiy with https://github.com/JuliaLang/julia/pull/26156
-trunc(x, digits; base = base) = trunc(x, digits = digits, base = base)
-floor(x, digits; base = base) = floor(x, digits = digits, base = base)
-ceil(x, digits; base = base) = ceil(x, digits = digits, base = base)
-round(x, digits; base = base) = round(x, digits = digits, base = base)
-signif(x, digits; base = base) = round(x, sigdigits = digits, base = base)
+trunc(x, digits; base = 10) = trunc(x, digits = digits, base = base)
+floor(x, digits; base = 10) = floor(x, digits = digits, base = base)
+ceil(x, digits; base = 10) = ceil(x, digits = digits, base = base)
+round(x, digits; base = 10) = round(x, digits = digits, base = base)
+signif(x, digits; base = 10) = round(x, sigdigits = digits, base = base)
 
 # https://github.com/JuliaLang/julia/pull/25872
 if VERSION < v"0.7.0-DEV.3734"
