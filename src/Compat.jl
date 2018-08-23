@@ -1400,9 +1400,11 @@ end
         argmin(x::AbstractArray) = CartesianIndex(ind2sub(x, indmin(x)))
         argmin(x::AbstractVector) = indmin(x)
         argmin(x::Associative) = first(Iterators.drop(keys(x), indmin(values(x))-1))
+        argmin(x::Tuple) = indmin(x)
         argmax(x::AbstractArray) = CartesianIndex(ind2sub(x, indmax(x)))
         argmax(x::AbstractVector) = indmax(x)
         argmax(x::Associative) = first(Iterators.drop(keys(x), indmax(values(x))-1))
+        argmax(x::Tuple) = indmax(x)
     end
     export argmin, argmax
 end
