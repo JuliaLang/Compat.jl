@@ -49,8 +49,6 @@ Please check the list below for the specific syntax you need.
 
 Currently, the `@compat` macro supports the following syntaxes:
 
-* `Compat.collect(A)` returns an `Array`, no matter what indices the array `A` has. [#21257]
-
 * `@compat foo(::CartesianRange{N})` to replace the former
   `foo(::CartesianRange{CartesianIndex{N}})` ([#20974]). Note that
   `CartesianRange` now has two type parameters, so using them as
@@ -524,7 +522,6 @@ includes this fix. Find the minimum version from there.
 [#20407]: https://github.com/JuliaLang/julia/issues/20407
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
-[#21257]: https://github.com/JuliaLang/julia/issues/21257
 [#21346]: https://github.com/JuliaLang/julia/issues/21346
 [#21709]: https://github.com/JuliaLang/julia/issues/21709
 [#22064]: https://github.com/JuliaLang/julia/issues/22064

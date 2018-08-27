@@ -508,18 +508,6 @@ using Compat: StringVector
 @test length(StringVector(5)) == 5
 @test String(fill!(StringVector(5), 0x61)) == "aaaaa"
 
-# collect
-if VERSION < v"0.7.0-"
-    # Note: This is disabled on 0.7, since the Compat.collect functionality is only
-    # applicable on 0.5, and OffsetArrays currently has some incompatibilities with
-    # 0.7. This can be reenabled later if needed.
-    using OffsetArrays
-    a = OffsetArray(1:3, -1:1)
-    b = Compat.collect(a)
-    @test indices(b) === (Base.OneTo(3),)
-    @test b == [1,2,3]
-end
-
 # PR 22064
 module Test22064
 using Compat

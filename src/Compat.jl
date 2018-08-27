@@ -326,20 +326,6 @@ else
     end
 end
 
-# https://github.com/JuliaLang/julia/pull/21257
-@static if VERSION < v"0.6.0-pre.beta.28"
-    collect(A) = collect_indices(indices(A), A)
-    collect_indices(::Tuple{}, A) = copy!(Array{eltype(A)}(), A)
-    collect_indices(indsA::Tuple{Vararg{Base.OneTo}}, A) =
-        copy!(Array{eltype(A)}(map(length, indsA)), A)
-    function collect_indices(indsA, A)
-        B = Array{eltype(A)}(map(length, indsA))
-        copy!(B, CartesianRange(indices(B)), A, CartesianRange(indsA))
-    end
-else
-    const collect = Base.collect
-end
-
 # https://github.com/JuliaLang/julia/pull/21197
 if VERSION < v"0.7.0-DEV.257"
     # allow the elements of the Cmd to be accessed as an array or iterator
