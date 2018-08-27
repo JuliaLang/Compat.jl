@@ -250,15 +250,6 @@ include("arraymacros.jl")
 # julia #18839
 import Base.Iterators # TODO deprecate, remove
 
-@static if VERSION < v"0.6.0-dev.2840"
-    export IndexStyle, IndexLinear, IndexCartesian
-    eval(Expr(:typealias, :IndexStyle, :(Base.LinearIndexing)))
-    eval(Expr(:typealias, :IndexLinear, :(Base.LinearFast)))
-    eval(Expr(:typealias, :IndexCartesian, :(Base.LinearSlow)))
-    IndexStyle{T}(::Type{T}) = Base.linearindexing(T)
-    IndexStyle(args...) = Base.linearindexing(args...)
-end
-
 if VERSION < v"0.6.0-dev.1653"
     for (fname, felt) in ((:zeros,:zero), (:ones,:one))
         @eval begin

@@ -7,12 +7,6 @@ export @compat
 """Get just the function part of a function declaration."""
 withincurly(ex) = isexpr(ex, :curly) ? ex.args[1] : ex
 
-is_index_style(ex::Expr) = ex == :(Compat.IndexStyle) || ex == :(Base.IndexStyle) ||
-    (ex.head == :(.) && (ex.args[1] == :Compat || ex.args[1] == :Base) &&
-         ex.args[2] == Expr(:quote, :IndexStyle))
-
-is_index_style(arg) = false
-
 istopsymbol(ex, mod, sym) = ex in (sym, Expr(:(.), mod, Expr(:quote, sym)))
 
 if !isdefined(Base, :UndefKeywordError)
@@ -39,18 +33,6 @@ function _compat(ex::Expr)
     elseif ex.head === :quote && isa(ex.args[1], Symbol)
         # Passthrough
         return ex
-    end
-    if VERSION < v"0.6.0-dev.2840"
-        if ex.head == :(=) && isa(ex.args[1], Expr) && ex.args[1].head == :call
-            a = ex.args[1].args[1]
-            if is_index_style(a)
-                ex.args[1].args[1] = :(Base.linearindexing)
-            elseif isa(a, Expr) && a.head == :curly
-                if is_index_style(a.args[1])
-                    ex.args[1].args[1].args[1] = :(Base.linearindexing)
-                end
-            end
-        end
     end
     if VERSION < v"0.7.0-DEV.880"
         if ex.head == :curly && ex.args[1] == :CartesianRange && length(ex.args) >= 2

@@ -434,31 +434,6 @@ end
 @test isbitstype(Primitive20418{Int})
 @test sizeof(Primitive20418{Int}) == 2
 
-module CompatArray
-    using Compat
-    const struct_sym = VERSION < v"0.7.0-DEV.1263" ? :type : :struct
-    eval(Expr(
-        struct_sym, false,
-        Expr(:(<:), :(CartesianArray{T,N}), :(AbstractArray{T,N})),
-        quote
-            parent::Array{T,N}
-        end))
-    eval(Expr(
-        struct_sym, false,
-        Expr(:(<:), :(LinearArray{T,N}), :(AbstractArray{T,N})),
-        quote
-            parent::Array{T,N}
-        end))
-    @compat Base.IndexStyle(::Type{<:LinearArray}) = IndexLinear()
-end
-@test IndexStyle(Array{Float32,2}) === IndexLinear()
-@test IndexStyle(CompatArray.CartesianArray{Float32,2}) === IndexCartesian()
-@test IndexStyle(CompatArray.LinearArray{Float32,2}) === IndexLinear()
-let a = CompatArray.CartesianArray(rand(2,3)), b = CompatArray.LinearArray(rand(2,3))
-    @test IndexStyle(a) === IndexCartesian()
-    @test IndexStyle(b) === IndexLinear()
-end
-
 if VERSION < v"0.6.0-dev.1653"
     for (A,val) in ((zeros(1:5, Float32, 3, 2), 0),
                     (ones(1:5, Float32, 3, 2), 1),

@@ -63,15 +63,13 @@ Currently, the `@compat` macro supports the following syntaxes:
   to declare abstract and primitive types. [#20418]
   This only works when `@compat` is applied directly on the declaration.
 
-* `@compat Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()` and `@compat Base.IndexStyle(::Type{<:MyArray}) = IndexCartesian()` to define traits for abstract arrays, replacing the former `Base.linearindexing{T<:MyArray}(::Type{T}) = Base.LinearFast()` and `Base.linearindexing{T<:MyArray}(::Type{T}) = Base.LinearSlow()`, respectively.
-
 * `Compat.collect(A)` returns an `Array`, no matter what indices the array `A` has. [#21257]
 
 * `@compat foo(::CartesianRange{N})` to replace the former
   `foo(::CartesianRange{CartesianIndex{N}})` ([#20974]). Note that
   `CartesianRange` now has two type parameters, so using them as
   fields in other `struct`s requires manual intervention.
-  
+
 * Required keyword arguments ([#25830]). For example, `@compat foo(; x, y)` makes `x` and `y` required keyword arguments: when calling `foo`, an error is thrown if `x` or `y` is not explicitly provided.
 
 ## Module Aliases
