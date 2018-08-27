@@ -49,16 +49,6 @@ Please check the list below for the specific syntax you need.
 
 Currently, the `@compat` macro supports the following syntaxes:
 
-* `@compat (a::B{T}){T}(c) = d` — the Julia 0.5-style call overload
-
-* `@compat(get(io, s, false))`, with `s` equal to `:limit`, `:compact` or `:multiline`, to detect the corresponding print settings (performs useful work only on Julia 0.5, defaults to `false` otherwise)
-
-* `@compat x .= y` converts to an in-place assignment to `x` (via `broadcast!`) ([#17510]).
-  However, beware that `.=` in Julia 0.4 has the precedence of `==`, not of assignment `=`, so if the right-hand-side `y`
-  includes expressions with lower precedence than `==` you should enclose it in parentheses `x .= (y)` to ensure the
-  correct order of evaluation.   Also, `x .+= y` converts to `x .= (x .+ y)`, and similarly for the other updating
-  assignment operators (`.*=` and so on).
-
 * `Compat.collect(A)` returns an `Array`, no matter what indices the array `A` has. [#21257]
 
 * `@compat foo(::CartesianRange{N})` to replace the former
@@ -513,7 +503,6 @@ includes this fix. Find the minimum version from there.
 [#16986]: https://github.com/JuliaLang/julia/issues/16986
 [#17302]: https://github.com/JuliaLang/julia/issues/17302
 [#17323]: https://github.com/JuliaLang/julia/issues/17323
-[#17510]: https://github.com/JuliaLang/julia/issues/17510
 [#17623]: https://github.com/JuliaLang/julia/issues/17623
 [#18082]: https://github.com/JuliaLang/julia/issues/18082
 [#18380]: https://github.com/JuliaLang/julia/issues/18380
