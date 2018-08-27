@@ -59,9 +59,6 @@ Currently, the `@compat` macro supports the following syntaxes:
   correct order of evaluation.   Also, `x .+= y` converts to `x .= (x .+ y)`, and similarly for the other updating
   assignment operators (`.*=` and so on).
 
-* `@compat Array{<:Real}`, `@compat Array{>:Int}`, and similar uses of `<:T` (resp. `>:T`) to define a set of "covariant" (resp. "contravariant") parameterized types ([#20414]).
-  In 0.5, this only works for non-nested usages (e.g. you can't define `Array{<:Array{<:Real}}`).
-
 * `@compat abstract type T end` and `@compat primitive type T 8 end`
   to declare abstract and primitive types. [#20418]
   This only works when `@compat` is applied directly on the declaration.
@@ -542,7 +539,6 @@ includes this fix. Find the minimum version from there.
 [#20164]: https://github.com/JuliaLang/julia/issues/20164
 [#20321]: https://github.com/JuliaLang/julia/issues/20321
 [#20407]: https://github.com/JuliaLang/julia/issues/20407
-[#20414]: https://github.com/JuliaLang/julia/issues/20414
 [#20418]: https://github.com/JuliaLang/julia/issues/20418
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197

@@ -36,15 +36,6 @@ function _compat(ex::Expr)
             params = ex.args[2]
             params.args = map(symbol2kw, params.args)
         end
-    elseif ex.head === :curly
-        f = ex.args[1]
-        if VERSION < v"0.6.0-dev.2575" #20414
-            ex = Expr(:curly, map(a -> isexpr(a, :call, 2) && a.args[1] == :(<:) ?
-                                  :($TypeVar($(QuoteNode(gensym(:T))), $(a.args[2]), false)) :
-                                  isexpr(a, :call, 2) && a.args[1] == :(>:) ?
-                                  :($TypeVar($(QuoteNode(gensym(:T))), $(a.args[2]), $Any, false)) : a,
-                                  ex.args)...)
-        end
     elseif ex.head === :quote && isa(ex.args[1], Symbol)
         # Passthrough
         return ex
