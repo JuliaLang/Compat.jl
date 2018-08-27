@@ -4,11 +4,6 @@
 using Base.Meta
 export @compat
 
-"""Get just the function part of a function declaration."""
-withincurly(ex) = isexpr(ex, :curly) ? ex.args[1] : ex
-
-istopsymbol(ex, mod, sym) = ex in (sym, Expr(:(.), mod, Expr(:quote, sym)))
-
 if !isdefined(Base, :UndefKeywordError)
     struct UndefKeywordError <: Exception
         kw
