@@ -53,8 +53,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `@compat(get(io, s, false))`, with `s` equal to `:limit`, `:compact` or `:multiline`, to detect the corresponding print settings (performs useful work only on Julia 0.5, defaults to `false` otherwise)
 
-* `@compat Nullable(value, hasvalue)` to handle the switch from the `Nullable` `:isnull` field to `:hasvalue` field ([#18510])
-
 * `@compat x .= y` converts to an in-place assignment to `x` (via `broadcast!`) ([#17510]).
   However, beware that `.=` in Julia 0.4 has the precedence of `==`, not of assignment `=`, so if the right-hand-side `y`
   includes expressions with lower precedence than `==` you should enclose it in parentheses `x .= (y)` to ensure the
@@ -529,7 +527,6 @@ includes this fix. Find the minimum version from there.
 [#18082]: https://github.com/JuliaLang/julia/issues/18082
 [#18380]: https://github.com/JuliaLang/julia/issues/18380
 [#18484]: https://github.com/JuliaLang/julia/issues/18484
-[#18510]: https://github.com/JuliaLang/julia/issues/18510
 [#18629]: https://github.com/JuliaLang/julia/issues/18629
 [#18727]: https://github.com/JuliaLang/julia/issues/18727
 [#18977]: https://github.com/JuliaLang/julia/issues/18977

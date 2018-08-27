@@ -169,13 +169,6 @@ end
     Base.Broadcast.broadcast{N}(f, t::NTuple{N}, ts::Vararg{NTuple{N}}) = map(f, t, ts...)
 end
 
-# julia#18510
-if VERSION < v"0.6.0-dev.826"
-    _Nullable_field2(x) = !x
-else
-    _Nullable_field2(x) = x
-end
-
 # julia#18484
 @static if VERSION < v"0.6.0-dev.848"
     unsafe_get(x::Nullable) = x.value
