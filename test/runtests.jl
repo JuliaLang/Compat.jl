@@ -476,14 +476,6 @@ end
 @test isbitstype(Primitive20418{Int})
 @test sizeof(Primitive20418{Int}) == 2
 
-# PR #20500
-@compat A20500{T<:Integer} = Array{T,20500}
-@compat const A20500_2{T<:Union{Int,Float32}} = Pair{T,T}
-f20500() = A20500
-f20500_2() = A20500_2
-@inferred f20500()
-@inferred f20500_2()
-
 module CompatArray
     using Compat
     const struct_sym = VERSION < v"0.7.0-DEV.1263" ? :type : :struct

@@ -68,9 +68,6 @@ Currently, the `@compat` macro supports the following syntaxes:
   to declare abstract and primitive types. [#20418]
   This only works when `@compat` is applied directly on the declaration.
 
-* `@compat A{T} = B{T}` or `@compat const A{T} = B{T}` to declare type alias with free
-  parameters. [#20500]. Use `const A = B{T}` or `const A = B` for type alias without free parameters (i.e. no type parameter on the left hand side).
-
 * `@compat Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()` and `@compat Base.IndexStyle(::Type{<:MyArray}) = IndexCartesian()` to define traits for abstract arrays, replacing the former `Base.linearindexing{T<:MyArray}(::Type{T}) = Base.LinearFast()` and `Base.linearindexing{T<:MyArray}(::Type{T}) = Base.LinearSlow()`, respectively.
 
 * `Compat.collect(A)` returns an `Array`, no matter what indices the array `A` has. [#21257]
@@ -550,7 +547,6 @@ includes this fix. Find the minimum version from there.
 [#20407]: https://github.com/JuliaLang/julia/issues/20407
 [#20414]: https://github.com/JuliaLang/julia/issues/20414
 [#20418]: https://github.com/JuliaLang/julia/issues/20418
-[#20500]: https://github.com/JuliaLang/julia/issues/20500
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
 [#21257]: https://github.com/JuliaLang/julia/issues/21257

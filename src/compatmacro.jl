@@ -15,16 +15,6 @@ is_index_style(arg) = false
 
 istopsymbol(ex, mod, sym) = ex in (sym, Expr(:(.), mod, Expr(:quote, sym)))
 
-if VERSION < v"0.6.0-dev.2782"
-    function new_style_typealias(ex::ANY)
-        isexpr(ex, :(=)) || return false
-        ex = ex::Expr
-        return length(ex.args) == 2 && isexpr(ex.args[1], :curly)
-    end
-else
-    new_style_typealias(ex) = false
-end
-
 if !isdefined(Base, :UndefKeywordError)
     struct UndefKeywordError <: Exception
         kw
@@ -62,11 +52,6 @@ function _compat(ex::Expr)
     elseif ex.head === :quote && isa(ex.args[1], Symbol)
         # Passthrough
         return ex
-    elseif new_style_typealias(ex)
-        ex.head = :typealias
-    elseif ex.head === :const && length(ex.args) == 1 && new_style_typealias(ex.args[1])
-        ex = ex.args[1]::Expr
-        ex.head = :typealias
     end
     if VERSION < v"0.6.0-dev.2840"
         if ex.head == :(=) && isa(ex.args[1], Expr) && ex.args[1].head == :call
