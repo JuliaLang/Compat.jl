@@ -284,7 +284,7 @@ for x in (3.1, -17, 3//4, big(111.1), Inf)
 end
 
 # julia#20006
-@compat abstract type AbstractFoo20006 end
+abstract type AbstractFoo20006 end
 eval(Expr(
     struct_sym, false,
     Expr(:(<:), :(ConcreteFoo20006{T<:Int}), :AbstractFoo20006),
@@ -425,14 +425,6 @@ let x = [1,2,3]
     @dotcompat f(x) = x^2
     @test f(x) == [1,4,9]
 end
-
-# PR #20418
-@compat abstract type Abstract20418{T} <: Ref{T} end
-@test Compat.TypeUtils.isabstract(Abstract20418)
-@compat primitive type Primitive20418{T} <: Ref{T} 16 end
-@test !Compat.TypeUtils.isabstract(Primitive20418)
-@test isbitstype(Primitive20418{Int})
-@test sizeof(Primitive20418{Int}) == 2
 
 if VERSION < v"0.6.0-dev.1653"
     for (A,val) in ((zeros(1:5, Float32, 3, 2), 0),
