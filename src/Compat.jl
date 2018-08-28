@@ -1860,7 +1860,7 @@ if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
 end
 
 if VERSION < v"0.7.0-DEV.3977" #26039
-    Base.repeat(A::AbstractArray, counts::Integer...) = Base.repmat(A, counts...)
+    Base.repeat(A::AbstractArray, counts::Integer...) = Base.repeat(A, outer = counts)
     Base.repeat(a::AbstractVecOrMat, m::Integer, n::Integer=1) = Base.repmat(a, m, n)
     Base.repeat(a::AbstractVector, m::Integer) = Base.repmat(a, m)
 end
