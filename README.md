@@ -79,7 +79,7 @@ Currently, the `@compat` macro supports the following syntaxes:
   `foo(::CartesianRange{CartesianIndex{N}})` ([#20974]). Note that
   `CartesianRange` now has two type parameters, so using them as
   fields in other `struct`s requires manual intervention.
-  
+
 * Required keyword arguments ([#25830]). For example, `@compat foo(; x, y)` makes `x` and `y` required keyword arguments: when calling `foo`, an error is thrown if `x` or `y` is not explicitly provided.
 
 ## Module Aliases
@@ -435,6 +435,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `realmin` and `realmax` are now `floatmin` and `floatmax` ([#28302])
 
 * `squeeze` is now `dropdims` ([#28303], [#26660]).
+
+* `repmat` is now `repeat` ([#26039])
 
 ## New macros
 
