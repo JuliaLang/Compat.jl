@@ -72,10 +72,6 @@ end
     export @nospecialize
 end
 
-if VERSION < v"0.6.0-dev.2043"
-    Base.take!(t::Task) = consume(t)
-end
-
 # https://github.com/JuliaLang/julia/pull/22064
 @static if !isdefined(Base, Symbol("@__MODULE__"))
     # 0.7

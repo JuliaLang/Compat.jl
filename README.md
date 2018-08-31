@@ -145,8 +145,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.readuntil` with `keep` keyword argument ([#25646])
 
-* `take!` method for `Task`s since some functions now return `Channel`s instead of `Task`s ([#19841])
-
 * The `isabstract`, `parameter_upper_bound`, `typename` reflection methods were added in Julia 0.6. This package re-exports these from the `Compat.TypeUtils` submodule. On earlier versions of julia, that module contains the same functions, but operating on the pre-0.6 type system representation.
 
 * `broadcast` is supported on tuples of the same lengths on 0.5. ([#16986])
@@ -503,7 +501,6 @@ includes this fix. Find the minimum version from there.
 [#19449]: https://github.com/JuliaLang/julia/issues/19449
 [#19635]: https://github.com/JuliaLang/julia/issues/19635
 [#19784]: https://github.com/JuliaLang/julia/issues/19784
-[#19841]: https://github.com/JuliaLang/julia/issues/19841
 [#19950]: https://github.com/JuliaLang/julia/issues/19950
 [#20005]: https://github.com/JuliaLang/julia/issues/20005
 [#20022]: https://github.com/JuliaLang/julia/issues/20022
