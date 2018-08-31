@@ -49,37 +49,11 @@ Please check the list below for the specific syntax you need.
 
 Currently, the `@compat` macro supports the following syntaxes:
 
-* `@compat (a::B{T}){T}(c) = d` — the Julia 0.5-style call overload
-
-* `@compat(get(io, s, false))`, with `s` equal to `:limit`, `:compact` or `:multiline`, to detect the corresponding print settings (performs useful work only on Julia 0.5, defaults to `false` otherwise)
-
-* `@compat Nullable(value, hasvalue)` to handle the switch from the `Nullable` `:isnull` field to `:hasvalue` field ([#18510])
-
-* `@compat x .= y` converts to an in-place assignment to `x` (via `broadcast!`) ([#17510]).
-  However, beware that `.=` in Julia 0.4 has the precedence of `==`, not of assignment `=`, so if the right-hand-side `y`
-  includes expressions with lower precedence than `==` you should enclose it in parentheses `x .= (y)` to ensure the
-  correct order of evaluation.   Also, `x .+= y` converts to `x .= (x .+ y)`, and similarly for the other updating
-  assignment operators (`.*=` and so on).
-
-* `@compat Array{<:Real}`, `@compat Array{>:Int}`, and similar uses of `<:T` (resp. `>:T`) to define a set of "covariant" (resp. "contravariant") parameterized types ([#20414]).
-  In 0.5, this only works for non-nested usages (e.g. you can't define `Array{<:Array{<:Real}}`).
-
-* `@compat abstract type T end` and `@compat primitive type T 8 end`
-  to declare abstract and primitive types. [#20418]
-  This only works when `@compat` is applied directly on the declaration.
-
-* `@compat A{T} = B{T}` or `@compat const A{T} = B{T}` to declare type alias with free
-  parameters. [#20500]. Use `const A = B{T}` or `const A = B` for type alias without free parameters (i.e. no type parameter on the left hand side).
-
-* `@compat Base.IndexStyle(::Type{<:MyArray}) = IndexLinear()` and `@compat Base.IndexStyle(::Type{<:MyArray}) = IndexCartesian()` to define traits for abstract arrays, replacing the former `Base.linearindexing{T<:MyArray}(::Type{T}) = Base.LinearFast()` and `Base.linearindexing{T<:MyArray}(::Type{T}) = Base.LinearSlow()`, respectively.
-
-* `Compat.collect(A)` returns an `Array`, no matter what indices the array `A` has. [#21257]
-
 * `@compat foo(::CartesianRange{N})` to replace the former
   `foo(::CartesianRange{CartesianIndex{N}})` ([#20974]). Note that
   `CartesianRange` now has two type parameters, so using them as
   fields in other `struct`s requires manual intervention.
-  
+
 * Required keyword arguments ([#25830]). For example, `@compat foo(; x, y)` makes `x` and `y` required keyword arguments: when calling `foo`, an error is thrown if `x` or `y` is not explicitly provided.
 
 ## Module Aliases
@@ -527,12 +501,10 @@ includes this fix. Find the minimum version from there.
 [#16986]: https://github.com/JuliaLang/julia/issues/16986
 [#17302]: https://github.com/JuliaLang/julia/issues/17302
 [#17323]: https://github.com/JuliaLang/julia/issues/17323
-[#17510]: https://github.com/JuliaLang/julia/issues/17510
 [#17623]: https://github.com/JuliaLang/julia/issues/17623
 [#18082]: https://github.com/JuliaLang/julia/issues/18082
 [#18380]: https://github.com/JuliaLang/julia/issues/18380
 [#18484]: https://github.com/JuliaLang/julia/issues/18484
-[#18510]: https://github.com/JuliaLang/julia/issues/18510
 [#18629]: https://github.com/JuliaLang/julia/issues/18629
 [#18727]: https://github.com/JuliaLang/julia/issues/18727
 [#18977]: https://github.com/JuliaLang/julia/issues/18977
@@ -548,12 +520,8 @@ includes this fix. Find the minimum version from there.
 [#20164]: https://github.com/JuliaLang/julia/issues/20164
 [#20321]: https://github.com/JuliaLang/julia/issues/20321
 [#20407]: https://github.com/JuliaLang/julia/issues/20407
-[#20414]: https://github.com/JuliaLang/julia/issues/20414
-[#20418]: https://github.com/JuliaLang/julia/issues/20418
-[#20500]: https://github.com/JuliaLang/julia/issues/20500
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
-[#21257]: https://github.com/JuliaLang/julia/issues/21257
 [#21346]: https://github.com/JuliaLang/julia/issues/21346
 [#21709]: https://github.com/JuliaLang/julia/issues/21709
 [#22064]: https://github.com/JuliaLang/julia/issues/22064

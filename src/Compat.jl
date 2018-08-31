@@ -169,13 +169,6 @@ end
     Base.Broadcast.broadcast{N}(f, t::NTuple{N}, ts::Vararg{NTuple{N}}) = map(f, t, ts...)
 end
 
-# julia#18510
-if VERSION < v"0.6.0-dev.826"
-    _Nullable_field2(x) = !x
-else
-    _Nullable_field2(x) = x
-end
-
 # julia#18484
 @static if VERSION < v"0.6.0-dev.848"
     unsafe_get(x::Nullable) = x.value
@@ -257,15 +250,6 @@ include("arraymacros.jl")
 # julia #18839
 import Base.Iterators # TODO deprecate, remove
 
-@static if VERSION < v"0.6.0-dev.2840"
-    export IndexStyle, IndexLinear, IndexCartesian
-    eval(Expr(:typealias, :IndexStyle, :(Base.LinearIndexing)))
-    eval(Expr(:typealias, :IndexLinear, :(Base.LinearFast)))
-    eval(Expr(:typealias, :IndexCartesian, :(Base.LinearSlow)))
-    IndexStyle{T}(::Type{T}) = Base.linearindexing(T)
-    IndexStyle(args...) = Base.linearindexing(args...)
-end
-
 if VERSION < v"0.6.0-dev.1653"
     for (fname, felt) in ((:zeros,:zero), (:ones,:one))
         @eval begin
@@ -340,20 +324,6 @@ else
         kw = [Expr(:kw, k, QuoteNode(v)) for (k, v) in kwargs]
         eval(current_module(), Expr(:call, f, map(QuoteNode, args)..., kw...))
     end
-end
-
-# https://github.com/JuliaLang/julia/pull/21257
-@static if VERSION < v"0.6.0-pre.beta.28"
-    collect(A) = collect_indices(indices(A), A)
-    collect_indices(::Tuple{}, A) = copy!(Array{eltype(A)}(), A)
-    collect_indices(indsA::Tuple{Vararg{Base.OneTo}}, A) =
-        copy!(Array{eltype(A)}(map(length, indsA)), A)
-    function collect_indices(indsA, A)
-        B = Array{eltype(A)}(map(length, indsA))
-        copy!(B, CartesianRange(indices(B)), A, CartesianRange(indsA))
-    end
-else
-    const collect = Base.collect
 end
 
 # https://github.com/JuliaLang/julia/pull/21197

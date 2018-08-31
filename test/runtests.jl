@@ -192,60 +192,18 @@ if VERSION < v"0.7.0-DEV.3017"
         UInt8,
     ]
     for T in types
-        # julia#18510, Nullable constructors
-        x = @compat Nullable(one(T), true)
-        @test isnull(x) === false
-        @test isa(x.value, T)
-        @test eltype(x) === T
-
-        x = @compat Nullable{T}(one(T), true)
-        y = @compat Nullable{Any}(one(T), true)
-        @test isnull(x) === false
-        @test isnull(y) === false
-        @test isa(x.value, T)
-        @test eltype(x) === T
-        @test eltype(y) === Any
-
-        x = @compat Nullable{T}(one(T), false)
-        y = @compat Nullable{Any}(one(T), false)
-        @test isnull(x) === true
-        @test isnull(y) === true
-        @test eltype(x) === T
-        @test eltype(y) === Any
-
-        x = @compat Nullable(one(T), false)
-        @test isnull(x) === true
-        @test eltype(x) === T
-
-        x = @compat Nullable{T}()
-        @test isnull(x) === true
-        @test eltype(x) === T
-
         # julia#18484, generic isnull, unsafe_get
         a = one(T)
-        x = @compat Nullable(a, true)
+        x = Nullable(a, true)
         @test isequal(unsafe_get(x), a)
 
-        x = @compat Nullable{Array{T}}()
+        x = Nullable{Array{T}}()
         @test_throws UndefRefError unsafe_get(x)
     end
 end
 
 @test xor(1,5) == 4
 @test 1 ⊻ 5 == 4
-
-# julia#20414
-@compat let T = Array{<:Real}, f(x::AbstractVector{<:Real}) = 1
-    @test isa([3,4],T)
-    @test !isa([3,4im],T)
-    @test f(1:3) == f([1,2]) == 1
-end
-@compat let T = Array{>:Integer}, f(x::AbstractVector{>:Integer}) = 1
-    @test isa(Integer[1,2],T)
-    @test !isa([3,4],T)
-    @test !isa([3.0,4.0],T)
-    @test f(Integer[1,2]) == f([1,'a',:sym]) == 1
-end
 
 # supertype operator
 @test !(Int >: Integer)
@@ -261,16 +219,6 @@ let io = IOBuffer()
     @test take!(io) == UInt8['a', 'a', 'a']
     write(io, "bbb")
     @test String(take!(io)) == "bbb"
-end
-
-# julia#17510
-let x = [1,2,3]
-    @compat x .= [3,4,5]
-    @test x == [3,4,5]
-    @compat x .= x .== 4
-    @test x == [0,1,0]
-    @compat x .= 7
-    @test x == [7,7,7]
 end
 
 let s = "Koala test: 🐨"
@@ -326,7 +274,7 @@ for x in (3.1, -17, 3//4, big(111.1), Inf)
 end
 
 # julia#20006
-@compat abstract type AbstractFoo20006 end
+abstract type AbstractFoo20006 end
 eval(Expr(
     struct_sym, false,
     Expr(:(<:), :(ConcreteFoo20006{T<:Int}), :AbstractFoo20006),
@@ -468,47 +416,6 @@ let x = [1,2,3]
     @test f(x) == [1,4,9]
 end
 
-# PR #20418
-@compat abstract type Abstract20418{T} <: Ref{T} end
-@test Compat.TypeUtils.isabstract(Abstract20418)
-@compat primitive type Primitive20418{T} <: Ref{T} 16 end
-@test !Compat.TypeUtils.isabstract(Primitive20418)
-@test isbitstype(Primitive20418{Int})
-@test sizeof(Primitive20418{Int}) == 2
-
-# PR #20500
-@compat A20500{T<:Integer} = Array{T,20500}
-@compat const A20500_2{T<:Union{Int,Float32}} = Pair{T,T}
-f20500() = A20500
-f20500_2() = A20500_2
-@inferred f20500()
-@inferred f20500_2()
-
-module CompatArray
-    using Compat
-    const struct_sym = VERSION < v"0.7.0-DEV.1263" ? :type : :struct
-    eval(Expr(
-        struct_sym, false,
-        Expr(:(<:), :(CartesianArray{T,N}), :(AbstractArray{T,N})),
-        quote
-            parent::Array{T,N}
-        end))
-    eval(Expr(
-        struct_sym, false,
-        Expr(:(<:), :(LinearArray{T,N}), :(AbstractArray{T,N})),
-        quote
-            parent::Array{T,N}
-        end))
-    @compat Base.IndexStyle(::Type{<:LinearArray}) = IndexLinear()
-end
-@test IndexStyle(Array{Float32,2}) === IndexLinear()
-@test IndexStyle(CompatArray.CartesianArray{Float32,2}) === IndexCartesian()
-@test IndexStyle(CompatArray.LinearArray{Float32,2}) === IndexLinear()
-let a = CompatArray.CartesianArray(rand(2,3)), b = CompatArray.LinearArray(rand(2,3))
-    @test IndexStyle(a) === IndexCartesian()
-    @test IndexStyle(b) === IndexLinear()
-end
-
 if VERSION < v"0.6.0-dev.1653"
     for (A,val) in ((zeros(1:5, Float32, 3, 2), 0),
                     (ones(1:5, Float32, 3, 2), 1),
@@ -600,18 +507,6 @@ end
 using Compat: StringVector
 @test length(StringVector(5)) == 5
 @test String(fill!(StringVector(5), 0x61)) == "aaaaa"
-
-# collect
-if VERSION < v"0.7.0-"
-    # Note: This is disabled on 0.7, since the Compat.collect functionality is only
-    # applicable on 0.5, and OffsetArrays currently has some incompatibilities with
-    # 0.7. This can be reenabled later if needed.
-    using OffsetArrays
-    a = OffsetArray(1:3, -1:1)
-    b = Compat.collect(a)
-    @test indices(b) === (Base.OneTo(3),)
-    @test b == [1,2,3]
-end
 
 # PR 22064
 module Test22064
