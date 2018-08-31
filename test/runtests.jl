@@ -60,11 +60,6 @@ let
     @test A*D == copy(A) * Diagonal(copy(x))
 end
 
-# julia#17623
-# 0.6
-@test [true, false] .& [true, true] == [true, false]
-@test [true, false] .| [true, true] == [true, true]
-
 # julia#20022
 @test !Compat.isapprox(NaN, NaN)
 @test Compat.isapprox(NaN, NaN, nans=true)

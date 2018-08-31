@@ -142,13 +142,6 @@ else
     end
 end
 
-if VERSION < v"0.6.0-dev.1632"
-    # To work around unsupported syntax on Julia 0.4
-    include_string("export .&, .|")
-    include_string(".&(xs...) = broadcast(&, xs...)")
-    include_string(".|(xs...) = broadcast(|, xs...)")
-end
-
 @static if VERSION < v"0.6.0-dev.2093" # Compat.isapprox to allow for NaNs
     using Base.rtoldefault
     function isapprox(x::Number, y::Number; rtol::Real=rtoldefault(x,y), atol::Real=0, nans::Bool=false)
