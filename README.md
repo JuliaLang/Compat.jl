@@ -273,8 +273,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
-* `num` and `den` are now `numerator` and `denominator` ([#19246])
-
 * `takebuf_array` is now a method of `take!`. `takebuf_string(io)` becomes `String(take!(io))` ([#19088])
 
 * `is_apple`, `is_bsd`, `is_linux`, `is_unix`, and `is_windows` are now `Sys.isapple`, `Sys.isbsd`,
@@ -481,7 +479,6 @@ includes this fix. Find the minimum version from there.
 [#18629]: https://github.com/JuliaLang/julia/issues/18629
 [#18727]: https://github.com/JuliaLang/julia/issues/18727
 [#19088]: https://github.com/JuliaLang/julia/issues/19088
-[#19246]: https://github.com/JuliaLang/julia/issues/19246
 [#19449]: https://github.com/JuliaLang/julia/issues/19449
 [#19635]: https://github.com/JuliaLang/julia/issues/19635
 [#19784]: https://github.com/JuliaLang/julia/issues/19784

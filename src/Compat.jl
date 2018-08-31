@@ -142,14 +142,6 @@ else
     end
 end
 
-# julia#19246
-@static if !isdefined(Base, :numerator)
-    # 0.6
-    const numerator = num
-    const denominator = den
-    export numerator, denominator
-end
-
 # julia #19950
 @static if !isdefined(Base, :iszero)
     # 0.6

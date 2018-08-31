@@ -44,10 +44,6 @@ end
 @test !(Int >: Integer)
 @test Integer >: Int
 
-# julia#19246
-@test numerator(1//2) === 1
-@test denominator(1//2) === 2
-
 # julia#19088
 let io = IOBuffer()
     write(io, "aaa")
