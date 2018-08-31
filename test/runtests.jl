@@ -40,14 +40,6 @@ else
     end
 end
 
-# julia#19088
-let io = IOBuffer()
-    write(io, "aaa")
-    @test take!(io) == UInt8['a', 'a', 'a']
-    write(io, "bbb")
-    @test String(take!(io)) == "bbb"
-end
-
 let s = "Koala test: 🐨"
     @test transcode(UInt16, s) == UInt16[75,111,97,108,97,32,116,101,115,116,58,32,55357,56360]
     @test transcode(UInt32, s) == UInt32[75,111,97,108,97,32,116,101,115,116,58,32,128040]
