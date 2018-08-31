@@ -87,13 +87,6 @@ end
         eval(mod, :(include_string($code, $fname)))
 end
 
-@static if VERSION < v"0.6.0-dev.528"
-    macro __DIR__()
-        Base.source_dir()
-    end
-    export @__DIR__
-end
-
 # PR #17302
 # Provide a non-deprecated version of `@vectorize_(1|2)arg` macro which defines
 # deprecated version of the function so that the depwarns can be fixed without

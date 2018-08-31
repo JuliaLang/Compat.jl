@@ -21,9 +21,6 @@ for os in [:apple, :bsd, :linux, :unix, :windows]
     @eval @test Compat.Sys.$(Symbol("is", os))() == $from_base()
 end
 
-# 0.6
-@test @__DIR__() == dirname(@__FILE__)
-
 # PR #17302
 # To be removed when 0.6 support is dropped.
 f17302(a::Number) = a

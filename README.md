@@ -399,8 +399,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New macros
 
-* `@__DIR__` has been added ([#18380])
-
 * `@vectorize_1arg` and `@vectorize_2arg` are deprecated on Julia 0.6 in favor
   of the broadcast syntax ([#17302]). `Compat.@dep_vectorize_1arg` and
   `Compat.@dep_vectorize_2arg` are provided so that packages can still provide
@@ -489,7 +487,6 @@ includes this fix. Find the minimum version from there.
 [#17323]: https://github.com/JuliaLang/julia/issues/17323
 [#17623]: https://github.com/JuliaLang/julia/issues/17623
 [#18082]: https://github.com/JuliaLang/julia/issues/18082
-[#18380]: https://github.com/JuliaLang/julia/issues/18380
 [#18484]: https://github.com/JuliaLang/julia/issues/18484
 [#18629]: https://github.com/JuliaLang/julia/issues/18629
 [#18727]: https://github.com/JuliaLang/julia/issues/18727
