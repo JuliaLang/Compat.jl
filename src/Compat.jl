@@ -142,15 +142,6 @@ else
     end
 end
 
-@static if VERSION < v"0.6.0-dev.2093" # Compat.isapprox to allow for NaNs
-    using Base.rtoldefault
-    function isapprox(x::Number, y::Number; rtol::Real=rtoldefault(x,y), atol::Real=0, nans::Bool=false)
-        x == y || (isfinite(x) && isfinite(y) && abs(x-y) <= atol + rtol*max(abs(x), abs(y))) || (nans && isnan(x) && isnan(y))
-    end
-else
-    import Base.isapprox
-end
-
 @static if !isdefined(Base, :isabstracttype) # VERSION < v"0.7.0-DEV.3475"
     const isabstracttype = Base.isabstract
     export isabstracttype

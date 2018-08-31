@@ -60,10 +60,6 @@ let
     @test A*D == copy(A) * Diagonal(copy(x))
 end
 
-# julia#20022
-@test !Compat.isapprox(NaN, NaN)
-@test Compat.isapprox(NaN, NaN, nans=true)
-
 # julia#13998
 for x in (3.1, -17, 3//4, big(111.1), Inf)
     local x
