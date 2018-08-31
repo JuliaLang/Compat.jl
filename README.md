@@ -125,8 +125,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `transcode` converts between UTF-xx string encodings in Julia 0.5 (as a lightweight
    alternative to the LegacyStrings package) ([#17323])
 
-* `>:`, a supertype operator for symmetry with `issubtype` (`A >: B` is equivalent to `B <: A`), can be used in 0.5 and earlier ([#20407]).
-
 * `.&` and `.|` are short syntax for `broadcast(&, xs...)` and `broadcast(|, xs...)` (respectively) in Julia 0.6 (only supported on Julia 0.5 and above) ([#17623])
 
 * `Compat.isapprox` with `nans` keyword argument ([#20022])
@@ -482,7 +480,6 @@ includes this fix. Find the minimum version from there.
 [#19784]: https://github.com/JuliaLang/julia/issues/19784
 [#20005]: https://github.com/JuliaLang/julia/issues/20005
 [#20022]: https://github.com/JuliaLang/julia/issues/20022
-[#20407]: https://github.com/JuliaLang/julia/issues/20407
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
 [#21346]: https://github.com/JuliaLang/julia/issues/21346

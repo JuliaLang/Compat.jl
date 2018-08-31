@@ -142,15 +142,6 @@ else
     end
 end
 
-# julia　#20407
-@static if !isdefined(Base, :(>:))
-    # 0.6
-    const >: = let
-        _issupertype(a::ANY, b::ANY) = issubtype(b, a)
-    end
-    export >:
-end
-
 # julia#19088
 if VERSION < v"0.6.0-dev.1256"
     Base.take!(io::Base.AbstractIOBuffer) = takebuf_array(io)

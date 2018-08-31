@@ -40,10 +40,6 @@ else
     end
 end
 
-# supertype operator
-@test !(Int >: Integer)
-@test Integer >: Int
-
 # julia#19088
 let io = IOBuffer()
     write(io, "aaa")
