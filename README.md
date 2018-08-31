@@ -122,8 +122,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * [`normalize`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize) and [`normalize!`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize!), normalizes a vector with respect to the p-norm ([#13681])
 
-* `redirect_stdout`, `redirect_stderr`, and `redirect_stdin` take an optional function as a first argument, `redirect_std*(f, stream)`, so that one may use `do` block syntax (as first available for Julia 0.6)
-
 * `unsafe_get` returns the `:value` field of a `Nullable` object without any null-check and has a generic fallback for non-`Nullable` argument ([#18484])
 
 * `isnull` has a generic fallback for non-`Nullable` argument

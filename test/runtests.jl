@@ -21,34 +21,6 @@ for os in [:apple, :bsd, :linux, :unix, :windows]
     @eval @test Compat.Sys.$(Symbol("is", os))() == $from_base()
 end
 
-# do-block redirect_std*
-# 0.6
-let filename = tempname()
-    ret = open(filename, "w") do f
-        redirect_stdout(f) do
-            println("hello")
-            [1,3]
-        end
-    end
-    @test ret == [1,3]
-    @test chomp(read(filename, String)) == "hello"
-    ret = open(filename, "w") do f
-        redirect_stderr(f) do
-            println(stderr, "WARNING: hello")
-            [2]
-        end
-    end
-    @test ret == [2]
-    @test occursin("WARNING: hello", read(filename, String))
-    ret = open(filename) do f
-        redirect_stdin(f) do
-            readline()
-        end
-    end
-    @test occursin("WARNING: hello", ret)
-    rm(filename)
-end
-
 # 0.6
 @test @__DIR__() == dirname(@__FILE__)
 
