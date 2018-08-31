@@ -122,10 +122,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * [`normalize`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize) and [`normalize!`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize!), normalizes a vector with respect to the p-norm ([#13681])
 
-* `unsafe_get` returns the `:value` field of a `Nullable` object without any null-check and has a generic fallback for non-`Nullable` argument ([#18484])
-
-* `isnull` has a generic fallback for non-`Nullable` argument
-
 * `transcode` converts between UTF-xx string encodings in Julia 0.5 (as a lightweight
    alternative to the LegacyStrings package) ([#17323])
 
@@ -484,7 +480,6 @@ includes this fix. Find the minimum version from there.
 [#17323]: https://github.com/JuliaLang/julia/issues/17323
 [#17623]: https://github.com/JuliaLang/julia/issues/17623
 [#18082]: https://github.com/JuliaLang/julia/issues/18082
-[#18484]: https://github.com/JuliaLang/julia/issues/18484
 [#18629]: https://github.com/JuliaLang/julia/issues/18629
 [#18727]: https://github.com/JuliaLang/julia/issues/18727
 [#18977]: https://github.com/JuliaLang/julia/issues/18977

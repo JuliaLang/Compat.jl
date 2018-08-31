@@ -142,14 +142,6 @@ else
     end
 end
 
-# julia#18484
-@static if VERSION < v"0.6.0-dev.848"
-    unsafe_get(x::Nullable) = x.value
-    unsafe_get(x) = x
-    export unsafe_get
-    Base.isnull(x) = false
-end
-
 # julia#18977
 @static if !isdefined(Base, :xor)
     # 0.6

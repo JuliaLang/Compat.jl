@@ -40,33 +40,6 @@ else
     end
 end
 
-if VERSION < v"0.7.0-DEV.3017"
-    types = [
-        Bool,
-        Float16,
-        Float32,
-        Float64,
-        Int128,
-        Int16,
-        Int32,
-        Int64,
-        Int8,
-        UInt16,
-        UInt32,
-        UInt64,
-        UInt8,
-    ]
-    for T in types
-        # julia#18484, generic isnull, unsafe_get
-        a = one(T)
-        x = Nullable(a, true)
-        @test isequal(unsafe_get(x), a)
-
-        x = Nullable{Array{T}}()
-        @test_throws UndefRefError unsafe_get(x)
-    end
-end
-
 @test xor(1,5) == 4
 @test 1 ⊻ 5 == 4
 
