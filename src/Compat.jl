@@ -142,15 +142,6 @@ else
     end
 end
 
-# julia #19950
-@static if !isdefined(Base, :iszero)
-    # 0.6
-    iszero(x) = x == zero(x)
-    iszero(x::Number) = x == 0
-    iszero(x::AbstractArray) = all(iszero, x)
-    export iszero
-end
-
 # julia　#20407
 @static if !isdefined(Base, :(>:))
     # 0.6
