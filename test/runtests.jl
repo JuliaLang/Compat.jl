@@ -40,9 +40,6 @@ else
     end
 end
 
-@test xor(1,5) == 4
-@test 1 ⊻ 5 == 4
-
 # supertype operator
 @test !(Int >: Integer)
 @test Integer >: Int

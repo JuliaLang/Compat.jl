@@ -142,14 +142,6 @@ else
     end
 end
 
-# julia#18977
-@static if !isdefined(Base, :xor)
-    # 0.6
-    const xor = $
-    const ⊻ = xor
-    export xor, ⊻
-end
-
 # julia#19246
 @static if !isdefined(Base, :numerator)
     # 0.6
