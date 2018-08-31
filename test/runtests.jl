@@ -297,106 +297,17 @@ eval(Expr(
 @test !isabstracttype(ConcreteFoo200061)
 @test !isabstracttype(StridedArray)
 
-# @view and @views tests copied from Base
-let X = reshape(1:24,2,3,4), Y = 4:-1:1
-    @test isa(@view(X[1:3]), SubArray)
-
+# TODO remove these tests when deprecating @dotcompat
+let X = reshape(1:24,2,3,4)
     @test X[1:end] == @dotcompat (@view X[1:end]) # test compatibility of @. and @view
-    @test X[1:end-3] == @view X[1:end-3]
-    @test X[1:end,2,2] == @view X[1:end,2,2]
-    @test reshape(X[1,2,1:end-2],2) == @view X[1,2,1:end-2]
-    @test reshape(X[1,2,Y[2:end]],3) == @view X[1,2,Y[2:end]]
-    @test reshape(X[1:end,2,Y[2:end]],2,3) == @view X[1:end,2,Y[2:end]]
-
-    u = (1,2:3)
-    @test reshape(X[u...,2:end],2,3) == @view X[u...,2:end]
-    @test reshape(X[(1,)...,(2,)...,2:end],3) == @view X[(1,)...,(2,)...,2:end]
-
-    # the following tests fail on 0.5 because of bugs in the 0.5 Base.@view
-    # macro (a bugfix is scheduled to be backported from 0.6: julia#20247)
-    if !isdefined(Base, Symbol("@view")) || VERSION ≥ v"0.6.0-dev.2406"
-        # test macro hygiene
-        let size=(x,y)-> error("should not happen"), Base=nothing
-            @test X[1:end,2,2] == @view X[1:end,2,2]
-        end
-
-        # test that side effects occur only once
-        let foo = typeof(X)[X]
-            @test X[2:end-1] == @view (push!(foo,X)[1])[2:end-1]
-            @test foo == typeof(X)[X, X]
-        end
-    end
-
-    # test @views macro
-    @views @compat let f!(x) = x[1:end-1] .+= x[2:end].^2
-        x = [1,2,3,4]
-        f!(x)
-        @test x == [5,11,19,4]
-        @test isa(x[1:3],SubArray)
-        @test x[2] === 11
-        @test Dict((1:3) => 4)[1:3] === 4
-        x[1:2] .= 0
-        @test x == [0,0,19,4]
-        x[1:2] .= 5:6
-        @test x == [5,6,19,4]
-        f!(x[3:end])
-        @test x == [5,6,35,4]
-        x[Y[2:3]] .= 7:8
-        @test x == [5,8,7,4]
+    @views let
+        x = [5,8,7,4]
         @dotcompat x[([3],)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
         @test x == [5,8,10,4]
-        i = Int[]
-        # test that lhs expressions in update operations are evaluated only once:
-        x[push!(i,4)[1]] += 5
-        @test x == [5,8,10,9] && i == [4]
-        x[push!(i,3)[end]] += 2
-        @test x == [5,8,12,9] && i == [4,3]
         @dotcompat x[3:end] = 0       # make sure @. works with end expressions in @views
         @test x == [5,8,0,0]
-    end
-    # same tests, but make sure we can switch the order of @compat and @views
-    @compat @views let f!(x) = x[1:end-1] .+= x[2:end].^2
-        x = [1,2,3,4]
-        f!(x)
-        @test x == [5,11,19,4]
-        @test isa(x[1:3],SubArray)
-        @test x[2] === 11
-        @test Dict((1:3) => 4)[1:3] === 4
-        x[1:2] .= 0
-        @test x == [0,0,19,4]
-        x[1:2] .= 5:6
-        @test x == [5,6,19,4]
-        f!(x[3:end])
-        @test x == [5,6,35,4]
-        x[Y[2:3]] .= 7:8
-        @test x == [5,8,7,4]
-        @dotcompat x[([3],)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
-        @test x == [5,8,10,4]
-        i = Int[]
-        # test that lhs expressions in update operations are evaluated only once:
-        x[push!(i,4)[1]] += 5
-        @test x == [5,8,10,9] && i == [4]
-        x[push!(i,3)[end]] += 2
-        @test x == [5,8,12,9] && i == [4,3]
-        @dotcompat x[3:end] = 0       # make sure @. works with end expressions in @views
-        @test x == [5,8,0,0]
-    end
-    @views @test isa(X[1:3], SubArray)
-    @test X[1:end] == @views X[1:end]
-    @test X[1:end-3] == @views X[1:end-3]
-    @test X[1:end,2,2] == @views X[1:end,2,2]
-    @test reshape(X[1,2,1:end-2],2) == @views X[1,2,1:end-2]
-    @test reshape(X[1,2,Y[2:end]],3) == @views X[1,2,Y[2:end]]
-    @test reshape(X[1:end,2,Y[2:end]],2,3) == @views X[1:end,2,Y[2:end]]
-    @test reshape(X[u...,2:end],2,3) == @views X[u...,2:end]
-    @test reshape(X[(1,)...,(2,)...,2:end],3) == @views X[(1,)...,(2,)...,2:end]
-
-    # test macro hygiene
-    let size=(x,y)-> error("should not happen"), Base=nothing
-        @test X[1:end,2,2] == @views X[1:end,2,2]
     end
 end
-
 # @. (@__dot__) tests, from base:
 let x = [4, -9, 1, -16]
     @test [2, 3, 4, 5] == @dotcompat(1 + sqrt($sort(abs(x))))
