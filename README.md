@@ -120,15 +120,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
-* `@views` takes an expression and converts all slices to views ([#20164]), while
-  `@view` ([#16564]) converts a single array reference to a view ([#20164]).
-
-* `@__dot__` takes an expression and converts all assignments, function calls,
-  and operators to their broadcasting "dot-call" equivalents ([#20321]).   In Julia 0.6, this
-  can be abbreviated `@.`, but that macro name does not parse in earlier Julia versions.
-  For this to work in older versions of Julia (prior to 0.5) that don't have dot calls,
-  you should instead use `@dotcompat`, which combines the `@__dot__` and `@compat` macros.
-
 * [`normalize`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize) and [`normalize!`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize!), normalizes a vector with respect to the p-norm ([#13681])
 
 * `redirect_stdout`, `redirect_stderr`, and `redirect_stdin` take an optional function as a first argument, `redirect_std*(f, stream)`, so that one may use `do` block syntax (as first available for Julia 0.6)
@@ -497,7 +488,6 @@ includes this fix. Find the minimum version from there.
 `Compat <version>`
 
 [#13681]: https://github.com/JuliaLang/julia/issues/13681
-[#16564]: https://github.com/JuliaLang/julia/issues/16564
 [#16986]: https://github.com/JuliaLang/julia/issues/16986
 [#17302]: https://github.com/JuliaLang/julia/issues/17302
 [#17323]: https://github.com/JuliaLang/julia/issues/17323
@@ -517,8 +507,6 @@ includes this fix. Find the minimum version from there.
 [#19950]: https://github.com/JuliaLang/julia/issues/19950
 [#20005]: https://github.com/JuliaLang/julia/issues/20005
 [#20022]: https://github.com/JuliaLang/julia/issues/20022
-[#20164]: https://github.com/JuliaLang/julia/issues/20164
-[#20321]: https://github.com/JuliaLang/julia/issues/20321
 [#20407]: https://github.com/JuliaLang/julia/issues/20407
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
