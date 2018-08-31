@@ -145,8 +145,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * The `isabstract`, `parameter_upper_bound`, `typename` reflection methods were added in Julia 0.6. This package re-exports these from the `Compat.TypeUtils` submodule. On earlier versions of julia, that module contains the same functions, but operating on the pre-0.6 type system representation.
 
-* `broadcast` is supported on tuples of the same lengths on 0.5. ([#16986])
-
 * `zeros` and `ones` support an interface the same as `similar` ([#19635])
 
 * `convert` can convert between different `Set` types on 0.5 and below. ([#18727])
@@ -482,7 +480,6 @@ includes this fix. Find the minimum version from there.
 `Compat <version>`
 
 [#13681]: https://github.com/JuliaLang/julia/issues/13681
-[#16986]: https://github.com/JuliaLang/julia/issues/16986
 [#17302]: https://github.com/JuliaLang/julia/issues/17302
 [#17323]: https://github.com/JuliaLang/julia/issues/17323
 [#17623]: https://github.com/JuliaLang/julia/issues/17623

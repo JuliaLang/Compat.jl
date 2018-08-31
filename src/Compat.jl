@@ -142,11 +142,6 @@ else
     end
 end
 
-# broadcast over same length tuples, from julia#16986
-@static if VERSION < v"0.6.0-dev.693"
-    Base.Broadcast.broadcast{N}(f, t::NTuple{N}, ts::Vararg{NTuple{N}}) = map(f, t, ts...)
-end
-
 # julia#18484
 @static if VERSION < v"0.6.0-dev.848"
     unsafe_get(x::Nullable) = x.value

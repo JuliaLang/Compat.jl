@@ -7,11 +7,6 @@ using Compat.SparseArrays
 
 const struct_sym = VERSION < v"0.7.0-DEV.1263" ? :type : :struct
 
-# Issue #291
-# 0.6
-@test (1, 2) == @compat abs.((1, -2))
-@test broadcast(+, (1.0, 1.0), (0, -2.0)) == (1.0,-1.0)
-
 for os in [:apple, :bsd, :linux, :unix, :windows]
     from_base = if VERSION >= v"0.7.0-DEV.914"
         Expr(:., Expr(:., :Base, Base.Meta.quot(:Sys)), Base.Meta.quot(Symbol("is", os)))
