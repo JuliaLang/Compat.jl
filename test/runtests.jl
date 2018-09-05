@@ -1565,4 +1565,12 @@ if VERSION < v"0.7.0-beta2.143"
     end
 end
 
+@test repeat([1, 2], 3) == [1, 2, 1, 2, 1, 2]
+@test repeat(1:4, 2) == [1, 2, 3, 4, 1, 2, 3, 4]
+@test repeat([1 2; 3 4], 2, 3) == [1  2  1  2  1  2
+                                   3  4  3  4  3  4
+                                   1  2  1  2  1  2
+                                   3  4  3  4  3  4]
+@test repeat([1, 2], 1, 2, 3) == [x for x in 1:2, y in 1:2, z in 1:3]
+
 nothing

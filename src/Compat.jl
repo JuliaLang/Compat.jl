@@ -1739,6 +1739,12 @@ if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
     end
 end
 
+if VERSION < v"0.7.0-DEV.3977" #26039
+    Base.repeat(A::AbstractArray, counts::Integer...) = Base.repeat(A, outer = counts)
+    Base.repeat(a::AbstractVecOrMat, m::Integer, n::Integer=1) = Base.repmat(a, m, n)
+    Base.repeat(a::AbstractVector, m::Integer) = Base.repmat(a, m)
+end
+
 if VERSION < v"0.7.0-DEV.2337"
     # qr doesn't take the full keyword anymore since 0.7.0-DEV.5211; we still support it
     # here to avoid unneccesary breakage
