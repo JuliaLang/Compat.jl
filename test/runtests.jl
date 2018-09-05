@@ -7,110 +7,6 @@ using Compat.SparseArrays
 
 const struct_sym = VERSION < v"0.7.0-DEV.1263" ? :type : :struct
 
-# Issue #291
-# 0.6
-@test (1, 2) == @compat abs.((1, -2))
-@test broadcast(+, (1.0, 1.0), (0, -2.0)) == (1.0,-1.0)
-
-# Test for `take!(::Task)`/`take!(::Channel)`
-# 0.6
-dirwalk = mktempdir()
-cd(dirwalk) do
-    for i=1:2
-        mkdir("sub_dir$i")
-        open("file$i", "w") do f end
-
-        mkdir(joinpath("sub_dir1", "subsub_dir$i"))
-        touch(joinpath("sub_dir1", "file$i"))
-    end
-    touch(joinpath("sub_dir2", "file_dir2"))
-    has_symlinks = Compat.Sys.isunix() ? true : (isdefined(Base, :WINDOWS_VISTA_VER) && Base.windows_version() >= Base.WINDOWS_VISTA_VER)
-    follow_symlink_vec = has_symlinks ? [true, false] : [false]
-    has_symlinks && symlink(abspath("sub_dir2"), joinpath("sub_dir1", "link"))
-    for follow_symlinks in follow_symlink_vec
-        chnl = walkdir(".", follow_symlinks=follow_symlinks)
-        root, dirs, files = take!(chnl)
-        @test root == "."
-        @test dirs == ["sub_dir1", "sub_dir2"]
-        @test files == ["file1", "file2"]
-
-        root, dirs, files = take!(chnl)
-        @test root == joinpath(".", "sub_dir1")
-        @test dirs == (has_symlinks ? ["link", "subsub_dir1", "subsub_dir2"] : ["subsub_dir1", "subsub_dir2"])
-        @test files == ["file1", "file2"]
-
-        root, dirs, files = take!(chnl)
-        if follow_symlinks
-            @test root == joinpath(".", "sub_dir1", "link")
-            @test dirs == []
-            @test files == ["file_dir2"]
-            root, dirs, files = take!(chnl)
-        end
-        for i=1:2
-            @test root == joinpath(".", "sub_dir1", "subsub_dir$i")
-            @test dirs == []
-            @test files == []
-            root, dirs, files = take!(chnl)
-        end
-
-        @test root == joinpath(".", "sub_dir2")
-        @test dirs == []
-        @test files == ["file_dir2"]
-    end
-
-    for follow_symlinks in follow_symlink_vec
-        chnl = walkdir(".", follow_symlinks=follow_symlinks, topdown=false)
-        root, dirs, files = take!(chnl)
-        if follow_symlinks
-            @test root == joinpath(".", "sub_dir1", "link")
-            @test dirs == []
-            @test files == ["file_dir2"]
-            root, dirs, files = take!(chnl)
-        end
-        for i=1:2
-            @test root == joinpath(".", "sub_dir1", "subsub_dir$i")
-            @test dirs == []
-            @test files == []
-            root, dirs, files = take!(chnl)
-        end
-        @test root == joinpath(".", "sub_dir1")
-        @test dirs ==  (has_symlinks ? ["link", "subsub_dir1", "subsub_dir2"] : ["subsub_dir1", "subsub_dir2"])
-        @test files == ["file1", "file2"]
-
-        root, dirs, files = take!(chnl)
-        @test root == joinpath(".", "sub_dir2")
-        @test dirs == []
-        @test files == ["file_dir2"]
-
-        root, dirs, files = take!(chnl)
-        @test root == "."
-        @test dirs == ["sub_dir1", "sub_dir2"]
-        @test files == ["file1", "file2"]
-    end
-    #test of error handling
-    chnl_error = walkdir(".")
-    chnl_noerror = walkdir(".", onerror=x->x)
-    root, dirs, files = take!(chnl_error)
-    @test root == "."
-    @test dirs == ["sub_dir1", "sub_dir2"]
-    @test files == ["file1", "file2"]
-
-    rm(joinpath("sub_dir1"), recursive=true)
-    @test_throws SystemError take!(chnl_error) # throws an error because sub_dir1 do not exist
-
-    root, dirs, files = take!(chnl_noerror)
-    @test root == "."
-    @test dirs == ["sub_dir1", "sub_dir2"]
-    @test files == ["file1", "file2"]
-
-    root, dirs, files = take!(chnl_noerror) # skips sub_dir1 as it no longer exist
-    @test root == joinpath(".", "sub_dir2")
-    @test dirs == []
-    @test files == ["file_dir2"]
-
-end
-rm(dirwalk, recursive=true)
-
 for os in [:apple, :bsd, :linux, :unix, :windows]
     from_base = if VERSION >= v"0.7.0-DEV.914"
         Expr(:., Expr(:., :Base, Base.Meta.quot(:Sys)), Base.Meta.quot(Symbol("is", os)))
@@ -119,37 +15,6 @@ for os in [:apple, :bsd, :linux, :unix, :windows]
     end
     @eval @test Compat.Sys.$(Symbol("is", os))() == $from_base()
 end
-
-# do-block redirect_std*
-# 0.6
-let filename = tempname()
-    ret = open(filename, "w") do f
-        redirect_stdout(f) do
-            println("hello")
-            [1,3]
-        end
-    end
-    @test ret == [1,3]
-    @test chomp(read(filename, String)) == "hello"
-    ret = open(filename, "w") do f
-        redirect_stderr(f) do
-            println(stderr, "WARNING: hello")
-            [2]
-        end
-    end
-    @test ret == [2]
-    @test occursin("WARNING: hello", read(filename, String))
-    ret = open(filename) do f
-        redirect_stdin(f) do
-            readline()
-        end
-    end
-    @test occursin("WARNING: hello", ret)
-    rm(filename)
-end
-
-# 0.6
-@test @__DIR__() == dirname(@__FILE__)
 
 # PR #17302
 # To be removed when 0.6 support is dropped.
@@ -175,52 +40,6 @@ else
     end
 end
 
-if VERSION < v"0.7.0-DEV.3017"
-    types = [
-        Bool,
-        Float16,
-        Float32,
-        Float64,
-        Int128,
-        Int16,
-        Int32,
-        Int64,
-        Int8,
-        UInt16,
-        UInt32,
-        UInt64,
-        UInt8,
-    ]
-    for T in types
-        # julia#18484, generic isnull, unsafe_get
-        a = one(T)
-        x = Nullable(a, true)
-        @test isequal(unsafe_get(x), a)
-
-        x = Nullable{Array{T}}()
-        @test_throws UndefRefError unsafe_get(x)
-    end
-end
-
-@test xor(1,5) == 4
-@test 1 ⊻ 5 == 4
-
-# supertype operator
-@test !(Int >: Integer)
-@test Integer >: Int
-
-# julia#19246
-@test numerator(1//2) === 1
-@test denominator(1//2) === 2
-
-# julia#19088
-let io = IOBuffer()
-    write(io, "aaa")
-    @test take!(io) == UInt8['a', 'a', 'a']
-    write(io, "bbb")
-    @test String(take!(io)) == "bbb"
-end
-
 let s = "Koala test: 🐨"
     @test transcode(UInt16, s) == UInt16[75,111,97,108,97,32,116,101,115,116,58,32,55357,56360]
     @test transcode(UInt32, s) == UInt32[75,111,97,108,97,32,116,101,115,116,58,32,128040]
@@ -231,22 +50,6 @@ let s = "Koala test: 🐨"
     end
 end
 
-# julia#19950, tests from Base (#20028)
-for T in (Float16, Float32, Float64, BigFloat, Int8, Int16, Int32, Int64, Int128,
-          BigInt, UInt8, UInt16, UInt32, UInt64, UInt128)
-    @test iszero(T(0))
-    @test iszero(Complex{T}(0))
-    if T<:Integer
-        @test iszero(Rational{T}(0))
-    end
-    if T<:AbstractFloat
-        @test iszero(T(-0.0))
-        @test iszero(Complex{T}(-0.0))
-    end
-end
-@test !iszero([0, 1, 2, 3])
-@test iszero([0, 0, 0, 0])
-
 let
     x = view(1:10, 2:4)
     D = Diagonal(x)
@@ -256,15 +59,6 @@ let
     @test D*A == Diagonal(copy(x)) * copy(A)
     @test A*D == copy(A) * Diagonal(copy(x))
 end
-
-# julia#17623
-# 0.6
-@test [true, false] .& [true, true] == [true, false]
-@test [true, false] .| [true, true] == [true, true]
-
-# julia#20022
-@test !Compat.isapprox(NaN, NaN)
-@test Compat.isapprox(NaN, NaN, nans=true)
 
 # julia#13998
 for x in (3.1, -17, 3//4, big(111.1), Inf)

@@ -72,10 +72,6 @@ end
     export @nospecialize
 end
 
-if VERSION < v"0.6.0-dev.2043"
-    Base.take!(t::Task) = consume(t)
-end
-
 # https://github.com/JuliaLang/julia/pull/22064
 @static if !isdefined(Base, Symbol("@__MODULE__"))
     # 0.7
@@ -89,24 +85,6 @@ end
         eval(mod, :(include_string($code, $fname)))
     Base.include_string(mod::Module, code::AbstractString, fname::AbstractString="string") =
         eval(mod, :(include_string($code, $fname)))
-end
-
-import Base: redirect_stdin, redirect_stdout, redirect_stderr
-if VERSION < v"0.6.0-dev.374"
-    for (F,S) in ((:redirect_stdin, :STDIN), (:redirect_stdout, :STDOUT), (:redirect_stderr, :STDERR))
-        @eval function $F(f::Function, stream)
-            STDOLD = $S
-            $F(stream)
-            try f() finally $F(STDOLD) end
-        end
-    end
-end
-
-@static if VERSION < v"0.6.0-dev.528"
-    macro __DIR__()
-        Base.source_dir()
-    end
-    export @__DIR__
 end
 
 # PR #17302
@@ -162,74 +140,6 @@ else
             @deprecate $f(x::$AbstractArray{T1}, y::$AbstractArray{T2}) where {T1<:$S, T2<:$S} $f.(x, y)
         end)
     end
-end
-
-# broadcast over same length tuples, from julia#16986
-@static if VERSION < v"0.6.0-dev.693"
-    Base.Broadcast.broadcast{N}(f, t::NTuple{N}, ts::Vararg{NTuple{N}}) = map(f, t, ts...)
-end
-
-# julia#18484
-@static if VERSION < v"0.6.0-dev.848"
-    unsafe_get(x::Nullable) = x.value
-    unsafe_get(x) = x
-    export unsafe_get
-    Base.isnull(x) = false
-end
-
-# julia#18977
-@static if !isdefined(Base, :xor)
-    # 0.6
-    const xor = $
-    const ⊻ = xor
-    export xor, ⊻
-end
-
-# julia#19246
-@static if !isdefined(Base, :numerator)
-    # 0.6
-    const numerator = num
-    const denominator = den
-    export numerator, denominator
-end
-
-# julia #19950
-@static if !isdefined(Base, :iszero)
-    # 0.6
-    iszero(x) = x == zero(x)
-    iszero(x::Number) = x == 0
-    iszero(x::AbstractArray) = all(iszero, x)
-    export iszero
-end
-
-# julia　#20407
-@static if !isdefined(Base, :(>:))
-    # 0.6
-    const >: = let
-        _issupertype(a::ANY, b::ANY) = issubtype(b, a)
-    end
-    export >:
-end
-
-# julia#19088
-if VERSION < v"0.6.0-dev.1256"
-    Base.take!(io::Base.AbstractIOBuffer) = takebuf_array(io)
-end
-
-if VERSION < v"0.6.0-dev.1632"
-    # To work around unsupported syntax on Julia 0.4
-    include_string("export .&, .|")
-    include_string(".&(xs...) = broadcast(&, xs...)")
-    include_string(".|(xs...) = broadcast(|, xs...)")
-end
-
-@static if VERSION < v"0.6.0-dev.2093" # Compat.isapprox to allow for NaNs
-    using Base.rtoldefault
-    function isapprox(x::Number, y::Number; rtol::Real=rtoldefault(x,y), atol::Real=0, nans::Bool=false)
-        x == y || (isfinite(x) && isfinite(y) && abs(x-y) <= atol + rtol*max(abs(x), abs(y))) || (nans && isnan(x) && isnan(y))
-    end
-else
-    import Base.isapprox
 end
 
 @static if !isdefined(Base, :isabstracttype) # VERSION < v"0.7.0-DEV.3475"

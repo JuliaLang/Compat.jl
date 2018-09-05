@@ -122,22 +122,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * [`normalize`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize) and [`normalize!`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize!), normalizes a vector with respect to the p-norm ([#13681])
 
-* `redirect_stdout`, `redirect_stderr`, and `redirect_stdin` take an optional function as a first argument, `redirect_std*(f, stream)`, so that one may use `do` block syntax (as first available for Julia 0.6)
-
-* `unsafe_get` returns the `:value` field of a `Nullable` object without any null-check and has a generic fallback for non-`Nullable` argument ([#18484])
-
-* `isnull` has a generic fallback for non-`Nullable` argument
-
 * `transcode` converts between UTF-xx string encodings in Julia 0.5 (as a lightweight
    alternative to the LegacyStrings package) ([#17323])
-
-* `>:`, a supertype operator for symmetry with `issubtype` (`A >: B` is equivalent to `B <: A`), can be used in 0.5 and earlier ([#20407]).
-
-* `iszero(x)` efficiently checks whether `x == zero(x)` (including arrays) can be used in 0.5 and earlier ([#19950]).
-
-* `.&` and `.|` are short syntax for `broadcast(&, xs...)` and `broadcast(|, xs...)` (respectively) in Julia 0.6 (only supported on Julia 0.5 and above) ([#17623])
-
-* `Compat.isapprox` with `nans` keyword argument ([#20022])
 
 * `Compat.readline` with `keep` keyword argument ([#25646])
 
@@ -145,11 +131,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.readuntil` with `keep` keyword argument ([#25646])
 
-* `take!` method for `Task`s since some functions now return `Channel`s instead of `Task`s ([#19841])
-
 * The `isabstract`, `parameter_upper_bound`, `typename` reflection methods were added in Julia 0.6. This package re-exports these from the `Compat.TypeUtils` submodule. On earlier versions of julia, that module contains the same functions, but operating on the pre-0.6 type system representation.
-
-* `broadcast` is supported on tuples of the same lengths on 0.5. ([#16986])
 
 * `zeros` and `ones` support an interface the same as `similar` ([#19635])
 
@@ -283,12 +265,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
-* `$` is now `xor` or `⊻` ([#18977])
-
-* `num` and `den` are now `numerator` and `denominator` ([#19246])
-
-* `takebuf_array` is now a method of `take!`. `takebuf_string(io)` becomes `String(take!(io))` ([#19088])
-
 * `is_apple`, `is_bsd`, `is_linux`, `is_unix`, and `is_windows` are now `Sys.isapple`, `Sys.isbsd`,
   `Sys.islinux`, `Sys.isunix`, and `Sys.iswindows`, respectively. These are available in the `Compat.Sys`
   submodule. ([#22182])
@@ -403,8 +379,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New macros
 
-* `@__DIR__` has been added ([#18380])
-
 * `@vectorize_1arg` and `@vectorize_2arg` are deprecated on Julia 0.6 in favor
   of the broadcast syntax ([#17302]). `Compat.@dep_vectorize_1arg` and
   `Compat.@dep_vectorize_2arg` are provided so that packages can still provide
@@ -488,26 +462,15 @@ includes this fix. Find the minimum version from there.
 `Compat <version>`
 
 [#13681]: https://github.com/JuliaLang/julia/issues/13681
-[#16986]: https://github.com/JuliaLang/julia/issues/16986
 [#17302]: https://github.com/JuliaLang/julia/issues/17302
 [#17323]: https://github.com/JuliaLang/julia/issues/17323
-[#17623]: https://github.com/JuliaLang/julia/issues/17623
 [#18082]: https://github.com/JuliaLang/julia/issues/18082
-[#18380]: https://github.com/JuliaLang/julia/issues/18380
-[#18484]: https://github.com/JuliaLang/julia/issues/18484
 [#18629]: https://github.com/JuliaLang/julia/issues/18629
 [#18727]: https://github.com/JuliaLang/julia/issues/18727
-[#18977]: https://github.com/JuliaLang/julia/issues/18977
-[#19088]: https://github.com/JuliaLang/julia/issues/19088
-[#19246]: https://github.com/JuliaLang/julia/issues/19246
 [#19449]: https://github.com/JuliaLang/julia/issues/19449
 [#19635]: https://github.com/JuliaLang/julia/issues/19635
 [#19784]: https://github.com/JuliaLang/julia/issues/19784
-[#19841]: https://github.com/JuliaLang/julia/issues/19841
-[#19950]: https://github.com/JuliaLang/julia/issues/19950
 [#20005]: https://github.com/JuliaLang/julia/issues/20005
-[#20022]: https://github.com/JuliaLang/julia/issues/20022
-[#20407]: https://github.com/JuliaLang/julia/issues/20407
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
 [#21346]: https://github.com/JuliaLang/julia/issues/21346
