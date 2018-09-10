@@ -183,22 +183,14 @@ end
 # TODO deprecate/remove this unexported binding (along wiht its tests)
 using Base: StringVector
 
-# https://github.com/JuliaLang/julia/pull/19784
-@static if isdefined(Base, :invokelatest)
-    # https://github.com/JuliaLang/julia/pull/22646
-    if VERSION < v"0.7.0-DEV.1139"
-        function invokelatest(f, args...; kwargs...)
-            inner() = f(args...; kwargs...)
-            Base.invokelatest(inner)
-        end
-    else
-        import Base.invokelatest
+# https://github.com/JuliaLang/julia/pull/22646
+if VERSION < v"0.7.0-DEV.1139"
+    function invokelatest(f, args...; kwargs...)
+        inner() = f(args...; kwargs...)
+        Base.invokelatest(inner)
     end
 else
-    function invokelatest(f, args...; kwargs...)
-        kw = [Expr(:kw, k, QuoteNode(v)) for (k, v) in kwargs]
-        eval(current_module(), Expr(:call, f, map(QuoteNode, args)..., kw...))
-    end
+    import Base.invokelatest
 end
 
 # https://github.com/JuliaLang/julia/pull/21197

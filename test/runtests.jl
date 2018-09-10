@@ -180,17 +180,7 @@ using Compat.Test
 @test (@__MODULE__) === Test22064
 end
 
-# invokelatest
-issue19774(x) = 1
-let foo() = begin
-        eval(:(issue19774(x::Int) = 2))
-        return Compat.invokelatest(issue19774, 0)
-    end
-    @test foo() == 2
-end
-cm359() = @__MODULE__
-@test Compat.invokelatest(cm359) === @__MODULE__
-
+# invokelatest with keywords
 pr22646(x; y=0) = 1
 let foo() = begin
         eval(:(pr22646(x::Int; y=0) = 2))
