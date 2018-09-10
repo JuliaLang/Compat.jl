@@ -120,11 +120,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
-* [`normalize`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize) and [`normalize!`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize!), normalizes a vector with respect to the p-norm ([#13681])
-
-* `transcode` converts between UTF-xx string encodings in Julia 0.5 (as a lightweight
-   alternative to the LegacyStrings package) ([#17323])
-
 * `Compat.readline` with `keep` keyword argument ([#25646])
 
 * `Compat.eachline` with `keep` keyword argument ([#25646])
@@ -447,9 +442,7 @@ includes this fix. Find the minimum version from there.
 * Now specify the correct minimum version for Compat in your REQUIRE file by
 `Compat <version>`
 
-[#13681]: https://github.com/JuliaLang/julia/issues/13681
 [#17302]: https://github.com/JuliaLang/julia/issues/17302
-[#17323]: https://github.com/JuliaLang/julia/issues/17323
 [#20005]: https://github.com/JuliaLang/julia/issues/20005
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
