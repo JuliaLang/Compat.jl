@@ -133,8 +133,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * The `isabstract`, `parameter_upper_bound`, `typename` reflection methods were added in Julia 0.6. This package re-exports these from the `Compat.TypeUtils` submodule. On earlier versions of julia, that module contains the same functions, but operating on the pre-0.6 type system representation.
 
-* `unsafe_trunc(::Type{<:Integer}, ::Integer)` is supported on 0.5. ([#18629])
-
 * `bswap` is supported for `Complex` arguments on 0.5 and below. ([#21346])
 
 * `Compat.invokelatest` is equivalent to `Base.invokelatest` in Julia 0.6,
@@ -460,7 +458,6 @@ includes this fix. Find the minimum version from there.
 [#13681]: https://github.com/JuliaLang/julia/issues/13681
 [#17302]: https://github.com/JuliaLang/julia/issues/17302
 [#17323]: https://github.com/JuliaLang/julia/issues/17323
-[#18629]: https://github.com/JuliaLang/julia/issues/18629
 [#19449]: https://github.com/JuliaLang/julia/issues/19449
 [#19784]: https://github.com/JuliaLang/julia/issues/19784
 [#20005]: https://github.com/JuliaLang/julia/issues/20005
