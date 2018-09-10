@@ -180,11 +180,6 @@ import Base.Iterators # TODO deprecate, remove
     readuntil(f, d::Vector{T}; keep::Bool = false) where {T<:Union{UInt8,Char}} = convert(Vector{T}, readuntil(f, String(d), keep=keep))
 end
 
-# https://github.com/JuliaLang/julia/pull/21346
-if VERSION < v"0.6.0-pre.beta.102"
-    Base.bswap(z::Complex) = Complex(bswap(real(z)), bswap(imag(z)))
-end
-
 # https://github.com/JuliaLang/julia/pull/19449
 @static if VERSION < v"0.6.0-dev.1988"
     StringVector(n::Integer) = Vector{UInt8}(n)

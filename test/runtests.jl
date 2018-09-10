@@ -162,16 +162,6 @@ for (t, s, m, kept) in [
     @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}, keep=true) == Vector{Char}(kept)
 end
 
-# PR 21346
-let zbuf = IOBuffer([0xbf, 0xc0, 0x00, 0x00, 0x40, 0x20, 0x00, 0x00,
-                     0x40, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                     0xc0, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
-    z1 = read(zbuf, ComplexF32)
-    z2 = read(zbuf, ComplexF64)
-    @test bswap(z1) === -1.5f0 + 2.5f0im
-    @test bswap(z2) ===  3.5 - 4.5im
-end
-
 # PR 19449
 using Compat: StringVector
 @test length(StringVector(5)) == 5
