@@ -356,11 +356,9 @@ if VERSION < v"0.7.0-DEV.755"
                 end
                 return corrected::Bool
             end
-            if VERSION >= v"0.6"
-                (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = Base.cov(x, _get_corrected(kws))
-                (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVector, Y::AbstractVector) =
-                    Base.cov(X, Y, _get_corrected(kws))
-            end
+            (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = Base.cov(x, _get_corrected(kws))
+            (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVector, Y::AbstractVector) =
+                Base.cov(X, Y, _get_corrected(kws))
             (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractMatrix, vardim::Int) =
                 Base.cov(x, vardim, _get_corrected(kws))
             (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVecOrMat, Y::AbstractVecOrMat,
@@ -404,35 +402,7 @@ end
     pairs(collection) = Base.Generator(=>, keys(collection), values(collection))
     pairs(a::Associative) = a
 
-    # 0.6.0-dev+2834
-    @static if !isdefined(Iterators, :IndexValue)
-        include_string(@__MODULE__, """
-            immutable IndexValue{I,A<:AbstractArray}
-                data::A
-                itr::I
-            end
-        """)
-
-        Base.length(v::IndexValue)  = length(v.itr)
-        Base.indices(v::IndexValue) = indices(v.itr)
-        Base.size(v::IndexValue)    = size(v.itr)
-        @inline Base.start(v::IndexValue) = start(v.itr)
-        Base.@propagate_inbounds function Base.next(v::IndexValue, state)
-            indx, n = next(v.itr, state)
-            item = v.data[indx]
-            (indx => item), n
-        end
-        @inline Base.done(v::IndexValue, state) = done(v.itr, state)
-
-        Base.eltype{I,A}(::Type{IndexValue{I,A}}) = Pair{eltype(I), eltype(A)}
-
-        Base.iteratorsize{I}(::Type{IndexValue{I}}) = iteratorsize(I)
-        Base.iteratoreltype{I}(::Type{IndexValue{I}}) = iteratoreltype(I)
-
-        Base.reverse(v::IndexValue) = IndexValue(v.data, reverse(v.itr))
-    else
-        const IndexValue = Iterators.IndexValue
-    end
+    const IndexValue = Iterators.IndexValue
 
     pairs(::IndexLinear,    A::AbstractArray) = IndexValue(A, linearindices(A))
     pairs(::IndexCartesian, A::AbstractArray) = IndexValue(A, CartesianRange(indices(A)))
@@ -929,27 +899,6 @@ module Unicode
         isassigned(c) = is_assigned_char(c)
         normalize(s::AbstractString; kws...) = normalize_string(s; kws...)
         normalize(s::AbstractString, nf::Symbol) = normalize_string(s, nf)
-
-        # 0.6.0-dev.1404 (https://github.com/JuliaLang/julia/pull/19469)
-        if !isdefined(Base, :titlecase)
-            titlecase(c::Char) = isascii(c) ? ('a' <= c <= 'z' ? c - 0x20 : c) :
-                Char(ccall(:utf8proc_totitle, UInt32, (UInt32,), c))
-
-            function titlecase(s::AbstractString)
-                startword = true
-                b = IOBuffer()
-                for c in s
-                    if isspace(c)
-                        print(b, c)
-                        startword = true
-                    else
-                        print(b, startword ? titlecase(c) : c)
-                        startword = false
-                    end
-                end
-                return String(take!(b))
-            end
-        end
     else
         using Unicode
         import Unicode: isassigned, normalize # not exported from Unicode module due to conflicts
