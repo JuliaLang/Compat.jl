@@ -162,22 +162,6 @@ for (t, s, m, kept) in [
     @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}, keep=true) == Vector{Char}(kept)
 end
 
-# PR 18727
-let
-    iset = Set([17, 4711])
-    cfset = convert(Set{Float64}, iset)
-    @test typeof(cfset) == Set{Float64}
-    @test cfset == iset
-    fset = Set([17.0, 4711.0])
-    ciset = convert(Set{Int}, fset)
-    @test typeof(ciset) == Set{Int}
-    @test ciset == fset
-    ssset = Set(split("foo bar"))
-    cssset = convert(Set{String}, ssset)
-    @test typeof(cssset) == Set{String}
-    @test cssset == Set(["foo", "bar"])
-end
-
 # PR 18082
 @test !isassigned(Ref{String}())
 @test isassigned(Ref{String}("Test"))

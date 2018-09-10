@@ -180,12 +180,6 @@ import Base.Iterators # TODO deprecate, remove
     readuntil(f, d::Vector{T}; keep::Bool = false) where {T<:Union{UInt8,Char}} = convert(Vector{T}, readuntil(f, String(d), keep=keep))
 end
 
-# https://github.com/JuliaLang/julia/pull/18727
-@static if VERSION < v"0.6.0-dev.838"
-    Base.convert{T}(::Type{Set{T}}, s::Set{T}) = s
-    Base.convert{T}(::Type{Set{T}}, s::Set) = Set{T}(s)
-end
-
 # https://github.com/JuliaLang/julia/pull/18082
 if VERSION < v"0.6.0-dev.2347"
     Base.isassigned(x::Base.RefValue) = isdefined(x, :x)
