@@ -180,12 +180,8 @@ import Base.Iterators # TODO deprecate, remove
     readuntil(f, d::Vector{T}; keep::Bool = false) where {T<:Union{UInt8,Char}} = convert(Vector{T}, readuntil(f, String(d), keep=keep))
 end
 
-# https://github.com/JuliaLang/julia/pull/19449
-@static if VERSION < v"0.6.0-dev.1988"
-    StringVector(n::Integer) = Vector{UInt8}(n)
-else
-    using Base: StringVector
-end
+# TODO deprecate/remove this unexported binding (along wiht its tests)
+using Base: StringVector
 
 # https://github.com/JuliaLang/julia/pull/19784
 @static if isdefined(Base, :invokelatest)

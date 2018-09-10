@@ -163,9 +163,15 @@ for (t, s, m, kept) in [
 end
 
 # PR 19449
+# TODO remove these tests when Compat.StringVector is deprecated
 using Compat: StringVector
 @test length(StringVector(5)) == 5
 @test String(fill!(StringVector(5), 0x61)) == "aaaaa"
+let x = fill!(StringVector(5), 0x61)
+    # 0.7
+    @test pointer(x) == pointer(String(x))
+end
+
 
 # PR 22064
 module Test22064
@@ -246,11 +252,6 @@ eval(Expr(struct_sym, false, :TestType, Expr(:block, :(a::Int), :b)))
 
 # PR 22761
 @test_throws OverflowError throw(OverflowError("overflow"))
-
-let x = fill!(StringVector(5), 0x61)
-    # 0.7
-    @test pointer(x) == pointer(String(x))
-end
 
 # PR 22907
 using Compat: pairs
