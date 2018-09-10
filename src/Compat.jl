@@ -160,17 +160,6 @@ include("arraymacros.jl")
 # julia #18839
 import Base.Iterators # TODO deprecate, remove
 
-if VERSION < v"0.6.0-dev.1653"
-    for (fname, felt) in ((:zeros,:zero), (:ones,:one))
-        @eval begin
-            # allow signature of similar
-            Base.$fname(a::AbstractArray, T::Type, dims::Tuple) = fill!(similar(a, T, dims), $felt(T))
-            Base.$fname(a::AbstractArray, T::Type, dims...) = fill!(similar(a,T,dims...), $felt(T))
-            Base.$fname(a::AbstractArray, T::Type=eltype(a)) = fill!(similar(a,T), $felt(T))
-        end
-    end
-end
-
 # https://github.com/JuliaLang/julia/pull/25646
 @static if VERSION < v"0.7.0-DEV.3510"
     # not exported
