@@ -162,10 +162,6 @@ for (t, s, m, kept) in [
     @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}, keep=true) == Vector{Char}(kept)
 end
 
-# PR 18082
-@test !isassigned(Ref{String}())
-@test isassigned(Ref{String}("Test"))
-
 @test unsafe_trunc(Int8, 128) === Int8(-128)
 @test_throws InexactError trunc(Int8, 128)
 

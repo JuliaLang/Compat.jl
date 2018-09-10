@@ -180,11 +180,6 @@ import Base.Iterators # TODO deprecate, remove
     readuntil(f, d::Vector{T}; keep::Bool = false) where {T<:Union{UInt8,Char}} = convert(Vector{T}, readuntil(f, String(d), keep=keep))
 end
 
-# https://github.com/JuliaLang/julia/pull/18082
-if VERSION < v"0.6.0-dev.2347"
-    Base.isassigned(x::Base.RefValue) = isdefined(x, :x)
-end
-
 @static if VERSION < v"0.6.0-dev.735"
     Base.unsafe_trunc{T<:Integer}(::Type{T}, x::Integer) = rem(x, T)
 end
