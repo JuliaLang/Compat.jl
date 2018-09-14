@@ -120,11 +120,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
-* [`normalize`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize) and [`normalize!`](http://docs.julialang.org/en/latest/stdlib/linalg/?highlight=normalize#Base.normalize!), normalizes a vector with respect to the p-norm ([#13681])
-
-* `transcode` converts between UTF-xx string encodings in Julia 0.5 (as a lightweight
-   alternative to the LegacyStrings package) ([#17323])
-
 * `Compat.readline` with `keep` keyword argument ([#25646])
 
 * `Compat.eachline` with `keep` keyword argument ([#25646])
@@ -133,23 +128,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * The `isabstract`, `parameter_upper_bound`, `typename` reflection methods were added in Julia 0.6. This package re-exports these from the `Compat.TypeUtils` submodule. On earlier versions of julia, that module contains the same functions, but operating on the pre-0.6 type system representation.
 
-* `zeros` and `ones` support an interface the same as `similar` ([#19635])
-
-* `convert` can convert between different `Set` types on 0.5 and below. ([#18727])
-
-* `isassigned(::RefValue)` is supported on 0.5 and below. ([#18082])
-
-* `unsafe_trunc(::Type{<:Integer}, ::Integer)` is supported on 0.5. ([#18629])
-
-* `bswap` is supported for `Complex` arguments on 0.5 and below. ([#21346])
-
-* `Compat.invokelatest` is equivalent to `Base.invokelatest` in Julia 0.6,
-  but works in Julia 0.5+, and allows you to guarantee that a function call
-  invokes the latest version of a function ([#19784]).
-
 * `Compat.invokelatest` supports keywords ([#22646]).
-
-* `Compat.StringVector` is supported on 0.5 and below. On 0.6 and later, it aliases `Base.StringVector`. This function allocates a `Vector{UInt8}` whose data can be made into a `String` in constant time; that is, without copying. On 0.5 and later, use `String(...)` with the vector allocated by `StringVector` as an argument to create a string without copying. Note that if 0.4 support is needed, `Compat.UTF8String(...)` should be used instead. ([#19449])
 
 * `@__MODULE__` is aliased to `current_module()` for Julia versions 0.6 and below. Versions of `Base.binding_module`, `expand`, `macroexpand`, and `include_string` were added that accept a module as the first argument. ([#22064])
 
@@ -463,19 +442,10 @@ includes this fix. Find the minimum version from there.
 * Now specify the correct minimum version for Compat in your REQUIRE file by
 `Compat <version>`
 
-[#13681]: https://github.com/JuliaLang/julia/issues/13681
 [#17302]: https://github.com/JuliaLang/julia/issues/17302
-[#17323]: https://github.com/JuliaLang/julia/issues/17323
-[#18082]: https://github.com/JuliaLang/julia/issues/18082
-[#18629]: https://github.com/JuliaLang/julia/issues/18629
-[#18727]: https://github.com/JuliaLang/julia/issues/18727
-[#19449]: https://github.com/JuliaLang/julia/issues/19449
-[#19635]: https://github.com/JuliaLang/julia/issues/19635
-[#19784]: https://github.com/JuliaLang/julia/issues/19784
 [#20005]: https://github.com/JuliaLang/julia/issues/20005
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
-[#21346]: https://github.com/JuliaLang/julia/issues/21346
 [#21709]: https://github.com/JuliaLang/julia/issues/21709
 [#22064]: https://github.com/JuliaLang/julia/issues/22064
 [#22182]: https://github.com/JuliaLang/julia/issues/22182

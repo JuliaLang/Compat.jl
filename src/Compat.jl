@@ -160,17 +160,6 @@ include("arraymacros.jl")
 # julia #18839
 import Base.Iterators # TODO deprecate, remove
 
-if VERSION < v"0.6.0-dev.1653"
-    for (fname, felt) in ((:zeros,:zero), (:ones,:one))
-        @eval begin
-            # allow signature of similar
-            Base.$fname(a::AbstractArray, T::Type, dims::Tuple) = fill!(similar(a, T, dims), $felt(T))
-            Base.$fname(a::AbstractArray, T::Type, dims...) = fill!(similar(a,T,dims...), $felt(T))
-            Base.$fname(a::AbstractArray, T::Type=eltype(a)) = fill!(similar(a,T), $felt(T))
-        end
-    end
-end
-
 # https://github.com/JuliaLang/julia/pull/25646
 @static if VERSION < v"0.7.0-DEV.3510"
     # not exported
@@ -191,49 +180,17 @@ end
     readuntil(f, d::Vector{T}; keep::Bool = false) where {T<:Union{UInt8,Char}} = convert(Vector{T}, readuntil(f, String(d), keep=keep))
 end
 
-# https://github.com/JuliaLang/julia/pull/18727
-@static if VERSION < v"0.6.0-dev.838"
-    Base.convert{T}(::Type{Set{T}}, s::Set{T}) = s
-    Base.convert{T}(::Type{Set{T}}, s::Set) = Set{T}(s)
-end
+# TODO deprecate/remove this unexported binding (along wiht its tests)
+using Base: StringVector
 
-# https://github.com/JuliaLang/julia/pull/18082
-if VERSION < v"0.6.0-dev.2347"
-    Base.isassigned(x::Base.RefValue) = isdefined(x, :x)
-end
-
-@static if VERSION < v"0.6.0-dev.735"
-    Base.unsafe_trunc{T<:Integer}(::Type{T}, x::Integer) = rem(x, T)
-end
-
-# https://github.com/JuliaLang/julia/pull/21346
-if VERSION < v"0.6.0-pre.beta.102"
-    Base.bswap(z::Complex) = Complex(bswap(real(z)), bswap(imag(z)))
-end
-
-# https://github.com/JuliaLang/julia/pull/19449
-@static if VERSION < v"0.6.0-dev.1988"
-    StringVector(n::Integer) = Vector{UInt8}(n)
-else
-    using Base: StringVector
-end
-
-# https://github.com/JuliaLang/julia/pull/19784
-@static if isdefined(Base, :invokelatest)
-    # https://github.com/JuliaLang/julia/pull/22646
-    if VERSION < v"0.7.0-DEV.1139"
-        function invokelatest(f, args...; kwargs...)
-            inner() = f(args...; kwargs...)
-            Base.invokelatest(inner)
-        end
-    else
-        import Base.invokelatest
-    end
-else
+# https://github.com/JuliaLang/julia/pull/22646
+if VERSION < v"0.7.0-DEV.1139"
     function invokelatest(f, args...; kwargs...)
-        kw = [Expr(:kw, k, QuoteNode(v)) for (k, v) in kwargs]
-        eval(current_module(), Expr(:call, f, map(QuoteNode, args)..., kw...))
+        inner() = f(args...; kwargs...)
+        Base.invokelatest(inner)
     end
+else
+    import Base.invokelatest
 end
 
 # https://github.com/JuliaLang/julia/pull/21197
@@ -399,11 +356,9 @@ if VERSION < v"0.7.0-DEV.755"
                 end
                 return corrected::Bool
             end
-            if VERSION >= v"0.6"
-                (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = Base.cov(x, _get_corrected(kws))
-                (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVector, Y::AbstractVector) =
-                    Base.cov(X, Y, _get_corrected(kws))
-            end
+            (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = Base.cov(x, _get_corrected(kws))
+            (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVector, Y::AbstractVector) =
+                Base.cov(X, Y, _get_corrected(kws))
             (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractMatrix, vardim::Int) =
                 Base.cov(x, vardim, _get_corrected(kws))
             (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVecOrMat, Y::AbstractVecOrMat,
@@ -447,35 +402,7 @@ end
     pairs(collection) = Base.Generator(=>, keys(collection), values(collection))
     pairs(a::Associative) = a
 
-    # 0.6.0-dev+2834
-    @static if !isdefined(Iterators, :IndexValue)
-        include_string(@__MODULE__, """
-            immutable IndexValue{I,A<:AbstractArray}
-                data::A
-                itr::I
-            end
-        """)
-
-        Base.length(v::IndexValue)  = length(v.itr)
-        Base.indices(v::IndexValue) = indices(v.itr)
-        Base.size(v::IndexValue)    = size(v.itr)
-        @inline Base.start(v::IndexValue) = start(v.itr)
-        Base.@propagate_inbounds function Base.next(v::IndexValue, state)
-            indx, n = next(v.itr, state)
-            item = v.data[indx]
-            (indx => item), n
-        end
-        @inline Base.done(v::IndexValue, state) = done(v.itr, state)
-
-        Base.eltype{I,A}(::Type{IndexValue{I,A}}) = Pair{eltype(I), eltype(A)}
-
-        Base.iteratorsize{I}(::Type{IndexValue{I}}) = iteratorsize(I)
-        Base.iteratoreltype{I}(::Type{IndexValue{I}}) = iteratoreltype(I)
-
-        Base.reverse(v::IndexValue) = IndexValue(v.data, reverse(v.itr))
-    else
-        const IndexValue = Iterators.IndexValue
-    end
+    const IndexValue = Iterators.IndexValue
 
     pairs(::IndexLinear,    A::AbstractArray) = IndexValue(A, linearindices(A))
     pairs(::IndexCartesian, A::AbstractArray) = IndexValue(A, CartesianRange(indices(A)))
@@ -972,27 +899,6 @@ module Unicode
         isassigned(c) = is_assigned_char(c)
         normalize(s::AbstractString; kws...) = normalize_string(s; kws...)
         normalize(s::AbstractString, nf::Symbol) = normalize_string(s, nf)
-
-        # 0.6.0-dev.1404 (https://github.com/JuliaLang/julia/pull/19469)
-        if !isdefined(Base, :titlecase)
-            titlecase(c::Char) = isascii(c) ? ('a' <= c <= 'z' ? c - 0x20 : c) :
-                Char(ccall(:utf8proc_totitle, UInt32, (UInt32,), c))
-
-            function titlecase(s::AbstractString)
-                startword = true
-                b = IOBuffer()
-                for c in s
-                    if isspace(c)
-                        print(b, c)
-                        startword = true
-                    else
-                        print(b, startword ? titlecase(c) : c)
-                        startword = false
-                    end
-                end
-                return String(take!(b))
-            end
-        end
     else
         using Unicode
         import Unicode: isassigned, normalize # not exported from Unicode module due to conflicts

@@ -121,19 +121,6 @@ let x = [1,2,3]
     @test f(x) == [1,4,9]
 end
 
-if VERSION < v"0.6.0-dev.1653"
-    for (A,val) in ((zeros(1:5, Float32, 3, 2), 0),
-                    (ones(1:5, Float32, 3, 2), 1),
-                    (zeros(1:5, Float32, (3, 2)), 0),
-                    (ones(1:5, Float32, (3, 2)), 1))
-        @test isa(A, Matrix{Float32}) && size(A) == (3,2) && all(x->x==val, A)
-    end
-    for (A,val) in ((zeros(1:5, Float32), 0),
-                    (ones(1:5, Float32), 1))
-        @test isa(A, Vector{Float32}) && size(A) == (5,) && all(x->x==val, A)
-    end
-end
-
 # PR 20203
 @test Compat.readline(IOBuffer("Hello, World!\n")) == "Hello, World!"
 @test Compat.readline(IOBuffer("x\n"), keep=false) == "x"
@@ -175,43 +162,16 @@ for (t, s, m, kept) in [
     @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}, keep=true) == Vector{Char}(kept)
 end
 
-# PR 18727
-let
-    iset = Set([17, 4711])
-    cfset = convert(Set{Float64}, iset)
-    @test typeof(cfset) == Set{Float64}
-    @test cfset == iset
-    fset = Set([17.0, 4711.0])
-    ciset = convert(Set{Int}, fset)
-    @test typeof(ciset) == Set{Int}
-    @test ciset == fset
-    ssset = Set(split("foo bar"))
-    cssset = convert(Set{String}, ssset)
-    @test typeof(cssset) == Set{String}
-    @test cssset == Set(["foo", "bar"])
-end
-
-# PR 18082
-@test !isassigned(Ref{String}())
-@test isassigned(Ref{String}("Test"))
-
-@test unsafe_trunc(Int8, 128) === Int8(-128)
-@test_throws InexactError trunc(Int8, 128)
-
-# PR 21346
-let zbuf = IOBuffer([0xbf, 0xc0, 0x00, 0x00, 0x40, 0x20, 0x00, 0x00,
-                     0x40, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                     0xc0, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
-    z1 = read(zbuf, ComplexF32)
-    z2 = read(zbuf, ComplexF64)
-    @test bswap(z1) === -1.5f0 + 2.5f0im
-    @test bswap(z2) ===  3.5 - 4.5im
-end
-
 # PR 19449
+# TODO remove these tests when Compat.StringVector is deprecated
 using Compat: StringVector
 @test length(StringVector(5)) == 5
 @test String(fill!(StringVector(5), 0x61)) == "aaaaa"
+let x = fill!(StringVector(5), 0x61)
+    # 0.7
+    @test pointer(x) == pointer(String(x))
+end
+
 
 # PR 22064
 module Test22064
@@ -220,17 +180,7 @@ using Compat.Test
 @test (@__MODULE__) === Test22064
 end
 
-# invokelatest
-issue19774(x) = 1
-let foo() = begin
-        eval(:(issue19774(x::Int) = 2))
-        return Compat.invokelatest(issue19774, 0)
-    end
-    @test foo() == 2
-end
-cm359() = @__MODULE__
-@test Compat.invokelatest(cm359) === @__MODULE__
-
+# invokelatest with keywords
 pr22646(x; y=0) = 1
 let foo() = begin
         eval(:(pr22646(x::Int; y=0) = 2))
@@ -292,11 +242,6 @@ eval(Expr(struct_sym, false, :TestType, Expr(:block, :(a::Int), :b)))
 
 # PR 22761
 @test_throws OverflowError throw(OverflowError("overflow"))
-
-let x = fill!(StringVector(5), 0x61)
-    # 0.7
-    @test pointer(x) == pointer(String(x))
-end
 
 # PR 22907
 using Compat: pairs
