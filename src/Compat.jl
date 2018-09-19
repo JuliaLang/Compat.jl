@@ -72,10 +72,6 @@ end
     export @nospecialize
 end
 
-if VERSION < v"0.6.0-dev.2043"
-    Base.take!(t::Task) = consume(t)
-end
-
 # https://github.com/JuliaLang/julia/pull/22064
 @static if !isdefined(Base, Symbol("@__MODULE__"))
     # 0.7
@@ -89,24 +85,6 @@ end
         eval(mod, :(include_string($code, $fname)))
     Base.include_string(mod::Module, code::AbstractString, fname::AbstractString="string") =
         eval(mod, :(include_string($code, $fname)))
-end
-
-import Base: redirect_stdin, redirect_stdout, redirect_stderr
-if VERSION < v"0.6.0-dev.374"
-    for (F,S) in ((:redirect_stdin, :STDIN), (:redirect_stdout, :STDOUT), (:redirect_stderr, :STDERR))
-        @eval function $F(f::Function, stream)
-            STDOLD = $S
-            $F(stream)
-            try f() finally $F(STDOLD) end
-        end
-    end
-end
-
-@static if VERSION < v"0.6.0-dev.528"
-    macro __DIR__()
-        Base.source_dir()
-    end
-    export @__DIR__
 end
 
 # PR #17302
@@ -164,81 +142,6 @@ else
     end
 end
 
-# broadcast over same length tuples, from julia#16986
-@static if VERSION < v"0.6.0-dev.693"
-    Base.Broadcast.broadcast{N}(f, t::NTuple{N}, ts::Vararg{NTuple{N}}) = map(f, t, ts...)
-end
-
-# julia#18510
-if VERSION < v"0.6.0-dev.826"
-    _Nullable_field2(x) = !x
-else
-    _Nullable_field2(x) = x
-end
-
-# julia#18484
-@static if VERSION < v"0.6.0-dev.848"
-    unsafe_get(x::Nullable) = x.value
-    unsafe_get(x) = x
-    export unsafe_get
-    Base.isnull(x) = false
-end
-
-# julia#18977
-@static if !isdefined(Base, :xor)
-    # 0.6
-    const xor = $
-    const ⊻ = xor
-    export xor, ⊻
-end
-
-# julia#19246
-@static if !isdefined(Base, :numerator)
-    # 0.6
-    const numerator = num
-    const denominator = den
-    export numerator, denominator
-end
-
-# julia #19950
-@static if !isdefined(Base, :iszero)
-    # 0.6
-    iszero(x) = x == zero(x)
-    iszero(x::Number) = x == 0
-    iszero(x::AbstractArray) = all(iszero, x)
-    export iszero
-end
-
-# julia　#20407
-@static if !isdefined(Base, :(>:))
-    # 0.6
-    const >: = let
-        _issupertype(a::ANY, b::ANY) = issubtype(b, a)
-    end
-    export >:
-end
-
-# julia#19088
-if VERSION < v"0.6.0-dev.1256"
-    Base.take!(io::Base.AbstractIOBuffer) = takebuf_array(io)
-end
-
-if VERSION < v"0.6.0-dev.1632"
-    # To work around unsupported syntax on Julia 0.4
-    include_string("export .&, .|")
-    include_string(".&(xs...) = broadcast(&, xs...)")
-    include_string(".|(xs...) = broadcast(|, xs...)")
-end
-
-@static if VERSION < v"0.6.0-dev.2093" # Compat.isapprox to allow for NaNs
-    using Base.rtoldefault
-    function isapprox(x::Number, y::Number; rtol::Real=rtoldefault(x,y), atol::Real=0, nans::Bool=false)
-        x == y || (isfinite(x) && isfinite(y) && abs(x-y) <= atol + rtol*max(abs(x), abs(y))) || (nans && isnan(x) && isnan(y))
-    end
-else
-    import Base.isapprox
-end
-
 @static if !isdefined(Base, :isabstracttype) # VERSION < v"0.7.0-DEV.3475"
     const isabstracttype = Base.isabstract
     export isabstracttype
@@ -256,26 +159,6 @@ include("arraymacros.jl")
 
 # julia #18839
 import Base.Iterators # TODO deprecate, remove
-
-@static if VERSION < v"0.6.0-dev.2840"
-    export IndexStyle, IndexLinear, IndexCartesian
-    eval(Expr(:typealias, :IndexStyle, :(Base.LinearIndexing)))
-    eval(Expr(:typealias, :IndexLinear, :(Base.LinearFast)))
-    eval(Expr(:typealias, :IndexCartesian, :(Base.LinearSlow)))
-    IndexStyle{T}(::Type{T}) = Base.linearindexing(T)
-    IndexStyle(args...) = Base.linearindexing(args...)
-end
-
-if VERSION < v"0.6.0-dev.1653"
-    for (fname, felt) in ((:zeros,:zero), (:ones,:one))
-        @eval begin
-            # allow signature of similar
-            Base.$fname(a::AbstractArray, T::Type, dims::Tuple) = fill!(similar(a, T, dims), $felt(T))
-            Base.$fname(a::AbstractArray, T::Type, dims...) = fill!(similar(a,T,dims...), $felt(T))
-            Base.$fname(a::AbstractArray, T::Type=eltype(a)) = fill!(similar(a,T), $felt(T))
-        end
-    end
-end
 
 # https://github.com/JuliaLang/julia/pull/25646
 @static if VERSION < v"0.7.0-DEV.3510"
@@ -297,63 +180,17 @@ end
     readuntil(f, d::Vector{T}; keep::Bool = false) where {T<:Union{UInt8,Char}} = convert(Vector{T}, readuntil(f, String(d), keep=keep))
 end
 
-# https://github.com/JuliaLang/julia/pull/18727
-@static if VERSION < v"0.6.0-dev.838"
-    Base.convert{T}(::Type{Set{T}}, s::Set{T}) = s
-    Base.convert{T}(::Type{Set{T}}, s::Set) = Set{T}(s)
-end
+# TODO deprecate/remove this unexported binding (along wiht its tests)
+using Base: StringVector
 
-# https://github.com/JuliaLang/julia/pull/18082
-if VERSION < v"0.6.0-dev.2347"
-    Base.isassigned(x::Base.RefValue) = isdefined(x, :x)
-end
-
-@static if VERSION < v"0.6.0-dev.735"
-    Base.unsafe_trunc{T<:Integer}(::Type{T}, x::Integer) = rem(x, T)
-end
-
-# https://github.com/JuliaLang/julia/pull/21346
-if VERSION < v"0.6.0-pre.beta.102"
-    Base.bswap(z::Complex) = Complex(bswap(real(z)), bswap(imag(z)))
-end
-
-# https://github.com/JuliaLang/julia/pull/19449
-@static if VERSION < v"0.6.0-dev.1988"
-    StringVector(n::Integer) = Vector{UInt8}(n)
-else
-    using Base: StringVector
-end
-
-# https://github.com/JuliaLang/julia/pull/19784
-@static if isdefined(Base, :invokelatest)
-    # https://github.com/JuliaLang/julia/pull/22646
-    if VERSION < v"0.7.0-DEV.1139"
-        function invokelatest(f, args...; kwargs...)
-            inner() = f(args...; kwargs...)
-            Base.invokelatest(inner)
-        end
-    else
-        import Base.invokelatest
-    end
-else
+# https://github.com/JuliaLang/julia/pull/22646
+if VERSION < v"0.7.0-DEV.1139"
     function invokelatest(f, args...; kwargs...)
-        kw = [Expr(:kw, k, QuoteNode(v)) for (k, v) in kwargs]
-        eval(current_module(), Expr(:call, f, map(QuoteNode, args)..., kw...))
-    end
-end
-
-# https://github.com/JuliaLang/julia/pull/21257
-@static if VERSION < v"0.6.0-pre.beta.28"
-    collect(A) = collect_indices(indices(A), A)
-    collect_indices(::Tuple{}, A) = copy!(Array{eltype(A)}(), A)
-    collect_indices(indsA::Tuple{Vararg{Base.OneTo}}, A) =
-        copy!(Array{eltype(A)}(map(length, indsA)), A)
-    function collect_indices(indsA, A)
-        B = Array{eltype(A)}(map(length, indsA))
-        copy!(B, CartesianRange(indices(B)), A, CartesianRange(indsA))
+        inner() = f(args...; kwargs...)
+        Base.invokelatest(inner)
     end
 else
-    const collect = Base.collect
+    import Base.invokelatest
 end
 
 # https://github.com/JuliaLang/julia/pull/21197
@@ -519,11 +356,9 @@ if VERSION < v"0.7.0-DEV.755"
                 end
                 return corrected::Bool
             end
-            if VERSION >= v"0.6"
-                (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = Base.cov(x, _get_corrected(kws))
-                (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVector, Y::AbstractVector) =
-                    Base.cov(X, Y, _get_corrected(kws))
-            end
+            (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = Base.cov(x, _get_corrected(kws))
+            (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVector, Y::AbstractVector) =
+                Base.cov(X, Y, _get_corrected(kws))
             (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractMatrix, vardim::Int) =
                 Base.cov(x, vardim, _get_corrected(kws))
             (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVecOrMat, Y::AbstractVecOrMat,
@@ -567,35 +402,7 @@ end
     pairs(collection) = Base.Generator(=>, keys(collection), values(collection))
     pairs(a::Associative) = a
 
-    # 0.6.0-dev+2834
-    @static if !isdefined(Iterators, :IndexValue)
-        include_string(@__MODULE__, """
-            immutable IndexValue{I,A<:AbstractArray}
-                data::A
-                itr::I
-            end
-        """)
-
-        Base.length(v::IndexValue)  = length(v.itr)
-        Base.indices(v::IndexValue) = indices(v.itr)
-        Base.size(v::IndexValue)    = size(v.itr)
-        @inline Base.start(v::IndexValue) = start(v.itr)
-        Base.@propagate_inbounds function Base.next(v::IndexValue, state)
-            indx, n = next(v.itr, state)
-            item = v.data[indx]
-            (indx => item), n
-        end
-        @inline Base.done(v::IndexValue, state) = done(v.itr, state)
-
-        Base.eltype{I,A}(::Type{IndexValue{I,A}}) = Pair{eltype(I), eltype(A)}
-
-        Base.iteratorsize{I}(::Type{IndexValue{I}}) = iteratorsize(I)
-        Base.iteratoreltype{I}(::Type{IndexValue{I}}) = iteratoreltype(I)
-
-        Base.reverse(v::IndexValue) = IndexValue(v.data, reverse(v.itr))
-    else
-        const IndexValue = Iterators.IndexValue
-    end
+    const IndexValue = Iterators.IndexValue
 
     pairs(::IndexLinear,    A::AbstractArray) = IndexValue(A, linearindices(A))
     pairs(::IndexCartesian, A::AbstractArray) = IndexValue(A, CartesianRange(indices(A)))
@@ -1100,27 +907,6 @@ module Unicode
         isassigned(c) = is_assigned_char(c)
         normalize(s::AbstractString; kws...) = normalize_string(s; kws...)
         normalize(s::AbstractString, nf::Symbol) = normalize_string(s, nf)
-
-        # 0.6.0-dev.1404 (https://github.com/JuliaLang/julia/pull/19469)
-        if !isdefined(Base, :titlecase)
-            titlecase(c::Char) = isascii(c) ? ('a' <= c <= 'z' ? c - 0x20 : c) :
-                Char(ccall(:utf8proc_totitle, UInt32, (UInt32,), c))
-
-            function titlecase(s::AbstractString)
-                startword = true
-                b = IOBuffer()
-                for c in s
-                    if isspace(c)
-                        print(b, c)
-                        startword = true
-                    else
-                        print(b, startword ? titlecase(c) : c)
-                        startword = false
-                    end
-                end
-                return String(take!(b))
-            end
-        end
     else
         using Unicode
         import Unicode: isassigned, normalize # not exported from Unicode module due to conflicts
@@ -1408,9 +1194,11 @@ end
         argmin(x::AbstractArray) = CartesianIndex(ind2sub(x, indmin(x)))
         argmin(x::AbstractVector) = indmin(x)
         argmin(x::Associative) = first(Iterators.drop(keys(x), indmin(values(x))-1))
+        argmin(x::Tuple) = indmin(x)
         argmax(x::AbstractArray) = CartesianIndex(ind2sub(x, indmax(x)))
         argmax(x::AbstractVector) = indmax(x)
         argmax(x::Associative) = first(Iterators.drop(keys(x), indmax(values(x))-1))
+        argmax(x::Tuple) = indmax(x)
     end
     export argmin, argmax
 end
@@ -1614,10 +1402,10 @@ end
 
 # https://github.com/JuliaLang/julia/pull/26670
 @static if VERSION < v"0.7.0-DEV.4062"
-    trunc(x; digits = digits, base = base) = Base.trunc(x, digits, base)
-    floor(x; digits = digits, base = base) = Base.floor(x, digits, base)
-    ceil(x; digits = digits, base = base) = Base.ceil(x, digits, base)
-    function round(x; digits = nothing, sigdigits = nothing, base = base)
+    trunc(x; digits = 0, base = 10) = Base.trunc(x, digits, base)
+    floor(x; digits = 0, base = 10) = Base.floor(x, digits, base)
+    ceil(x; digits = 0, base = 10) = Base.ceil(x, digits, base)
+    function round(x; digits = nothing, sigdigits = nothing, base = 10)
         if digits === nothing
             if sigdigits === nothing
                 Base.round(x, 0, base)
@@ -1630,10 +1418,10 @@ end
         end
     end
 elseif VERSION < v"0.7.0-DEV.4804"
-    trunc(x; digits = digits, base = base) = Base.trunc(x, digits, base = base)
-    floor(x; digits = digits, base = base) = Base.floor(x, digits, base = base)
-    ceil(x; digits = digits, base = base) = Base.ceil(x, digits, base = base)
-    function round(x; digits = nothing, sigdigits = nothing, base = base)
+    trunc(x; digits = 0, base = 10) = Base.trunc(x, digits, base = base)
+    floor(x; digits = 0, base = 10) = Base.floor(x, digits, base = base)
+    ceil(x; digits = 0, base = 10) = Base.ceil(x, digits, base = base)
+    function round(x; digits = nothing, sigdigits = nothing, base = 10)
         if digits === nothing
             if sigdigits === nothing
                 Base.round(x, 0, base = base)
@@ -1645,19 +1433,31 @@ elseif VERSION < v"0.7.0-DEV.4804"
             Base.round(x, digits, base = base)
         end
     end
+elseif VERSION < v"0.7.0-beta2.86"
+    # https://github.com/JuliaLang/julia/pull/28199
+    trunc(x; digits = 0, base = 10) = Base.trunc(x, digits = digits, base = base)
+    floor(x; digits = 0, base = 10) = Base.floor(x, digits = digits, base = base)
+    ceil(x; digits = 0, base = 10) = Base.ceil(x, digits = digits, base = base)
+    function round(x; digits = nothing, sigdigits = nothing, base = 10)
+        if digits === nothing && sigdigits === nothing
+            Base.round(x, digits = 0, base = base)
+        else
+            Base.round(x, digits = digits, sigdigits = sigdigits, base = base)
+        end
+    end
 else
-    trunc(x; digits = digits, base = base) = Base.trunc(x, digits = digits, base = base)
-    floor(x; digits = digits, base = base) = Base.floor(x, digits = digits, base = base)
-    ceil(x; digits = digits, base = base) = Base.ceil(x, digits = digits, base = base)
-    round(x; digits = nothing, sigdigits = nothing, base = base) = Base.round(x, digits = digits, sigdigits = sigdigits, base = base)
+    trunc(x; digits = 0, base = 10) = Base.trunc(x, digits = digits, base = base)
+    floor(x; digits = 0, base = 10) = Base.floor(x, digits = digits, base = base)
+    ceil(x; digits = 0, base = 10) = Base.ceil(x, digits = digits, base = base)
+    round(x; digits = nothing, sigdigits = nothing, base = 10) = Base.round(x, digits = digits, sigdigits = sigdigits, base = base)
 end
 
 # compatibiltiy with https://github.com/JuliaLang/julia/pull/26156
-trunc(x, digits; base = base) = trunc(x, digits = digits, base = base)
-floor(x, digits; base = base) = floor(x, digits = digits, base = base)
-ceil(x, digits; base = base) = ceil(x, digits = digits, base = base)
-round(x, digits; base = base) = round(x, digits = digits, base = base)
-signif(x, digits; base = base) = round(x, sigdigits = digits, base = base)
+trunc(x, digits; base = 10) = trunc(x, digits = digits, base = base)
+floor(x, digits; base = 10) = floor(x, digits = digits, base = base)
+ceil(x, digits; base = 10) = ceil(x, digits = digits, base = base)
+round(x, digits; base = 10) = round(x, digits = digits, base = base)
+signif(x, digits; base = 10) = round(x, sigdigits = digits, base = base)
 
 # https://github.com/JuliaLang/julia/pull/25872
 if VERSION < v"0.7.0-DEV.3734"
@@ -1838,6 +1638,9 @@ end
 if VERSION < v"0.7.0-DEV.4738"
     Base.squeeze(A; dims=error("squeeze: keyword argument dims not assigned")) = squeeze(A, dims)
 end
+if VERSION < v"0.7.0-DEV.5165" # julia#27163
+    cat(X...; dims = throw(UndefKeywordError("cat: keyword argument dims not assigned"))) = Base.cat(dims, X...)
+end
 
 if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
     export selectdim
@@ -1848,6 +1651,12 @@ if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
         d > nd && (i == 1 || throw(BoundsError(A, (ntuple(k->Colon(),d-1)..., i))))
         return view(A, idxs...)
     end
+end
+
+if VERSION < v"0.7.0-DEV.3977" #26039
+    Base.repeat(A::AbstractArray, counts::Integer...) = Base.repeat(A, outer = counts)
+    Base.repeat(a::AbstractVecOrMat, m::Integer, n::Integer=1) = Base.repmat(a, m, n)
+    Base.repeat(a::AbstractVector, m::Integer) = Base.repmat(a, m)
 end
 
 if VERSION < v"0.7.0-DEV.2337"
@@ -2010,6 +1819,32 @@ end
 if VERSION < v"0.7.0-beta.73"
     Base.mapslices(f, A::AbstractArray; dims=error("required keyword argument `dims` missing")) =
         mapslices(f, A, dims)
+end
+
+# https://github.com/JuliaLang/julia/pull/28302
+if VERSION < v"0.7.0-beta2.169"
+    const floatmin = realmin
+    const floatmax = realmax
+    export floatmin, floatmax
+end
+
+# https://github.com/JuliaLang/julia/pull/28303
+if VERSION < v"0.7.0-beta2.143"
+    export dropdims
+    # https://github.com/JuliaLang/julia/pull/26660
+    if VERSION >= v"0.7.0-DEV.4738"
+        dropdims(
+            X;
+            dims = throw(
+                UndefKeywordError("dropdims: keyword argument dims not assigned"))
+        ) = squeeze(X, dims = dims)
+    else
+        dropdims(
+            X;
+            dims = throw(
+                UndefKeywordError("dropdims: keyword argument dims not assigned"))
+        ) = squeeze(X, dims)
+    end
 end
 
 include("deprecated.jl")
