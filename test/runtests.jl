@@ -1518,4 +1518,9 @@ end
                                    3  4  3  4  3  4]
 @test repeat([1, 2], 1, 2, 3) == [x for x in 1:2, y in 1:2, z in 1:3]
 
+# [1.0, 1.1)
+if v"1.0" ≤ VERSION < v"1.1"
+    @test range(0, 5, length = 6) == 0.0:1.0:5.0
+end
+
 nothing
