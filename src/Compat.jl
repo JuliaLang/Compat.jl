@@ -1841,8 +1841,7 @@ end
 
 if v"0.7" ≤ VERSION
     # https://github.com/JuliaLang/julia/pull/28708
-    Base.range(start, stop; length::Union{Integer,Nothing}=nothing, step=nothing) =
-        Base._range(start, step, stop, length)
+    Base.range(start, stop; kwargs...) = range(start; stop=stop, kwargs...)
 end
 
 include("deprecated.jl")
