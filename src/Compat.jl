@@ -1839,7 +1839,7 @@ if VERSION < v"0.7.0-beta2.143"
     end
 end
 
-if v"1.0" ≤ VERSION < v"1.1"
+if v"1.0" ≤ VERSION && isempty(methods(range, Tuple{Any,Any}))
     # https://github.com/JuliaLang/julia/pull/28708
     Base.range(start, stop; length::Union{Integer,Nothing}=nothing, step=nothing) =
         Base._range(start, step, stop, length)

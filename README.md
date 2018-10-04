@@ -358,6 +358,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `repmat` is now `repeat` ([#26039])
 
+* `range` will support `range(start, stop; length, step)` for Julia 1.0 which
+  will be included in Julia 1.1.
+
 ## New macros
 
 * `@vectorize_1arg` and `@vectorize_2arg` are deprecated on Julia 0.6 in favor
