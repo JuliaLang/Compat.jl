@@ -1528,7 +1528,7 @@ end
         end
     end
 elseif VERSION < v"1.0.0-DEV.57"
-    import LinRange
+    import Base: LinRange
     range(start; kwargs...) = Base.range(start; kwargs...)
 else
     import Base: range, LinRange
