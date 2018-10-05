@@ -1519,7 +1519,7 @@ end
 @test repeat([1, 2], 1, 2, 3) == [x for x in 1:2, y in 1:2, z in 1:3]
 
 # Support for positional `stop`
-@test range(0, 5, length = 6) == 0.0:1.0:5.0
-@test range(0, 10, step = 2) == 0:2:10
+@test Compat.range(0, 5, length = 6) == 0.0:1.0:5.0
+@test Compat.range(0, 10, step = 2) == 0:2:10
 
 nothing
