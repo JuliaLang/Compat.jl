@@ -358,8 +358,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `repmat` is now `repeat` ([#26039])
 
-* `range` supports `range(start, stop; length, step)` (`stop` as positional argument)
-  for Julia 0.7 and 1.0. ([#28708])
+* `range` supports `range(start, stop; length, step)` (`stop` as positional argument) ([#28708])
 
 ## New macros
 
