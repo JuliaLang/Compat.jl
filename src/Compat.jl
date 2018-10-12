@@ -1527,6 +1527,9 @@ end
             return linspace(start, stop, length)
         end
     end
+elseif VERSION < v"1.0.0-DEV.57"
+    import Base: LinRange
+    range(start; kwargs...) = Base.range(start; kwargs...)
 else
     import Base: range, LinRange
 end
@@ -1837,6 +1840,10 @@ if VERSION < v"0.7.0-beta2.143"
                 UndefKeywordError("dropdims: keyword argument dims not assigned"))
         ) = squeeze(X, dims)
     end
+end
+
+if VERSION ≤ v"1.0" || isempty(methods(range, Tuple{Any,Any}))
+    range(start, stop; kwargs...) = range(start; stop=stop, kwargs...)
 end
 
 include("deprecated.jl")

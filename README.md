@@ -201,7 +201,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.IOBuffer` supporting keyword arguments ([#25873]).
 
-* `Compat.range` supporting keyword arguments ([#25896]).
+* `Compat.range` supporting positional and keyword arguments flavors ([#25896]), ([#28708]).
 
 * `Compat.trunc`, `Compat.floor`, `Compat.ceil`, `Compat.round`, take a keyword argument
   for `base` and `digits`, `Compat.round` also takes `sigdigits` ([#26156], [#26670]).
