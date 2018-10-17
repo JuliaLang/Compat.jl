@@ -269,6 +269,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Complex32`, `Complex64`, and `Complex128` are now `ComplexF16`, `ComplexF32`, and
   `ComplexF64`, respectively ([#24647]).
 
+* `trace` is now `tr`, available as `Compat.tr` (#26365).
+
 * `JULIA_HOME` is now `Sys.BINDIR`, available in the `Compat.Sys` submodule. ([#25102])
 
 * `Associative` is now `AbstractDict` ([#25012]).
@@ -546,6 +548,7 @@ includes this fix. Find the minimum version from there.
 [#26156]: https://github.com/JuliaLang/julia/issues/26156
 [#26283]: https://github.com/JuliaLang/julia/issues/26283
 [#26316]: https://github.com/JuliaLang/julia/issues/26316
+[#26365]: https://github.com/JuliaLang/julia/issues/26365
 [#26369]: https://github.com/JuliaLang/julia/issues/26369
 [#26436]: https://github.com/JuliaLang/julia/issues/26436
 [#26442]: https://github.com/JuliaLang/julia/issues/26442

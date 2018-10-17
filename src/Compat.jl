@@ -881,6 +881,14 @@ end
     export ComplexF64
 end
 
+# julia #26365
+@static if isdefined(LinearAlgebra, :tr)
+    const tr = LinearAlgebra.tr
+else
+    # 0.6
+    const tr = LinearAlgebra.trace
+end
+
 # 0.7.0-DEV.2915
 module Unicode
     export graphemes, textwidth, isvalid,
