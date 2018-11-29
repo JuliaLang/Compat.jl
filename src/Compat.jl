@@ -1850,7 +1850,7 @@ if VERSION < v"0.7.0-beta2.143"
     end
 end
 
-if VERSION ≤ v"1.0" || isempty(methods(range, Tuple{Any,Any}))
+if VERSION < v"1.1.0-DEV.506"
     range(start, stop; kwargs...) = range(start; stop=stop, kwargs...)
 end
 
