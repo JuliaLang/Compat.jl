@@ -1427,13 +1427,6 @@ else
     round(x; digits = nothing, sigdigits = nothing, base = 10) = Base.round(x, digits = digits, sigdigits = sigdigits, base = base)
 end
 
-# compatibiltiy with https://github.com/JuliaLang/julia/pull/26156
-trunc(x, digits; base = 10) = trunc(x, digits = digits, base = base)
-floor(x, digits; base = 10) = floor(x, digits = digits, base = base)
-ceil(x, digits; base = 10) = ceil(x, digits = digits, base = base)
-round(x, digits; base = 10) = round(x, digits = digits, base = base)
-signif(x, digits; base = 10) = round(x, sigdigits = digits, base = base)
-
 # https://github.com/JuliaLang/julia/pull/25872
 if VERSION < v"0.7.0-DEV.3734"
     if isdefined(Base, :open_flags)

@@ -56,6 +56,13 @@ else
     end
 end
 
+# compatibility with https://github.com/JuliaLang/julia/pull/26156
+Base.@deprecate trunc(x, digits; base = 10) Compat.trunc(x, digits = digits, base = base) false
+Base.@deprecate floor(x, digits; base = 10) Compat.floor(x, digits = digits, base = base) false
+Base.@deprecate ceil(x, digits; base = 10) Compat.ceil(x, digits = digits, base = base) false
+Base.@deprecate round(x, digits; base = 10) Compat.round(x, digits = digits, base = base) false
+Base.@deprecate signif(x, digits; base = 10) Compat.round(x, sigdigits = digits, base = base) false
+
 # to be deprecated:
 
 # * `range(start, stop)` (without either `length` nor `step` given)
