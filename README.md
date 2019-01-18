@@ -366,16 +366,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New macros
 
-* `@vectorize_1arg` and `@vectorize_2arg` are deprecated on Julia 0.6 in favor
-  of the broadcast syntax ([#17302]). `Compat.@dep_vectorize_1arg` and
-  `Compat.@dep_vectorize_2arg` are provided so that packages can still provide
-  the deprecated definitions without causing a depwarn in the package itself
-  before all the users are upgraded.
-
-  Packages are expected to use this until all users of the deprecated
-  vectorized function have migrated. These macros will be dropped when the
-  support for `0.6` is dropped from `Compat`.
-
 * `@nospecialize` has been added ([#22666]).
 
 * The logging macros `@error`, `@warn`, `@info` and `@debug` can be used as
@@ -448,7 +438,6 @@ includes this fix. Find the minimum version from there.
 * Now specify the correct minimum version for Compat in your REQUIRE file by
 `Compat <version>`
 
-[#17302]: https://github.com/JuliaLang/julia/issues/17302
 [#20005]: https://github.com/JuliaLang/julia/issues/20005
 [#20974]: https://github.com/JuliaLang/julia/issues/20974
 [#21197]: https://github.com/JuliaLang/julia/issues/21197
