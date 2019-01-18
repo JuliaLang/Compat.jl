@@ -1,3 +1,5 @@
+Base.@deprecate_binding StringVector Base.StringVector false
+
 # to be deprecated:
 
 # * `range(start, stop)` (without either `length` nor `step` given)
