@@ -1869,8 +1869,18 @@ if VERSION < v"0.7.0-beta2.143"
     end
 end
 
+# This definition should be modified to throw an ArgumentError if neither
+# `step` nor `length` are given and be limited to VERSION < v"1.1.0-DEV.506".
+# However, there is a release with this definition, so we need to keep it around
+# to avoid breakage.
 if VERSION < v"1.1.0-DEV.506"
     range(start, stop; kwargs...) = range(start; stop=stop, kwargs...)
+else
+    function __init__()
+        @eval Base begin
+            range(start, stop; kwargs...) = range(start; stop=stop, kwargs...)
+        end
+    end
 end
 
 include("deprecated.jl")
