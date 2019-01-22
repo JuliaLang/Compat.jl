@@ -266,6 +266,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `IntSet` is now `BitSet` ([#24282])
 
+* `strwidth` and `charwidth` are now merged into `textwidth` ([#23667]).
+
 * `Complex32`, `Complex64`, and `Complex128` are now `ComplexF16`, `ComplexF32`, and
   `ComplexF64`, respectively ([#24647]).
 
@@ -470,6 +472,7 @@ includes this fix. Find the minimum version from there.
 [#23570]: https://github.com/JuliaLang/julia/issues/23570
 [#23642]: https://github.com/JuliaLang/julia/issues/23642
 [#23666]: https://github.com/JuliaLang/julia/issues/23666
+[#23667]: https://github.com/JuliaLang/julia/issues/23667
 [#23757]: https://github.com/JuliaLang/julia/issues/23757
 [#23805]: https://github.com/JuliaLang/julia/issues/23805
 [#23931]: https://github.com/JuliaLang/julia/issues/23931

@@ -889,6 +889,18 @@ else
     const tr = LinearAlgebra.trace
 end
 
+if VERSION < v"0.7.0-DEV.1930"
+    # no textwidth definition in Base
+    export textwidth
+    textwidth(c::Char) = charwidth(c)
+    textwidth(c::AbstractString) = strwidth(c)
+elseif v"0.7.0-DEV.2915" ≤ VERSION < v"0.7.0-DEV.3393"
+    # textwidth definition moved to Unicode module
+    import Unicode
+    const textwidth = Unicode.textwidth
+    export textwidth
+end
+
 # 0.7.0-DEV.2915
 module Unicode
     export graphemes, textwidth, isvalid,
@@ -897,10 +909,8 @@ module Unicode
            lowercase, uppercase, titlecase, lcfirst, ucfirst
 
     if VERSION < v"0.7.0-DEV.2915"
-        # 0.7.0-DEV.1930
-        if !isdefined(Base, :textwidth)
-            textwidth(c::Char) = charwidth(c)
-            textwidth(c::AbstractString) = strwidth(c)
+        if VERSION < v"0.7.0-DEV.1930"
+            import ..Compat: textwidth
         end
 
         isnumeric(c::Char) = isnumber(c)

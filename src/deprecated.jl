@@ -51,8 +51,3 @@ else
     import Base.@irrational
     import Base.LinAlg.BLAS.@blasfunc
 end
-
-if VERSION < v"0.7.0-DEV.2915"
-    const textwidth = Compat.Unicode.textwidth
-    export textwidth
-end

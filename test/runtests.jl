@@ -456,8 +456,8 @@ end
 @test 1 in BitSet(1:10)
 
 # 0.7.0-DEV.1930
-@test Compat.Unicode.textwidth("A") == 1
-@test Compat.Unicode.textwidth('A') == 1
+@test textwidth("A") == 1
+@test textwidth('A') == 1
 
 # 0.7
 @test diagm(0 => ones(2), -1 => ones(2)) == [1.0 0.0 0.0; 1.0 1.0 0.0; 0.0 1.0 0.0]
