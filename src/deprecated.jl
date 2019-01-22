@@ -73,6 +73,14 @@ if VERSION >= v"1.1.0-DEV.506"
     end
 end
 
+# this was defined for use with Julia versions prior to 0.5
+# (see https://github.com/JuliaLang/Compat.jl/pull/316)
+macro dotcompat(x)
+    Base.depwarn("`@dotcompat x` is deprecated, use `@compat @. x` instead.", Symbol("@dotcompat"))
+    esc(:(Compat.@compat @. $x))
+end
+export @dotcompat
+
 # to be deprecated:
 
 # * Compat.Random.uuid1, uuid4, uuid_version (in favour of Compat.UUIDs.*)

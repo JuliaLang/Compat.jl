@@ -99,9 +99,6 @@ module TypeUtils
     export isabstract, parameter_upper_bound, typename
 end # module TypeUtils
 
-# @view, @views, @__dot__
-include("arraymacros.jl")
-
 # https://github.com/JuliaLang/julia/pull/25646
 @static if VERSION < v"0.7.0-DEV.3510"
     # not exported
