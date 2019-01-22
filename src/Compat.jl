@@ -1814,16 +1814,17 @@ if VERSION < v"0.7.0-beta2.143"
     end
 end
 
-# This definition should be modified to throw an ArgumentError if neither
-# `step` nor `length` are given and be limited to VERSION < v"1.1.0-DEV.506".
-# However, there is a release with this definition, so we need to keep it around
-# to avoid breakage.
+function rangedepwarn(;step=nothing, length=nothing, kwargs...)
+    if step===nothing && length===nothing
+        Base.depwarn("`range(start, stop)` (with neither `length` nor `step` given) is deprecated, use `range(start, stop=stop)` instead.", :range)
+    end
+end
+
 if VERSION < v"1.1.0-DEV.506"
-    range(start, stop; kwargs...) = range(start; stop=stop, kwargs...)
-else
-    # This method is restricted to Number, since we don't
-    # want to overwrite the (::Any, ::Any) method in Base.
-    range(start::Number, stop::Number; kwargs...) = range(start; stop=stop, kwargs...)
+    function range(start, stop; kwargs...)
+        rangedepwarn(;kwargs...)
+        range(start; stop=stop, kwargs...)
+    end
 end
 
 include("deprecated.jl")

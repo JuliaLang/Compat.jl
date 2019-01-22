@@ -63,7 +63,16 @@ Base.@deprecate ceil(x, digits; base = 10) Compat.ceil(x, digits = digits, base 
 Base.@deprecate round(x, digits; base = 10) Compat.round(x, digits = digits, base = base) false
 Base.@deprecate signif(x, digits; base = 10) Compat.round(x, sigdigits = digits, base = base) false
 
+if VERSION >= v"1.1.0-DEV.506"
+    # deprecation of range(start, stop) for earlier versions is done in Compat.jl
+    # This method is restricted to Number, since we don't
+    # want to overwrite the (::Any, ::Any) method in Base.
+    function range(start::Number, stop::Number; kwargs...)
+        rangedepwarn(;kwargs...)
+        range(start; stop=stop, kwargs...)
+    end
+end
+
 # to be deprecated:
 
-# * `range(start, stop)` (without either `length` nor `step` given)
 # * Compat.Random.uuid1, uuid4, uuid_version (in favour of Compat.UUIDs.*)
