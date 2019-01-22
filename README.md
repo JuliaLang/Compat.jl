@@ -356,6 +356,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `atan2` is now a 2-argument method of `atan` ([#27253]).
 
+* `srand` is now `Compat.Random.seed!` ([#28295])
+
 * `realmin` and `realmax` are now `floatmin` and `floatmax` ([#28302])
 
 * `squeeze` is now `dropdims` ([#28303], [#26660]).
@@ -570,5 +572,6 @@ includes this fix. Find the minimum version from there.
 [#27711]: https://github.com/JuliaLang/julia/issues/27711
 [#27828]: https://github.com/JuliaLang/julia/issues/27828
 [#27834]: https://github.com/JuliaLang/julia/issues/27834
+[#28295]: https://github.com/JuliaLang/julia/issues/28295
 [#28302]: https://github.com/JuliaLang/julia/issues/28302
 [#28303]: https://github.com/JuliaLang/julia/issues/28303
