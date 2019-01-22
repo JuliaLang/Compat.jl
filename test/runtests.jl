@@ -7,110 +7,6 @@ using Compat.SparseArrays
 
 const struct_sym = VERSION < v"0.7.0-DEV.1263" ? :type : :struct
 
-# Issue #291
-# 0.6
-@test (1, 2) == @compat abs.((1, -2))
-@test broadcast(+, (1.0, 1.0), (0, -2.0)) == (1.0,-1.0)
-
-# Test for `take!(::Task)`/`take!(::Channel)`
-# 0.6
-dirwalk = mktempdir()
-cd(dirwalk) do
-    for i=1:2
-        mkdir("sub_dir$i")
-        open("file$i", "w") do f end
-
-        mkdir(joinpath("sub_dir1", "subsub_dir$i"))
-        touch(joinpath("sub_dir1", "file$i"))
-    end
-    touch(joinpath("sub_dir2", "file_dir2"))
-    has_symlinks = Compat.Sys.isunix() ? true : (isdefined(Base, :WINDOWS_VISTA_VER) && Base.windows_version() >= Base.WINDOWS_VISTA_VER)
-    follow_symlink_vec = has_symlinks ? [true, false] : [false]
-    has_symlinks && symlink(abspath("sub_dir2"), joinpath("sub_dir1", "link"))
-    for follow_symlinks in follow_symlink_vec
-        chnl = walkdir(".", follow_symlinks=follow_symlinks)
-        root, dirs, files = take!(chnl)
-        @test root == "."
-        @test dirs == ["sub_dir1", "sub_dir2"]
-        @test files == ["file1", "file2"]
-
-        root, dirs, files = take!(chnl)
-        @test root == joinpath(".", "sub_dir1")
-        @test dirs == (has_symlinks ? ["link", "subsub_dir1", "subsub_dir2"] : ["subsub_dir1", "subsub_dir2"])
-        @test files == ["file1", "file2"]
-
-        root, dirs, files = take!(chnl)
-        if follow_symlinks
-            @test root == joinpath(".", "sub_dir1", "link")
-            @test dirs == []
-            @test files == ["file_dir2"]
-            root, dirs, files = take!(chnl)
-        end
-        for i=1:2
-            @test root == joinpath(".", "sub_dir1", "subsub_dir$i")
-            @test dirs == []
-            @test files == []
-            root, dirs, files = take!(chnl)
-        end
-
-        @test root == joinpath(".", "sub_dir2")
-        @test dirs == []
-        @test files == ["file_dir2"]
-    end
-
-    for follow_symlinks in follow_symlink_vec
-        chnl = walkdir(".", follow_symlinks=follow_symlinks, topdown=false)
-        root, dirs, files = take!(chnl)
-        if follow_symlinks
-            @test root == joinpath(".", "sub_dir1", "link")
-            @test dirs == []
-            @test files == ["file_dir2"]
-            root, dirs, files = take!(chnl)
-        end
-        for i=1:2
-            @test root == joinpath(".", "sub_dir1", "subsub_dir$i")
-            @test dirs == []
-            @test files == []
-            root, dirs, files = take!(chnl)
-        end
-        @test root == joinpath(".", "sub_dir1")
-        @test dirs ==  (has_symlinks ? ["link", "subsub_dir1", "subsub_dir2"] : ["subsub_dir1", "subsub_dir2"])
-        @test files == ["file1", "file2"]
-
-        root, dirs, files = take!(chnl)
-        @test root == joinpath(".", "sub_dir2")
-        @test dirs == []
-        @test files == ["file_dir2"]
-
-        root, dirs, files = take!(chnl)
-        @test root == "."
-        @test dirs == ["sub_dir1", "sub_dir2"]
-        @test files == ["file1", "file2"]
-    end
-    #test of error handling
-    chnl_error = walkdir(".")
-    chnl_noerror = walkdir(".", onerror=x->x)
-    root, dirs, files = take!(chnl_error)
-    @test root == "."
-    @test dirs == ["sub_dir1", "sub_dir2"]
-    @test files == ["file1", "file2"]
-
-    rm(joinpath("sub_dir1"), recursive=true)
-    @test_throws SystemError take!(chnl_error) # throws an error because sub_dir1 do not exist
-
-    root, dirs, files = take!(chnl_noerror)
-    @test root == "."
-    @test dirs == ["sub_dir1", "sub_dir2"]
-    @test files == ["file1", "file2"]
-
-    root, dirs, files = take!(chnl_noerror) # skips sub_dir1 as it no longer exist
-    @test root == joinpath(".", "sub_dir2")
-    @test dirs == []
-    @test files == ["file_dir2"]
-
-end
-rm(dirwalk, recursive=true)
-
 for os in [:apple, :bsd, :linux, :unix, :windows]
     from_base = if VERSION >= v"0.7.0-DEV.914"
         Expr(:., Expr(:., :Base, Base.Meta.quot(:Sys)), Base.Meta.quot(Symbol("is", os)))
@@ -119,37 +15,6 @@ for os in [:apple, :bsd, :linux, :unix, :windows]
     end
     @eval @test Compat.Sys.$(Symbol("is", os))() == $from_base()
 end
-
-# do-block redirect_std*
-# 0.6
-let filename = tempname()
-    ret = open(filename, "w") do f
-        redirect_stdout(f) do
-            println("hello")
-            [1,3]
-        end
-    end
-    @test ret == [1,3]
-    @test chomp(read(filename, String)) == "hello"
-    ret = open(filename, "w") do f
-        redirect_stderr(f) do
-            println(stderr, "WARNING: hello")
-            [2]
-        end
-    end
-    @test ret == [2]
-    @test occursin("WARNING: hello", read(filename, String))
-    ret = open(filename) do f
-        redirect_stdin(f) do
-            readline()
-        end
-    end
-    @test occursin("WARNING: hello", ret)
-    rm(filename)
-end
-
-# 0.6
-@test @__DIR__() == dirname(@__FILE__)
 
 # PR #17302
 # To be removed when 0.6 support is dropped.
@@ -175,104 +40,6 @@ else
     end
 end
 
-if VERSION < v"0.7.0-DEV.3017"
-    types = [
-        Bool,
-        Float16,
-        Float32,
-        Float64,
-        Int128,
-        Int16,
-        Int32,
-        Int64,
-        Int8,
-        UInt16,
-        UInt32,
-        UInt64,
-        UInt8,
-    ]
-    for T in types
-        # julia#18510, Nullable constructors
-        x = @compat Nullable(one(T), true)
-        @test isnull(x) === false
-        @test isa(x.value, T)
-        @test eltype(x) === T
-
-        x = @compat Nullable{T}(one(T), true)
-        y = @compat Nullable{Any}(one(T), true)
-        @test isnull(x) === false
-        @test isnull(y) === false
-        @test isa(x.value, T)
-        @test eltype(x) === T
-        @test eltype(y) === Any
-
-        x = @compat Nullable{T}(one(T), false)
-        y = @compat Nullable{Any}(one(T), false)
-        @test isnull(x) === true
-        @test isnull(y) === true
-        @test eltype(x) === T
-        @test eltype(y) === Any
-
-        x = @compat Nullable(one(T), false)
-        @test isnull(x) === true
-        @test eltype(x) === T
-
-        x = @compat Nullable{T}()
-        @test isnull(x) === true
-        @test eltype(x) === T
-
-        # julia#18484, generic isnull, unsafe_get
-        a = one(T)
-        x = @compat Nullable(a, true)
-        @test isequal(unsafe_get(x), a)
-
-        x = @compat Nullable{Array{T}}()
-        @test_throws UndefRefError unsafe_get(x)
-    end
-end
-
-@test xor(1,5) == 4
-@test 1 ⊻ 5 == 4
-
-# julia#20414
-@compat let T = Array{<:Real}, f(x::AbstractVector{<:Real}) = 1
-    @test isa([3,4],T)
-    @test !isa([3,4im],T)
-    @test f(1:3) == f([1,2]) == 1
-end
-@compat let T = Array{>:Integer}, f(x::AbstractVector{>:Integer}) = 1
-    @test isa(Integer[1,2],T)
-    @test !isa([3,4],T)
-    @test !isa([3.0,4.0],T)
-    @test f(Integer[1,2]) == f([1,'a',:sym]) == 1
-end
-
-# supertype operator
-@test !(Int >: Integer)
-@test Integer >: Int
-
-# julia#19246
-@test numerator(1//2) === 1
-@test denominator(1//2) === 2
-
-# julia#19088
-let io = IOBuffer()
-    write(io, "aaa")
-    @test take!(io) == UInt8['a', 'a', 'a']
-    write(io, "bbb")
-    @test String(take!(io)) == "bbb"
-end
-
-# julia#17510
-let x = [1,2,3]
-    @compat x .= [3,4,5]
-    @test x == [3,4,5]
-    @compat x .= x .== 4
-    @test x == [0,1,0]
-    @compat x .= 7
-    @test x == [7,7,7]
-end
-
 let s = "Koala test: 🐨"
     @test transcode(UInt16, s) == UInt16[75,111,97,108,97,32,116,101,115,116,58,32,55357,56360]
     @test transcode(UInt32, s) == UInt32[75,111,97,108,97,32,116,101,115,116,58,32,128040]
@@ -283,21 +50,8 @@ let s = "Koala test: 🐨"
     end
 end
 
-# julia#19950, tests from Base (#20028)
-for T in (Float16, Float32, Float64, BigFloat, Int8, Int16, Int32, Int64, Int128,
-          BigInt, UInt8, UInt16, UInt32, UInt64, UInt128)
-    @test iszero(T(0))
-    @test iszero(Complex{T}(0))
-    if T<:Integer
-        @test iszero(Rational{T}(0))
-    end
-    if T<:AbstractFloat
-        @test iszero(T(-0.0))
-        @test iszero(Complex{T}(-0.0))
-    end
-end
-@test !iszero([0, 1, 2, 3])
-@test iszero([0, 0, 0, 0])
+# julia#26365
+@test Compat.tr([1 2; 3 5]) == 6
 
 let
     x = view(1:10, 2:4)
@@ -309,15 +63,6 @@ let
     @test A*D == copy(A) * Diagonal(copy(x))
 end
 
-# julia#17623
-# 0.6
-@test [true, false] .& [true, true] == [true, false]
-@test [true, false] .| [true, true] == [true, true]
-
-# julia#20022
-@test !Compat.isapprox(NaN, NaN)
-@test Compat.isapprox(NaN, NaN, nans=true)
-
 # julia#13998
 for x in (3.1, -17, 3//4, big(111.1), Inf)
     local x
@@ -326,7 +71,7 @@ for x in (3.1, -17, 3//4, big(111.1), Inf)
 end
 
 # julia#20006
-@compat abstract type AbstractFoo20006 end
+abstract type AbstractFoo20006 end
 eval(Expr(
     struct_sym, false,
     Expr(:(<:), :(ConcreteFoo20006{T<:Int}), :AbstractFoo20006),
@@ -349,106 +94,17 @@ eval(Expr(
 @test !isabstracttype(ConcreteFoo200061)
 @test !isabstracttype(StridedArray)
 
-# @view and @views tests copied from Base
-let X = reshape(1:24,2,3,4), Y = 4:-1:1
-    @test isa(@view(X[1:3]), SubArray)
-
+# TODO remove these tests when deprecating @dotcompat
+let X = reshape(1:24,2,3,4)
     @test X[1:end] == @dotcompat (@view X[1:end]) # test compatibility of @. and @view
-    @test X[1:end-3] == @view X[1:end-3]
-    @test X[1:end,2,2] == @view X[1:end,2,2]
-    @test reshape(X[1,2,1:end-2],2) == @view X[1,2,1:end-2]
-    @test reshape(X[1,2,Y[2:end]],3) == @view X[1,2,Y[2:end]]
-    @test reshape(X[1:end,2,Y[2:end]],2,3) == @view X[1:end,2,Y[2:end]]
-
-    u = (1,2:3)
-    @test reshape(X[u...,2:end],2,3) == @view X[u...,2:end]
-    @test reshape(X[(1,)...,(2,)...,2:end],3) == @view X[(1,)...,(2,)...,2:end]
-
-    # the following tests fail on 0.5 because of bugs in the 0.5 Base.@view
-    # macro (a bugfix is scheduled to be backported from 0.6: julia#20247)
-    if !isdefined(Base, Symbol("@view")) || VERSION ≥ v"0.6.0-dev.2406"
-        # test macro hygiene
-        let size=(x,y)-> error("should not happen"), Base=nothing
-            @test X[1:end,2,2] == @view X[1:end,2,2]
-        end
-
-        # test that side effects occur only once
-        let foo = typeof(X)[X]
-            @test X[2:end-1] == @view (push!(foo,X)[1])[2:end-1]
-            @test foo == typeof(X)[X, X]
-        end
-    end
-
-    # test @views macro
-    @views @compat let f!(x) = x[1:end-1] .+= x[2:end].^2
-        x = [1,2,3,4]
-        f!(x)
-        @test x == [5,11,19,4]
-        @test isa(x[1:3],SubArray)
-        @test x[2] === 11
-        @test Dict((1:3) => 4)[1:3] === 4
-        x[1:2] .= 0
-        @test x == [0,0,19,4]
-        x[1:2] .= 5:6
-        @test x == [5,6,19,4]
-        f!(x[3:end])
-        @test x == [5,6,35,4]
-        x[Y[2:3]] .= 7:8
-        @test x == [5,8,7,4]
+    @views let
+        x = [5,8,7,4]
         @dotcompat x[([3],)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
         @test x == [5,8,10,4]
-        i = Int[]
-        # test that lhs expressions in update operations are evaluated only once:
-        x[push!(i,4)[1]] += 5
-        @test x == [5,8,10,9] && i == [4]
-        x[push!(i,3)[end]] += 2
-        @test x == [5,8,12,9] && i == [4,3]
         @dotcompat x[3:end] = 0       # make sure @. works with end expressions in @views
         @test x == [5,8,0,0]
-    end
-    # same tests, but make sure we can switch the order of @compat and @views
-    @compat @views let f!(x) = x[1:end-1] .+= x[2:end].^2
-        x = [1,2,3,4]
-        f!(x)
-        @test x == [5,11,19,4]
-        @test isa(x[1:3],SubArray)
-        @test x[2] === 11
-        @test Dict((1:3) => 4)[1:3] === 4
-        x[1:2] .= 0
-        @test x == [0,0,19,4]
-        x[1:2] .= 5:6
-        @test x == [5,6,19,4]
-        f!(x[3:end])
-        @test x == [5,6,35,4]
-        x[Y[2:3]] .= 7:8
-        @test x == [5,8,7,4]
-        @dotcompat x[([3],)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
-        @test x == [5,8,10,4]
-        i = Int[]
-        # test that lhs expressions in update operations are evaluated only once:
-        x[push!(i,4)[1]] += 5
-        @test x == [5,8,10,9] && i == [4]
-        x[push!(i,3)[end]] += 2
-        @test x == [5,8,12,9] && i == [4,3]
-        @dotcompat x[3:end] = 0       # make sure @. works with end expressions in @views
-        @test x == [5,8,0,0]
-    end
-    @views @test isa(X[1:3], SubArray)
-    @test X[1:end] == @views X[1:end]
-    @test X[1:end-3] == @views X[1:end-3]
-    @test X[1:end,2,2] == @views X[1:end,2,2]
-    @test reshape(X[1,2,1:end-2],2) == @views X[1,2,1:end-2]
-    @test reshape(X[1,2,Y[2:end]],3) == @views X[1,2,Y[2:end]]
-    @test reshape(X[1:end,2,Y[2:end]],2,3) == @views X[1:end,2,Y[2:end]]
-    @test reshape(X[u...,2:end],2,3) == @views X[u...,2:end]
-    @test reshape(X[(1,)...,(2,)...,2:end],3) == @views X[(1,)...,(2,)...,2:end]
-
-    # test macro hygiene
-    let size=(x,y)-> error("should not happen"), Base=nothing
-        @test X[1:end,2,2] == @views X[1:end,2,2]
     end
 end
-
 # @. (@__dot__) tests, from base:
 let x = [4, -9, 1, -16]
     @test [2, 3, 4, 5] == @dotcompat(1 + sqrt($sort(abs(x))))
@@ -466,60 +122,6 @@ end
 let x = [1,2,3]
     @dotcompat f(x) = x^2
     @test f(x) == [1,4,9]
-end
-
-# PR #20418
-@compat abstract type Abstract20418{T} <: Ref{T} end
-@test Compat.TypeUtils.isabstract(Abstract20418)
-@compat primitive type Primitive20418{T} <: Ref{T} 16 end
-@test !Compat.TypeUtils.isabstract(Primitive20418)
-@test isbitstype(Primitive20418{Int})
-@test sizeof(Primitive20418{Int}) == 2
-
-# PR #20500
-@compat A20500{T<:Integer} = Array{T,20500}
-@compat const A20500_2{T<:Union{Int,Float32}} = Pair{T,T}
-f20500() = A20500
-f20500_2() = A20500_2
-@inferred f20500()
-@inferred f20500_2()
-
-module CompatArray
-    using Compat
-    const struct_sym = VERSION < v"0.7.0-DEV.1263" ? :type : :struct
-    eval(Expr(
-        struct_sym, false,
-        Expr(:(<:), :(CartesianArray{T,N}), :(AbstractArray{T,N})),
-        quote
-            parent::Array{T,N}
-        end))
-    eval(Expr(
-        struct_sym, false,
-        Expr(:(<:), :(LinearArray{T,N}), :(AbstractArray{T,N})),
-        quote
-            parent::Array{T,N}
-        end))
-    @compat Base.IndexStyle(::Type{<:LinearArray}) = IndexLinear()
-end
-@test IndexStyle(Array{Float32,2}) === IndexLinear()
-@test IndexStyle(CompatArray.CartesianArray{Float32,2}) === IndexCartesian()
-@test IndexStyle(CompatArray.LinearArray{Float32,2}) === IndexLinear()
-let a = CompatArray.CartesianArray(rand(2,3)), b = CompatArray.LinearArray(rand(2,3))
-    @test IndexStyle(a) === IndexCartesian()
-    @test IndexStyle(b) === IndexLinear()
-end
-
-if VERSION < v"0.6.0-dev.1653"
-    for (A,val) in ((zeros(1:5, Float32, 3, 2), 0),
-                    (ones(1:5, Float32, 3, 2), 1),
-                    (zeros(1:5, Float32, (3, 2)), 0),
-                    (ones(1:5, Float32, (3, 2)), 1))
-        @test isa(A, Matrix{Float32}) && size(A) == (3,2) && all(x->x==val, A)
-    end
-    for (A,val) in ((zeros(1:5, Float32), 0),
-                    (ones(1:5, Float32), 1))
-        @test isa(A, Vector{Float32}) && size(A) == (5,) && all(x->x==val, A)
-    end
 end
 
 # PR 20203
@@ -563,55 +165,16 @@ for (t, s, m, kept) in [
     @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}, keep=true) == Vector{Char}(kept)
 end
 
-# PR 18727
-let
-    iset = Set([17, 4711])
-    cfset = convert(Set{Float64}, iset)
-    @test typeof(cfset) == Set{Float64}
-    @test cfset == iset
-    fset = Set([17.0, 4711.0])
-    ciset = convert(Set{Int}, fset)
-    @test typeof(ciset) == Set{Int}
-    @test ciset == fset
-    ssset = Set(split("foo bar"))
-    cssset = convert(Set{String}, ssset)
-    @test typeof(cssset) == Set{String}
-    @test cssset == Set(["foo", "bar"])
-end
-
-# PR 18082
-@test !isassigned(Ref{String}())
-@test isassigned(Ref{String}("Test"))
-
-@test unsafe_trunc(Int8, 128) === Int8(-128)
-@test_throws InexactError trunc(Int8, 128)
-
-# PR 21346
-let zbuf = IOBuffer([0xbf, 0xc0, 0x00, 0x00, 0x40, 0x20, 0x00, 0x00,
-                     0x40, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                     0xc0, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
-    z1 = read(zbuf, ComplexF32)
-    z2 = read(zbuf, ComplexF64)
-    @test bswap(z1) === -1.5f0 + 2.5f0im
-    @test bswap(z2) ===  3.5 - 4.5im
-end
-
 # PR 19449
+# TODO remove these tests when Compat.StringVector is deprecated
 using Compat: StringVector
 @test length(StringVector(5)) == 5
 @test String(fill!(StringVector(5), 0x61)) == "aaaaa"
-
-# collect
-if VERSION < v"0.7.0-"
-    # Note: This is disabled on 0.7, since the Compat.collect functionality is only
-    # applicable on 0.5, and OffsetArrays currently has some incompatibilities with
-    # 0.7. This can be reenabled later if needed.
-    using OffsetArrays
-    a = OffsetArray(1:3, -1:1)
-    b = Compat.collect(a)
-    @test indices(b) === (Base.OneTo(3),)
-    @test b == [1,2,3]
+let x = fill!(StringVector(5), 0x61)
+    # 0.7
+    @test pointer(x) == pointer(String(x))
 end
+
 
 # PR 22064
 module Test22064
@@ -620,17 +183,7 @@ using Compat.Test
 @test (@__MODULE__) === Test22064
 end
 
-# invokelatest
-issue19774(x) = 1
-let foo() = begin
-        eval(:(issue19774(x::Int) = 2))
-        return Compat.invokelatest(issue19774, 0)
-    end
-    @test foo() == 2
-end
-cm359() = @__MODULE__
-@test Compat.invokelatest(cm359) === @__MODULE__
-
+# invokelatest with keywords
 pr22646(x; y=0) = 1
 let foo() = begin
         eval(:(pr22646(x::Int; y=0) = 2))
@@ -692,11 +245,6 @@ eval(Expr(struct_sym, false, :TestType, Expr(:block, :(a::Int), :b)))
 
 # PR 22761
 @test_throws OverflowError throw(OverflowError("overflow"))
-
-let x = fill!(StringVector(5), 0x61)
-    # 0.7
-    @test pointer(x) == pointer(String(x))
-end
 
 # PR 22907
 using Compat: pairs
@@ -908,8 +456,8 @@ end
 @test 1 in BitSet(1:10)
 
 # 0.7.0-DEV.1930
-@test Compat.Unicode.textwidth("A") == 1
-@test Compat.Unicode.textwidth('A') == 1
+@test textwidth("A") == 1
+@test textwidth('A') == 1
 
 # 0.7
 @test diagm(0 => ones(2), -1 => ones(2)) == [1.0 0.0 0.0; 1.0 1.0 0.0; 0.0 1.0 0.0]
@@ -1231,9 +779,11 @@ end
 @test argmax([10,12,9,11]) == 2
 @test argmax([10 12; 9 11]) == CartesianIndex(1, 2)
 @test argmax(Dict(:z=>10, :y=>12, :x=>9, :w=>11)) == :y
+@test argmax((-5, 6, 10)) == 3
 @test argmin([10,12,9,11]) == 3
 @test argmin([10 12; 9 11]) == CartesianIndex(2, 1)
 @test argmin(Dict(:z=>10, :y=>12, :x=>9, :w=>11)) == :x
+@test argmin((1.0, -3, 0.f0)) == 2
 
 # 0.7.0-DEV.3415
 @test findall(x -> x==1, [1, 2, 3, 2, 1]) == [1, 5]
@@ -1254,7 +804,9 @@ module TestSerialization
     @test isdefined(@__MODULE__, :Serialization)
     @test isdefined(@__MODULE__, :serialize)
     @test isdefined(@__MODULE__, :deserialize)
-    @test isdefined(@__MODULE__, :SerializationState)
+    if VERSION < v"1.0.0-DEV.44"
+        @test isdefined(@__MODULE__, :SerializationState)
+    end
 end
 
 module TestPkg
@@ -1435,11 +987,24 @@ end
 @test Compat.signif(pi, 5, base = 10) == 3.1416
 
 # 0.7.0-DEV.4804
+@test Compat.trunc(pi) == 3.0
+@test Compat.floor(pi) == 3.0
+@test Compat.ceil(pi) == 4.0
+@test Compat.round(pi) == 3.0
+@test Compat.trunc(pi, digits = 3) == 3.141
+@test Compat.floor(pi, digits = 3) == 3.141
+@test Compat.ceil(pi, digits = 3) == 3.142
+@test Compat.round(pi, digits = 3) == 3.142
+@test Compat.round(pi, sigdigits = 5) == 3.1416
+@test Compat.trunc(pi, base = 2) == 3.0
+@test Compat.floor(pi, base = 2) == 3.0
+@test Compat.ceil(pi, base = 2) == 4.0
+@test Compat.round(pi, base = 2) == 3.0
 @test Compat.trunc(pi, digits = 3, base = 2) == 3.125
 @test Compat.floor(pi, digits = 3, base = 2) == 3.125
 @test Compat.ceil(pi, digits = 3, base = 2) == 3.25
 @test Compat.round(pi, digits = 3, base = 2) == 3.125
-@test Compat.round(pi, sigdigits = 5, base = 10) == 3.1416
+@test Compat.round(pi, sigdigits = 5, base = 2) == 3.125
 
 # 0.7.0-DEV.3734
 let buf = Compat.IOBuffer(read=true, write=false, maxsize=25)
@@ -1642,11 +1207,20 @@ end
 @test length(Compat.CartesianIndices((1:2, -1:1))) == 6
 
 # 0.7.0-DEV.4738
-@test squeeze([1 2], dims=1) == [1, 2]
-@test_throws ArgumentError squeeze([1 2], dims=2)
-@test_throws ArgumentError squeeze(hcat([1, 2]), dims=1)
-@test squeeze(hcat([1, 2]), dims=2) == [1, 2]
-@test_throws Exception squeeze([1,2])
+if VERSION < v"0.7.0-beta2.143"
+    @test squeeze([1 2], dims=1) == [1, 2]
+    @test_throws ArgumentError squeeze([1 2], dims=2)
+    @test_throws ArgumentError squeeze(hcat([1, 2]), dims=1)
+    @test squeeze(hcat([1, 2]), dims=2) == [1, 2]
+    @test_throws Exception squeeze([1,2])
+end
+
+# 0.7.0-DEV.5165
+@test Compat.cat([1, 2], [3, 4, 5], dims = 1) == [1, 2, 3, 4, 5]
+@test Compat.cat([1, 2], [3, 4], dims = 2) == [1 3; 2 4]
+if VERSION < v"0.7.0-DEV.5165"
+    @test_throws UndefKeywordError Compat.cat([1, 2], [3, 4])
+end
 
 # 0.7.0-DEV.3976
 let A = rand(5,5)
@@ -1931,5 +1505,30 @@ Random.seed!(1)
 rng = MersenneTwister(0)
 Random.seed!(rng, 1)
 @test rand(rng) ≈ 0.23603334566204692
+
+# 0.7.0-beta2.169
+@test floatmin(Float16) == @eval $(Core.Intrinsics.bitcast(Float16, 0x0400))
+@test floatmax(Float32) == @eval $(Core.Intrinsics.bitcast(Float32, 0x7f7fffff))
+@test floatmin(zero(Float64)) == floatmin(Float64)
+
+# 0.7.0-beta2.143
+if VERSION < v"0.7.0-beta2.143"
+    let a = reshape(Vector(1:4),(2,2,1,1)), b = reshape(Vector(1:4), (2,2,1))
+        @test dropdims(a; dims=3) == b
+        @test_throws UndefKeywordError dropdims(a)
+    end
+end
+
+@test repeat([1, 2], 3) == [1, 2, 1, 2, 1, 2]
+@test repeat(1:4, 2) == [1, 2, 3, 4, 1, 2, 3, 4]
+@test repeat([1 2; 3 4], 2, 3) == [1  2  1  2  1  2
+                                   3  4  3  4  3  4
+                                   1  2  1  2  1  2
+                                   3  4  3  4  3  4]
+@test repeat([1, 2], 1, 2, 3) == [x for x in 1:2, y in 1:2, z in 1:3]
+
+# Support for positional `stop`
+@test Compat.range(0, 5, length = 6) == 0.0:1.0:5.0
+@test Compat.range(0, 10, step = 2) == 0:2:10
 
 nothing
