@@ -29,8 +29,3 @@ Base.@deprecate_binding AsyncCondition Base.AsyncCondition
 Base.@deprecate_binding promote_eltype_op Base.promote_eltype_op
 @eval Base.@deprecate_binding $(Symbol("@irrational")) Base.$(Symbol("@irrational"))
 @eval Base.@deprecate_binding $(Symbol("@blasfunc")) Compat.LinearAlgebra.BLAS.$(Symbol("@blasfunc"))
-
-if VERSION < v"0.7.0-DEV.2915"
-    const textwidth = Compat.Unicode.textwidth
-    export textwidth
-end
