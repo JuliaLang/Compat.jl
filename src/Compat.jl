@@ -157,9 +157,6 @@ end # module TypeUtils
 # @view, @views, @__dot__
 include("arraymacros.jl")
 
-# julia #18839
-import Base.Iterators # TODO deprecate, remove
-
 # https://github.com/JuliaLang/julia/pull/25646
 @static if VERSION < v"0.7.0-DEV.3510"
     # not exported
@@ -1172,15 +1169,11 @@ end
     macro info(msg, args...)
         return :(info($(esc(msg)), prefix = "Info: "))
     end
-else
-    @eval const $(Symbol("@info")) = Base.$(Symbol("@info"))
 end
 @static if !isdefined(Base, Symbol("@warn"))
     macro warn(msg, args...)
         return :(warn($(esc(msg)), prefix = "Warning: "))
     end
-else
-    @eval const $(Symbol("@warn")) = Base.$(Symbol("@warn"))
 end
 
 const DEBUG = Ref(false) # debug printing off by default, as on 0.7
@@ -1198,8 +1191,6 @@ enable_debug(x::Bool) = DEBUG[] = x
     macro debug(msg, args...)
         return :(debug($(esc(msg))))
     end
-else
-    @eval const $(Symbol("@debug")) = Base.$(Symbol("@debug"))
 end
 @static if !isdefined(Base, Symbol("@error"))
     function _error(msg)
@@ -1213,8 +1204,6 @@ end
     macro error(msg, args...)
         return :(_error($(esc(msg))))
     end
-else
-    @eval const $(Symbol("@error")) = Base.$(Symbol("@error"))
 end
 
 # 0.7.0-DEV.3415
@@ -1358,12 +1347,7 @@ end
     export objectid
 end
 
-@static if VERSION >= v"0.7.0-DEV.3272"
-    findnext(xs...) = Base.findnext(xs...)
-    findfirst(xs...) = Base.findfirst(xs...)
-    findprev(xs...) = Base.findprev(xs...)
-    findlast(xs...) = Base.findlast(xs...)
-else
+@static if VERSION < v"0.7.0-DEV.3272"
     zero2nothing(x::Integer) = x == 0 ? nothing : x
     zero2nothing(x::AbstractUnitRange{<:Integer}) = x == 0:-1 ? nothing : x
     zero2nothing(x) = x
@@ -1424,8 +1408,6 @@ end
 # https://github.com/JuliaLang/julia/pull/25647
 @static if VERSION < v"0.7.0-DEV.3526"
     names(m; all=false, imported=false) = Base.names(m, all, imported)
-else
-    import Base: names
 end
 
 if VERSION >= v"0.7.0-DEV.3666"
@@ -1580,7 +1562,7 @@ elseif VERSION < v"1.0.0-DEV.57"
     import Base: LinRange
     range(start; kwargs...) = Base.range(start; kwargs...)
 else
-    import Base: range, LinRange
+    import Base: range # import as it is further extended below
 end
 
 @static if VERSION < v"0.7.0-DEV.3995"
@@ -1601,8 +1583,6 @@ if VERSION < v"0.7.0-DEV.3972"
              get(bdict, i, nothing) for i in a
          ]
     end
-else
-    const indexin = Base.indexin
 end
 
 if VERSION < v"0.7.0-DEV.4585"
@@ -1744,8 +1724,6 @@ end
 
 @static if VERSION < v"0.7.0-DEV.3936"
     Base.fetch(t::Task) = wait(t)
-else
-    import Base: fetch
 end
 
 # https://github.com/JuliaLang/julia/pull/27077
