@@ -29,3 +29,7 @@ Base.@deprecate_binding AsyncCondition Base.AsyncCondition
 Base.@deprecate_binding promote_eltype_op Base.promote_eltype_op
 @eval Base.@deprecate_binding $(Symbol("@irrational")) Base.$(Symbol("@irrational"))
 @eval Base.@deprecate_binding $(Symbol("@blasfunc")) Compat.LinearAlgebra.BLAS.$(Symbol("@blasfunc"))
+
+# to be deprecated:
+
+# * `range(start, stop)` (without either `length` nor `step` given)
