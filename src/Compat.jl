@@ -646,6 +646,8 @@ else
         if VERSION < v"0.7.0-DEV.3406"
             $((:(using Base.Random: $f) for f in random_fields)...)
             const seed! = Base.Random.srand
+            # these should be deprecated in favor of Compat.UUIDs.*
+            using Base.Random: uuid1, uuid4, uuid_version
         else
             $((:(using Random: $f) for f in random_fields)...)
             import Random
@@ -653,6 +655,10 @@ else
                 const seed! = Random.srand
             else
                 using Random: seed!
+            end
+            if VERSION < v"0.7.0-DEV.3666"
+                # these should be deprecated in favor of Compat.UUIDs.*
+                using Random: uuid1, uuid4, uuid_version
             end
         end
 

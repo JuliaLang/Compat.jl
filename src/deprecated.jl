@@ -33,3 +33,4 @@ Base.@deprecate_binding promote_eltype_op Base.promote_eltype_op
 # to be deprecated:
 
 # * `range(start, stop)` (without either `length` nor `step` given)
+# * Compat.Random.uuid1, uuid4, uuid_version (in favour of Compat.UUIDs.*)
