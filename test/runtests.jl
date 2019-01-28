@@ -1505,6 +1505,7 @@ Random.seed!(1)
 rng = MersenneTwister(0)
 Random.seed!(rng, 1)
 @test rand(rng) ≈ 0.23603334566204692
+@test 0 < rand(Random.GLOBAL_RNG, Random.RangeGenerator(1:3)) < 4
 
 # 0.7.0-beta2.169
 @test floatmin(Float16) == @eval $(Core.Intrinsics.bitcast(Float16, 0x0400))
