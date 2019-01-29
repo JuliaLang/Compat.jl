@@ -81,6 +81,4 @@ macro dotcompat(x)
 end
 export @dotcompat
 
-# to be deprecated:
-
-# * Compat.Random.uuid1, uuid4, uuid_version (in favour of Compat.UUIDs.*)
+# Compat.Random.uuid1, uuid4, uuid_version are deprecated in Compat.jl

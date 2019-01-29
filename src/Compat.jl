@@ -585,8 +585,6 @@ else
         if VERSION < v"0.7.0-DEV.3406"
             $((:(using Base.Random: $f) for f in random_fields)...)
             const seed! = Base.Random.srand
-            # these should be deprecated in favor of Compat.UUIDs.*
-            using Base.Random: uuid1, uuid4, uuid_version
         else
             $((:(using Random: $f) for f in random_fields)...)
             import Random
@@ -595,10 +593,14 @@ else
             else
                 using Random: seed!
             end
-            if VERSION < v"0.7.0-DEV.3666"
-                # these should be deprecated in favor of Compat.UUIDs.*
-                using Random: uuid1, uuid4, uuid_version
-            end
+        end
+        if VERSION < v"0.7.0-DEV.3666"
+            import ..Compat
+            Base.@deprecate uuid1() Compat.UUIDs.uuid1() false
+            Base.@deprecate uuid1(rng) Compat.UUIDs.uuid1(rng) false
+            Base.@deprecate uuid4() Compat.UUIDs.uuid4() false
+            Base.@deprecate uuid4(rng) Compat.UUIDs.uuid4(rng) false
+            Base.@deprecate uuid_version(u) Compat.UUIDs.uuid_version(u) false
         end
 
         gentype(args...) = eltype(args...)
