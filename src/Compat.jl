@@ -632,16 +632,22 @@ end
 if VERSION >= v"0.7.0-beta.234"
     import Random
 else
-    const random_fields = [
+    const exported_random_fields = [
         :AbstractRNG, :MersenneTwister, :RandomDevice, :bitrand, :rand, :rand!,
         :randcycle, :randexp, :randexp!, :randjump, :randn!,
         :randperm, :randstring, :randsubseq, :randsubseq!, :shuffle,
         :shuffle!
     ]
+    const unexported_random_fields = [
+        :GLOBAL_RNG, :RangeGenerator
+    ]
+    const random_fields = [exported_random_fields; unexported_random_fields]
     @eval module Random
         if VERSION < v"0.7.0-DEV.3406"
             $((:(using Base.Random: $f) for f in random_fields)...)
             const seed! = Base.Random.srand
+            # these should be deprecated in favor of Compat.UUIDs.*
+            using Base.Random: uuid1, uuid4, uuid_version
         else
             $((:(using Random: $f) for f in random_fields)...)
             import Random
@@ -650,11 +656,15 @@ else
             else
                 using Random: seed!
             end
+            if VERSION < v"0.7.0-DEV.3666"
+                # these should be deprecated in favor of Compat.UUIDs.*
+                using Random: uuid1, uuid4, uuid_version
+            end
         end
 
         gentype(args...) = eltype(args...)
 
-        export $(random_fields...)
+        export $(exported_random_fields...)
     end
 end
 
