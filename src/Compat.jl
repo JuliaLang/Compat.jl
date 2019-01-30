@@ -1886,11 +1886,9 @@ end
 if VERSION < v"1.1.0-DEV.506"
     range(start, stop; kwargs...) = range(start; stop=stop, kwargs...)
 else
-    function __init__()
-        @eval Base begin
-            range(start, stop; kwargs...) = range(start; stop=stop, kwargs...)
-        end
-    end
+    # This method is restricted to Number, since we don't
+    # want to overwrite the (::Any, ::Any) method in Base.
+    range(start::Number, stop::Number; kwargs...) = range(start; stop=stop, kwargs...)
 end
 
 include("deprecated.jl")
