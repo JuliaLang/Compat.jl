@@ -238,6 +238,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `mapslices` with `dims` keyword argument ([#27828]).
 
+* `hasproperty` and `hasfield` ([#28850]).
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -577,3 +579,4 @@ includes this fix. Find the minimum version from there.
 [#28302]: https://github.com/JuliaLang/julia/issues/28302
 [#28303]: https://github.com/JuliaLang/julia/issues/28303
 [#28708]: https://github.com/JuliaLang/julia/issues/28708
+[#28850]: https://github.com/JuliaLang/julia/issues/28850
