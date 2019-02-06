@@ -239,6 +239,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `mapslices` with `dims` keyword argument ([#27828]).
 
 * `hasproperty` and `hasfield` ([#28850]).
+  `hasproperty` is defined only for Julia 0.7 or later.
 
 ## Renaming
 

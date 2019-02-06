@@ -1540,7 +1540,9 @@ end
 tlayout = TLayout(5,7,11)
 @test hasfield(TLayout, :y)
 @test !hasfield(TLayout, :a)
-@test hasproperty(tlayout, :x)
-@test !hasproperty(tlayout, :p)
+if VERSION >= v"0.7-"
+    @test hasproperty(tlayout, :x)
+    @test !hasproperty(tlayout, :p)
+end
 
 nothing
