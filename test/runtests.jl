@@ -16,30 +16,6 @@ for os in [:apple, :bsd, :linux, :unix, :windows]
     @eval @test Compat.Sys.$(Symbol("is", os))() == $from_base()
 end
 
-# PR #17302
-# To be removed when 0.6 support is dropped.
-f17302(a::Number) = a
-f17302(a::Number, b::Number) = a + b
-Compat.@dep_vectorize_1arg Real f17302
-Compat.@dep_vectorize_2arg Real f17302
-@test_throws MethodError f17302([1im])
-@test_throws MethodError f17302([1im], [1im])
-@static if VERSION ≥ v"0.7.0-DEV.2988"
-    @test (@test_logs (:warn, "`f17302(x::(Base.AbstractArray){T}) where T <: Real` is deprecated, use `f17302.(x)` instead.") f17302([1.0])) == [1.0]
-    @test (@test_logs (:warn, "`f17302(x::Real, y::(Base.AbstractArray){T1}) where T1 <: Real` is deprecated, use `f17302.(x, y)` instead.") f17302(1.0, [1])) == [2.0]
-    @test (@test_logs (:warn, "`f17302(x::(Base.AbstractArray){T1}, y::Real) where T1 <: Real` is deprecated, use `f17302.(x, y)` instead.") f17302([1.0], 1)) == [2.0]
-    @test (@test_logs (:warn, "`f17302(x::(Base.AbstractArray){T1}, y::(Base.AbstractArray){T2}) where {T1 <: Real, T2 <: Real}` is deprecated, use `f17302.(x, y)` instead.") f17302([1.0], [1])) == [2.0]
-else
-    mktemp() do fname, f
-        redirect_stderr(f) do
-            @test f17302([1.0]) == [1.0]
-            @test f17302(1.0, [1]) == [2.0]
-            @test f17302([1.0], 1) == [2.0]
-            @test f17302([1.0], [1]) == [2.0]
-        end
-    end
-end
-
 let s = "Koala test: 🐨"
     @test transcode(UInt16, s) == UInt16[75,111,97,108,97,32,116,101,115,116,58,32,55357,56360]
     @test transcode(UInt32, s) == UInt32[75,111,97,108,97,32,116,101,115,116,58,32,128040]
@@ -94,36 +70,6 @@ eval(Expr(
 @test !isabstracttype(ConcreteFoo200061)
 @test !isabstracttype(StridedArray)
 
-# TODO remove these tests when deprecating @dotcompat
-let X = reshape(1:24,2,3,4)
-    @test X[1:end] == @dotcompat (@view X[1:end]) # test compatibility of @. and @view
-    @views let
-        x = [5,8,7,4]
-        @dotcompat x[([3],)..., ()...] += 3 # @. should convert to .+=, test compatibility with @views
-        @test x == [5,8,10,4]
-        @dotcompat x[3:end] = 0       # make sure @. works with end expressions in @views
-        @test x == [5,8,0,0]
-    end
-end
-# @. (@__dot__) tests, from base:
-let x = [4, -9, 1, -16]
-    @test [2, 3, 4, 5] == @dotcompat(1 + sqrt($sort(abs(x))))
-    @test @dotcompat(x^2) == x.^2
-    @dotcompat x = 2
-    @test x == [2,2,2,2]
-end
-@test [1,4,9] == @dotcompat let x = [1,2,3]; x^2; end
-let x = [1,2,3], y = x
-    @dotcompat for i = 1:3
-        y = y^2 # should convert to y .= y.^2
-    end
-    @test x == [1,256,6561]
-end
-let x = [1,2,3]
-    @dotcompat f(x) = x^2
-    @test f(x) == [1,4,9]
-end
-
 # PR 20203
 @test Compat.readline(IOBuffer("Hello, World!\n")) == "Hello, World!"
 @test Compat.readline(IOBuffer("x\n"), keep=false) == "x"
@@ -164,17 +110,6 @@ for (t, s, m, kept) in [
     @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}) == Vector{Char}(m)
     @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}, keep=true) == Vector{Char}(kept)
 end
-
-# PR 19449
-# TODO remove these tests when Compat.StringVector is deprecated
-using Compat: StringVector
-@test length(StringVector(5)) == 5
-@test String(fill!(StringVector(5), 0x61)) == "aaaaa"
-let x = fill!(StringVector(5), 0x61)
-    # 0.7
-    @test pointer(x) == pointer(String(x))
-end
-
 
 # PR 22064
 module Test22064
@@ -978,13 +913,6 @@ module TestNames
 end
 @test :foo in Compat.names(TestNames)
 @test :bar in Compat.names(TestNames, all=true)
-
-# 0.7.0-DEV.4062, but dropped in 0.7.0-DEV.4804
-@test Compat.trunc(pi, 3, base = 2) == 3.125
-@test Compat.floor(pi, 3, base = 2) == 3.125
-@test Compat.ceil(pi, 3, base = 2) == 3.25
-@test Compat.round(pi, 3, base = 2) == 3.125
-@test Compat.signif(pi, 5, base = 10) == 3.1416
 
 # 0.7.0-DEV.4804
 @test Compat.trunc(pi) == 3.0
