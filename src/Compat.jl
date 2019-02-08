@@ -1896,7 +1896,7 @@ if VERSION < v"1.2.0-DEV.272"
     Base.@pure hasfield(::Type{T}, name::Symbol) where T =
         Base.fieldindex(T, name, false) > 0
     export hasfield
-    if VERSION >= v"0.7-"
+    if VERSION >= v"0.7-DEV.5136"
         hasproperty(x, s::Symbol) = s in propertynames(x)
         export hasproperty
     end
