@@ -1,4 +1,5 @@
 Base.@deprecate_binding StringVector Base.StringVector false
+Base.@deprecate_binding macros_have_sourceloc true false
 
 # PR #17302
 # Provide a non-deprecated version of `@vectorize_(1|2)arg` macro which defines
@@ -56,29 +57,16 @@ else
     end
 end
 
-# compatibility with https://github.com/JuliaLang/julia/pull/26156
-Base.@deprecate trunc(x, digits; base = 10) Compat.trunc(x, digits = digits, base = base) false
-Base.@deprecate floor(x, digits; base = 10) Compat.floor(x, digits = digits, base = base) false
-Base.@deprecate ceil(x, digits; base = 10) Compat.ceil(x, digits = digits, base = base) false
-Base.@deprecate round(x, digits; base = 10) Compat.round(x, digits = digits, base = base) false
-Base.@deprecate signif(x, digits; base = 10) Compat.round(x, sigdigits = digits, base = base) false
-
-if VERSION >= v"1.1.0-DEV.506"
-    # deprecation of range(start, stop) for earlier versions is done in Compat.jl
-    # This method is restricted to Number, since we don't
-    # want to overwrite the (::Any, ::Any) method in Base.
-    function range(start::Number, stop::Number; kwargs...)
-        rangedepwarn(;kwargs...)
-        range(start; stop=stop, kwargs...)
-    end
-end
-
 # this was defined for use with Julia versions prior to 0.5
 # (see https://github.com/JuliaLang/Compat.jl/pull/316)
 macro dotcompat(x)
-    Base.depwarn("`@dotcompat x` is deprecated, use `@compat @. x` instead.", Symbol("@dotcompat"))
-    esc(:(Compat.@compat @. $x))
+    Base.depwarn("`@dotcompat x` is deprecated, use `@. x` instead.", Symbol("@dotcompat"))
+    esc(:(@. $x))
 end
 export @dotcompat
 
-# Compat.Random.uuid1, uuid4, uuid_version are deprecated in Compat.jl
+module TypeUtils
+    using Base: parameter_upper_bound, typename
+    const isabstract = isabstracttype
+    export isabstract, parameter_upper_bound, typename
+end
