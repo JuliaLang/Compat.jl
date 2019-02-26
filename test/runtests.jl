@@ -1473,4 +1473,9 @@ if VERSION >= v"0.7-"
     @test !hasproperty(tlayout, :p)
 end
 
+if VERSION >= v"1.0.0"
+    @test merge((a=1,b=1)) == (a=1,b=1)
+    @test merge((a=1,), (b=2,), (c=3,)) == (a=1,b=2,c=3)
+end
+
 nothing

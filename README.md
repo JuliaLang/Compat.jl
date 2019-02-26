@@ -241,6 +241,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `hasproperty` and `hasfield` ([#28850]).
   `hasproperty` is defined only for Julia 0.7 or later.
 
+* `merge` methods with one and `n` arguments ([#29259]).
+
 ## Renaming
 
 * `Display` is now `AbstractDisplay` ([#24831]).
@@ -570,3 +572,4 @@ includes this fix. Find the minimum version from there.
 [#28303]: https://github.com/JuliaLang/julia/issues/28303
 [#28708]: https://github.com/JuliaLang/julia/issues/28708
 [#28850]: https://github.com/JuliaLang/julia/issues/28850
+[#29259]: https://github.com/JuliaLang/julia/issues/29259
