@@ -1838,7 +1838,7 @@ if VERSION < v"1.2.0-DEV.272"
 end
 
 # https://github.com/JuliaLang/julia/pull/29259
-@static if v"0.7.0" <= VERSION < v"1.1.0-DEV.594"
+if v"0.7.0" <= VERSION < v"1.1.0-DEV.594"
     Base.merge(a::NamedTuple, b::NamedTuple, cs::NamedTuple...) = merge(merge(a, b), cs...)
     Base.merge(a::NamedTuple) = a
 end
