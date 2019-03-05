@@ -241,7 +241,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `hasproperty` and `hasfield` ([#28850]).
   `hasproperty` is defined only for Julia 0.7 or later.
 
-* `merge` methods with one and `n` arguments ([#29259]).
+* `merge` methods with one and `n` `NamedTuple`s ([#29259]).
 
 ## Renaming
 
