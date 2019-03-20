@@ -119,6 +119,12 @@ end # module TypeUtils
     readuntil(f, d::Vector{T}; keep::Bool = false) where {T<:Union{UInt8,Char}} = convert(Vector{T}, readuntil(f, String(d), keep=keep))
 end
 
+# https://github.com/JuliaLang/julia/pull/29679
+if VERSION < v"1.1.0-DEV.472"
+    Base.isnothing(::Any) = false
+    Base.isnothing(::Nothing) = true
+end
+
 # https://github.com/JuliaLang/julia/pull/22646
 if VERSION < v"0.7.0-DEV.1139"
     function invokelatest(f, args...; kwargs...)
