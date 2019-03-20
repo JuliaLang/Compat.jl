@@ -121,8 +121,9 @@ end
 
 # https://github.com/JuliaLang/julia/pull/29679
 if VERSION < v"1.1.0-DEV.472"
-    Base.isnothing(::Any) = false
-    Base.isnothing(::Nothing) = true
+    export isnothing
+    isnothing(::Any) = false
+    isnothing(::Nothing) = true
 end
 
 # https://github.com/JuliaLang/julia/pull/22646
