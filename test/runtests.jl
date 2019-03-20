@@ -26,6 +26,10 @@ let s = "Koala test: 🐨"
     end
 end
 
+# julia#29679
+@test !isnothing(1)
+@test isnothing(nothing)
+
 # julia#26365
 @test Compat.tr([1 2; 3 5]) == 6
 
