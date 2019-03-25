@@ -120,6 +120,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
+* `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
+
 * `Compat.readline` with `keep` keyword argument ([#25646])
 
 * `Compat.eachline` with `keep` keyword argument ([#25646])
@@ -573,3 +575,4 @@ includes this fix. Find the minimum version from there.
 [#28708]: https://github.com/JuliaLang/julia/issues/28708
 [#28850]: https://github.com/JuliaLang/julia/issues/28850
 [#29259]: https://github.com/JuliaLang/julia/issues/29259
+[#29674]: https://github.com/JuliaLang/julia/issues/29674

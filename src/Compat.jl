@@ -924,6 +924,14 @@ end
     export Nothing, Cvoid
 end
 
+# https://github.com/JuliaLang/julia/pull/29679
+if VERSION < v"1.1.0-DEV.472"
+    export isnothing
+    isnothing(::Any) = false
+    isnothing(::Nothing) = true
+end
+
+
 @static if !isdefined(Base, :Some)
     import Base: promote_rule, convert
     struct Some{T}
