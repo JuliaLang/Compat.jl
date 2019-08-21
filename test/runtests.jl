@@ -31,7 +31,7 @@ end
 @test isnothing(nothing)
 
 # https://github.com/JuliaLang/julia/pull/29749
-if VERSION > v"0.7"
+if VERSION >= v"0.7"
     @testset "row/column/slice iterators" begin
         # Simple ones
         M = [1 2 3; 4 5 6; 7 8 9]
