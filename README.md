@@ -114,7 +114,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
-* `eachcol` to iterate over the second dimension of a matrix and `eachrow` to iterate over the first dimension of a matrix and `eachslice` to iterate over some dimension of a matrix ([#29749]).
+* `eachrow`, `eachcol`, and `eachslice` to iterate over first, second, or given dimension
+  of an array ([#29749]).
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
