@@ -931,6 +931,21 @@ if VERSION < v"1.1.0-DEV.472"
     isnothing(::Nothing) = true
 end
 
+# https://github.com/JuliaLang/julia/pull/29749
+@static if v"0.7" <= VERSION < v"1.1.0-DEV.792"
+    export eachrow, eachcol, eachslice
+    eachrow(A::AbstractVecOrMat) = (view(A, i, :) for i in axes(A, 1))
+    eachcol(A::AbstractVecOrMat) = (view(A, :, i) for i in axes(A, 2))
+    @inline function eachslice(A::AbstractArray; dims)
+        length(dims) == 1 || throw(ArgumentError("only single dimensions are supported"))
+        dim = first(dims)
+        dim <= ndims(A) || throw(DimensionMismatch("A doesn't have $dim dimensions"))
+        idx1, idx2 = ntuple(d->(:), dim-1), ntuple(d->(:), ndims(A)-dim)
+        return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
+    end
+end
+
+
 
 @static if !isdefined(Base, :Some)
     import Base: promote_rule, convert

@@ -30,6 +30,23 @@ end
 @test !isnothing(1)
 @test isnothing(nothing)
 
+# https://github.com/JuliaLang/julia/pull/29749
+if VERSION >= v"0.7"
+    @testset "row/column/slice iterators" begin
+        # Simple ones
+        M = [1 2 3; 4 5 6; 7 8 9]
+        @test collect(eachrow(M)) == collect(eachslice(M, dims = 1)) == [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+        @test collect(eachcol(M)) == collect(eachslice(M, dims = 2)) == [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+        @test_throws DimensionMismatch eachslice(M, dims = 4)
+        
+        # Higher-dimensional case
+        M = reshape([(1:16)...], 2, 2, 2, 2)
+        @test_throws MethodError collect(eachrow(M))
+        @test_throws MethodError collect(eachcol(M))
+        @test collect(eachslice(M, dims = 1))[1][:, :, 1] == [1 5; 3 7]
+    end
+end
+
 # julia#26365
 @test Compat.tr([1 2; 3 5]) == 6
 

@@ -114,6 +114,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
+* `eachrow`, `eachcol`, and `eachslice` to iterate over first, second, or given dimension
+  of an array ([#29749]).
+
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
 * `Compat.readline` with `keep` keyword argument ([#25646])
@@ -570,3 +573,4 @@ includes this fix. Find the minimum version from there.
 [#28850]: https://github.com/JuliaLang/julia/issues/28850
 [#29259]: https://github.com/JuliaLang/julia/issues/29259
 [#29674]: https://github.com/JuliaLang/julia/issues/29674
+[#29749]: https://github.com/JuliaLang/julia/issues/29749
