@@ -83,13 +83,29 @@ eval(Expr(
 @test !Compat.TypeUtils.isabstract(ConcreteFoo20006N)
 @test !Compat.TypeUtils.isabstract(ConcreteFoo200061)
 @test !Compat.TypeUtils.isabstract(StridedArray)
-@test Compat.TypeUtils.parameter_upper_bound(ConcreteFoo20006, 1) == Int
 @test isa(Compat.TypeUtils.typename(Array), Core.TypeName)
 @test isabstracttype(AbstractFoo20006)
 @test !isabstracttype(ConcreteFoo20006)
 @test !isabstracttype(ConcreteFoo20006N)
 @test !isabstracttype(ConcreteFoo200061)
 @test !isabstracttype(StridedArray)
+
+eval(Expr(
+    struct_sym, false,
+    :(ReflectionExample{T<:AbstractFloat,N}),
+    quote end))
+fComplicatedUnionAll(::Type{T}) where {T} = Type{Tuple{S,rand() >= 0.5 ? Int : Float64}} where S <: T
+let pub = Compat.TypeUtils.parameter_upper_bound
+    @test pub(ConcreteFoo20006, 1) == Int
+    @test pub(ReflectionExample, 1) === AbstractFloat
+    @test pub(ReflectionExample, 2) === Any
+    @test pub(ReflectionExample{T, N} where T where N <: Real, 2) === Real
+    let x = fComplicatedUnionAll(Real)
+        @test pub(pub(x, 1), 1) == Real
+        @test pub(pub(x, 1), 2) == Int || pub(pub(x, 1), 2) == Float64
+    end
+end
+
 
 # PR 20203
 @test Compat.readline(IOBuffer("Hello, World!\n")) == "Hello, World!"
