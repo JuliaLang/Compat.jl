@@ -93,10 +93,21 @@ end
 end
 
 module TypeUtils
-    using Base: parameter_upper_bound, typename
+    using Base: typename
     using Compat: isabstracttype
     const isabstract = isabstracttype
     export isabstract, parameter_upper_bound, typename
+    """
+        parameter_upper_bound(t::UnionAll, idx)
+
+    Determine the upper bound of a type parameter in the underlying datatype.
+    This method should generally not be relied upon:
+    code instead should usually use static parameters in dispatch to extract these values.
+    """
+    function parameter_upper_bound(t::UnionAll, idx)
+        Base.@_pure_meta
+        return Base.rewrap_unionall((Base.unwrap_unionall(t)::DataType).parameters[idx], t)
+    end
 end # module TypeUtils
 
 # https://github.com/JuliaLang/julia/pull/25646
