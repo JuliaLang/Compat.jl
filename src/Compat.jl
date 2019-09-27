@@ -1867,7 +1867,7 @@ if v"0.7.0" <= VERSION < v"1.1.0-DEV.594"
 end
 
 # https://github.com/JuliaLang/julia/pull/32628
-if v"0.7.0" <= VERSION < v"1.3.0-DEV.546"
+if v"0.7.0" <= VERSION < v"1.3.0-alpha.8"
     Base.mod(i::Integer, r::Base.OneTo) = mod1(i, last(r))
     Base.mod(i::Integer, r::AbstractUnitRange{<:Integer}) = mod(i-first(r), length(r)) + first(r)
 end
