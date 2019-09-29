@@ -1523,7 +1523,7 @@ end
 
         @test @inferred(only(1)) === 1
         @test @inferred(only('a')) === 'a'
-        @test @inferred(only(Ref([1, 2]))) == [1, 2]
+        # @test @inferred(only(Ref([1, 2]))) == [1, 2] # Fails on v0.7, depwarn "`Ref(x::AbstractArray)` is deprecated, use `Ref(x, 1)` instead."
         @test_throws ArgumentError only(Pair(10, 20))
 
         @test only(1 for ii in 1:1) === 1
