@@ -913,20 +913,6 @@ import Compat.Markdown
     @test stderr === STDERR
 end
 
-# 0.7.0-DEV.3666
-module TestSockets
-    using Compat
-    using Compat.Sockets
-    using Compat.Test
-
-    @test isdefined(@__MODULE__, :UDPSocket)
-    @test isdefined(@__MODULE__, :connect)
-    @test isdefined(@__MODULE__, :listen)
-    @test isdefined(@__MODULE__, :recv)
-
-    @test ip"127.0.0.1".host == UInt32(2130706433)
-end
-
 # 0.7.0-DEV.3526
 module TestNames
     export foo
@@ -1553,5 +1539,7 @@ if VERSION >= v"0.7"
         @test_throws DivideError mod(3, 1:0)
     end
 end
+
+include("old.jl")
 
 nothing

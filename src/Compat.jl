@@ -2,22 +2,8 @@ VERSION < v"0.7.0-beta2.199" && __precompile__()
 
 module Compat
 
-# https://github.com/JuliaLang/julia/pull/25935
-if VERSION < v"0.7.0-DEV.4442"
-    @eval module Sockets
-        import Base:
-            @ip_str, IPAddr, IPv4, IPv6, UDPSocket, TCPSocket, DNSError,
-            accept, connect, getaddrinfo, getipaddr, getsockname, listen,
-            listenany, recv, recvfrom, send, bind
-
-        export
-            @ip_str, IPAddr, IPv4, IPv6, UDPSocket, TCPSocket,
-            accept, connect, getaddrinfo, getipaddr, getsockname, listen,
-            listenany, recv, recvfrom, send, bind
-    end
-else
-    import Sockets
-end
+# to be deprecated
+import Sockets
 
 include("compatmacro.jl")
 
