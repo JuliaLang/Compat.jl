@@ -265,23 +265,6 @@ end
 @test @inferred(ntuple(x->x, Val(0))) == ()
 @test @inferred(ntuple(x->x, Val(5))) == (1,2,3,4,5)
 
-# @nospecialize
-# 0.7
-no_specialize(@nospecialize(x)) = sin(1)
-no_specialize(@nospecialize(x::Integer)) = sin(2)
-@test no_specialize(1.0) == sin(1)
-@test no_specialize(1) == sin(2)
-no_specialize_kw1(@nospecialize(x=0)) = sin(1)
-no_specialize_kw1(@nospecialize(x::Integer)) = sin(2)
-@test no_specialize_kw1(1.0) == sin(1)
-@test no_specialize_kw1(1) == sin(2)
-@test no_specialize_kw1() == sin(2)
-no_specialize_kw2(@nospecialize(x)) = sin(1)
-no_specialize_kw2(@nospecialize(x::Integer=0)) = sin(2)
-@test no_specialize_kw2(1.0) == sin(1)
-@test no_specialize_kw2(1) == sin(2)
-@test no_specialize_kw2() == sin(2)
-
 # 0.7
 @test read(IOBuffer("aaaa"), String) == "aaaa"
 @test occursin("read(@__FILE__, String)", read(@__FILE__, String))

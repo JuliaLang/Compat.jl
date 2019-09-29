@@ -368,8 +368,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New macros
 
-* `@nospecialize` has been added ([#22666]).
-
 * The logging macros `@error`, `@warn`, `@info` and `@debug` can be used as
   `Compat.@error`, `Compat.@warn`, `Compat.@info` and `Compat.@debug` on Julia 0.6 ([#24490]).
   Note that the behavior do not mirror the logging macros in Julia 0.7, instead on Julia 0.6:

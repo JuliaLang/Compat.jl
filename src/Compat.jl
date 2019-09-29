@@ -7,32 +7,6 @@ import Sockets
 
 include("compatmacro.jl")
 
-@static if !isdefined(Base, Symbol("@nospecialize"))
-    # 0.7
-    macro nospecialize(arg)
-        if isa(arg, Symbol)
-            # @nospecialize(arg)
-            return :($(esc(arg))::ANY)
-        elseif isa(arg, Expr) && arg.head == :(::)
-            # @nospecialize(arg::typ)
-            # unsupported: needs ::ANY which would change dispatch as determined by ::typ
-        elseif isa(arg, Expr) && arg.head == :(=)
-            # @nospecialize(arg=val)
-            arg, val = arg.args
-            if isa(arg, Expr) && arg.head == :(::)
-                # @nospecialize(arg::typ=val)
-                # unsupported (see above), but generate a kw arg
-                arg, typ = arg.args
-                return Expr(:kw, :($(esc(arg))::$(esc(typ))), esc(val))
-            else
-                return Expr(:kw, :($(esc(arg))::ANY), esc(val))
-            end
-        end
-        return esc(arg)
-    end
-    export @nospecialize
-end
-
 # https://github.com/JuliaLang/julia/pull/22064
 @static if !isdefined(Base, Symbol("@__MODULE__"))
     # 0.7
