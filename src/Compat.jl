@@ -7,11 +7,6 @@ import Sockets
 
 include("compatmacro.jl")
 
-@static if !isdefined(Base, :isabstracttype) # VERSION < v"0.7.0-DEV.3475"
-    const isabstracttype = Base.isabstract
-    export isabstracttype
-end
-
 module TypeUtils
     using Base: parameter_upper_bound, typename
     using Compat: isabstracttype
@@ -283,20 +278,6 @@ if VERSION < v"0.7.0-DEV.1325"
         rtol = max(Base.rtoldefault(real(T)), Base.rtoldefault(real(S)))
         return atol > 0 ? zero(rtol) : rtol
     end
-end
-
-
-# 0.7.0-DEV.3475
-@static if !isdefined(Base, :isconcretetype)
-    # 0.7.0-DEV.1775
-    @static if !isdefined(Base, :isconcrete)
-        const isconcretetype = isleaftype
-        const isconcrete = isleaftype # for compatibility with earlier Compat versions
-        export isconcrete
-    else
-        const isconcretetype = isconcrete
-    end
-    export isconcretetype
 end
 
 # 0.7.0-DEV.2005

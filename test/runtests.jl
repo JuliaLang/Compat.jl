@@ -85,11 +85,6 @@ eval(Expr(
 @test !Compat.TypeUtils.isabstract(StridedArray)
 @test Compat.TypeUtils.parameter_upper_bound(ConcreteFoo20006, 1) == Int
 @test isa(Compat.TypeUtils.typename(Array), Core.TypeName)
-@test isabstracttype(AbstractFoo20006)
-@test !isabstracttype(ConcreteFoo20006)
-@test !isabstracttype(ConcreteFoo20006N)
-@test !isabstracttype(ConcreteFoo200061)
-@test !isabstracttype(StridedArray)
 
 # PR 20203
 @test Compat.readline(IOBuffer("Hello, World!\n")) == "Hello, World!"
@@ -319,9 +314,6 @@ if VERSION  < v"0.7.0-DEV.5238"
     @test cov([1, 2], [0, 10], corrected=true) === 5.0
     @test cov([1, 2], [0, 10], corrected=false) === 2.5
 end
-
-# 0.7
-@test isconcretetype(Int)
 
 # 0.7
 module Test23876

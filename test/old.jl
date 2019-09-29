@@ -47,3 +47,11 @@ using Compat
 using Compat.Test
 @test (@__MODULE__) === Test22064
 end
+
+@test isabstracttype(AbstractFoo20006)
+@test !isabstracttype(ConcreteFoo20006)
+@test !isabstracttype(ConcreteFoo20006N)
+@test !isabstracttype(ConcreteFoo200061)
+@test !isabstracttype(StridedArray)
+# 0.7
+@test isconcretetype(Int)
