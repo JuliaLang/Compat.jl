@@ -132,13 +132,6 @@ for (t, s, m, kept) in [
     @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}, keep=true) == Vector{Char}(kept)
 end
 
-# PR 22064
-module Test22064
-using Compat
-using Compat.Test
-@test (@__MODULE__) === Test22064
-end
-
 # invokelatest with keywords
 pr22646(x; y=0) = 1
 let foo() = begin

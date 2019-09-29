@@ -7,21 +7,6 @@ import Sockets
 
 include("compatmacro.jl")
 
-# https://github.com/JuliaLang/julia/pull/22064
-@static if !isdefined(Base, Symbol("@__MODULE__"))
-    # 0.7
-    export @__MODULE__
-    macro __MODULE__()
-        return current_module()
-    end
-    Base.expand(mod::Module, x::ANY) = eval(mod, :(expand($(QuoteNode(x)))))
-    Base.macroexpand(mod::Module, x::ANY) = eval(mod, :(macroexpand($(QuoteNode(x)))))
-    Base.include_string(mod::Module, code::String, fname::String) =
-        eval(mod, :(include_string($code, $fname)))
-    Base.include_string(mod::Module, code::AbstractString, fname::AbstractString="string") =
-        eval(mod, :(include_string($code, $fname)))
-end
-
 @static if !isdefined(Base, :isabstracttype) # VERSION < v"0.7.0-DEV.3475"
     const isabstracttype = Base.isabstract
     export isabstracttype

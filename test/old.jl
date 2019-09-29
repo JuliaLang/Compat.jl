@@ -40,3 +40,10 @@ no_specialize_kw2(@nospecialize(x::Integer=0)) = sin(2)
 @test no_specialize_kw2(1.0) == sin(1)
 @test no_specialize_kw2(1) == sin(2)
 @test no_specialize_kw2() == sin(2)
+
+# PR 22064
+module Test22064
+using Compat
+using Compat.Test
+@test (@__MODULE__) === Test22064
+end
