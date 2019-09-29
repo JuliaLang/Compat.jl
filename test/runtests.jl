@@ -905,14 +905,6 @@ import Compat.Markdown
 @test repr("text/plain", "string") == "\"string\"" #25990
 @test showable("text/plain", 3.14159) #26089
 
-# 25959
-@test all(x -> isa(x, IO), (devnull, stdin, stdout, stderr))
-@static if !isdefined(Base, :devnull)
-    @test stdin === STDIN
-    @test stdout === STDOUT
-    @test stderr === STDERR
-end
-
 # 0.7.0-DEV.3526
 module TestNames
     export foo

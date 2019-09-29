@@ -13,3 +13,13 @@ module TestSockets
 
     @test ip"127.0.0.1".host == UInt32(2130706433)
 end
+
+# tests of removed functionality (i.e. justs tests Base)
+
+# 25959
+@test all(x -> isa(x, IO), (devnull, stdin, stdout, stderr))
+@static if !isdefined(Base, :devnull)
+    @test stdin === STDIN
+    @test stdout === STDOUT
+    @test stderr === STDERR
+end

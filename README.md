@@ -338,9 +338,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `object_id` is now `objectid` ([#25615]).
 
-* `DevNull`, `STDIN`, `STDOUT` and `STDERR` are now `devnull`, `stdin`, `stdout` and
-  `stderr` respectively ([#25959]).
-
 * `LinSpace` is now `LinRange` ([#25896]).
 
 * `isupper`, `islower`, `ucfirst` and `lcfirst` are now `isuppercase`, `islowercase`,

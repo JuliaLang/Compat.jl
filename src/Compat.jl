@@ -7,31 +7,6 @@ import Sockets
 
 include("compatmacro.jl")
 
-@static if !isdefined(Base, :devnull) #25959
-    export devnull, stdout, stdin, stderr
-    const devnull = DevNull
-    for f in (:stdout, :stdin, :stderr)
-        F = Symbol(uppercase(string(f)))
-        rf = Symbol(string("_redirect_", f))
-        @eval begin
-            $f = $F
-            # overload internal _redirect_std* functions
-            # so that they change Compat.std*
-            function Base.$rf(stream::IO)
-                ret = invoke(Base.$rf, Tuple{Any}, stream)
-                global $f = $F
-                return ret
-            end
-        end
-    end
-    # in __init__ because these can't be saved during precompiling
-    function __init__()
-        global stdout = STDOUT
-        global stdin = STDIN
-        global stderr = STDERR
-    end
-end
-
 @static if !isdefined(Base, Symbol("@nospecialize"))
     # 0.7
     macro nospecialize(arg)
