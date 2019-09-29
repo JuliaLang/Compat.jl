@@ -116,6 +116,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `only(x)` returns the one-and-only element of a collection `x`. ([#33129])
 
+* `mod` now accepts a unit range as the second argument ([#32628]).
+
 * `eachrow`, `eachcol`, and `eachslice` to iterate over first, second, or given dimension
   of an array ([#29749]).
 
