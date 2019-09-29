@@ -578,3 +578,5 @@ includes this fix. Find the minimum version from there.
 [#29259]: https://github.com/JuliaLang/julia/issues/29259
 [#29674]: https://github.com/JuliaLang/julia/issues/29674
 [#29749]: https://github.com/JuliaLang/julia/issues/29749
+[#33129]: https://github.com/JuliaLang/julia/issues/33129
+[#32628]: https://github.com/JuliaLang/julia/issues/32628
