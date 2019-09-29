@@ -114,6 +114,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
+* `only(x)` returns the one-and-only element of a collection `x`. ([#33129])
+
 * `eachrow`, `eachcol`, and `eachslice` to iterate over first, second, or given dimension
   of an array ([#29749]).
 
