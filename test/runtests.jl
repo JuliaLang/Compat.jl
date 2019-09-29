@@ -1533,6 +1533,8 @@ end
         @test_throws ArgumentError only(1 for ii in 1:10)
         @test_throws ArgumentError only(1 for ii in 1:10 if ii > 2)
         @test_throws ArgumentError only(1 for ii in 1:10 if ii > 200)
+    end
+end
 
 # https://github.com/JuliaLang/julia/pull/32628
 if VERSION >= v"0.7"
