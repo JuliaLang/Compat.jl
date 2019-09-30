@@ -67,25 +67,6 @@ for x in (3.1, -17, 3//4, big(111.1), Inf)
     @test minmax(x) == (x, x)
 end
 
-# julia#20006
-abstract type AbstractFoo20006 end
-eval(Expr(
-    struct_sym, false,
-    Expr(:(<:), :(ConcreteFoo20006{T<:Int}), :AbstractFoo20006),
-    quote end))
-eval(Expr(
-    struct_sym, false,
-    Expr(:(<:), :(ConcreteFoo20006N{T<:Int,N}), :AbstractFoo20006),
-    quote end))
-@compat ConcreteFoo200061{T<:Int} = ConcreteFoo20006N{T,1}
-@test Compat.TypeUtils.isabstract(AbstractFoo20006)
-@test !Compat.TypeUtils.isabstract(ConcreteFoo20006)
-@test !Compat.TypeUtils.isabstract(ConcreteFoo20006N)
-@test !Compat.TypeUtils.isabstract(ConcreteFoo200061)
-@test !Compat.TypeUtils.isabstract(StridedArray)
-@test Compat.TypeUtils.parameter_upper_bound(ConcreteFoo20006, 1) == Int
-@test isa(Compat.TypeUtils.typename(Array), Core.TypeName)
-
 # PR 20203
 @test Compat.readline(IOBuffer("Hello, World!\n")) == "Hello, World!"
 @test Compat.readline(IOBuffer("x\n"), keep=false) == "x"

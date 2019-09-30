@@ -126,8 +126,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.readuntil` with `keep` keyword argument ([#25646])
 
-* The `isabstract`, `parameter_upper_bound`, `typename` reflection methods were added in Julia 0.6. This package re-exports these from the `Compat.TypeUtils` submodule. On earlier versions of julia, that module contains the same functions, but operating on the pre-0.6 type system representation.
-
 * `Compat.invokelatest` supports keywords ([#22646]).
 
 * `Cmd` elements can be accessed as if the `Cmd` were an array of strings for 0.6 and below ([#21197]).

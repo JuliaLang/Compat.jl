@@ -14,6 +14,19 @@ module TestSockets
     @test ip"127.0.0.1".host == UInt32(2130706433)
 end
 
+# julia#20006
+abstract type AbstractFoo20006 end
+struct ConcreteFoo20006{T<:Int} <: AbstractFoo20006 end
+struct ConcreteFoo20006N{T<:Int,N} <: AbstractFoo20006 end
+@compat ConcreteFoo200061{T<:Int} = ConcreteFoo20006N{T,1}
+@test Compat.TypeUtils.isabstract(AbstractFoo20006)
+@test !Compat.TypeUtils.isabstract(ConcreteFoo20006)
+@test !Compat.TypeUtils.isabstract(ConcreteFoo20006N)
+@test !Compat.TypeUtils.isabstract(ConcreteFoo200061)
+@test !Compat.TypeUtils.isabstract(StridedArray)
+@test Compat.TypeUtils.parameter_upper_bound(ConcreteFoo20006, 1) == Int
+@test isa(Compat.TypeUtils.typename(Array), Core.TypeName)
+
 # tests of removed functionality (i.e. justs tests Base)
 
 # 25959

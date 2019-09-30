@@ -4,15 +4,14 @@ module Compat
 
 # to be deprecated
 import Sockets
-
-include("compatmacro.jl")
-
 module TypeUtils
     using Base: parameter_upper_bound, typename
     using Compat: isabstracttype
     const isabstract = isabstracttype
     export isabstract, parameter_upper_bound, typename
 end # module TypeUtils
+
+include("compatmacro.jl")
 
 # https://github.com/JuliaLang/julia/pull/25646
 @static if VERSION < v"0.7.0-DEV.3510"
