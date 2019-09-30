@@ -360,8 +360,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * On versions of Julia that do not contain a Base.Threads module, Compat defines a Threads module containing a no-op `@threads` macro.
 
-* The `Expr(:macrocall)` has an extra initial argument `__source__`, which can be tested for with `Compat.macros_have_sourceloc`.
-
 ## New types
 
 * `Compat.AbstractDateTime` is an alias for `Compat.Dates.AbstractDateTime` as of ([#25227]) and `Compat.Dates.TimeType` prior to that.

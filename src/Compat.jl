@@ -11,11 +11,9 @@ module TypeUtils
     export isabstract, parameter_upper_bound, typename
 end # module TypeUtils
 import Base.invokelatest
+const macros_have_sourceloc = true
 
 include("compatmacro.jl")
-
-# https://github.com/JuliaLang/julia/pull/21746
-const macros_have_sourceloc = VERSION >= v"0.7-" && length(:(@test).args) == 2
 
 # 0.7.0-DEV.3155
 @static if !isdefined(Base, :pushfirst!)
