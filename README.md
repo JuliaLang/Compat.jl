@@ -267,8 +267,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Void` is now `Nothing` with an alias `Cvoid` for C interop ([#25162]).
 
-* `unshift!` and `shift!` are now `pushfirst!` and `popfirst!` ([#25100]).
-
 * `Base.IteratorSize` and `Base.IteratorEltype` are available as
   `Compat.IteratorSize` and `Compat.IteratorEltype` ([#25402]).
 

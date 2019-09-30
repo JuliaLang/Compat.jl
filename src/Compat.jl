@@ -15,13 +15,6 @@ const macros_have_sourceloc = true
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.3155
-@static if !isdefined(Base, :pushfirst!)
-    const pushfirst! = unshift!
-    const popfirst! = shift!
-    export pushfirst!, popfirst!
-end
-
 # https://github.com/JuliaLang/julia/pull/22182
 module Sys
     const KERNEL = Base.Sys.KERNEL

@@ -168,3 +168,9 @@ end
 
 # PR 22629
 @test logdet(0.5) == log(det(0.5))
+
+# 0.7.0-DEV.3155
+let coolvec = [1,2,3]
+    @test pushfirst!(coolvec, 0) == [0,1,2,3]
+    @test popfirst!(coolvec) == 0
+end
