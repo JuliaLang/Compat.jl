@@ -14,15 +14,6 @@ import Base.invokelatest
 
 include("compatmacro.jl")
 
-# https://github.com/JuliaLang/julia/pull/22633
-if VERSION < v"0.7.0-DEV.1041"
-    # these have been deprecated in Julia 0.7.0-DEV.5272; we keep them here to avoid
-    # breakage in packages already using them on Julia 0.6
-    import Base.LinAlg: chol, chol!
-    chol!(J::UniformScaling, uplo) = UniformScaling(chol!(J.λ, uplo))
-    chol(J::UniformScaling, args...) = UniformScaling(chol(J.λ, args...))
-end
-
 # https://github.com/JuliaLang/julia/pull/21746
 const macros_have_sourceloc = VERSION >= v"0.7-" && length(:(@test).args) == 2
 
