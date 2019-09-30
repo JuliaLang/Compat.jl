@@ -1499,6 +1499,43 @@ end
     @test merge((a=1,), (b=2,), (c=3,)) == (a=1,b=2,c=3)
 end
 
+@static if VERSION >= v"0.7.0"
+    @testset "only" begin
+        @test only([3]) === 3
+        @test_throws ArgumentError only([])
+        @test_throws ArgumentError only([3, 2])
+
+        @test @inferred(only((3,))) === 3
+        @test_throws ArgumentError only(())
+        @test_throws ArgumentError only((3, 2))
+
+        @test only(Dict(1=>3)) === (1=>3)
+        @test_throws ArgumentError only(Dict{Int,Int}())
+        @test_throws ArgumentError only(Dict(1=>3, 2=>2))
+
+        @test only(Set([3])) === 3
+        @test_throws ArgumentError only(Set(Int[]))
+        @test_throws ArgumentError only(Set([3,2]))
+
+        @test @inferred(only((;a=1))) === 1
+        @test_throws ArgumentError only(NamedTuple())
+        @test_throws ArgumentError only((a=3, b=2.0))
+
+        @test @inferred(only(1)) === 1
+        @test @inferred(only('a')) === 'a'
+        if  VERSION >= v"1.0"
+            @test @inferred(only(Ref([1, 2]))) == [1, 2] # Fails on v0.7, depwarn "`Ref(x::AbstractArray)` is deprecated, use `Ref(x, 1)` instead."
+        end
+        @test_throws ArgumentError only(Pair(10, 20))
+
+        @test only(1 for ii in 1:1) === 1
+        @test only(1 for ii in 1:10 if ii < 2) === 1
+        @test_throws ArgumentError only(1 for ii in 1:10)
+        @test_throws ArgumentError only(1 for ii in 1:10 if ii > 2)
+        @test_throws ArgumentError only(1 for ii in 1:10 if ii > 200)
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/32628
 if VERSION >= v"0.7"
     @testset "mod with ranges" begin

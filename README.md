@@ -114,6 +114,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
+* `only(x)` returns the one-and-only element of a collection `x`. ([#33129])
+
 * `mod` now accepts a unit range as the second argument ([#32628]).
 
 * `eachrow`, `eachcol`, and `eachslice` to iterate over first, second, or given dimension
@@ -576,3 +578,5 @@ includes this fix. Find the minimum version from there.
 [#29259]: https://github.com/JuliaLang/julia/issues/29259
 [#29674]: https://github.com/JuliaLang/julia/issues/29674
 [#29749]: https://github.com/JuliaLang/julia/issues/29749
+[#33129]: https://github.com/JuliaLang/julia/issues/33129
+[#32628]: https://github.com/JuliaLang/julia/issues/32628
