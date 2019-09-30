@@ -120,12 +120,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
-* `Compat.readline` with `keep` keyword argument ([#25646])
-
-* `Compat.eachline` with `keep` keyword argument ([#25646])
-
-* `Compat.readuntil` with `keep` keyword argument ([#25646])
-
 * `Compat.invokelatest` supports keywords ([#22646]).
 
 * `Cmd` elements can be accessed as if the `Cmd` were an array of strings for 0.6 and below ([#21197]).
