@@ -27,6 +27,16 @@ struct ConcreteFoo20006N{T<:Int,N} <: AbstractFoo20006 end
 @test Compat.TypeUtils.parameter_upper_bound(ConcreteFoo20006, 1) == Int
 @test isa(Compat.TypeUtils.typename(Array), Core.TypeName)
 
+# invokelatest with keywords
+pr22646(x; y=0) = 1
+let foo() = begin
+        eval(:(pr22646(x::Int; y=0) = 2))
+        return Compat.invokelatest(pr22646, 0, y=1)
+    end
+    @test foo() == 2
+end
+
+
 # tests of removed functionality (i.e. justs tests Base)
 
 # 25959

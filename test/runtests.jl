@@ -67,15 +67,6 @@ for x in (3.1, -17, 3//4, big(111.1), Inf)
     @test minmax(x) == (x, x)
 end
 
-# invokelatest with keywords
-pr22646(x; y=0) = 1
-let foo() = begin
-        eval(:(pr22646(x::Int; y=0) = 2))
-        return Compat.invokelatest(pr22646, 0, y=1)
-    end
-    @test foo() == 2
-end
-
 # PR #21197
 let c = `ls -l "foo bar"`
     @test collect(c) == ["ls", "-l", "foo bar"]

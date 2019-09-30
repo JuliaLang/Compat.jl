@@ -10,18 +10,9 @@ module TypeUtils
     const isabstract = isabstracttype
     export isabstract, parameter_upper_bound, typename
 end # module TypeUtils
+import Base.invokelatest
 
 include("compatmacro.jl")
-
-# https://github.com/JuliaLang/julia/pull/22646
-if VERSION < v"0.7.0-DEV.1139"
-    function invokelatest(f, args...; kwargs...)
-        inner() = f(args...; kwargs...)
-        Base.invokelatest(inner)
-    end
-else
-    import Base.invokelatest
-end
 
 # https://github.com/JuliaLang/julia/pull/21197
 if VERSION < v"0.7.0-DEV.257"
