@@ -119,3 +119,14 @@ for (t, s, m, kept) in [
     @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}) == Vector{Char}(m)
     @test Compat.readuntil(IOBuffer(t), collect(s)::Vector{Char}, keep=true) == Vector{Char}(kept)
 end
+
+# PR #21197
+let c = `ls -l "foo bar"`
+    @test collect(c) == ["ls", "-l", "foo bar"]
+    @test first(c) == "ls" == c[1]
+    @test last(c) == "foo bar" == c[3] == c[end]
+    @test c[1:2] == ["ls", "-l"]
+    @test eltype(c) == String
+    @test length(c) == 3
+    @test eachindex(c) == 1:3
+end
