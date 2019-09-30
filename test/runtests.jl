@@ -138,41 +138,6 @@ let
     @test vec([b for (a,b) in pairs(IndexCartesian(), A14)]) == [11,12,13,14]
 end
 
-# Val(x)
-# 0.7
-begin
-    local firstlast
-    firstlast(::Val{true}) = "First"
-    firstlast(::Val{false}) = "Last"
-
-    @test firstlast(Val(true)) == "First"
-    @test firstlast(Val(false)) == "Last"
-end
-
-# Reshape to a given number of dimensions using Val(N)
-# 0.7
-let
-    for A in (rand(Float64, ()), rand(2), rand(2,3), rand(2,3,5), rand(2,3,5,7)), N in (1,2,3,4,5,6)
-        B = @inferred reshape(A, Val(N))
-        @test ndims(B) == N
-        if N < ndims(A)
-            new_sz = (size(A)[1:N-1]..., prod(size(A)[N:end]))
-        elseif N == ndims(A)
-            new_sz = size(A)
-        else
-            new_sz = (size(A)..., ntuple(x->1, N-ndims(A))...)
-        end
-        @test size(B) == new_sz
-        @test B == reshape(A, new_sz)
-    end
-end
-
-# ntuple with Val(N)
-# 0.7
-@test @inferred(ntuple(x->1, Val(3))) == (1,1,1)
-@test @inferred(ntuple(x->x, Val(0))) == ()
-@test @inferred(ntuple(x->x, Val(5))) == (1,2,3,4,5)
-
 # 0.7
 @test read(IOBuffer("aaaa"), String) == "aaaa"
 @test occursin("read(@__FILE__, String)", read(@__FILE__, String))

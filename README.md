@@ -120,10 +120,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
-* `Val(x)` constructs `Val{x}()`. ([#22475])
-
-* The `reshape` and `ntuple` APIs are extended to support `Val{x}()` arguments on 0.6 and below.
-
 * `logdet` for `Number`s ([#22629]).
 
 * `fieldcount` is equivalent to `nfields` for Julia versions 0.6 and below and is used to
