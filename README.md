@@ -206,8 +206,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.qr` takes `pivot` as a `Val` _instance_ ([#22475]).
 
-* `Compat.Sys.which` and `Compat.Sys.isexecutable` ([#26559], [#27298]).
-
 * `Compat.rmul!` provides a subset of the functionality of `LinearAlgebra.rmul!` for
   use with Julia 0.6 ([#25701], [#25812]).
 
@@ -228,10 +226,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Display` is now `AbstractDisplay` ([#24831]).
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
-
-* `is_apple`, `is_bsd`, `is_linux`, `is_unix`, and `is_windows` are now `Sys.isapple`, `Sys.isbsd`,
-  `Sys.islinux`, `Sys.isunix`, and `Sys.iswindows`, respectively. These are available in the `Compat.Sys`
-  submodule. ([#22182])
 
 * `readstring` is replaced by methods of `read`. ([#22864])
 
@@ -257,8 +251,6 @@ Currently, the `@compat` macro supports the following syntaxes:
   `ComplexF64`, respectively ([#24647]).
 
 * `trace` is now `tr`, available as `Compat.tr` ([#26365]).
-
-* `JULIA_HOME` is now `Sys.BINDIR`, available in the `Compat.Sys` submodule. ([#25102])
 
 * `Associative` is now `AbstractDict` ([#25012]).
 

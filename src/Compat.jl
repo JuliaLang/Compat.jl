@@ -12,79 +12,15 @@ module TypeUtils
 end # module TypeUtils
 import Base.invokelatest
 const macros_have_sourceloc = true
-
-include("compatmacro.jl")
-
-# https://github.com/JuliaLang/julia/pull/22182
 module Sys
     const KERNEL = Base.Sys.KERNEL
-    @static if VERSION < v"0.7.0-DEV.914"
-        isapple(k::Symbol=KERNEL)   = k in (:Darwin, :Apple)
-        isbsd(k::Symbol=KERNEL)     = isapple(k) || k in (:FreeBSD, :OpenBSD, :NetBSD, :DragonFly)
-        islinux(k::Symbol=KERNEL)   = k == :Linux
-        isunix(k::Symbol=KERNEL)    = isbsd(k) || islinux(k)
-        iswindows(k::Symbol=KERNEL) = k in (:Windows, :NT)
-    else
-        import Base.Sys: isapple, isbsd, islinux, isunix, iswindows
-    end
-
-    @static if VERSION < v"0.7.0-DEV.5171"
-        using ..Compat: pushfirst!
-
-        function isexecutable(path::AbstractString)
-            if iswindows()
-                isfile(path)
-            else
-                ccall(:access, Cint, (Ptr{UInt8}, Cint), path, 0x01) == 0
-            end
-        end
-
-        function which(program::AbstractString)
-            progs = String[]
-            base = basename(program)
-            if iswindows()
-                isempty(last(splitext(base))) || push!(progs, base)
-                for p = [".exe", ".com"]
-                    push!(progs, base * p)
-                end
-            else
-                push!(progs, base)
-            end
-            dirs = String[]
-            dir = dirname(program)
-            if isempty(dir)
-                pathsep = iswindows() ? ';' : ':'
-                append!(dirs, map(abspath, split(get(ENV, "PATH", ""), pathsep)))
-                iswindows() && pushfirst!(dirs, pwd())
-            else
-                push!(dirs, abspath(dir))
-            end
-            for d in dirs, p in progs
-                path = joinpath(d, p)
-                isexecutable(path) && return realpath(path)
-            end
-            nothing
-        end
-    elseif VERSION < v"0.7.0-alpha.6"
-        import Base.Sys: isexecutable
-
-        which(program::AbstractString) = try
-            Base.Sys.which(program)
-        catch err
-            err isa ErrorException || rethrow(err)
-            nothing
-        end
-    else
-        import Base.Sys: which, isexecutable
-    end
-
-    # https://github.com/JuliaLang/julia/pull/25102
-    # NOTE: This needs to be in an __init__ because JULIA_HOME is not
-    # defined when building system images.
-    function __init__()
-        global BINDIR = VERSION < v"0.7.0-DEV.3073" ? JULIA_HOME : Base.Sys.BINDIR
-    end
+    import Base.Sys: isapple, isbsd, islinux, isunix, iswindows
+    import Base.Sys: which, isexecutable
+    BINDIR = Base.Sys.BINDIR
 end
+
+
+include("compatmacro.jl")
 
 @static if VERSION < v"0.7.0-DEV.892"
     fieldcount(t) = nfields(t)

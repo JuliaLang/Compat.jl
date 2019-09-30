@@ -36,6 +36,28 @@ let foo() = begin
     @test foo() == 2
 end
 
+for os in [:apple, :bsd, :linux, :unix, :windows]
+    from_base = if VERSION >= v"0.7.0-DEV.914"
+        Expr(:., Expr(:., :Base, Base.Meta.quot(:Sys)), Base.Meta.quot(Symbol("is", os)))
+    else
+        Expr(:., :Base, Base.Meta.quot(Symbol("is_", os)))
+    end
+    @eval @test Compat.Sys.$(Symbol("is", os))() == $from_base()
+end
+
+# 0.7.0-DEV.3073
+@test Compat.Sys.BINDIR == Sys.BINDIR
+
+# 0.7.0-DEV.5171
+let sep = Compat.Sys.iswindows() ? ';' : ':'
+    withenv("PATH" => string(Compat.Sys.BINDIR, sep, get(ENV, "PATH", ""))) do
+        jl = joinpath(Compat.Sys.BINDIR, "julia") * (Compat.Sys.iswindows() ? ".exe" : "")
+        @test Compat.Sys.which("julia") == realpath(jl)
+        @test Compat.Sys.isexecutable(jl)
+        @test Compat.Sys.which("reallyseriouslynotathingyoushouldhave") === nothing
+    end
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

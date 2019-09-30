@@ -7,15 +7,6 @@ using Compat.SparseArrays
 
 const struct_sym = VERSION < v"0.7.0-DEV.1263" ? :type : :struct
 
-for os in [:apple, :bsd, :linux, :unix, :windows]
-    from_base = if VERSION >= v"0.7.0-DEV.914"
-        Expr(:., Expr(:., :Base, Base.Meta.quot(:Sys)), Base.Meta.quot(Symbol("is", os)))
-    else
-        Expr(:., :Base, Base.Meta.quot(Symbol("is_", os)))
-    end
-    @eval @test Compat.Sys.$(Symbol("is", os))() == $from_base()
-end
-
 let s = "Koala test: 🐨"
     @test transcode(UInt16, s) == UInt16[75,111,97,108,97,32,116,101,115,116,58,32,55357,56360]
     @test transcode(UInt32, s) == UInt32[75,111,97,108,97,32,116,101,115,116,58,32,128040]
@@ -319,13 +310,6 @@ end
 @test ComplexF16 === Complex{Float16}
 @test ComplexF32 === Complex{Float32}
 @test ComplexF64 === Complex{Float64}
-
-# 0.7.0-DEV.3073
-if VERSION < v"0.7.0-DEV.3073"
-    @test Compat.Sys.BINDIR == JULIA_HOME
-else
-    @test Compat.Sys.BINDIR == Sys.BINDIR
-end
 
 # 0.7.0-DEV.2915
 module Test25021
@@ -1172,16 +1156,6 @@ let s = "∀α>β:α+1>β"
                 @test nextind(s, k, j) == n
             end
         end
-    end
-end
-
-# 0.7.0-DEV.5171
-let sep = Compat.Sys.iswindows() ? ';' : ':'
-    withenv("PATH" => string(Compat.Sys.BINDIR, sep, get(ENV, "PATH", ""))) do
-        jl = joinpath(Compat.Sys.BINDIR, "julia") * (Compat.Sys.iswindows() ? ".exe" : "")
-        @test Compat.Sys.which("julia") == realpath(jl)
-        @test Compat.Sys.isexecutable(jl)
-        @test Compat.Sys.which("reallyseriouslynotathingyoushouldhave") === nothing
     end
 end
 
