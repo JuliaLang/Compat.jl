@@ -120,8 +120,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
-* `logdet` for `Number`s ([#22629]).
-
 * `fieldcount` is equivalent to `nfields` for Julia versions 0.6 and below and is used to
   determine the number of fields in a data type ([#22350]).
 

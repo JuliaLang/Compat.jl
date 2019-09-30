@@ -165,3 +165,6 @@ end
 @test @inferred(ntuple(x->1, Val(3))) == (1,1,1)
 @test @inferred(ntuple(x->x, Val(0))) == ()
 @test @inferred(ntuple(x->x, Val(5))) == (1,2,3,4,5)
+
+# PR 22629
+@test logdet(0.5) == log(det(0.5))

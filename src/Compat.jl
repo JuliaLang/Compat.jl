@@ -14,12 +14,6 @@ import Base.invokelatest
 
 include("compatmacro.jl")
 
-# https://github.com/JuliaLang/julia/pull/22629
-if VERSION < v"0.7.0-DEV.848"
-    import Base: logdet
-    logdet(A) = log(det(A))
-end
-
 # https://github.com/JuliaLang/julia/pull/22633
 if VERSION < v"0.7.0-DEV.1041"
     # these have been deprecated in Julia 0.7.0-DEV.5272; we keep them here to avoid

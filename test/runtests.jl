@@ -67,9 +67,6 @@ for x in (3.1, -17, 3//4, big(111.1), Inf)
     @test minmax(x) == (x, x)
 end
 
-# PR 22629
-@test logdet(0.5) == log(det(0.5))
-
 # PR 22633
 if VERSION < v"0.7.0-DEV.5272"
     # chol(A::UniformScaling) has been deprecated in Julia, we still test it to avoid
