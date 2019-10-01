@@ -73,16 +73,6 @@ if VERSION < v"0.7.0-DEV.880"
 end
 
 # 0.7
-module Test25056
-    using Compat
-    using Compat.Test
-    using Compat.Printf
-    @test isdefined(@__MODULE__, :Printf)
-    @test isdefined(@__MODULE__, Symbol("@printf"))
-    @test isdefined(@__MODULE__, Symbol("@sprintf"))
-end
-
-# 0.7
 
 let a = [0,1,2,3,0,1,2,3]
     # curried isequal

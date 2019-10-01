@@ -107,6 +107,16 @@ end
 @test Compat.AbstractDateTime <: Compat.Dates.TimeType
 @test Compat.Dates.DateTime <: Compat.AbstractDateTime
 
+# 0.7
+module Test25056
+    using Compat
+    using Compat.Test
+    using Compat.Printf
+    @test isdefined(@__MODULE__, :Printf)
+    @test isdefined(@__MODULE__, Symbol("@printf"))
+    @test isdefined(@__MODULE__, Symbol("@sprintf"))
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

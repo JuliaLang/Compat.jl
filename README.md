@@ -58,9 +58,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `using Compat.Unicode` is provided on versions older than 0.7, where this library is not
   yet a part of the standard library. ([#25021])
 
-* `using Compat.Printf` is provided on versions older than 0.7, where this library is not
-  yet a part of the standard library. ([#25056])
-
 * `using Compat.SparseArrays` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25249]).
 
