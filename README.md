@@ -222,9 +222,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Range` is now `AbstractRange` ([#23570])
 
-* `select`* functions (`select`, `select!`, `selectperm`, `selectperm!`) are renamed to
-  `partialsort`* (`partialsort`, `partialsort!`, `partialsortperm`, `partialsortperm!`) ([#23051])
-
 * `IntSet` is now `BitSet` ([#24282])
 
 * `strwidth` and `charwidth` are now merged into `textwidth` ([#23667]).

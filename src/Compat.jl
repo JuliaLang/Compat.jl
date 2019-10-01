@@ -23,15 +23,6 @@ import Base.MathConstants
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.1535
-@static if !isdefined(Base, :partialsort)
-    const partialsort = select
-    const partialsort! = select!
-    const partialsortperm = selectperm
-    const partialsortperm! = selectperm!
-    export partialsort, partialsort!, partialsortperm, partialsortperm!
-end
-
 # 0.7.0-DEV.1660
 @static if !isdefined(Base, :pairs)
     pairs(collection) = Base.Generator(=>, keys(collection), values(collection))

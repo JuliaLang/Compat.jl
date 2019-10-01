@@ -246,3 +246,9 @@ let M = [1 + 2im 3 + 4im; 5 + 6im 7 + 8im],
     adjoint!(M2, M)
     @test M2 == Mc
 end
+
+# 0.7
+@test partialsort([3,6,30,1,9], 2, rev=true) == 9
+@test partialsort([3,6,30,1,9], 2, by=x->1/x) == 9
+@test partialsortperm([3,6,30,1,9], 2, rev=true) == 5
+@test partialsortperm([3,6,30,1,9], 2, by=x->1/x) == 5

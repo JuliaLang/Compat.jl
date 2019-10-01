@@ -104,12 +104,6 @@ end
 @test isa(1:2, AbstractRange)
 
 # 0.7
-@test partialsort([3,6,30,1,9], 2, rev=true) == 9
-@test partialsort([3,6,30,1,9], 2, by=x->1/x) == 9
-@test partialsortperm([3,6,30,1,9], 2, rev=true) == 5
-@test partialsortperm([3,6,30,1,9], 2, by=x->1/x) == 5
-
-# 0.7
 @test isa(Base.rtoldefault(1.0, 2.0, 0), Float64)
 @test isa(Base.rtoldefault(Float64, 2.0, 0), Float64)
 @test isa(Base.rtoldefault(1.0, Float64, 0), Float64)
