@@ -94,6 +94,14 @@ module Test24459
     @test isdefined(@__MODULE__, :Dates)
 end
 
+# 0.7.0-DEV.3382
+module TestLibdl
+    using Compat
+    using Compat.Libdl
+    using Compat.Test
+    @test isdefined(@__MODULE__, :Libdl)
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

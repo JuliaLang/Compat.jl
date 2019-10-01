@@ -412,14 +412,6 @@ end
 @test nameof(Float64) == :Float64
 @test nameof(Array) == :Array
 
-# 0.7.0-DEV.3382
-module TestLibdl
-    using Compat
-    using Compat.Libdl
-    using Compat.Test
-    @test isdefined(@__MODULE__, :Libdl)
-end
-
 # 0.7.0-DEV.3516
 @test argmax([10,12,9,11]) == 2
 @test argmax([10 12; 9 11]) == CartesianIndex(1, 2)

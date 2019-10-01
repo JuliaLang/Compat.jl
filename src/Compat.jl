@@ -21,15 +21,10 @@ end
 import Base.MathConstants
 import Test, SharedArrays, Mmap, DelimitedFiles
 import Dates
+import Libdl
 
 
 include("compatmacro.jl")
-
-if VERSION < v"0.7.0-DEV.3382"
-    const Libdl = Base.Libdl
-else
-    import Libdl
-end
 
 # https://github.com/JuliaLang/julia/pull/24182
 if VERSION < v"0.7.0-DEV.2402"
