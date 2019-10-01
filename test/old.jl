@@ -252,3 +252,31 @@ end
 @test partialsort([3,6,30,1,9], 2, by=x->1/x) == 9
 @test partialsortperm([3,6,30,1,9], 2, rev=true) == 5
 @test partialsortperm([3,6,30,1,9], 2, by=x->1/x) == 5
+
+# PR 22907
+using Compat: pairs
+
+# keys, values, pairs
+for A in (rand(2), rand(2,3))
+    local A
+    for (i, v) in pairs(A)
+        @test A[i] == v
+    end
+    @test collect(values(A)) == collect(A)
+end
+
+let A = Dict(:foo=>1, :bar=>3)
+    for (k, v) in pairs(A)
+        @test A[k] == v
+    end
+    @test sort!(collect(pairs(A))) == sort!(collect(A))
+end
+
+let
+    A14 = [11 13; 12 14]
+    R = CartesianIndices(Compat.axes(A14))
+    @test vec([a for (a,b) in pairs(IndexLinear(),    A14)]) == [1,2,3,4]
+    @test vec([a for (a,b) in pairs(IndexCartesian(), A14)]) == vec(collect(R))
+    @test vec([b for (a,b) in pairs(IndexLinear(),    A14)]) == [11,12,13,14]
+    @test vec([b for (a,b) in pairs(IndexCartesian(), A14)]) == [11,12,13,14]
+end

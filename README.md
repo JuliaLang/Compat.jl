@@ -143,8 +143,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `IOContext` accepting key-value `Pair`s ([#23271]).
 
-* `pairs` for iterating over key-value `Pair`s ([#22907]).
-
 * `get` do-block syntax supported when using `ENV` ([#23412]).
 
 * `Some{T}` wraps `T` to signify that a result of `T<:Void` is expected ([#23642]).

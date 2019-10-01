@@ -23,23 +23,6 @@ import Base.MathConstants
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.1660
-@static if !isdefined(Base, :pairs)
-    pairs(collection) = Base.Generator(=>, keys(collection), values(collection))
-    pairs(a::Associative) = a
-
-    const IndexValue = Iterators.IndexValue
-
-    pairs(::IndexLinear,    A::AbstractArray) = IndexValue(A, linearindices(A))
-    pairs(::IndexCartesian, A::AbstractArray) = IndexValue(A, CartesianRange(indices(A)))
-
-    Base.keys(a::AbstractArray) = CartesianRange(indices(a))
-    Base.keys(a::AbstractVector) = linearindices(a)
-    Base.keys(s::IndexStyle, A::AbstractArray, B::AbstractArray...) = eachindex(s, A, B...)
-
-    Base.values(itr) = itr
-end
-
 # 0.7.0-DEV.1721
 @static if !isdefined(Base, :AbstractRange)
     const AbstractRange = Range
