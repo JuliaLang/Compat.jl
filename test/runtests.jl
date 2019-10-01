@@ -73,14 +73,6 @@ if VERSION < v"0.7.0-DEV.880"
 end
 
 # 0.7
-module Test24459
-    using Compat
-    using Compat.Test
-    using Compat.Dates
-    @test isdefined(@__MODULE__, :Dates)
-end
-
-# 0.7
 module Test25056
     using Compat
     using Compat.Test

@@ -20,16 +20,10 @@ module Sys
 end
 import Base.MathConstants
 import Test, SharedArrays, Mmap, DelimitedFiles
+import Dates
 
 
 include("compatmacro.jl")
-
-
-if VERSION < v"0.7.0-DEV.2575"
-    const Dates = Base.Dates
-else
-    import Dates
-end
 
 if VERSION < v"0.7.0-DEV.3382"
     const Libdl = Base.Libdl

@@ -86,6 +86,14 @@ module Test23876
     @test isdefined(Mmap, :mmap)
 end
 
+# 0.7
+module Test24459
+    using Compat
+    using Compat.Test
+    using Compat.Dates
+    @test isdefined(@__MODULE__, :Dates)
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 
