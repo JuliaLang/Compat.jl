@@ -224,11 +224,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
-* `readstring` is replaced by methods of `read`. ([#22864])
-
-    `read(::IO, ::Type{String})`, `read(::AbstractString, ::Type{String})`,
-    and `read(::AbstractCmd, ::Type{String})` are defined for 0.6 and below.
-
 * `Range` is now `AbstractRange` ([#23570])
 
 * `select`* functions (`select`, `select!`, `selectperm`, `selectperm!`) are renamed to
