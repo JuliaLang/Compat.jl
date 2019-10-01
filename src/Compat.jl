@@ -18,23 +18,10 @@ module Sys
     import Base.Sys: which, isexecutable
     BINDIR = Base.Sys.BINDIR
 end
+import Base.MathConstants
 
 
 include("compatmacro.jl")
-
-# 0.7.0-DEV.1592
-@static if !isdefined(Base, :MathConstants)
-    @eval module MathConstants
-    # All other ones are already exported by Base (so should be already in the users namespace)
-    # and will be automatically be in this module.
-    export ℯ
-    const ℯ = e
-    end
-    const ℯ = e
-    export ℯ
-else
-    import Base.MathConstants
-end
 
 # 0.7.0-DEV.1535
 @static if !isdefined(Base, :partialsort)

@@ -104,19 +104,6 @@ end
 @test isa(1:2, AbstractRange)
 
 # 0.7
-module TestMathConstants
-using Compat.MathConstants
-end
-for name in [:π, :pi, :ℯ, :e, :γ, :eulergamma, :catalan, :φ, :golden]
-    @test isdefined(TestMathConstants, name) && !Base.isdeprecated(TestMathConstants, name)
-    @test isdefined(Compat.MathConstants, name) && !Base.isdeprecated(Compat.MathConstants, name)
-end
-module TestMathConstants2
-using Compat
-end
-@test isdefined(TestMathConstants2, :ℯ) && !Base.isdeprecated(TestMathConstants, :ℯ)
-
-# 0.7
 @test partialsort([3,6,30,1,9], 2, rev=true) == 9
 @test partialsort([3,6,30,1,9], 2, by=x->1/x) == 9
 @test partialsortperm([3,6,30,1,9], 2, rev=true) == 5

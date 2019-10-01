@@ -58,6 +58,19 @@ let sep = Compat.Sys.iswindows() ? ';' : ':'
     end
 end
 
+# 0.7
+module TestMathConstants
+using Compat.MathConstants
+end
+for name in [:π, :pi, :ℯ, :e, :γ, :eulergamma, :catalan, :φ, :golden]
+    @test isdefined(TestMathConstants, name) && !Base.isdeprecated(TestMathConstants, name)
+    @test isdefined(Compat.MathConstants, name) && !Base.isdeprecated(Compat.MathConstants, name)
+end
+module TestMathConstants2
+using Compat
+end
+@test isdefined(TestMathConstants2, :ℯ) && !Base.isdeprecated(TestMathConstants, :ℯ)
+
 
 # tests of removed functionality (i.e. justs tests Base)
 
