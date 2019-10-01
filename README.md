@@ -151,8 +151,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `printstyled` prints to a given stream optionally in color and/or bolded ([#25522]).
 
-* `Dates.Period` rounding (e.g., `round(Dates.Hour(36), Dates.Day, RoundNearestTiesUp) == Dates.Day(2)` ([#24182]).
-
 * `firstindex` to obtain the first index of an iterable ([#25458]).
 
 * `Compat.names` supporting keyword arguments for `all` and `imported` ([#25647]).
