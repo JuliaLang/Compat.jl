@@ -28,18 +28,6 @@ import Printf
 
 include("compatmacro.jl")
 
-if VERSION < v"0.7.0-DEV.2655"
-    @eval module IterativeEigensolvers
-        using Base: eigs, svds
-        export eigs, svds
-    end
-elseif VERSION < v"0.7.0-DEV.3019"
-    @eval module IterativeEigensolvers
-        using IterativeEigenSolvers: eigs, svds
-        export eigs, svds
-    end
-end
-
 @static if VERSION < v"0.7.0-DEV.3449"
     const LinearAlgebra = Base.LinAlg
 else
