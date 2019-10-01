@@ -22,11 +22,6 @@ end
 
 include("compatmacro.jl")
 
-@static if VERSION < v"0.7.0-DEV.892"
-    fieldcount(t) = nfields(t)
-    export fieldcount
-end
-
 if VERSION < v"0.7.0-DEV.1053"
     Base.read(obj::IO, ::Type{String}) = readstring(obj)
     Base.read(obj::AbstractString, ::Type{String}) = readstring(obj)

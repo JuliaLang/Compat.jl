@@ -120,9 +120,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
-* `fieldcount` is equivalent to `nfields` for Julia versions 0.6 and below and is used to
-  determine the number of fields in a data type ([#22350]).
-
 * There are versions of `InexactError`, `DomainError`, and `OverflowError` that take the same arguments as introduced in Julia 0.7-DEV ([#20005], [#22751], [#22761]).
 
 * `Base.rtoldefault` how takes a third parameter `atol`.

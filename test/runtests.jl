@@ -72,11 +72,6 @@ if VERSION < v"0.7.0-DEV.880"
     end
 end
 
-# PR 22350
-eval(Expr(struct_sym, false, :TestType, Expr(:block, :(a::Int), :b)))
-@test fieldcount(TestType) == 2
-@test fieldcount(Int) == 0
-
 # PR 20005
 @test_throws InexactError throw(InexactError(:func, Int, 3.2))
 

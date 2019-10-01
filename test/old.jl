@@ -196,3 +196,11 @@ let coolvec = [1,2,3]
     @test pushfirst!(coolvec, 0) == [0,1,2,3]
     @test popfirst!(coolvec) == 0
 end
+
+# PR 22350
+struct TestType
+    a::Int
+    b
+end
+@test fieldcount(TestType) == 2
+@test fieldcount(Int) == 0
