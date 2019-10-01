@@ -22,22 +22,6 @@ end
 
 include("compatmacro.jl")
 
-# https://github.com/JuliaLang/julia/pull/20005
-if VERSION < v"0.7.0-DEV.896"
-    Base.InexactError(name::Symbol, T, val) = InexactError()
-end
-
-# https://github.com/JuliaLang/julia/pull/22751
-if VERSION < v"0.7.0-DEV.924"
-    Base.DomainError(val) = DomainError()
-    Base.DomainError(val, msg) = DomainError()
-end
-
-# https://github.com/JuliaLang/julia/pull/22761
-if VERSION < v"0.7.0-DEV.1285"
-    Base.OverflowError(msg) = OverflowError()
-end
-
 if VERSION < v"0.7.0-DEV.755"
     # This is a hack to only add keyword signature that won't work on all julia versions.
     # However, since we really only need to support a few (0.5, 0.6 and early 0.7) versions

@@ -72,16 +72,6 @@ if VERSION < v"0.7.0-DEV.880"
     end
 end
 
-# PR 20005
-@test_throws InexactError throw(InexactError(:func, Int, 3.2))
-
-# PR 22751
-@test_throws DomainError throw(DomainError(-2))
-@test_throws DomainError throw(DomainError(-2, "negative"))
-
-# PR 22761
-@test_throws OverflowError throw(OverflowError("overflow"))
-
 # PR 22907
 using Compat: pairs
 
