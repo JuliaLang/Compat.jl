@@ -73,13 +73,6 @@ if VERSION < v"0.7.0-DEV.880"
 end
 
 # 0.7
-@test isa(Base.rtoldefault(1.0, 2.0, 0), Float64)
-@test isa(Base.rtoldefault(Float64, 2.0, 0), Float64)
-@test isa(Base.rtoldefault(1.0, Float64, 0), Float64)
-@test isa(Base.rtoldefault(Float64, Float64, 0), Float64)
-@test Base.rtoldefault(Float64, Float64, 1.0) === 0.0
-
-# 0.7
 module Test23876
     using Compat
     using Compat.Test

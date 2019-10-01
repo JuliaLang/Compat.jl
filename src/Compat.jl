@@ -23,15 +23,6 @@ import Base.MathConstants
 
 include("compatmacro.jl")
 
-if VERSION < v"0.7.0-DEV.1325"
-    function Base.rtoldefault(x, y, atol::Real)
-        T = isa(x, Type) ? x : typeof(x)
-        S = isa(y, Type) ? y : typeof(y)
-        rtol = max(Base.rtoldefault(real(T)), Base.rtoldefault(real(S)))
-        return atol > 0 ? zero(rtol) : rtol
-    end
-end
-
 # 0.7.0-DEV.2005
 if VERSION < v"0.7.0-DEV.2005"
     const Mmap = Base.Mmap

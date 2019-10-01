@@ -283,3 +283,10 @@ end
 
 # 0.7
 @test isa(1:2, AbstractRange)
+
+# 0.7
+@test isa(Base.rtoldefault(1.0, 2.0, 0), Float64)
+@test isa(Base.rtoldefault(Float64, 2.0, 0), Float64)
+@test isa(Base.rtoldefault(1.0, Float64, 0), Float64)
+@test isa(Base.rtoldefault(Float64, Float64, 0), Float64)
+@test Base.rtoldefault(Float64, Float64, 1.0) === 0.0

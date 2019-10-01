@@ -120,9 +120,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
-* `Base.rtoldefault` how takes a third parameter `atol`.
-  The two argument form is deprecated in favor of the three arguments form with `atol=0`.
-
 * `isequal`, `==` and `in` have one argument "curried" forms. For example `isequal(x)`
   returns a function that compares its arguments to `x` using `isequal` ([#26436]).
 
