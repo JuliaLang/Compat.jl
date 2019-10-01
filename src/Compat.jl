@@ -23,12 +23,6 @@ import Base.MathConstants
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.1721
-@static if !isdefined(Base, :AbstractRange)
-    const AbstractRange = Range
-    export AbstractRange
-end
-
 if VERSION < v"0.7.0-DEV.1325"
     function Base.rtoldefault(x, y, atol::Real)
         T = isa(x, Type) ? x : typeof(x)

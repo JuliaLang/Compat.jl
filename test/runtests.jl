@@ -73,9 +73,6 @@ if VERSION < v"0.7.0-DEV.880"
 end
 
 # 0.7
-@test isa(1:2, AbstractRange)
-
-# 0.7
 @test isa(Base.rtoldefault(1.0, 2.0, 0), Float64)
 @test isa(Base.rtoldefault(Float64, 2.0, 0), Float64)
 @test isa(Base.rtoldefault(1.0, Float64, 0), Float64)

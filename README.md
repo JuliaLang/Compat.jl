@@ -218,8 +218,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
-* `Range` is now `AbstractRange` ([#23570])
-
 * `IntSet` is now `BitSet` ([#24282])
 
 * `strwidth` and `charwidth` are now merged into `textwidth` ([#23667]).

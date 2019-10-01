@@ -280,3 +280,6 @@ let
     @test vec([b for (a,b) in pairs(IndexLinear(),    A14)]) == [11,12,13,14]
     @test vec([b for (a,b) in pairs(IndexCartesian(), A14)]) == [11,12,13,14]
 end
+
+# 0.7
+@test isa(1:2, AbstractRange)
