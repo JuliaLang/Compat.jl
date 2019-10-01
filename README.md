@@ -312,8 +312,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New types
 
-* `Compat.AbstractDateTime` is an alias for `Compat.Dates.AbstractDateTime` as of ([#25227]) and `Compat.Dates.TimeType` prior to that.
-
 ## Developer tips
 
 One of the most important rules for `Compat.jl` is to avoid breaking user code

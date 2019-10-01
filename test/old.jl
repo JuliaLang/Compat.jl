@@ -102,6 +102,11 @@ module TestLibdl
     @test isdefined(@__MODULE__, :Libdl)
 end
 
+# 0.7.0-DEV.3216
+@test Compat.AbstractDateTime === (isdefined(Compat.Dates, :AbstractDateTime) ? Compat.Dates.AbstractDateTime : Compat.Dates.TimeType)
+@test Compat.AbstractDateTime <: Compat.Dates.TimeType
+@test Compat.Dates.DateTime <: Compat.AbstractDateTime
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

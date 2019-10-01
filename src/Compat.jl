@@ -22,15 +22,10 @@ import Base.MathConstants
 import Test, SharedArrays, Mmap, DelimitedFiles
 import Dates
 import Libdl
+const AbstractDateTime = Compat.Dates.AbstractDateTime
 
 
 include("compatmacro.jl")
-
-if VERSION < v"0.7.0-DEV.3216"
-    const AbstractDateTime = Compat.Dates.TimeType
-else
-    const AbstractDateTime = Compat.Dates.AbstractDateTime
-end
 
 if VERSION < v"0.7.0-DEV.3052"
     const Printf = Base.Printf
