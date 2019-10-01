@@ -222,3 +222,14 @@ end
 
 # PR 22761
 @test_throws OverflowError throw(OverflowError("overflow"))
+
+# 0.7
+let M = [1 + 2im 3 + 4im; 5 + 6im 7 + 8im],
+    M2 = adjoint(copy(M)),
+    Mc = [1 - 2im 5 - 6im; 3 - 4im 7 - 8im]
+
+    @test adjoint(M) == Mc
+    M2 .= 0
+    adjoint!(M2, M)
+    @test M2 == Mc
+end

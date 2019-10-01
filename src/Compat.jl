@@ -22,13 +22,6 @@ end
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.1415
-@static if !isdefined(Base, :adjoint)
-    const adjoint = ctranspose
-    const adjoint! = ctranspose!
-    export adjoint, adjoint!
-end
-
 # 0.7.0-DEV.1592
 @static if !isdefined(Base, :MathConstants)
     @eval module MathConstants

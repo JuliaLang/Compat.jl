@@ -225,8 +225,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `select`* functions (`select`, `select!`, `selectperm`, `selectperm!`) are renamed to
   `partialsort`* (`partialsort`, `partialsort!`, `partialsortperm`, `partialsortperm!`) ([#23051])
 
-* `ctranspose` and `ctranspose!` are now `adjoint` and `adjoint!` ([#23235])
-
 * Math constants (`π`, `pi`, `e`, `γ`, `eulergamma`, `catalan`, `φ`, `golden`) are moved to the
   `MathConstants` module (available as `Compat.MathConstants`).
   The name exported from `Base` for `e` is changed to `ℯ`. ([#23427])
