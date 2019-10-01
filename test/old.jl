@@ -71,6 +71,21 @@ using Compat
 end
 @test isdefined(TestMathConstants2, :ℯ) && !Base.isdeprecated(TestMathConstants, :ℯ)
 
+# 0.7
+module Test23876
+    using Compat
+    using Compat.Test
+    import Compat.DelimitedFiles
+    using Compat.Mmap, Compat.SharedArrays
+    using Compat.Distributed
+    @test isdefined(@__MODULE__, :DelimitedFiles)
+    @test isdefined(SharedArrays, :SharedArray)
+    @test isdefined(@__MODULE__, :SharedArray)
+    @test isdefined(@__MODULE__, :procs)
+    @test isdefined(@__MODULE__, :remote_do)
+    @test isdefined(Mmap, :mmap)
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

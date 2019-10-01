@@ -19,27 +19,11 @@ module Sys
     BINDIR = Base.Sys.BINDIR
 end
 import Base.MathConstants
+import Test, SharedArrays, Mmap, DelimitedFiles
 
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.2005
-if VERSION < v"0.7.0-DEV.2005"
-    const Mmap = Base.Mmap
-    const Test = Base.Test
-    @eval module SharedArrays
-        if isdefined(Base, :Distributed)
-            using Base.Distributed.procs
-        else
-            using Base.procs
-        end
-        export SharedArray, SharedMatrix, SharedVector, indexpids, localindexes, sdata,
-               procs
-    end
-    const DelimitedFiles = Base.DataFmt
-else
-    import Test, SharedArrays, Mmap, DelimitedFiles
-end
 
 if VERSION < v"0.7.0-DEV.2575"
     const Dates = Base.Dates

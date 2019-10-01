@@ -73,21 +73,6 @@ if VERSION < v"0.7.0-DEV.880"
 end
 
 # 0.7
-module Test23876
-    using Compat
-    using Compat.Test
-    import Compat.DelimitedFiles
-    using Compat.Mmap, Compat.SharedArrays
-    using Compat.Distributed
-    @test isdefined(@__MODULE__, :DelimitedFiles)
-    @test isdefined(SharedArrays, :SharedArray)
-    @test isdefined(@__MODULE__, :SharedArray)
-    @test isdefined(@__MODULE__, :procs)
-    @test isdefined(@__MODULE__, :remote_do)
-    @test isdefined(Mmap, :mmap)
-end
-
-# 0.7
 module Test24459
     using Compat
     using Compat.Test
