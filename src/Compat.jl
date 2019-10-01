@@ -24,15 +24,10 @@ import Dates
 import Libdl
 const AbstractDateTime = Compat.Dates.AbstractDateTime
 import Printf
+import LinearAlgebra
 
 
 include("compatmacro.jl")
-
-@static if VERSION < v"0.7.0-DEV.3449"
-    const LinearAlgebra = Base.LinAlg
-else
-    import LinearAlgebra
-end
 
 if VERSION < v"0.7.0-DEV.3389"
     const SparseArrays = Base.SparseArrays

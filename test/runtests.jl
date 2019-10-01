@@ -249,11 +249,6 @@ end
 # 0.7.0-DEV.912
 @test occursin('W', "Hello, World!")
 
-# 0.7.0-DEV.3449
-let A = [2.0 1.0; 1.0 3.0], b = [2.0, 3.0]
-    @test diag(A) == b
-end
-
 # 0.7.0-DEV.3173
 @test invpermute!(permute!([1, 2], 2:-1:1), 2:-1:1) == [1, 2]
 

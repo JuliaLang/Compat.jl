@@ -117,6 +117,11 @@ module Test25056
     @test isdefined(@__MODULE__, Symbol("@sprintf"))
 end
 
+# 0.7.0-DEV.3449
+let A = [2.0 1.0; 1.0 3.0], b = [2.0, 3.0]
+    @test diag(A) == b
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 
