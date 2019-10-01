@@ -22,35 +22,6 @@ end
 
 include("compatmacro.jl")
 
-if VERSION < v"0.7.0-DEV.755"
-    # This is a hack to only add keyword signature that won't work on all julia versions.
-    # However, since we really only need to support a few (0.5, 0.6 and early 0.7) versions
-    # this should be good enough.
-    # TODO add deprecation warning to switch to StatsBase
-    let Tf = typeof(Base.cov), Tkw = Core.Core.kwftype(Tf)
-        @eval begin
-            @inline function _get_corrected(kws)
-                corrected = true
-                nkw = length(kws) >> 1
-                for i in 1:nkw
-                    if kws[i * 2 - 1] !== :corrected
-                        Base.kwerr(kws)
-                    end
-                    corrected = kws[i * 2]
-                end
-                return corrected::Bool
-            end
-            (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractVector) = Base.cov(x, _get_corrected(kws))
-            (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVector, Y::AbstractVector) =
-                Base.cov(X, Y, _get_corrected(kws))
-            (::$Tkw)(kws::Vector{Any}, ::$Tf, x::AbstractMatrix, vardim::Int) =
-                Base.cov(x, vardim, _get_corrected(kws))
-            (::$Tkw)(kws::Vector{Any}, ::$Tf, X::AbstractVecOrMat, Y::AbstractVecOrMat,
-                     vardim::Int) = Base.cov(X, Y, vardim, _get_corrected(kws))
-        end
-    end
-end
-
 # 0.7.0-DEV.1415
 @static if !isdefined(Base, :adjoint)
     const adjoint = ctranspose

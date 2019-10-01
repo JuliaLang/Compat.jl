@@ -141,20 +141,6 @@ end
 @test Base.rtoldefault(Float64, Float64, 1.0) === 0.0
 
 # 0.7
-if VERSION  < v"0.7.0-DEV.5238"
-    # Test the extended cov if cov is part of Base. In the future, this will be dealt with
-    # in StatsBase
-    @test cov([1 2; 3 4], 1, corrected=true) == fill(2.0, 2, 2)
-    @test cov([1 2; 3 4], 1, corrected=false) == fill(1.0, 2, 2)
-    @test cov([1 2; 3 4], [0 4; 8 9], 1, corrected=true) == [8.0 5.0; 8.0 5.0]
-    @test cov([1 2; 3 4], [0 4; 8 9], 1, corrected=false) == [4.0 2.5; 4.0 2.5]
-    @test cov([1, 2], corrected=true) === 0.5
-    @test cov([1, 2], corrected=false) === 0.25
-    @test cov([1, 2], [0, 10], corrected=true) === 5.0
-    @test cov([1, 2], [0, 10], corrected=false) === 2.5
-end
-
-# 0.7
 module Test23876
     using Compat
     using Compat.Test

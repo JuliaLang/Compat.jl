@@ -123,8 +123,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Base.rtoldefault` how takes a third parameter `atol`.
   The two argument form is deprecated in favor of the three arguments form with `atol=0`.
 
-* The `corrected` optional argument of `cov` becomes a keyword argument of `Compat.Statistics.cov` ([#21709]).
-
 * `isequal`, `==` and `in` have one argument "curried" forms. For example `isequal(x)`
   returns a function that compares its arguments to `x` using `isequal` ([#26436]).
 
