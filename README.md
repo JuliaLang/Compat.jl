@@ -75,9 +75,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `using Compat.UUIDs` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25819]).
 
-* `using Compat.Statistics` is provided on versions older than 0.7, where this library is
-  not yet part of the standard library ([#27834]).
-
 ## New functions, macros, and methods
 
 * `only(x)` returns the one-and-only element of a collection `x`. ([#33129])
@@ -145,8 +142,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.accumulate`, `Compat.accumulate!`, `Compat.all`, `Compat.any`,
   `Compat.cumprod`, `Compat.cumprod!`, `Compat.cumsum`, `Compat.cumsum!`,
-  `Compat.findmax`, `Compat.findmin`, `Compat.mapreduce`, `Compat.maximum`, `Compat.Statistics.mean`,
-  `Compat.Statistics.median`, `Compat.minimum`, `Compat.prod`, `Compat.reduce`, `Compat.sort`,
+  `Compat.findmax`, `Compat.findmin`, `Compat.mapreduce`, `Compat.maximum`,
+  `Compat.minimum`, `Compat.prod`, `Compat.reduce`, `Compat.sort`,
   and `Compat.sum`  with `dims` keyword argument ([#25989],[#26369]).
 
 * `Compat.mapreduce` and `Compat.reduce` with `init` keyword argument ([#27711]).

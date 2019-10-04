@@ -30,40 +30,10 @@ import Random
 import Markdown
 import REPL
 import Serialization
+import Statistics
 
 
 include("compatmacro.jl")
-
-if VERSION < v"0.7.0-beta.85"
-    @eval module Statistics
-        if VERSION < v"0.7.0-DEV.4064"
-            varm(A::AbstractArray, m; dims=nothing, kwargs...) =
-                dims===nothing ? Base.varm(A, m; kwargs...) : Base.varm(A, m, dims; kwargs...)
-            if VERSION < v"0.7.0-DEV.755"
-                cov(a::AbstractMatrix; dims=1, corrected=true) = Base.cov(a, dims, corrected)
-                cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=1, corrected=true) =
-                    Base.cov(a, b, dims, corrected)
-            else
-                cov(a::AbstractMatrix; dims=nothing, kwargs...) =
-                    dims===nothing ? Base.cov(a; kwargs...) : Base.cov(a, dims; kwargs...)
-                cov(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing, kwargs...) =
-                    dims===nothing ? Base.cov(a, b; kwargs...) : Base.cov(a, b, dims; kwargs...)
-            end
-            cor(a::AbstractMatrix; dims=nothing) = dims===nothing ? Base.cor(a) : Base.cor(a, dims)
-            cor(a::AbstractVecOrMat, b::AbstractVecOrMat; dims=nothing) =
-                dims===nothing ? Base.cor(a, b) : Base.cor(a, b, dims)
-            mean(a::AbstractArray; dims=nothing) = dims===nothing ? Base.mean(a) : Base.mean(a, dims)
-            median(a::AbstractArray; dims=nothing) = dims===nothing ? Base.median(a) : Base.median(a, dims)
-            var(a::AbstractArray; dims=nothing, kwargs...) =
-                dims===nothing ? Base.var(a; kwargs...) : Base.var(a, dims; kwargs...)
-            std(a::AbstractArray; dims=nothing, kwargs...) =
-                dims===nothing ? Base.std(a; kwargs...) : Base.std(a, dims; kwargs...)
-        end
-        export cor, cov, std, stdm, var, varm, mean!, mean, median!, median, middle, quantile!, quantile
-    end
-else
-    import Statistics
-end
 
 @static if VERSION < v"0.7.0-DEV.4592"
     struct Fix2{F,T} <: Function
