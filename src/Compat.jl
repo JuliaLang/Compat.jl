@@ -46,13 +46,6 @@ end
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.3137
-@static if !isdefined(Base, :Nothing)
-    const Nothing = Void
-    const Cvoid = Void
-    export Nothing, Cvoid
-end
-
 # https://github.com/JuliaLang/julia/pull/29679
 if VERSION < v"1.1.0-DEV.472"
     export isnothing

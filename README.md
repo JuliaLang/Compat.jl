@@ -154,8 +154,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
-* `Void` is now `Nothing` with an alias `Cvoid` for C interop ([#25162]).
-
 * `Base.IteratorSize` and `Base.IteratorEltype` are available as
   `Compat.IteratorSize` and `Compat.IteratorEltype` ([#25402]).
 

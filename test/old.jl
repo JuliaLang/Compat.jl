@@ -577,3 +577,7 @@ end
 @test Compat.axes === (isdefined(Base, :axes) ? Base.axes : Base.indices)
 @test Compat.axes(1) == ()
 @test Compat.axes(1,1) == 1:1
+
+# 0.7.0-DEV.3137
+@test Nothing === (isdefined(Base, :Nothing) ? Base.Nothing : Base.Void)
+@test Nothing === Cvoid

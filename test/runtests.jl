@@ -80,10 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-DEV.3137
-@test Nothing === (isdefined(Base, :Nothing) ? Base.Nothing : Base.Void)
-@test Nothing === Cvoid
-
 # 0.7.0-DEV.3017
 @test isa(Some(1), Some{Int})
 @test convert(Some{Float64}, Some(1)) == Some(1.0)
