@@ -107,13 +107,6 @@ end
 @test get(IOContext(IOBuffer(), :arg1=>true, :arg2=>true, :arg3=>true), :arg3, false)
 @test get(IOContext(IOBuffer(), :arg1=>true, :arg2=>true), :arg2, false)
 
-# 0.7.0-DEV.2338
-module Test24361
-    using Compat
-    using Compat.Test
-    @test String(Compat.Base64.base64decode("SGVsbG8h")) == "Hello!"
-end
-
 # 0.7
 let A = [1]
     local x = 0

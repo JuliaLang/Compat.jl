@@ -52,9 +52,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Module Aliases
 
-* `using Compat.Base64` is provided on versions older than 0.7, where this library is not
-  yet a part of the standard library. ([#24361])
-
 * `using Compat.Unicode` is provided on versions older than 0.7, where this library is not
   yet a part of the standard library. ([#25021])
 

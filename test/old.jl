@@ -158,6 +158,13 @@ module TestSerialization
     end
 end
 
+# 0.7.0-DEV.2338
+module Test24361
+    using Compat
+    using Compat.Test
+    @test String(Compat.Base64.base64decode("SGVsbG8h")) == "Hello!"
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

@@ -32,16 +32,10 @@ import REPL
 import Serialization
 import Statistics
 import Base: Fix2
+import Base64
 
 
 include("compatmacro.jl")
-
-# 0.7.0-DEV.2338
-@static if VERSION >= v"0.7.0-DEV.2338"
-    import Base64
-else
-    import Base.Base64
-end
 
 @static if VERSION < v"0.7.0-DEV.2377"
     (::Type{Matrix{T}}){T}(s::UniformScaling, dims::Dims{2}) = setindex!(zeros(T, dims), T(s.λ), diagind(dims...))
