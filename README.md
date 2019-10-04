@@ -83,9 +83,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `@compat finalizer(func, obj)` with the finalizer to run as the first argument and the object to be finalized
   as the second ([#24605]).
 
-* `replace` accepts a pair of pattern and replacement, with the number of replacements as
-  a keyword argument ([#25165]).
-
 * `CartesianIndices` and `LinearIndices` types represent cartesian and linear indices of
   an array (respectively), and indexing such objects allows translating from one kind of index
   to the other ([#25113]).

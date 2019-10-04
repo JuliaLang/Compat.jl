@@ -70,11 +70,6 @@ end
     end
 end
 
-@static if VERSION < v"0.7.0-DEV.3172"
-    Base.replace(s::AbstractString, pat_rep::Pair; count::Integer=typemax(Int)) =
-        replace(s, first(pat_rep), last(pat_rep), count)
-end
-
 # 0.7.0-DEV.3057
 @static if !isdefined(Base, :copyto!)
     const copyto! = Base.copy!

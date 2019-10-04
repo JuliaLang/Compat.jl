@@ -601,3 +601,7 @@ end
 
 # 0.7.0-DEV.3173
 @test invpermute!(permute!([1, 2], 2:-1:1), 2:-1:1) == [1, 2]
+
+# 0.7.0-DEV.3172
+@test replace("abcb", "b"=>"c") == "accc"
+@test replace("abcb", "b"=>"c", count=1) == "accb"
