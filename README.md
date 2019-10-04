@@ -159,9 +159,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `strwidth` and `charwidth` are now merged into `textwidth` ([#23667]).
 
-* `Complex32`, `Complex64`, and `Complex128` are now `ComplexF16`, `ComplexF32`, and
-  `ComplexF64`, respectively ([#24647]).
-
 * `trace` is now `tr`, available as `Compat.tr` ([#26365]).
 
 * `Associative` is now `AbstractDict` ([#25012]).

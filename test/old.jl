@@ -538,3 +538,8 @@ let key = "TEST_23412"
     @test !haskey(ENV, key)
     @test get(() -> "default", ENV, key) == "default"
 end
+
+# 0.7.0-DEV.2919
+@test ComplexF16 === Complex{Float16}
+@test ComplexF32 === Complex{Float32}
+@test ComplexF64 === Complex{Float64}

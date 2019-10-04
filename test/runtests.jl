@@ -87,11 +87,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-DEV.2919
-@test ComplexF16 === Complex{Float16}
-@test ComplexF32 === Complex{Float32}
-@test ComplexF64 === Complex{Float64}
-
 # 0.7.0-DEV.2915
 module Test25021
     using Compat
