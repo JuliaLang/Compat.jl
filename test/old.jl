@@ -165,6 +165,9 @@ module Test24361
     @test String(Compat.Base64.base64decode("SGVsbG8h")) == "Hello!"
 end
 
+# julia#26365
+@test Compat.tr([1 2; 3 5]) == 6
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

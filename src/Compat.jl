@@ -33,17 +33,10 @@ import Serialization
 import Statistics
 import Base: Fix2
 import Base64
+const tr = LinearAlgebra.tr
 
 
 include("compatmacro.jl")
-
-# julia #26365
-@static if isdefined(LinearAlgebra, :tr)
-    const tr = LinearAlgebra.tr
-else
-    # 0.6
-    const tr = LinearAlgebra.trace
-end
 
 if VERSION < v"0.7.0-DEV.1930"
     # no textwidth definition in Base

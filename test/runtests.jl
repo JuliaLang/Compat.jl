@@ -38,9 +38,6 @@ if VERSION >= v"0.7"
     end
 end
 
-# julia#26365
-@test Compat.tr([1 2; 3 5]) == 6
-
 let
     x = view(1:10, 2:4)
     D = Diagonal(x)
