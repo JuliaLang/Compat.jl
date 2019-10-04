@@ -598,3 +598,6 @@ end
 @test convert(Nothing, nothing) == nothing
 @test_throws MethodError convert(Nothing, 1)
 @test Some(nothing) != nothing
+
+# 0.7.0-DEV.3173
+@test invpermute!(permute!([1, 2], 2:-1:1), 2:-1:1) == [1, 2]

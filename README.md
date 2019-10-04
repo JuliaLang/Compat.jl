@@ -154,8 +154,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `copy!` and `unsafe_copy!` are now `copyto!` and `unsafe_copyto!` ([#24808]).
 
-* `ipermute!` is now `invpermute!` ([#25168]).
-
 * `module_parent`, `Base.function_module`, and `Base.datatype_module` are now methods of
   a new function called `parentmodule` ([#25629]).
 
