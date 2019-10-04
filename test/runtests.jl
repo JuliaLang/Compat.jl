@@ -80,9 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-DEV.2951
-@test AbstractDict === (isdefined(Base, :AbstractDict) ? Base.AbstractDict : Base.Associative)
-
 # 0.7.0-DEV.2978
 @test Compat.axes === (isdefined(Base, :axes) ? Base.axes : Base.indices)
 @test Compat.axes(1) == ()
