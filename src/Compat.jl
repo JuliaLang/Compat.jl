@@ -46,12 +46,6 @@ end
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.3393
-@static if VERSION < v"0.7.0-DEV.3393"
-    import .Unicode.isnumeric
-    export isnumeric
-end
-
 # 0.7.0-DEV.2951
 @static if !isdefined(Base, :AbstractDict)
     const AbstractDict = Associative

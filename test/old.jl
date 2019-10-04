@@ -565,3 +565,7 @@ end
 # 0.7.0-DEV.1930
 @test textwidth("A") == 1
 @test textwidth('A') == 1
+
+# 0.7.0-DEV.3393
+@test !isnumeric('a')
+@test isnumeric('1')

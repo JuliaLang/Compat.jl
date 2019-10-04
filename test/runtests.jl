@@ -80,10 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-DEV.3393
-@test !isnumeric('a')
-@test isnumeric('1')
-
 # 0.7.0-DEV.2951
 @test AbstractDict === (isdefined(Base, :AbstractDict) ? Base.AbstractDict : Base.Associative)
 

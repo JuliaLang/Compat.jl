@@ -213,8 +213,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `cfunction` is now `@cfunction` ([#26486]).
 
-* `Unicode.isnumeric` is now available as `isnumeric` ([#25479]).
-
 * `vecnorm` and `vecdot` are now `Compat.norm` and `Compat.dot`, respectively, while the
   old `norm(A::AbstractMatrix, p=2)` is now `Compat.opnorm` ([#27401]).  `import Compat: ⋅`
   to get `Compat.dot` as the binary operator `⋅`.
