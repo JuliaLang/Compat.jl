@@ -32,15 +32,6 @@ import Markdown
 
 include("compatmacro.jl")
 
-if VERSION < v"0.7.0-DEV.2609"
-    @eval module SuiteSparse
-        if Base.USE_GPL_LIBS
-            using Compat.SparseArrays: CHOLMOD, SPQR, UMFPACK
-        end
-        using Compat.SparseArrays: increment, increment!, decrement, decrement!
-    end
-end
-
 @static if VERSION < v"0.7.0-DEV.3500"
     const REPL = Base.REPL
 else
