@@ -70,11 +70,6 @@ end
     end
 end
 
-# 0.7.0-DEV.3272, keep this definition for 0.6 compatibility
-@static if VERSION < v"0.7.0-DEV.3272"
-    Base.contains(str::AbstractString, r::Regex) = ismatch(r, str)
-end
-
 @static if VERSION < v"0.7.0-DEV.3025"
     import Base: convert, ndims, getindex, size, length, eltype,
                  start, next, done, first, last, in, tail
