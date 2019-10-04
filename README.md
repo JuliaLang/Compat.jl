@@ -174,8 +174,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
-* `IntSet` is now `BitSet` ([#24282])
-
 * `strwidth` and `charwidth` are now merged into `textwidth` ([#23667]).
 
 * `Complex32`, `Complex64`, and `Complex128` are now `ComplexF16`, `ComplexF32`, and

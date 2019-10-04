@@ -36,12 +36,6 @@ import Base: Fix2
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.2318
-@static if !isdefined(Base, :BitSet)
-    const BitSet = IntSet
-    export BitSet
-end
-
 # 0.7.0-DEV.2116
 @static if VERSION < v"0.7.0-DEV.2116"
     import Compat.SparseArrays: spdiagm
