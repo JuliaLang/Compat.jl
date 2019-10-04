@@ -475,3 +475,10 @@ let a = [0,1,2,3,0,1,2,3]
     @test findprev(==(1), a, 4) == 2
     @test findprev(==(1), a, 8) == 6
 end
+
+# 0.7.0-DEV.4639
+@test occursin(r"World", "Hello, World!")
+@test occursin(r"World", "Hello, World!", offset = 4)
+@test occursin("World", "Hello, World!")
+# 0.7.0-DEV.912
+@test occursin('W', "Hello, World!")

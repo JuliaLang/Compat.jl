@@ -197,12 +197,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `copy!` and `unsafe_copy!` are now `copyto!` and `unsafe_copyto!` ([#24808]).
 
-* `contains(haystack, needle)` is now `occursin(needle, haystack)` ([#26283]).
-  `occursin` also has a new method for `Char` needles ([#22435]).
-
-* `ismatch(r::Regex, str::AbstractString, offset=0)` is now `occursin(r, str)` and
-  `occursin(r, str, offset = offset)` respectively ([#24673],[#26283]).
-
 * `ipermute!` is now `invpermute!` ([#25168]).
 
 * `module_parent`, `Base.function_module`, and `Base.datatype_module` are now methods of

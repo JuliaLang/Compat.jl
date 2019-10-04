@@ -208,18 +208,6 @@ let A = [0, 0, 0], B = [1, 2, 3]
     @test unsafe_copyto!(A, 2, B, 1, 1) === A == [0, 1, 0]
 end
 
-# 0.7, make sure this works on 0.6
-if VERSION < v"0.7.0-DEV.3272"
-    @test contains("Hello, World!", r"World")
-end
-
-# 0.7.0-DEV.4639
-@test occursin(r"World", "Hello, World!")
-@test occursin(r"World", "Hello, World!", offset = 4)
-@test occursin("World", "Hello, World!")
-# 0.7.0-DEV.912
-@test occursin('W', "Hello, World!")
-
 # 0.7.0-DEV.3173
 @test invpermute!(permute!([1, 2], 2:-1:1), 2:-1:1) == [1, 2]
 
