@@ -37,33 +37,6 @@ import Base64
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.4527
-@static if !isdefined(Base, :UndefInitializer)
-    import Base: Array, Matrix, Vector
-    @static if isdefined(Base, :Uninitialized)
-        useuninit(args) = (Base.uninitialized, args...)
-    else
-        useuninit(args) = args
-    end
-    struct UndefInitializer end
-    const undef = UndefInitializer()
-    export undef, UndefInitializer
-    Base.show(io::IO, ::UndefInitializer) =
-        print(io, "array initializer with undefined values")
-    Array{T}(::UndefInitializer, args...) where {T} = Array{T}(useuninit(args)...)
-    Array{T,N}(::UndefInitializer, args...) where {T,N} = Array{T,N}(useuninit(args)...)
-    Vector(::UndefInitializer, args...) = Vector(useuninit(args)...)
-    Matrix(::UndefInitializer, args...) = Matrix(useuninit(args)...)
-
-    BitArray{N}(::UndefInitializer, args...) where {N} = BitArray{N}(useuninit(args)...)
-    BitArray(::UndefInitializer, args...) = BitArray(useuninit(args)...)
-end
-@static if VERSION < v"0.7.0-DEV.2581"
-    export uninitialized, Uninitialized
-    const uninitialized = undef
-    const Uninitialized = UndefInitializer
-end
-
 # 0.7.0-DEV.1499
 if VERSION < v"0.7.0-DEV.1499"
     function Base.get(f::Base.Callable, ::Base.EnvHash, k::AbstractString)

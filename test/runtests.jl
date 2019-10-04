@@ -76,18 +76,6 @@ end
 @test textwidth("A") == 1
 @test textwidth('A') == 1
 
-# 0.7.0-DEV.2581, 0.7.0-DEV.4527
-@test isa(Vector(undef, 2), Vector{Any})
-@test isa(Vector{Float64}(undef, 2), Vector{Float64})
-@test isa(Matrix(undef, 2, 2), Matrix{Any})
-@test isa(Matrix{Float64}(undef, 2, 2), Matrix{Float64})
-@test isa(Array{Float64}(undef, 2, 2), Matrix{Float64})
-@test isa(Array{Float64,3}(undef, 2, 2, 2), Array{Float64,3})
-
-# 0.7.0-DEV.2687, 0.7.0-DEV.4527
-@test isa(BitVector(undef, 2), BitVector)
-@test isa(BitArray(undef, 2, 2), BitMatrix)
-
 # 0.7
 let A = [1]
     local x = 0

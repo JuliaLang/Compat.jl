@@ -83,10 +83,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
-* `UndefInitializer` and `undef` with corresponding `Array` constructors ([#24652], [#26316]).
-
-* `BitArray` constructors for `undef` ([#24785], [#26316]).
-
 * `@compat finalizer(func, obj)` with the finalizer to run as the first argument and the object to be finalized
   as the second ([#24605]).
 
