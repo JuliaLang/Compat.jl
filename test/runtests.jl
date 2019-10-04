@@ -80,29 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-DEV.3025
-let c = CartesianIndices((1:3, 1:2)), l = LinearIndices((1:3, 1:2))
-    @test LinearIndices(c) == collect(l)
-    @test CartesianIndices(l) == collect(c)
-    @test first(c) == CartesianIndex(1, 1)
-    @test CartesianIndex(1, 1) in c
-    @test first(l) == 1
-    @test size(c) == size(l) == (3, 2)
-    @test c == collect(c) == [CartesianIndex(1, 1) CartesianIndex(1, 2)
-                              CartesianIndex(2, 1) CartesianIndex(2, 2)
-                              CartesianIndex(3, 1) CartesianIndex(3, 2)]
-    @test l == collect(l) == reshape(1:6, 3, 2)
-    @test c[1:6] == vec(c)
-    @test l[1:6] == vec(l)
-    # TODO the following test fails on current Julia master (since 0.7.0-DEV.4742), and
-    # it's not clear yet whether it should work or not. See
-    # https://github.com/JuliaLang/julia/pull/26682#issuecomment-379762632 and the
-    # discussion following it
-    #@test l == l[c] == map(i -> l[i], c)
-    @test l[vec(c)] == collect(1:6)
-    @test CartesianIndex(1, 1) in CartesianIndices((3, 4))
-end
-
 if !isdefined(Base, Symbol("@info"))
     let fname = tempname()
         try
@@ -516,10 +493,6 @@ end
 @test Compat.reverse([1, 2, 3, 4]) == [4, 3, 2, 1]
 @test Compat.reverse([1 2; 3 4], dims=1) == [3 4; 1 2]
 @test Compat.reverse([1 2; 3 4], dims=2) == [2 1; 4 3]
-# Issue #523
-@test length(Compat.CartesianIndices((1:1,))) == 1
-@test length(Compat.CartesianIndices((1:2,))) == 2
-@test length(Compat.CartesianIndices((1:2, -1:1))) == 6
 
 # 0.7.0-DEV.4738
 if VERSION < v"0.7.0-beta2.143"
