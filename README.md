@@ -58,9 +58,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `using Compat.Unicode` is provided on versions older than 0.7, where this library is not
   yet a part of the standard library. ([#25021])
 
-* `using Compat.Random` is provided on versions older than 0.7, where this library is
-  not yet part of the standard library ([#24874]).
-
 * `using Compat.REPL` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25544]).
 
@@ -275,8 +272,6 @@ Currently, the `@compat` macro supports the following syntaxes:
   to get `Compat.dot` as the binary operator `⋅`.
 
 * `atan2` is now a 2-argument method of `atan` ([#27253]).
-
-* `srand` is now `Compat.Random.seed!` ([#28295])
 
 * `realmin` and `realmax` are now `floatmin` and `floatmax` ([#28302])
 

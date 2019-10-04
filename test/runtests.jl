@@ -233,10 +233,6 @@ let A = [0, 0, 0], B = [1, 2, 3]
     @test unsafe_copyto!(A, 2, B, 1, 1) === A == [0, 1, 0]
 end
 
-# 0.7.0-DEV.3406
-using Compat.Random
-@test rand(MersenneTwister(1234)) == 0.5908446386657102
-
 # 0.7, make sure this works on 0.6
 if VERSION < v"0.7.0-DEV.3272"
     @test contains("Hello, World!", r"World")
@@ -1005,13 +1001,6 @@ let a = rand(5,5)
         @test vec(S[i,:]) == sort(vec(a[i,:]))
     end
 end
-
-# 0.7.0-beta2.171
-Random.seed!(1)
-rng = MersenneTwister(0)
-Random.seed!(rng, 1)
-@test rand(rng) ≈ 0.23603334566204692
-@test 0 < rand(Random.GLOBAL_RNG, Random.RangeGenerator(1:3)) < 4
 
 # 0.7.0-beta2.169
 @test floatmin(Float16) == @eval $(Core.Intrinsics.bitcast(Float16, 0x0400))

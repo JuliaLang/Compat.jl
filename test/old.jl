@@ -122,6 +122,17 @@ let A = [2.0 1.0; 1.0 3.0], b = [2.0, 3.0]
     @test diag(A) == b
 end
 
+# 0.7.0-DEV.3406
+using Compat.Random
+@test rand(MersenneTwister(1234)) == 0.5908446386657102
+
+# 0.7.0-beta2.171
+Random.seed!(1)
+rng = MersenneTwister(0)
+Random.seed!(rng, 1)
+@test rand(rng) ≈ 0.23603334566204692
+@test 0 < rand(Random.GLOBAL_RNG, Random.RangeGenerator(1:3)) < 4
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

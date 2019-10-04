@@ -26,53 +26,10 @@ const AbstractDateTime = Compat.Dates.AbstractDateTime
 import Printf
 import LinearAlgebra
 import SparseArrays
+import Random
 
 
 include("compatmacro.jl")
-
-# v"0.7.0-beta.234" introduced Random.gentype (formerly Base.eltype)
-# v"0.7.0-beta2.171" deprecated Random.srand in favor of Random.seed! (unexported)
-# v"0.7.0-DEV.3406" moved Base.Random to stdlib Random
-if VERSION >= v"0.7.0-beta.234"
-    import Random
-else
-    const exported_random_fields = [
-        :AbstractRNG, :MersenneTwister, :RandomDevice, :bitrand, :rand, :rand!,
-        :randcycle, :randexp, :randexp!, :randjump, :randn!,
-        :randperm, :randstring, :randsubseq, :randsubseq!, :shuffle,
-        :shuffle!
-    ]
-    const unexported_random_fields = [
-        :GLOBAL_RNG, :RangeGenerator
-    ]
-    const random_fields = [exported_random_fields; unexported_random_fields]
-    @eval module Random
-        if VERSION < v"0.7.0-DEV.3406"
-            $((:(using Base.Random: $f) for f in random_fields)...)
-            const seed! = Base.Random.srand
-        else
-            $((:(using Random: $f) for f in random_fields)...)
-            import Random
-            if VERSION < v"0.7.0-beta2.171"
-                const seed! = Random.srand
-            else
-                using Random: seed!
-            end
-        end
-        if VERSION < v"0.7.0-DEV.3666"
-            import ..Compat
-            Base.@deprecate uuid1() Compat.UUIDs.uuid1() false
-            Base.@deprecate uuid1(rng) Compat.UUIDs.uuid1(rng) false
-            Base.@deprecate uuid4() Compat.UUIDs.uuid4() false
-            Base.@deprecate uuid4(rng) Compat.UUIDs.uuid4(rng) false
-            Base.@deprecate uuid_version(u) Compat.UUIDs.uuid_version(u) false
-        end
-
-        gentype(args...) = eltype(args...)
-
-        export $(exported_random_fields...)
-    end
-end
 
 if VERSION < v"0.7.0-DEV.3589"
     const Markdown = Base.Markdown
