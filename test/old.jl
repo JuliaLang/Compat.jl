@@ -532,3 +532,9 @@ end
 # 0.7.0-DEV.2687, 0.7.0-DEV.4527
 @test isa(BitVector(undef, 2), BitVector)
 @test isa(BitArray(undef, 2, 2), BitMatrix)
+
+# 0.7.0-DEV.1499
+let key = "TEST_23412"
+    @test !haskey(ENV, key)
+    @test get(() -> "default", ENV, key) == "default"
+end
