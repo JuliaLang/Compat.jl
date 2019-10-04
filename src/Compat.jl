@@ -28,15 +28,10 @@ import LinearAlgebra
 import SparseArrays
 import Random
 import Markdown
+import REPL
 
 
 include("compatmacro.jl")
-
-@static if VERSION < v"0.7.0-DEV.3500"
-    const REPL = Base.REPL
-else
-    import REPL
-end
 
 if VERSION < v"0.7.0-DEV.3476"
     @eval module Serialization

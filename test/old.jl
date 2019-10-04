@@ -137,6 +137,14 @@ Random.seed!(rng, 1)
 import Compat.Markdown
 @test isa(Markdown.parse("foo"), Markdown.MD)
 
+# 0.7.0-DEV.3500
+module TestREPL
+    using Compat
+    using Compat.REPL
+    using Compat.Test
+    @test isdefined(@__MODULE__, :REPL)
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

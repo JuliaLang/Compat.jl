@@ -329,14 +329,6 @@ end
 # 0.7.0-DEV.3415
 @test findall(x -> x==1, [1, 2, 3, 2, 1]) == [1, 5]
 
-# 0.7.0-DEV.3500
-module TestREPL
-    using Compat
-    using Compat.REPL
-    using Compat.Test
-    @test isdefined(@__MODULE__, :REPL)
-end
-
 # 0.7.0-DEV.3476
 module TestSerialization
     using Compat
