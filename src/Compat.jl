@@ -46,13 +46,6 @@ end
 
 include("compatmacro.jl")
 
-# 0.7.0-DEV.2978
-@static if !isdefined(Base, :axes)
-    const axes = Base.indices
-    # NOTE: Intentionally not exported to avoid conflicts with AxisArrays
-    #export axes
-end
-
 # 0.7.0-DEV.3137
 @static if !isdefined(Base, :Nothing)
     const Nothing = Void
