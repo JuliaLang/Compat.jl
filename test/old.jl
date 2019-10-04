@@ -187,6 +187,12 @@ end
 @test Compat.notnothing(1) == 1
 @test_throws ArgumentError Compat.notnothing(nothing)
 
+# 0.7.0-DEV.3309
+let v = [1, 2, 3]
+    @test Compat.IteratorSize(v) isa Base.HasShape
+    @test Compat.IteratorEltype(v) == Base.HasEltype()
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

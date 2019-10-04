@@ -152,9 +152,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
-* `Base.IteratorSize` and `Base.IteratorEltype` are available as
-  `Compat.IteratorSize` and `Compat.IteratorEltype` ([#25402]).
-
 * `copy!` and `unsafe_copy!` are now `copyto!` and `unsafe_copyto!` ([#24808]).
 
 * `ipermute!` is now `invpermute!` ([#25168]).

@@ -43,6 +43,8 @@ module Unicode
     import Unicode: isassigned, normalize # not exported from Unicode module due to conflicts
 end
 import Base: notnothing
+const IteratorSize = Base.IteratorSize
+const IteratorEltype = Base.IteratorEltype
 
 
 include("compatmacro.jl")
@@ -66,15 +68,6 @@ end
         idx1, idx2 = ntuple(d->(:), dim-1), ntuple(d->(:), ndims(A)-dim)
         return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
     end
-end
-
-# 0.7.0-DEV.3309
-@static if VERSION < v"0.7.0-DEV.3309"
-    const IteratorSize = Base.iteratorsize
-    const IteratorEltype = Base.iteratoreltype
-else
-    const IteratorSize = Base.IteratorSize
-    const IteratorEltype = Base.IteratorEltype
 end
 
 # 0.7.0-DEV.3173
