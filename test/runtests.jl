@@ -77,12 +77,6 @@ end
 @test textwidth('A') == 1
 
 # 0.7
-@test diagm(0 => ones(2), -1 => ones(2)) == [1.0 0.0 0.0; 1.0 1.0 0.0; 0.0 1.0 0.0]
-@test diagm(0 => ones(2), 1 => ones(2)) == [1.0 1.0 0.0; 0.0 1.0 1.0; 0.0 0.0 0.0]
-@test spdiagm(0 => ones(2), -1 => ones(2)) == [1.0 0.0 0.0; 1.0 1.0 0.0; 0.0 1.0 0.0]
-@test spdiagm(0 => ones(2), 1 => ones(2)) == [1.0 1.0 0.0; 0.0 1.0 1.0; 0.0 0.0 0.0]
-
-# 0.7
 let a = [1 0 0; 0 1 0; 0 0 1]
     @test Matrix{Int}(I, 3, 3)::Matrix{Int} == a
     @test Matrix{Float64}(I, (3, 2))::Matrix{Float64} == a[:,1:2]

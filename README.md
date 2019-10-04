@@ -86,8 +86,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
-* `diagm` and `spdiagm` accept pairs mapping diagonals to vectors ([#24047], [#23757])
-
 * Constructors for `Matrix{T}`, `Array{T}`, and `SparseMatrixCSC{T}` from `UniformScaling` ([#24372], [#24657])
 
 * Constructor for `Matrix` from `UniformScaling` ([#24372], [#24657]).
