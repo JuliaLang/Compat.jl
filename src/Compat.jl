@@ -25,16 +25,10 @@ import Libdl
 const AbstractDateTime = Compat.Dates.AbstractDateTime
 import Printf
 import LinearAlgebra
+import SparseArrays
 
 
 include("compatmacro.jl")
-
-if VERSION < v"0.7.0-DEV.3389"
-    const SparseArrays = Base.SparseArrays
-else
-    import SparseArrays
-end
-
 
 # v"0.7.0-beta.234" introduced Random.gentype (formerly Base.eltype)
 # v"0.7.0-beta2.171" deprecated Random.srand in favor of Random.seed! (unexported)
