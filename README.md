@@ -52,9 +52,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Module Aliases
 
-* `using Compat.Unicode` is provided on versions older than 0.7, where this library is not
-  yet a part of the standard library. ([#25021])
-
 * `using Compat.Distributed` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#24443]).
 

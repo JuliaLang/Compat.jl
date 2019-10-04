@@ -80,21 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-DEV.2915
-module Test25021
-    using Compat
-    using Compat.Test
-    using Compat.Unicode
-    @test isdefined(@__MODULE__, :Unicode)
-
-    @test !isnumeric('a')
-    @test isnumeric('1')
-    @test titlecase("firstname lastname") == "Firstname Lastname"
-    @test Compat.Unicode.isassigned('柒') && !Compat.Unicode.isassigned(0xfffe)
-    @test Compat.Unicode.normalize("\U1e9b\U0323", :NFKC) == "\U1e69"
-    @test Compat.Unicode.normalize("\t\r", stripcc=true) == "  "
-end
-
 # 0.7.0-DEV.3393
 @test !isnumeric('a')
 @test isnumeric('1')

@@ -34,31 +34,17 @@ import Statistics
 import Base: Fix2
 import Base64
 const tr = LinearAlgebra.tr
-
-
-include("compatmacro.jl")
-
-# 0.7.0-DEV.2915
 module Unicode
     export graphemes, textwidth, isvalid,
            islower, isupper, isalpha, isdigit, isxdigit, isnumeric, isalnum,
            iscntrl, ispunct, isspace, isprint, isgraph,
            lowercase, uppercase, titlecase, lcfirst, ucfirst
-
-    if VERSION < v"0.7.0-DEV.2915"
-        if VERSION < v"0.7.0-DEV.1930"
-            import ..Compat: textwidth
-        end
-
-        isnumeric(c::Char) = isnumber(c)
-        isassigned(c) = is_assigned_char(c)
-        normalize(s::AbstractString; kws...) = normalize_string(s; kws...)
-        normalize(s::AbstractString, nf::Symbol) = normalize_string(s, nf)
-    else
-        using Unicode
-        import Unicode: isassigned, normalize # not exported from Unicode module due to conflicts
-    end
+    using Unicode
+    import Unicode: isassigned, normalize # not exported from Unicode module due to conflicts
 end
+
+
+include("compatmacro.jl")
 
 # 0.7.0-DEV.3393
 @static if VERSION < v"0.7.0-DEV.3393"
