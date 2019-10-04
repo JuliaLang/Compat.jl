@@ -86,9 +86,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
-* `isequal`, `==` and `in` have one argument "curried" forms. For example `isequal(x)`
-  returns a function that compares its arguments to `x` using `isequal` ([#26436]).
-
 * `*(::Union{Char,AbstractString},::Union{Char,AbstractString})` concatenation. ([#22512])
 
 * `diagm` and `spdiagm` accept pairs mapping diagonals to vectors ([#24047], [#23757])

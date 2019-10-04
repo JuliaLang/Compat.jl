@@ -31,44 +31,10 @@ import Markdown
 import REPL
 import Serialization
 import Statistics
+import Base: Fix2
 
 
 include("compatmacro.jl")
-
-@static if VERSION < v"0.7.0-DEV.4592"
-    struct Fix2{F,T} <: Function
-        f::F
-        x::T
-        Fix2(f::F, x::T) where {F,T} = new{F,T}(f, x)
-        Fix2(f::Type{F}, x::T) where {F,T} = new{F,T}(f, x)
-    end
-    (f::Fix2)(y) = f.f(y, f.x)
-
-    Base.:(==)(x) = Fix2(==, x)
-    @static if VERSION >= v"0.7.0-DEV.1993"
-        Base.isequal(x) = Base.equalto(x)
-    else
-        Base.isequal(x) = Fix2(isequal, x)
-    end
-    @static if VERSION >= v"0.7.0-DEV.3272"
-        Base.in(x) = Base.occursin(x)
-    else
-        Base.in(x) = Fix2(in, x)
-    end
-else
-    import Base: Fix2
-end
-# keep these definitions to be non breaking for 0.6 usage
-@static if VERSION < v"0.7.0-DEV.1993"
-    const EqualTo{T} = Fix2{typeof(isequal),T}
-    export equalto
-    equalto(x) = isequal(x)
-end
-@static if VERSION < v"0.7.0-DEV.3272"
-    const OccursIn{T} = Fix2{typeof(in),T}
-    export occursin
-    occursin(x) = in(x)
-end
 
 # PR #26283
 if VERSION < v"0.7.0-DEV.4639"

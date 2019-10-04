@@ -73,31 +73,6 @@ if VERSION < v"0.7.0-DEV.880"
 end
 
 # 0.7
-
-let a = [0,1,2,3,0,1,2,3]
-    # curried isequal
-    @test findfirst(isequal(3), [1,2,4,1,2,3,4]) == 6
-    @test findfirst(!isequal(1), [1,2,4,1,2,3,4]) == 2
-    @test findnext(isequal(1), a, 4) == 6
-    # @test findnext(isequal(5), a, 4) == 0
-    @test findlast(isequal(3), [1,2,4,1,2,3,4]) == 6
-    @test findprev(isequal(1), a, 4) == 2
-    @test findprev(isequal(1), a, 8) == 6
-    if VERSION < v"0.7.0-DEV.4592"
-        # test that equalto work on 0.6
-        @test findfirst(equalto(3), [1,2,4,1,2,3,4]) == 6
-        @test findfirst(!equalto(1), [1,2,4,1,2,3,4]) == 2
-    end
-    # curried ==
-    @test findfirst(==(3), [1,2,4,1,2,3,4]) == 6
-    @test findfirst(!(==(1)), [1,2,4,1,2,3,4]) == 2
-    @test findnext(==(1), a, 4) == 6
-    @test findlast(==(3), [1,2,4,1,2,3,4]) == 6
-    @test findprev(==(1), a, 4) == 2
-    @test findprev(==(1), a, 8) == 6
-end
-
-# 0.7
 @test 'a'*"b" == "a"*'b' == 'a'*'b' == "ab"
 
 # 0.7
