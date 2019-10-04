@@ -73,9 +73,6 @@ if VERSION < v"0.7.0-DEV.880"
 end
 
 # 0.7
-@test 'a'*"b" == "a"*'b' == 'a'*'b' == "ab"
-
-# 0.7
 @test 1 in BitSet(1:10)
 
 # 0.7.0-DEV.1930

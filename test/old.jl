@@ -482,3 +482,6 @@ end
 @test occursin("World", "Hello, World!")
 # 0.7.0-DEV.912
 @test occursin('W', "Hello, World!")
+
+# 0.7
+@test 'a'*"b" == "a"*'b' == 'a'*'b' == "ab"
