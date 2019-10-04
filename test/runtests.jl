@@ -76,21 +76,6 @@ end
 @test textwidth("A") == 1
 @test textwidth('A') == 1
 
-# 0.7
-let a = [1 0 0; 0 1 0; 0 0 1]
-    @test Matrix{Int}(I, 3, 3)::Matrix{Int} == a
-    @test Matrix{Float64}(I, (3, 2))::Matrix{Float64} == a[:,1:2]
-    @test Array{Int}(I, (3, 3))::Matrix{Int} == a
-    @test Array{Float64}(I, 3, 2)::Matrix{Float64} == a[:,1:2]
-    @test SparseMatrixCSC{Int}(I, 3, 3)::SparseMatrixCSC{Int,Int} == a
-    @test SparseMatrixCSC{Float64}(I, (3, 2))::SparseMatrixCSC{Float64,Int} == a[:,1:2]
-    @test SparseMatrixCSC{Bool,Int16}(I, (3, 3))::SparseMatrixCSC{Bool,Int16} == a
-    @test SparseMatrixCSC{ComplexF64,Int8}(I, 3, 2)::SparseMatrixCSC{ComplexF64,Int8} == a[:,1:2]
-
-    @test Matrix(2I, 3, 3)::Matrix{Int} == Matrix(2I, (3, 3))::Matrix{Int} == 2a
-    @test Matrix(2.0I, 3, 3)::Matrix{Float64} == Matrix(2.0I, (3, 3))::Matrix{Float64} == 2a
-end
-
 # 0.7.0-DEV.2581, 0.7.0-DEV.4527
 @test isa(Vector(undef, 2), Vector{Any})
 @test isa(Vector{Float64}(undef, 2), Vector{Float64})

@@ -83,10 +83,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
 
-* Constructors for `Matrix{T}`, `Array{T}`, and `SparseMatrixCSC{T}` from `UniformScaling` ([#24372], [#24657])
-
-* Constructor for `Matrix` from `UniformScaling` ([#24372], [#24657]).
-
 * `UndefInitializer` and `undef` with corresponding `Array` constructors ([#24652], [#26316]).
 
 * `BitArray` constructors for `undef` ([#24785], [#26316]).
