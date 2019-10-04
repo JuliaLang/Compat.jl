@@ -546,3 +546,7 @@ end
 @test ComplexF16 === Complex{Float16}
 @test ComplexF32 === Complex{Float32}
 @test ComplexF64 === Complex{Float64}
+
+# 0.7.0-DEV.1930
+@test textwidth("A") == 1
+@test textwidth('A') == 1

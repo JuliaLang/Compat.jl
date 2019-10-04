@@ -38,18 +38,6 @@ const tr = LinearAlgebra.tr
 
 include("compatmacro.jl")
 
-if VERSION < v"0.7.0-DEV.1930"
-    # no textwidth definition in Base
-    export textwidth
-    textwidth(c::Char) = charwidth(c)
-    textwidth(c::AbstractString) = strwidth(c)
-elseif v"0.7.0-DEV.2915" ≤ VERSION < v"0.7.0-DEV.3393"
-    # textwidth definition moved to Unicode module
-    import Unicode
-    const textwidth = Unicode.textwidth
-    export textwidth
-end
-
 # 0.7.0-DEV.2915
 module Unicode
     export graphemes, textwidth, isvalid,

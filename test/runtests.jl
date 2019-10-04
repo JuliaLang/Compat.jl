@@ -69,10 +69,6 @@ if VERSION < v"0.7.0-DEV.880"
     end
 end
 
-# 0.7.0-DEV.1930
-@test textwidth("A") == 1
-@test textwidth('A') == 1
-
 # 0.7
 let A = [1]
     local x = 0

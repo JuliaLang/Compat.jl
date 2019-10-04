@@ -157,8 +157,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
-* `strwidth` and `charwidth` are now merged into `textwidth` ([#23667]).
-
 * `Associative` is now `AbstractDict` ([#25012]).
 
 * `indices` is now `axes` ([#25057]). This function is not exported from Compat to avoid
