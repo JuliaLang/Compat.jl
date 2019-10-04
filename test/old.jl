@@ -133,6 +133,10 @@ Random.seed!(rng, 1)
 @test rand(rng) ≈ 0.23603334566204692
 @test 0 < rand(Random.GLOBAL_RNG, Random.RangeGenerator(1:3)) < 4
 
+# 0.7.0-DEV.3589
+import Compat.Markdown
+@test isa(Markdown.parse("foo"), Markdown.MD)
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

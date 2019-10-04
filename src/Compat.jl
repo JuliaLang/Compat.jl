@@ -27,15 +27,10 @@ import Printf
 import LinearAlgebra
 import SparseArrays
 import Random
+import Markdown
 
 
 include("compatmacro.jl")
-
-if VERSION < v"0.7.0-DEV.3589"
-    const Markdown = Base.Markdown
-else
-    import Markdown
-end
 
 if VERSION < v"0.7.0-DEV.2609"
     @eval module SuiteSparse

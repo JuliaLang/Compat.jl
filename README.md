@@ -81,9 +81,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `using Compat.UUIDs` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25819]).
 
-* `using Compat.Markdown` is provided on versions older than 0.7, where this library is
-  not yet part of the standard library ([#25738]).
-
 * `using Compat.Statistics` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#27834]).
 
