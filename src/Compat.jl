@@ -70,13 +70,6 @@ end
     end
 end
 
-# 0.7.0-DEV.3057
-@static if !isdefined(Base, :copyto!)
-    const copyto! = Base.copy!
-    const unsafe_copyto! = Base.unsafe_copy!
-    export copyto!, unsafe_copyto!
-end
-
 # 0.7.0-DEV.3272, keep this definition for 0.6 compatibility
 @static if VERSION < v"0.7.0-DEV.3272"
     Base.contains(str::AbstractString, r::Regex) = ismatch(r, str)

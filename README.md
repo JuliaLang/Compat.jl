@@ -149,8 +149,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
-* `copy!` and `unsafe_copy!` are now `copyto!` and `unsafe_copyto!` ([#24808]).
-
 * `module_parent`, `Base.function_module`, and `Base.datatype_module` are now methods of
   a new function called `parentmodule` ([#25629]).
 
