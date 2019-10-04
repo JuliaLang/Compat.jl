@@ -88,10 +88,6 @@ end
 @test isa(BitVector(undef, 2), BitVector)
 @test isa(BitArray(undef, 2, 2), BitMatrix)
 
-# 0.7.0-DEV.1472
-@test get(IOContext(IOBuffer(), :arg1=>true, :arg2=>true, :arg3=>true), :arg3, false)
-@test get(IOContext(IOBuffer(), :arg1=>true, :arg2=>true), :arg2, false)
-
 # 0.7
 let A = [1]
     local x = 0

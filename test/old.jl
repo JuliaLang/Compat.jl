@@ -516,3 +516,7 @@ let a = [1 0 0; 0 1 0; 0 0 1]
     @test Matrix(2I, 3, 3)::Matrix{Int} == Matrix(2I, (3, 3))::Matrix{Int} == 2a
     @test Matrix(2.0I, 3, 3)::Matrix{Float64} == Matrix(2.0I, (3, 3))::Matrix{Float64} == 2a
 end
+
+# 0.7.0-DEV.1472
+@test get(IOContext(IOBuffer(), :arg1=>true, :arg2=>true, :arg3=>true), :arg3, false)
+@test get(IOContext(IOBuffer(), :arg1=>true, :arg2=>true), :arg2, false)

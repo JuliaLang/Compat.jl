@@ -37,13 +37,6 @@ import Base64
 
 include("compatmacro.jl")
 
-# https://github.com/JuliaLang/julia/pull/23271
-@static if VERSION < v"0.7.0-DEV.1472"
-    Base.IOContext(io::IO, arg1::Pair, arg2::Pair, args::Pair...) = IOContext(IOContext(io, arg1), arg2, args...)
-    # needed for ambiguity resolution
-    Base.IOContext(io::IOContext, arg1::Pair, arg2::Pair) = IOContext(IOContext(io, arg1), arg2)
-end
-
 # 0.7.0-DEV.4527
 @static if !isdefined(Base, :UndefInitializer)
     import Base: Array, Matrix, Vector
