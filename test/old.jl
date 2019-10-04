@@ -145,6 +145,19 @@ module TestREPL
     @test isdefined(@__MODULE__, :REPL)
 end
 
+# 0.7.0-DEV.3476
+module TestSerialization
+    using Compat
+    using Compat.Serialization
+    using Compat.Test
+    @test isdefined(@__MODULE__, :Serialization)
+    @test isdefined(@__MODULE__, :serialize)
+    @test isdefined(@__MODULE__, :deserialize)
+    if VERSION < v"1.0.0-DEV.44"
+        @test isdefined(@__MODULE__, :SerializationState)
+    end
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

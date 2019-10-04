@@ -329,19 +329,6 @@ end
 # 0.7.0-DEV.3415
 @test findall(x -> x==1, [1, 2, 3, 2, 1]) == [1, 5]
 
-# 0.7.0-DEV.3476
-module TestSerialization
-    using Compat
-    using Compat.Serialization
-    using Compat.Test
-    @test isdefined(@__MODULE__, :Serialization)
-    @test isdefined(@__MODULE__, :serialize)
-    @test isdefined(@__MODULE__, :deserialize)
-    if VERSION < v"1.0.0-DEV.44"
-        @test isdefined(@__MODULE__, :SerializationState)
-    end
-end
-
 module TestPkg
     using Compat
     using Compat.Pkg

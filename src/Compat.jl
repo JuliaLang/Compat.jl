@@ -29,21 +29,10 @@ import SparseArrays
 import Random
 import Markdown
 import REPL
+import Serialization
 
 
 include("compatmacro.jl")
-
-if VERSION < v"0.7.0-DEV.3476"
-    @eval module Serialization
-        import Base.Serializer: serialize, deserialize, SerializationState, serialize_type
-        export serialize, deserialize
-        @static if VERSION < v"1.0.0-DEV.44"
-            export SerializationState
-        end
-    end
-else
-    import Serialization
-end
 
 if VERSION < v"0.7.0-beta.85"
     @eval module Statistics
