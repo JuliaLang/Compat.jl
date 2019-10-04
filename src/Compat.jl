@@ -42,6 +42,7 @@ module Unicode
     using Unicode
     import Unicode: isassigned, normalize # not exported from Unicode module due to conflicts
 end
+import Base: notnothing
 
 
 include("compatmacro.jl")
@@ -65,40 +66,6 @@ end
         idx1, idx2 = ntuple(d->(:), dim-1), ntuple(d->(:), ndims(A)-dim)
         return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
     end
-end
-
-
-
-@static if !isdefined(Base, :Some)
-    import Base: promote_rule, convert
-    struct Some{T}
-        value::T
-    end
-    promote_rule(::Type{Some{T}}, ::Type{Some{S}}) where {T,S<:T} = Some{T}
-    promote_rule(::Type{Some{T}}, ::Type{Nothing}) where {T} = Union{Some{T}, Nothing}
-    convert(::Type{Some{T}}, x::Some) where {T} = Some{T}(convert(T, x.value))
-    convert(::Type{Union{Some{T}, Nothing}}, x::Some) where {T} = convert(Some{T}, x)
-
-    convert(::Type{Union{T, Nothing}}, x::Any) where {T} = convert(T, x)
-    convert(::Type{Nothing}, x::Any) = throw(MethodError(convert, (Nothing, x)))
-    convert(::Type{Nothing}, x::Nothing) = nothing
-
-    # Note: this is the definition of coalasce prior to 0.7.0-DEV.5278; kept to avoid
-    # breakage in packages already using it
-    coalesce(x::Any) = x
-    coalesce(x::Some) = x.value
-    coalesce(x::Nothing) = nothing
-    #coalesce(x::Missing) = missing
-    coalesce(x::Any, y...) = x
-    coalesce(x::Some, y...) = x.value
-    coalesce(x::Nothing, y...) = coalesce(y...)
-    #coalesce(x::Union{Nothing, Missing}, y...) = coalesce(y...)
-
-    notnothing(x::Any) = x
-    notnothing(::Nothing) = throw(ArgumentError("nothing passed to notnothing"))
-    export Some, coalesce
-else
-    import Base: notnothing
 end
 
 # 0.7.0-DEV.3309

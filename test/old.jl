@@ -183,6 +183,10 @@ module Test25021
     @test Compat.Unicode.normalize("\t\r", stripcc=true) == "  "
 end
 
+# 0.7.0-DEV.3017
+@test Compat.notnothing(1) == 1
+@test_throws ArgumentError Compat.notnothing(nothing)
+
 
 # tests of removed functionality (i.e. justs tests Base)
 
@@ -581,3 +585,10 @@ end
 # 0.7.0-DEV.3137
 @test Nothing === (isdefined(Base, :Nothing) ? Base.Nothing : Base.Void)
 @test Nothing === Cvoid
+
+# 0.7.0-DEV.3017
+@test isa(Some(1), Some{Int})
+@test convert(Some{Float64}, Some(1)) == Some(1.0)
+@test convert(Nothing, nothing) == nothing
+@test_throws MethodError convert(Nothing, 1)
+@test Some(nothing) != nothing

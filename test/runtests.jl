@@ -80,21 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-DEV.3017
-@test isa(Some(1), Some{Int})
-@test convert(Some{Float64}, Some(1)) == Some(1.0)
-@test convert(Nothing, nothing) == nothing
-@test_throws MethodError convert(Nothing, 1)
-@test Some(nothing) != nothing
-if VERSION < v"0.7.0-DEV.5278"
-    # coalesce has changed; old behavior kept and tested to avoid accidental breakage
-    @test coalesce(Some(1)) == 1
-    @test coalesce(nothing) == nothing
-    @test coalesce(nothing, Some(1), Some(2)) == 1
-end
-@test Compat.notnothing(1) == 1
-@test_throws ArgumentError Compat.notnothing(nothing)
-
 # 0.7.0-DEV.3309
 let v = [1, 2, 3]
     @test Compat.IteratorSize(v) isa Base.HasShape

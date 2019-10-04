@@ -83,8 +83,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `@compat finalizer(func, obj)` with the finalizer to run as the first argument and the object to be finalized
   as the second ([#24605]).
 
-* `Some{T}` wraps `T` to signify that a result of `T<:Void` is expected ([#23642]).
-
 * `replace` accepts a pair of pattern and replacement, with the number of replacements as
   a keyword argument ([#25165]).
 
