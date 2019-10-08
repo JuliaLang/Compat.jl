@@ -78,14 +78,6 @@ end
     end
 end
 
-# 0.7.0-DEV.4762
-@static if !isdefined(Base, Symbol("@cfunction"))
-    macro cfunction(f, rt, tup)
-        :(Base.cfunction($(esc(f)), $(esc(rt)), Tuple{$(esc(tup))...}))
-    end
-    export @cfunction
-end
-
 if VERSION < v"0.7.0-DEV.2920" # julia#24999
     Base.length(s::AbstractString, i::Integer, j::Integer) = length(s, Int(i), Int(j))
     function Base.length(s::AbstractString, i::Int, j::Int)

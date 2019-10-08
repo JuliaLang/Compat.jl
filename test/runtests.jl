@@ -82,21 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.4762
-let ptr = @cfunction(+, Int, (Int, Int))
-    @test ptr isa Ptr{Cvoid}
-    @test ptr != C_NULL
-    @test ccall(ptr, Int, (Int, Int), 2, 3) == 5
-end
-# issue #565
-issue565(x) = x + 1
-const Issue565 = Int
-let bar() = @cfunction(issue565, Issue565, (Issue565,)), ptr = bar()
-    @test ptr isa Ptr{Cvoid}
-    @test ptr != C_NULL
-    @test ccall(ptr, Int, (Int,), 2) === 3
-end
-
 # 0.7.0-DEV.5278
 @test something(nothing, 1) === 1
 @test something(Some(2)) === 2
