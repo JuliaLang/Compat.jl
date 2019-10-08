@@ -90,6 +90,4 @@ end
     @test_throws DivideError mod(3, 1:0)
 end
 
-include("old.jl")
-
 nothing
