@@ -82,11 +82,6 @@ end
     end
 end
 
-if VERSION < v"0.7.0-DEV.2956" # julia#24839
-    Base.permutedims(A::AbstractMatrix) = permutedims(A, (2,1))
-    Base.permutedims(v::AbstractVector) = reshape(v, (1, length(v)))
-end
-
 # https://github.com/JuliaLang/julia/pull/27253
 @static if VERSION < v"0.7.0-alpha.44"
     Base.atan(x::Real, y::Real) = atan2(x, y)

@@ -80,10 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# julia#24839
-@test permutedims([1 2; 3 4]) == [1 3; 2 4]
-@test permutedims([1,2,3]) == [1 2 3]
-
 # 0.7.0-alpha.44
 @test atan(1, 2) == atan(0.5)
 @test atan(1.0, 2.0) == atan(0.5)
