@@ -80,15 +80,15 @@ end
     end
 end
 
-function rangedepwarn(;step=nothing, length=nothing, kwargs...)
+function rangeargcheck(;step=nothing, length=nothing, kwargs...)
     if step===nothing && length===nothing
-        Base.depwarn("`range(start, stop)` (with neither `length` nor `step` given) is deprecated, use `range(start, stop=stop)` instead.", :range)
+        throw(ArgumentError("At least one of `length` or `step` must be specified"))
     end
 end
 
 if VERSION < v"1.1.0-DEV.506"
     function Base.range(start, stop; kwargs...)
-        rangedepwarn(;kwargs...)
+        rangeargcheck(;kwargs...)
         range(start; stop=stop, kwargs...)
     end
 end

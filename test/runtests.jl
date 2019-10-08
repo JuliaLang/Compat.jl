@@ -23,8 +23,9 @@ using Test
 end
 
 # Support for positional `stop`
-@test Compat.range(0, 5, length = 6) == 0.0:1.0:5.0
-@test Compat.range(0, 10, step = 2) == 0:2:10
+@test range(0, 5, length = 6) == 0.0:1.0:5.0
+@test range(0, 10, step = 2) == 0:2:10
+@test_throws ArgumentError range(0, 10)
 
 mutable struct TLayout
     x::Int8
