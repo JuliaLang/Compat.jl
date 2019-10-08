@@ -82,16 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.3986
-@test_throws ArgumentError Compat.range(1)
-@test_throws ArgumentError Compat.range(nothing)
-@test_throws ArgumentError Compat.range(1, step=1)
-@test_throws ArgumentError Compat.range(1, step=1, stop=4, length=3)
-@test Compat.range(2, step=2, stop=8) == 2:2:8
-@test Compat.range(2, stop=8) == 2:8
-@test Compat.range(2, step=2, length=8) == 2:2:16
-@test Compat.range(1.0, stop=2.0, length=3) == 1.0:0.5:2.0
-
 # 0.7.0-DEV.3995
 mktempdir(@__DIR__) do dir
     src = joinpath(dir, "src.jl")

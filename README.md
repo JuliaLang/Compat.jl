@@ -72,7 +72,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * Three-argument methods `prevind(s,i,n)`, `nextind(s,i,n)` ([#23805]), and `length(s,i,j)` ([#24999]); the latter two replace `chr2ind` and `ind2chr` in Julia 0.7, respectively.
 
-* `Compat.range` supporting positional and keyword arguments flavors ([#25896]), ([#28708]).
+* `range` supporting `stop` as positional argument ([#28708]).
 
 * `Compat.mv` and `Compat.cp` with `force` keyword argument ([#26069]).
 
@@ -114,8 +114,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Compat.indexin` accepts any iterable as first argument, returns `nothing` (rather than `0`)
    for entries with no match and gives the index of the first (rather than the last) match
    ([#25662], [#25998]).
-
-* `LinSpace` is now `LinRange` ([#25896]).
 
 * `isupper`, `islower`, `ucfirst` and `lcfirst` are now `isuppercase`, `islowercase`,
   `uppercasefirst` and `lowercasefirst` ([#26442]).

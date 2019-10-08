@@ -76,38 +76,6 @@ end
     end
 end
 
-@static if VERSION < v"0.7.0-DEV.3986"
-    const LinRange = Base.LinSpace
-    export LinRange
-
-    function range(start; step=nothing, stop=nothing, length=nothing)
-        have_step = step !== nothing
-        have_stop = stop !== nothing
-        have_length = length !== nothing
-
-        if !(have_stop || have_length)
-            throw(ArgumentError("At least one of `length` or `stop` must be specified"))
-        elseif have_step && have_stop && have_length
-            throw(ArgumentError("Too many arguments specified; try passing only one of `stop` or `length`"))
-        elseif start === nothing
-            throw(ArgumentError("Can't start a range at `nothing`"))
-        end
-
-        if have_stop && !have_length
-            return have_step ? (start:step:stop) : (start:stop)
-        elseif have_length && !have_stop
-            return have_step ? Base.range(start, step, length) : Base.range(start, length)
-        elseif !have_step
-            return linspace(start, stop, length)
-        end
-    end
-elseif VERSION < v"1.0.0-DEV.57"
-    import Base: LinRange
-    range(start; kwargs...) = Base.range(start; kwargs...)
-else
-    import Base: range # import as it is further extended below
-end
-
 @static if VERSION < v"0.7.0-DEV.3995"
     cp(src::AbstractString, dst::AbstractString; force::Bool=false, follow_symlinks::Bool=false) =
         Base.cp(src, dst; remove_destination = force, follow_symlinks = follow_symlinks)
@@ -419,7 +387,7 @@ function rangedepwarn(;step=nothing, length=nothing, kwargs...)
 end
 
 if VERSION < v"1.1.0-DEV.506"
-    function range(start, stop; kwargs...)
+    function Base.range(start, stop; kwargs...)
         rangedepwarn(;kwargs...)
         range(start; stop=stop, kwargs...)
     end

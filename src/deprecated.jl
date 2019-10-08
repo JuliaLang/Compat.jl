@@ -73,7 +73,7 @@ if VERSION >= v"1.1.0-DEV.506"
     # deprecation of range(start, stop) for earlier versions is done in Compat.jl
     # This method is restricted to Number, since we don't
     # want to overwrite the (::Any, ::Any) method in Base.
-    function range(start::Number, stop::Number; kwargs...)
+    function Base.range(start::Number, stop::Number; kwargs...)
         rangedepwarn(;kwargs...)
         range(start; stop=stop, kwargs...)
     end
