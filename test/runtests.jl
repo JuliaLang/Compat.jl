@@ -98,14 +98,6 @@ let
     @test_throws UndefKeywordError func5(x=2)
 end
 
-# 0.7.0-beta2.143
-if VERSION < v"0.7.0-beta2.143"
-    let a = reshape(Vector(1:4),(2,2,1,1)), b = reshape(Vector(1:4), (2,2,1))
-        @test dropdims(a; dims=3) == b
-        @test_throws UndefKeywordError dropdims(a)
-    end
-end
-
 # Support for positional `stop`
 @test Compat.range(0, 5, length = 6) == 0.0:1.0:5.0
 @test Compat.range(0, 10, step = 2) == 0:2:10

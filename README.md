@@ -75,8 +75,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Renaming
 
-* `squeeze` is now `dropdims` ([#28303], [#26660]).
-
 ## New macros
 
 ## Other changes
