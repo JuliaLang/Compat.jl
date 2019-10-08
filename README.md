@@ -82,10 +82,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Compat.split` and `Compat.rsplit` accept `keepempty` keyword argument
   if `splitter` is given as second argument ([#26634])
 
-* `vecnorm` and `vecdot` are now `Compat.norm` and `Compat.dot`, respectively, while the
-  old `norm(A::AbstractMatrix, p=2)` is now `Compat.opnorm` ([#27401]).  `import Compat: ⋅`
-  to get `Compat.dot` as the binary operator `⋅`.
-
 * `atan2` is now a 2-argument method of `atan` ([#27253]).
 
 * `realmin` and `realmax` are now `floatmin` and `floatmax` ([#28302])

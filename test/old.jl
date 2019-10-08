@@ -250,6 +250,14 @@ let A = [1 2; 3 4]
     @test Compat.rmul!(Diagonal(A), Diagonal([2, 1])) == Diagonal([8, 120])
 end
 
+# julia#27401
+import Compat: ⋅
+@test Compat.opnorm([1 2;3 4]) ≈ 5.464985704219043
+@test Compat.opnorm([1 2;3 4], 1) ≈ 6
+@test Compat.norm([1 2;3 4]) ≈ 5.477225575051661
+@test Compat.norm([1 2;3 4], 1) ≈ 10
+@test Compat.dot([1 2;3 4], [5 6;7 8]) == [1 2;3 4] ⋅ [5 6;7 8] ≈ 70
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

@@ -53,6 +53,10 @@ import LibGit2
 import UUIDs
 using LinearAlgebra: qr
 using LinearAlgebra: rmul!
+const opnorm = LinearAlgebra.opnorm
+const norm = LinearAlgebra.norm
+const dot = LinearAlgebra.dot
+const ⋅ = dot
 
 
 include("compatmacro.jl")
@@ -77,17 +81,6 @@ end
         return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
     end
 end
-
-if !isdefined(LinearAlgebra, :opnorm) # julia#27401
-    opnorm(A::AbstractMatrix, p::Real=2) = LinearAlgebra.norm(A, p)
-    const norm = LinearAlgebra.vecnorm
-    const dot = LinearAlgebra.vecdot
-else
-    const opnorm = LinearAlgebra.opnorm
-    const norm = LinearAlgebra.norm
-    const dot = LinearAlgebra.dot
-end
-const ⋅ = dot
 
 if VERSION < v"0.7.0-DEV.2956" # julia#24839
     Base.permutedims(A::AbstractMatrix) = permutedims(A, (2,1))
