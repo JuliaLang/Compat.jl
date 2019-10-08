@@ -77,8 +77,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `printstyled` prints to a given stream optionally in color and/or bolded ([#25522]).
 
-* `firstindex` to obtain the first index of an iterable ([#25458]).
-
 * `Compat.names` supporting keyword arguments for `all` and `imported` ([#25647]).
 
 * `Compat.IOBuffer` supporting keyword arguments ([#25873]).
@@ -139,8 +137,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Compat.indexin` accepts any iterable as first argument, returns `nothing` (rather than `0`)
    for entries with no match and gives the index of the first (rather than the last) match
    ([#25662], [#25998]).
-
-* `endof` is now `lastindex` ([#25458]). (Note that `lastindex(A, n)` is not supported.)
 
 * `method_exists` is now `hasmethod` ([#25615]).
 

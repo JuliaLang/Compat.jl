@@ -709,3 +709,8 @@ let b = IOBuffer()
     write(b, "hi")
     @test bytesavailable(b) == 0
 end
+
+# 0.7.0-DEV.3583
+@test lastindex(zeros(4)) == 4
+@test lastindex(zeros(4,4)) == 16
+@test all(x -> firstindex(x) == 1, ([1, 2], [1 2; 3 4], 'a', 1, 1=>2, `foo`, "foo", (1, 2)))
