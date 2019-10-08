@@ -1031,3 +1031,17 @@ end
 if VERSION < v"0.7.0-DEV.5165"
     @test_throws UndefKeywordError Compat.cat([1, 2], [3, 4])
 end
+
+# 0.7.0-DEV.3976
+let A = rand(5,5)
+    @test selectdim(A, 1, 3) == A[3, :]
+    @test selectdim(A, 1, 1:3) == A[1:3, :]
+    @test selectdim(A, 2, 3) == A[:, 3]
+    @test selectdim(A, 2, 1:3) == A[:, 1:3]
+    selectdim(A, 1, 3)[3] = 42
+    @test A[3,3] == 42
+    B = rand(4, 3, 2)
+    @test IndexStyle(selectdim(B, 1, 1)) == IndexStyle(view(B, 1, :, :)) == IndexLinear()
+    @test IndexStyle(selectdim(B, 2, 1)) == IndexStyle(view(B, :, 1, :)) == IndexCartesian()
+    @test IndexStyle(selectdim(B, 3, 1)) == IndexStyle(view(B, :, :, 1)) == IndexLinear()
+end

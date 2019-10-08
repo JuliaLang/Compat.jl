@@ -74,8 +74,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `range` supporting `stop` as positional argument ([#28708]).
 
-* `selectdim` to obtain a view of an array with a specified index for a specified dimension ([#26009]).
-
 * Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
 
 * `fetch` for `Task`s ([#25940]).

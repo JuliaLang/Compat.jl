@@ -82,23 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.3976
-let A = rand(5,5)
-    @test selectdim(A, 1, 3) == A[3, :]
-    @test selectdim(A, 1, 1:3) == A[1:3, :]
-    @test selectdim(A, 2, 3) == A[:, 3]
-    @test selectdim(A, 2, 1:3) == A[:, 1:3]
-    selectdim(A, 1, 3)[3] = 42
-    @test A[3,3] == 42
-    if VERSION < v"0.7.0-DEV.3976" || VERSION >= v"0.7.0-DEV.4739"
-        # in the omitted version range, Julia's selectdim always gives IndexCartesian()
-        B = rand(4, 3, 2)
-        @test IndexStyle(selectdim(B, 1, 1)) == IndexStyle(view(B, 1, :, :)) == IndexLinear()
-        @test IndexStyle(selectdim(B, 2, 1)) == IndexStyle(view(B, :, 1, :)) == IndexCartesian()
-        @test IndexStyle(selectdim(B, 3, 1)) == IndexStyle(view(B, :, :, 1)) == IndexLinear()
-    end
-end
-
 # 0.7.0-DEV.843 / 0.7.0-DEV.2337
 let A = [1 2; 1 2; 1 2]
     if VERSION < v"0.7.0-DEV.5211"

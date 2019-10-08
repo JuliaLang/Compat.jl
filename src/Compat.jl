@@ -76,17 +76,6 @@ end
     end
 end
 
-if !isdefined(Base, :selectdim) # 0.7.0-DEV.3976
-    export selectdim
-    @inline selectdim(A::AbstractArray, d::Integer, i) = _selectdim(A, d, i, Base.setindex(map(Base.Slice, axes(A)), i, d))
-    @noinline function _selectdim(A, d, i, idxs)
-        d >= 1 || throw(ArgumentError("dimension must be ≥ 1"))
-        nd = ndims(A)
-        d > nd && (i == 1 || throw(BoundsError(A, (ntuple(k->Colon(),d-1)..., i))))
-        return view(A, idxs...)
-    end
-end
-
 if VERSION < v"0.7.0-DEV.3977" #26039
     Base.repeat(A::AbstractArray, counts::Integer...) = Base.repeat(A, outer = counts)
     Base.repeat(a::AbstractVecOrMat, m::Integer, n::Integer=1) = Base.repmat(a, m, n)
