@@ -1301,3 +1301,14 @@ let
     @test cr(CartesianIndices((5, 3))) == 2
     @test_throws MethodError cr(CartesianIndices((5, 3, 2)))
 end
+
+# 0.7
+let A = [1]
+    local x = 0
+    @compat finalizer(a->(x+=1), A)
+    finalize(A)
+    @test x == 1
+    A = 0
+    GC.gc(); GC.gc()
+    @test x == 1
+end

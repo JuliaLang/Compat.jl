@@ -55,17 +55,6 @@ for x in (3.1, -17, 3//4, big(111.1), Inf)
     @test minmax(x) == (x, x)
 end
 
-# 0.7
-let A = [1]
-    local x = 0
-    @compat finalizer(a->(x+=1), A)
-    finalize(A)
-    @test x == 1
-    A = 0
-    GC.gc(); GC.gc()
-    @test x == 1
-end
-
 # Support for positional `stop`
 @test Compat.range(0, 5, length = 6) == 0.0:1.0:5.0
 @test Compat.range(0, 10, step = 2) == 0:2:10
