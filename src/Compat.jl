@@ -75,12 +75,6 @@ end
     end
 end
 
-# 0.7.0-DEV.2695
-@static if !isdefined(Base, :AbstractDisplay)
-    const AbstractDisplay = Display
-    export AbstractDisplay
-end
-
 # 0.7.0-DEV.3481
 @static if !isdefined(Base, :bytesavailable)
     const bytesavailable = nb_available

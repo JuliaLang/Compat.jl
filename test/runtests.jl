@@ -82,8 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-@test eltype(Base.Multimedia.displays) <: AbstractDisplay
-
 # 0.7.0-DEV.3481
 let b = IOBuffer()
     write(b, "hi")

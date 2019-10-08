@@ -701,3 +701,5 @@ end
 @test !GC.enable(false)
 @test !GC.enable(true)
 @test GC.enable(true)
+
+@test eltype(Base.Multimedia.displays) <: AbstractDisplay

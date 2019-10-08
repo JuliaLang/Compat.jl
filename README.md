@@ -125,8 +125,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Renaming
 
-* `Display` is now `AbstractDisplay` ([#24831]).
-
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
 * `search` is now `findfirst`/`findnext` and `rsearch` is now `findlast`/`findprev`,
