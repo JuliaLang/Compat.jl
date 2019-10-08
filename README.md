@@ -74,8 +74,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `range` supporting `stop` as positional argument ([#28708]).
 
-* `Compat.mv` and `Compat.cp` with `force` keyword argument ([#26069]).
-
 * `Compat.accumulate`, `Compat.accumulate!`, `Compat.all`, `Compat.any`,
   `Compat.cumprod`, `Compat.cumprod!`, `Compat.cumsum`, `Compat.cumsum!`,
   `Compat.findmax`, `Compat.findmin`, `Compat.mapreduce`, `Compat.maximum`,

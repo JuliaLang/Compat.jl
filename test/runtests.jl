@@ -82,26 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.3995
-mktempdir(@__DIR__) do dir
-    src = joinpath(dir, "src.jl")
-    touch(src)
-    dest = joinpath(dir, "dest.jl")
-    touch(dest)
-    open(src, "w") do f
-        write(f, "Hello, world!")
-    end
-    Compat.cp(src, dest, force = true)
-    open(dest, "r") do f
-        @test read(f, String) == "Hello, world!"
-    end
-    Compat.mv(src, dest, force = true)
-    open(dest, "r") do f
-        @test read(f, String) == "Hello, world!"
-    end
-    @test readdir(dir) == ["dest.jl"]
-end
-
 # 0.7.0-DEV.3972
 @test Compat.indexin([1, 2], [1, 0, 1]) == [1, nothing]
 
