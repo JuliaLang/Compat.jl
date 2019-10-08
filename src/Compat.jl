@@ -76,57 +76,6 @@ end
     end
 end
 
-# https://github.com/JuliaLang/julia/pull/25872
-if VERSION < v"0.7.0-DEV.3734"
-    if isdefined(Base, :open_flags)
-        import Base.open_flags
-    else
-        # copied from Base:
-        function open_flags(; read=nothing, write=nothing, create=nothing, truncate=nothing, append=nothing)
-            if write === true && read !== true && append !== true
-                create   === nothing && (create   = true)
-                truncate === nothing && (truncate = true)
-            end
-            if truncate === true || append === true
-                write  === nothing && (write  = true)
-                create === nothing && (create = true)
-            end
-            write    === nothing && (write    = false)
-            read     === nothing && (read     = !write)
-            create   === nothing && (create   = false)
-            truncate === nothing && (truncate = false)
-            append   === nothing && (append   = false)
-            return (read, write, create, truncate, append)
-        end
-    end
-    function IOBuffer(
-            data::Union{AbstractVector{UInt8},Nothing}=nothing;
-            read::Union{Bool,Nothing}=data === nothing ? true : nothing,
-            write::Union{Bool,Nothing}=data === nothing ? true : nothing,
-            truncate::Union{Bool,Nothing}=data === nothing ? true : nothing,
-            maxsize::Integer=typemax(Int),
-            sizehint::Union{Integer,Nothing}=nothing)
-        flags = open_flags(read=read, write=write, append=nothing, truncate=truncate)
-        if maxsize < 0
-            throw(ArgumentError("negative maxsize: $(maxsize)"))
-        end
-        if data !== nothing
-            if sizehint !== nothing
-                sizehint!(data, sizehint)
-            end
-            buf = Base.IOBuffer(data, flags[1], flags[2], Int(maxsize))
-        else
-            size = sizehint !== nothing ? Int(sizehint) : maxsize != typemax(Int) ? Int(maxsize) : 32
-            buf = Base.IOBuffer(Base.StringVector(size), flags[1], flags[2], Int(maxsize))
-            buf.data[:] = 0
-        end
-        if flags[4] # flags.truncate
-            buf.size = 0
-        end
-        return buf
-    end
-end
-
 @static if VERSION < v"0.7.0-DEV.3986"
     const LinRange = Base.LinSpace
     export LinRange

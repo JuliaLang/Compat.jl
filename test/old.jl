@@ -819,3 +819,18 @@ end
 @test Compat.ceil(pi, digits = 3, base = 2) == 3.25
 @test Compat.round(pi, digits = 3, base = 2) == 3.125
 @test Compat.round(pi, sigdigits = 5, base = 2) == 3.125
+
+# 0.7.0-DEV.3734
+let buf = Compat.IOBuffer(read=true, write=false, maxsize=25)
+    @test buf.readable
+    @test !buf.writable
+    @test buf.maxsize == 25
+end
+let buf = Compat.IOBuffer(zeros(UInt8, 4), write=true) # issue #502
+    write(buf, 'a')
+    @test take!(buf) == [0x61]
+end
+let buf = Compat.IOBuffer(sizehint=20)
+    println(buf, "Hello world.")
+    @test String(take!(buf)) == "Hello world.\n"
+end

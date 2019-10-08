@@ -82,21 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.3734
-let buf = Compat.IOBuffer(read=true, write=false, maxsize=25)
-    @test buf.readable
-    @test !buf.writable
-    @test buf.maxsize == 25
-end
-let buf = Compat.IOBuffer(zeros(UInt8, 4), write=true) # issue #502
-    write(buf, 'a')
-    @test take!(buf) == [0x61]
-end
-let buf = Compat.IOBuffer(sizehint=20)
-    println(buf, "Hello world.")
-    @test String(take!(buf)) == "Hello world.\n"
-end
-
 # 0.7.0-DEV.3986
 @test_throws ArgumentError Compat.range(1)
 @test_throws ArgumentError Compat.range(nothing)
