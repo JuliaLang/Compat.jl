@@ -725,7 +725,7 @@ end
 @test argmin((1.0, -3, 0.f0)) == 2
 
 # 0.7.0-DEV.3460
-@test parentmodule(Compat.Sys) == Compat
+@test parentmodule(Base.Sys) == Base
 @test parentmodule(sin) == Base
 @test parentmodule(sin, Tuple{Int}) == Base.Math
 @test parentmodule(Int) == Core
