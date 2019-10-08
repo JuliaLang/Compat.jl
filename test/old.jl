@@ -773,3 +773,6 @@ end
 
 @test findall([true, false, true]) == [1, 3]
 @test findall(in([1, 2]), [1]) == [1]
+
+@test repr("text/plain", "string") == "\"string\"" #25990
+@test showable("text/plain", 3.14159) #26089

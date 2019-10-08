@@ -121,8 +121,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Renaming
 
-* `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
-
 * `Compat.indexin` accepts any iterable as first argument, returns `nothing` (rather than `0`)
    for entries with no match and gives the index of the first (rather than the last) match
    ([#25662], [#25998]).

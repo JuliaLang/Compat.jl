@@ -97,9 +97,6 @@ module TestUUIDs
     @test uuid4() isa UUID
 end
 
-@test repr("text/plain", "string") == "\"string\"" #25990
-@test showable("text/plain", 3.14159) #26089
-
 # 0.7.0-DEV.3526
 module TestNames
     export foo
