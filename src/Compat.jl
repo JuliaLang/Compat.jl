@@ -71,13 +71,6 @@ end
     end
 end
 
-@static if !isdefined(Base, :nameof)
-    nameof(m::Module) = Base.module_name(m)
-    nameof(f::Function) = Base.function_name(f)
-    nameof(t::Union{DataType,UnionAll}) = Base.datatype_name(t)
-    export nameof
-end
-
 # 0.7.0-DEV.3469
 @static if !isdefined(Base, :GC)
     @eval module GC

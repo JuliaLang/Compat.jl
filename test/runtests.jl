@@ -82,12 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.3539
-@test nameof(Compat.Sys) == :Sys
-@test nameof(sin) == :sin
-@test nameof(Float64) == :Float64
-@test nameof(Array) == :Array
-
 module TestPkg
     using Compat
     using Compat.Pkg
