@@ -75,8 +75,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * Three-argument methods `prevind(s,i,n)`, `nextind(s,i,n)` ([#23805]), and `length(s,i,j)` ([#24999]); the latter two replace `chr2ind` and `ind2chr` in Julia 0.7, respectively.
 
-* `printstyled` prints to a given stream optionally in color and/or bolded ([#25522]).
-
 * `Compat.names` supporting keyword arguments for `all` and `imported` ([#25647]).
 
 * `Compat.IOBuffer` supporting keyword arguments ([#25873]).

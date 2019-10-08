@@ -82,19 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.3585
-let buf = IOBuffer()
-    if VERSION < v"0.7.0-DEV.3077"
-        col = Base.have_color
-        eval(Base, :(have_color = true))
-        printstyled(buf, "foo", color=:red)
-        eval(Base, :(have_color = $col))
-    else
-        printstyled(IOContext(buf, :color=>true), "foo", color=:red)
-    end
-    @test startswith(String(take!(buf)), Base.text_colors[:red])
-end
-
 # 0.7.0-DEV.3455
 @test hasmethod(sin, Tuple{Float64})
 let x = y = 1

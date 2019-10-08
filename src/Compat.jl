@@ -75,15 +75,6 @@ end
     end
 end
 
-# 0.7.0-DEV.3585
-@static if !isdefined(Base, :printstyled)
-    printstyled(io::IO, msg...; bold=false, color=:normal) =
-        Base.print_with_color(color, io, msg...; bold=bold)
-    printstyled(msg...; bold=false, color=:normal) =
-        Base.print_with_color(color, STDOUT, msg...; bold=bold)
-    export printstyled
-end
-
 # 0.7.0-DEV.3455
 @static if !isdefined(Base, :hasmethod)
     const hasmethod = method_exists
