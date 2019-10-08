@@ -641,3 +641,6 @@ end
 @test length(Compat.CartesianIndices((1:1,))) == 1
 @test length(Compat.CartesianIndices((1:2,))) == 2
 @test length(Compat.CartesianIndices((1:2, -1:1))) == 6
+
+# 0.7.0-DEV.3415
+@test findall(x -> x==1, [1, 2, 3, 2, 1]) == [1, 5]

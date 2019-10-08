@@ -71,12 +71,6 @@ end
     end
 end
 
-# 0.7.0-DEV.3415
-if !isdefined(Base, :findall)
-    const findall = find
-    export findall
-end
-
 @static if !isdefined(Base, :argmin)
     if VERSION >= v"0.7.0-DEV.1660" # indmin/indmax return key
         const argmin = indmin

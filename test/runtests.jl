@@ -107,9 +107,6 @@ end
 @test argmin(Dict(:z=>10, :y=>12, :x=>9, :w=>11)) == :x
 @test argmin((1.0, -3, 0.f0)) == 2
 
-# 0.7.0-DEV.3415
-@test findall(x -> x==1, [1, 2, 3, 2, 1]) == [1, 5]
-
 module TestPkg
     using Compat
     using Compat.Pkg

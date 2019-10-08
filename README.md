@@ -151,8 +151,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `module_name`, `Base.function_name`, and `Base.datatype_name` are now methods of a
   new function called `nameof` ([#25622]).
 
-* `find` is now `findall` ([#25545]).
-
 * `search` is now `findfirst`/`findnext` and `rsearch` is now `findlast`/`findprev`,
   sometimes combined with `isequal` or `in` ([#24673], [#26436]).
 
