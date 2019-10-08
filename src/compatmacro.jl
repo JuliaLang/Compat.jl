@@ -1,13 +1,10 @@
 # The @compat macro is used to implement compatibility rules that require
 # syntax rewriting rather than simply new function/constant/module definitions.
 
-using Base.Meta
 export @compat
 
 function _compat(ex::Expr)
-    if ex.head === :call
-        f = ex.args[1]
-    elseif ex.head === :quote && isa(ex.args[1], Symbol)
+    if ex.head === :quote && isa(ex.args[1], Symbol)
         # Passthrough
         return ex
     end

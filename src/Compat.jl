@@ -1,5 +1,3 @@
-VERSION < v"0.7.0-beta2.199" && __precompile__()
-
 module Compat
 
 # to be deprecated
@@ -69,7 +67,7 @@ if VERSION < v"1.1.0-DEV.472"
 end
 
 # https://github.com/JuliaLang/julia/pull/29749
-@static if v"0.7" <= VERSION < v"1.1.0-DEV.792"
+@static if VERSION < v"1.1.0-DEV.792"
     export eachrow, eachcol, eachslice
     eachrow(A::AbstractVecOrMat) = (view(A, i, :) for i in axes(A, 1))
     eachcol(A::AbstractVecOrMat) = (view(A, :, i) for i in axes(A, 2))
@@ -100,20 +98,18 @@ if VERSION < v"1.2.0-DEV.272"
     Base.@pure hasfield(::Type{T}, name::Symbol) where T =
         Base.fieldindex(T, name, false) > 0
     export hasfield
-    if VERSION >= v"0.7-DEV.5136"
-        hasproperty(x, s::Symbol) = s in propertynames(x)
-        export hasproperty
-    end
+    hasproperty(x, s::Symbol) = s in propertynames(x)
+    export hasproperty
 end
 
 # https://github.com/JuliaLang/julia/pull/29259
-if v"0.7.0" <= VERSION < v"1.1.0-DEV.594"
+if VERSION < v"1.1.0-DEV.594"
     Base.merge(a::NamedTuple, b::NamedTuple, cs::NamedTuple...) = merge(merge(a, b), cs...)
     Base.merge(a::NamedTuple) = a
 end
 
 # https://github.com/JuliaLang/julia/pull/33129
-if v"0.7.0" <= VERSION < v"1.4.0-DEV.142"
+if VERSION < v"1.4.0-DEV.142"
     export only
 
     Base.@propagate_inbounds function only(x)
@@ -144,7 +140,7 @@ if v"0.7.0" <= VERSION < v"1.4.0-DEV.142"
 end
 
 # https://github.com/JuliaLang/julia/pull/32628
-if v"0.7.0" <= VERSION < v"1.3.0-alpha.8"
+if VERSION < v"1.3.0-alpha.8"
     Base.mod(i::Integer, r::Base.OneTo) = mod1(i, last(r))
     Base.mod(i::Integer, r::AbstractUnitRange{<:Integer}) = mod(i-first(r), length(r)) + first(r)
 end

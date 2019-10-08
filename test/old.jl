@@ -1,5 +1,7 @@
 # tests of functionality to be deprecated
 
+using Compat.LinearAlgebra
+
 # 0.7.0-DEV.3666
 module TestSockets
     using Compat
@@ -260,6 +262,8 @@ import Compat: ⋅
 
 
 # tests of removed functionality (i.e. justs tests Base)
+
+using Compat.SparseArrays
 
 # 25959
 @test all(x -> isa(x, IO), (devnull, stdin, stdout, stderr))
