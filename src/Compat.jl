@@ -75,55 +75,6 @@ end
     end
 end
 
-@static if VERSION < v"0.7.0-DEV.3272"
-    zero2nothing(x::Integer) = x == 0 ? nothing : x
-    zero2nothing(x::AbstractUnitRange{<:Integer}) = x == 0:-1 ? nothing : x
-    zero2nothing(x) = x
-
-    findnext(xs...) = zero2nothing(Base.findnext(xs...))
-    findfirst(xs...) = zero2nothing(Base.findfirst(xs...))
-    findprev(xs...) = zero2nothing(Base.findprev(xs...))
-    findlast(xs...) = zero2nothing(Base.findlast(xs...))
-
-    Base.findnext(r::Regex, s::AbstractString, idx::Integer) = search(s, r, idx)
-    Base.findfirst(r::Regex, s::AbstractString) = search(s, r)
-    Base.findnext(c::Fix2{typeof(isequal),Char}, s::AbstractString, i::Integer) = search(s, c.x, i)
-    Base.findfirst(c::Fix2{typeof(isequal),Char}, s::AbstractString) = search(s, c.x)
-    Base.findnext(b::Fix2{typeof(isequal),<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}, i::Integer) =
-        search(a, b.x, i)
-    Base.findfirst(b::Fix2{typeof(isequal),<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}) =
-        search(a, b.x)
-
-    Base.findnext(c::Fix2{typeof(in),<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
-             s::AbstractString, i::Integer) =
-        search(s, c.x, i)
-    Base.findfirst(c::Fix2{typeof(in),<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
-              s::AbstractString) =
-        search(s, c.x)
-    Base.findnext(t::AbstractString, s::AbstractString, i::Integer) = search(s, t, i)
-    Base.findfirst(t::AbstractString, s::AbstractString) = search(s, t)
-
-    Base.findfirst(delim::Fix2{typeof(isequal),UInt8}, buf::Base.IOBuffer) = search(buf, delim.x)
-
-    Base.findprev(c::Fix2{typeof(isequal),Char}, s::AbstractString, i::Integer) = rsearch(s, c.x, i)
-    Base.findlast(c::Fix2{typeof(isequal),Char}, s::AbstractString) = rsearch(s, c.x)
-    Base.findprev(b::Fix2{typeof(isequal),<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}, i::Integer) =
-        rsearch(a, b.x, i)
-    Base.findlast(b::Fix2{typeof(isequal),<:Union{Int8,UInt8}}, a::Vector{<:Union{Int8,UInt8}}) =
-        rsearch(a, b.x)
-
-    Base.findprev(c::Fix2{typeof(in),<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
-             s::AbstractString, i::Integer) = rsearch(s, c.x, i)
-    Base.findlast(c::Fix2{typeof(in),<:Union{Tuple{Vararg{Char}},AbstractVector{Char},Set{Char}}},
-             s::AbstractString) = rsearch(s, c.x)
-    Base.findprev(t::AbstractString, s::AbstractString, i::Integer) = rsearch(s, t, i)
-    Base.findlast(t::AbstractString, s::AbstractString) = rsearch(s, t)
-
-    findall(b::Fix2{typeof(in)}, a) = findin(a, b.x)
-    # To fix ambiguity
-    findall(b::Fix2{typeof(in)}, a::Number) = a in b.x ? [1] : Vector{Int}()
-end
-
 @static if VERSION < v"0.7.0-DEV.4047" #26089
     showable(mime, x) = mimewritable(mime, x)
     export showable

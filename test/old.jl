@@ -733,3 +733,43 @@ end
 let x = y = 1
     @test objectid(x) == objectid(y)
 end
+
+# 0.7.0-DEV.3415
+for (f1, f2, i) in ((Compat.findfirst, Compat.findnext, 1),
+                    (Compat.findlast, Compat.findprev, 2))
+    # Generic methods
+    @test f1(isequal(0), [1, 0]) == f2(isequal(0), [1, 0], i) == 2
+    @test f1(isequal(9), [1, 0]) == f2(isequal(9), [1, 0], i) == nothing
+    @test f1(in([0, 2]), [1, 0]) == f2(in([0, 2]), [1, 0], i) == 2
+    @test f1(in([0, 2]), [1, 9]) == f2(in([0, 2]), [1, 9], i) == nothing
+    @test f1([true, false]) == f2([true, false], i) == 1
+    @test f1([false, false]) == f2([false, false], i) == nothing
+
+    # Specific methods
+    @test f2(isequal('a'), "ba", i) == f1(isequal('a'), "ba") == 2
+    for S in (Int8, UInt8), T in (Int8, UInt8)
+        # Bug in Julia 0.6
+        @test f2(isequal(S(1)), T[0, 1], i) == f1(isequal(S(1)), T[0, 1]) == 2
+        @test f2(isequal(S(9)), T[0, 1], i) == f1(isequal(S(9)), T[0, 1]) == nothing
+    end
+    for chars in (['a', 'z'], Set(['a', 'z']), ('a', 'z'))
+        @test f2(in(chars), "ba", i) == f1(in(chars), "ba") == 2
+        @test f2(in(chars), "bx", i) == f1(in(chars), "bx") == nothing
+    end
+end
+@test findnext("a", "ba", 1) == findfirst("a", "ba") == 2:2
+@test findnext("z", "ba", 1) == findfirst("z", "ba") == nothing
+@test findprev("a", "ba", 2) == findlast("a", "ba") == 2:2
+@test findprev("z", "ba", 2) == findlast("z", "ba") == nothing
+@test Compat.findnext("a", "ba", 1) == Compat.findfirst("a", "ba") == 2:2
+@test Compat.findnext("z", "ba", 1) == Compat.findfirst("z", "ba") == nothing
+@test Compat.findprev("a", "ba", 2) == Compat.findlast("a", "ba") == 2:2
+@test Compat.findprev("z", "ba", 2) == Compat.findlast("z", "ba") == nothing
+
+@test findnext(r"a", "ba", 1) == findfirst(r"a", "ba") == 2:2
+@test findnext(r"z", "ba", 1) == findfirst(r"z", "ba") == nothing
+@test Compat.findnext(r"a", "ba", 1) == Compat.findfirst(r"a", "ba") == 2:2
+@test Compat.findnext(r"z", "ba", 1) == Compat.findfirst(r"z", "ba") == nothing
+
+@test findall([true, false, true]) == [1, 3]
+@test findall(in([1, 2]), [1]) == [1]

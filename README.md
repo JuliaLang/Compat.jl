@@ -123,15 +123,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `reprmime(mime, x)` is now `repr(mime, x)` ([#25990]) and `mimewritable` is now `showable` ([#26089]).
 
-* `search` is now `findfirst`/`findnext` and `rsearch` is now `findlast`/`findprev`,
-  sometimes combined with `isequal` or `in` ([#24673], [#26436]).
-
-* `Compat.findfirst`, `Compat.findnext`, `Compat.findlast` and `Compat.findprev`,
-  return `nothing` when no match is found (rather than `0` or `0:-1`)
-  as on Julia 0.7 ([#24673], [#26149]).
-
-* `findin(a, b)` is now `findall(in(b), a)` ([#24673]).
-
 * `Compat.indexin` accepts any iterable as first argument, returns `nothing` (rather than `0`)
    for entries with no match and gives the index of the first (rather than the last) match
    ([#25662], [#25998]).
