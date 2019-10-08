@@ -46,6 +46,7 @@ import Base: notnothing
 const IteratorSize = Base.IteratorSize
 const IteratorEltype = Base.IteratorEltype
 enable_debug(x::Bool) = x
+import Distributed
 
 
 include("compatmacro.jl")
@@ -69,12 +70,6 @@ end
         idx1, idx2 = ntuple(d->(:), dim-1), ntuple(d->(:), ndims(A)-dim)
         return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
     end
-end
-
-if VERSION < v"0.7.0-DEV.2954"
-    const Distributed = Base.Distributed
-else
-    import Distributed
 end
 
 @static if VERSION < v"0.7.0-DEV.3656"

@@ -52,9 +52,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Module Aliases
 
-* `using Compat.Distributed` is provided on versions older than 0.7, where this library is
-  not yet part of the standard library ([#24443]).
-
 * `using Compat.Pkg` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25705]). Note that `Compat.Pkg` will point to
   the new package manager on 0.7 which does not have a fully compatible API with the old
