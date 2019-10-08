@@ -83,9 +83,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `@compat finalizer(func, obj)` with the finalizer to run as the first argument and the object to be finalized
   as the second ([#24605]).
 
-* `codeunits(s)` returns an array-like view of the `UInt8` code units of
-  a string and `ncodeunits(s)` returns the number of code units ([#25241]).
-  `codeunit(s)` returns the type of the code units of `s` ([#24999]).
+* `codeunit(s)` returns the type of the code units of `s` ([#24999]).
 
 * `thisind(s, i)` returns the character index for codeunit `i` ([#24414]).
 

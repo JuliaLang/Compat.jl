@@ -80,8 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-@test codeunits("foo") == [0x66,0x6f,0x6f] == codeunits(SubString("fooαβγ",1,3))
-@test ncodeunits("αβγ") == 6 == ncodeunits(SubString("fooαβγ",4,8))
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
 # 0.7.0-DEV.3539

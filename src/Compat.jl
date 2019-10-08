@@ -71,13 +71,6 @@ end
     end
 end
 
-@static if !isdefined(Base, :codeunits)
-    codeunits(s::String) = Vector{UInt8}(s)
-    ncodeunits(s::Union{String,SubString{String}}) = sizeof(s)
-    codeunits(s::SubString{String}) = view(codeunits(s.string),1+s.offset:s.offset+sizeof(s))
-    export codeunits, ncodeunits
-end
-
 @static if !isdefined(Base, :nameof)
     nameof(m::Module) = Base.module_name(m)
     nameof(f::Function) = Base.function_name(f)

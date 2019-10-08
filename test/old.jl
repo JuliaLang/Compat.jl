@@ -661,3 +661,6 @@ end
 @test parentmodule(sin, Tuple{Int}) == Base.Math
 @test parentmodule(Int) == Core
 @test parentmodule(Array) == Core
+
+@test codeunits("foo") == [0x66,0x6f,0x6f] == codeunits(SubString("fooαβγ",1,3))
+@test ncodeunits("αβγ") == 6 == ncodeunits(SubString("fooαβγ",4,8))
