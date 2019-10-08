@@ -82,13 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.3936
-@test let ct = current_task(), t = @task true
-    schedule(ct)
-    yieldto(t)
-    fetch(t)
-end
-
 # 0.7.0-DEV.5087
 @test isletter('a')
 @test isletter('β')

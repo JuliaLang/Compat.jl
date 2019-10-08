@@ -76,8 +76,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
 
-* `fetch` for `Task`s ([#25940]).
-
 * `isbits(t::Type)` is now `isbitstype(t)` ([#26850]).
 
 * `something` to get the first argument different from `nothing`, unwrapping those

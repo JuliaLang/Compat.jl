@@ -1071,3 +1071,10 @@ end
                                    1  2  1  2  1  2
                                    3  4  3  4  3  4]
 @test repeat([1, 2], 1, 2, 3) == [x for x in 1:2, y in 1:2, z in 1:3]
+
+# 0.7.0-DEV.3936
+@test let ct = current_task(), t = @task true
+    schedule(ct)
+    yieldto(t)
+    fetch(t)
+end
