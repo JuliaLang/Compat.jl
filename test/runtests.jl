@@ -80,12 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-alpha.44
-@test atan(1, 2) == atan(0.5)
-@test atan(1.0, 2.0) == atan(0.5)
-@test atan(-1.0, -2.0) ≈ atan(0.5) - π
-@test atan(big"-1.0", big"-2.0") ≈ atan(big"0.5") - π
-
 # 0.7.0-DEV.4724
 let
     @test Compat.split("", ','  ; keepempty=false) == []

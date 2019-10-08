@@ -82,11 +82,6 @@ end
     end
 end
 
-# https://github.com/JuliaLang/julia/pull/27253
-@static if VERSION < v"0.7.0-alpha.44"
-    Base.atan(x::Real, y::Real) = atan2(x, y)
-end
-
 # https://github.com/JuliaLang/julia/pull/26647
 @static if VERSION < v"0.7.0-DEV.4724"
     rsplit(s::AbstractString, splitter; limit::Integer=0, keepempty::Bool=false) =
