@@ -69,8 +69,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Other changes
 
-* On versions of Julia that do not contain a Base.Threads module, Compat defines a Threads module containing a no-op `@threads` macro.
-
 ## New types
 
 ## Developer tips
