@@ -62,6 +62,12 @@ Base.@deprecate floor(x, digits; base = 10) Compat.floor(x, digits = digits, bas
 Base.@deprecate ceil(x, digits; base = 10) Compat.ceil(x, digits = digits, base = base) false
 Base.@deprecate round(x, digits; base = 10) Compat.round(x, digits = digits, base = base) false
 Base.@deprecate signif(x, digits; base = 10) Compat.round(x, sigdigits = digits, base = base) false
+# standard methods from Base; can be removed (so that Compat just inherits the functions
+# from Base) once above deprecations are removed
+trunc(x; digits = 0, base = 10) = Base.trunc(x, digits = digits, base = base)
+floor(x; digits = 0, base = 10) = Base.floor(x, digits = digits, base = base)
+ceil(x; digits = 0, base = 10) = Base.ceil(x, digits = digits, base = base)
+round(x; digits = nothing, sigdigits = nothing, base = 10) = Base.round(x, digits = digits, sigdigits = sigdigits, base = base)
 
 if VERSION >= v"1.1.0-DEV.506"
     # deprecation of range(start, stop) for earlier versions is done in Compat.jl

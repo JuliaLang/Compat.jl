@@ -76,9 +76,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Compat.range` supporting positional and keyword arguments flavors ([#25896]), ([#28708]).
 
-* `Compat.trunc`, `Compat.floor`, `Compat.ceil`, `Compat.round`, take a keyword argument
-  for `base` and `digits`, `Compat.round` also takes `sigdigits` ([#26156], [#26670]).
-
 * `Compat.mv` and `Compat.cp` with `force` keyword argument ([#26069]).
 
 * `Compat.accumulate`, `Compat.accumulate!`, `Compat.all`, `Compat.any`,
