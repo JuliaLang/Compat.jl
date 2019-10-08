@@ -52,6 +52,7 @@ import InteractiveUtils
 import LibGit2
 import UUIDs
 using LinearAlgebra: qr
+using LinearAlgebra: rmul!
 
 
 include("compatmacro.jl")
@@ -75,31 +76,6 @@ end
         idx1, idx2 = ntuple(d->(:), dim-1), ntuple(d->(:), ndims(A)-dim)
         return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
     end
-end
-
-# rmul! (NOTE: Purposefully not exported)
-if VERSION < v"0.7.0-DEV.3563" # scale! not deprecated
-    if VERSION >= v"0.7.0-DEV.3449" # LinearAlgebra in the stdlib
-        using LinearAlgebra: UnitUpperTriangular, UnitLowerTriangular, scale!
-    else
-        using Base.LinAlg: UnitUpperTriangular, UnitLowerTriangular, scale!
-    end
-    const Triangle = Union{UpperTriangular, UnitUpperTriangular,
-                           LowerTriangular, UnitLowerTriangular}
-    if VERSION < v"0.7.0-DEV.3204" # A_mul_B! not deprecated
-        rmul!(A::AbstractMatrix, B::Triangle) = A_mul_B!(A, A, B)
-    else
-        rmul!(A::AbstractMatrix, B::Triangle) = mul!(A, A, B)
-    end
-    rmul!(A::AbstractArray, s::Number) = scale!(A, s)
-    rmul!(A::AbstractMatrix, D::Diagonal) = scale!(A, D.diag)
-    rmul!(A::Diagonal, B::Diagonal) = Diagonal(A.diag .*= B.diag)
-    rmul!(A::Triangle, B::Diagonal) = typeof(A)(rmul!(A.data, B))
-elseif v"0.7.0-DEV.3563" <= VERSION < v"0.7.0-DEV.3665" # scale! -> mul1!
-    using LinearAlgebra: mul1!
-    const rmul! = mul1!
-elseif VERSION >= v"0.7.0-DEV.3665" # mul1! -> rmul!
-    using LinearAlgebra: rmul!
 end
 
 @static if VERSION < v"0.7.0-DEV.3936"

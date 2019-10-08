@@ -78,9 +78,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `fetch` for `Task`s ([#25940]).
 
-* `Compat.rmul!` provides a subset of the functionality of `LinearAlgebra.rmul!` for
-  use with Julia 0.6 ([#25701], [#25812]).
-
 * `isbits(t::Type)` is now `isbitstype(t)` ([#26850]).
 
 * `something` to get the first argument different from `nothing`, unwrapping those
