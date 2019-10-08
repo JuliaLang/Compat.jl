@@ -48,6 +48,7 @@ const IteratorEltype = Base.IteratorEltype
 enable_debug(x::Bool) = x
 import Distributed
 import Pkg
+import InteractiveUtils
 
 
 include("compatmacro.jl")
@@ -71,29 +72,6 @@ end
         idx1, idx2 = ntuple(d->(:), dim-1), ntuple(d->(:), ndims(A)-dim)
         return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
     end
-end
-
-@static if VERSION < v"0.7.0-DEV.3630"
-    @eval module InteractiveUtils
-        using Base: @code_llvm, @code_lowered, @code_native, @code_typed,
-                    @code_warntype, @edit, @functionloc, @less, @which,
-                    apropos, code_llvm, code_native, code_warntype, edit,
-                    less, methodswith, subtypes, versioninfo
-        export @code_llvm, @code_lowered, @code_native, @code_typed,
-               @code_warntype, @edit, @functionloc, @less, @which,
-               apropos, code_llvm, code_native, code_warntype, edit,
-               less, methodswith, subtypes, versioninfo
-
-        @static if VERSION >= v"0.7.0-DEV.2582"
-            using Base: varinfo
-            export varinfo
-        else
-            const varinfo = whos
-            export varinfo
-        end
-    end
-else
-    import InteractiveUtils
 end
 
 @static if VERSION < v"0.7.0-DEV.3724"

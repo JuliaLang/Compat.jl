@@ -82,14 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-module TestInteractiveUtils
-    using Compat
-    using Compat.InteractiveUtils
-    using Compat.Test
-    @test isdefined(@__MODULE__, :InteractiveUtils)
-    @test isdefined(@__MODULE__, :varinfo)
-end
-
 module TestLibGit2
     using Compat
     using Compat.LibGit2

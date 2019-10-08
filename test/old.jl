@@ -201,6 +201,14 @@ module TestPkg
     @test isdefined(Compat.Pkg, :add)
 end
 
+module TestInteractiveUtils
+    using Compat
+    using Compat.InteractiveUtils
+    using Compat.Test
+    @test isdefined(@__MODULE__, :InteractiveUtils)
+    @test isdefined(@__MODULE__, :varinfo)
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 
