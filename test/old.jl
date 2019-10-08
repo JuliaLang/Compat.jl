@@ -193,6 +193,14 @@ let v = [1, 2, 3]
     @test Compat.IteratorEltype(v) == Base.HasEltype()
 end
 
+module TestPkg
+    using Compat
+    using Compat.Pkg
+    using Compat.Test
+    @test isdefined(@__MODULE__, :Pkg)
+    @test isdefined(Compat.Pkg, :add)
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

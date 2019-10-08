@@ -82,14 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-module TestPkg
-    using Compat
-    using Compat.Pkg
-    using Compat.Test
-    @test isdefined(@__MODULE__, :Pkg)
-    @test isdefined(Compat.Pkg, :add)
-end
-
 module TestInteractiveUtils
     using Compat
     using Compat.InteractiveUtils
