@@ -70,9 +70,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
 
-* `something` to get the first argument different from `nothing`, unwrapping those
-  of the `Some` type ([#27258]).
-
 * `mapslices` with `dims` keyword argument ([#27828]).
 
 * `hasproperty` and `hasfield` ([#28850]).

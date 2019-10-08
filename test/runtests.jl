@@ -80,12 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-DEV.5278
-@test something(nothing, 1) === 1
-@test something(Some(2)) === 2
-@test something(Some(2), 1) === 2
-@test something(nothing, Some(1)) === 1
-
 # julia#24839
 @test permutedims([1 2; 3 4]) == [1 3; 2 4]
 @test permutedims([1,2,3]) == [1 2 3]

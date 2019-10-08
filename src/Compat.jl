@@ -78,14 +78,6 @@ end
     end
 end
 
-if VERSION < v"0.7.0-DEV.5278"
-    something() = throw(ArgumentError("No value arguments present"))
-    something(x::Nothing, y...) = something(y...)
-    something(x::Some, y...) = x.value
-    something(x::Any, y...) = x
-    export something
-end
-
 if !isdefined(LinearAlgebra, :opnorm) # julia#27401
     opnorm(A::AbstractMatrix, p::Real=2) = LinearAlgebra.norm(A, p)
     const norm = LinearAlgebra.vecnorm
