@@ -82,10 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.4905
-@test isbitstype(Int)
-@test !isbitstype(Vector{Int})
-
 # 0.7.0-DEV.4762
 let ptr = @cfunction(+, Int, (Int, Int))
     @test ptr isa Ptr{Cvoid}
