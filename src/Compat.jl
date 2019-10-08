@@ -45,6 +45,7 @@ end
 import Base: notnothing
 const IteratorSize = Base.IteratorSize
 const IteratorEltype = Base.IteratorEltype
+enable_debug(x::Bool) = x
 
 
 include("compatmacro.jl")
@@ -67,47 +68,6 @@ end
         dim <= ndims(A) || throw(DimensionMismatch("A doesn't have $dim dimensions"))
         idx1, idx2 = ntuple(d->(:), dim-1), ntuple(d->(:), ndims(A)-dim)
         return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
-    end
-end
-
-@static if !isdefined(Base, Symbol("@info"))
-    macro info(msg, args...)
-        return :(info($(esc(msg)), prefix = "Info: "))
-    end
-end
-@static if !isdefined(Base, Symbol("@warn"))
-    macro warn(msg, args...)
-        return :(warn($(esc(msg)), prefix = "Warning: "))
-    end
-end
-
-const DEBUG = Ref(false) # debug printing off by default, as on 0.7
-enable_debug(x::Bool) = DEBUG[] = x
-@static if !isdefined(Base, Symbol("@debug"))
-    function debug(msg)
-        DEBUG[] || return
-        buf = Base.IOBuffer()
-        iob = Base.redirect(IOContext(buf, STDERR), Base.log_info_to, :debug)
-        print_with_color(:blue, iob, "Debug: "; bold = true)
-        Base.println_with_color(:blue, iob, chomp(string(msg)))
-        print(STDERR, String(take!(buf)))
-        return
-    end
-    macro debug(msg, args...)
-        return :(debug($(esc(msg))))
-    end
-end
-@static if !isdefined(Base, Symbol("@error"))
-    function _error(msg)
-        buf = Base.IOBuffer()
-        iob = Base.redirect(IOContext(buf, STDERR), Base.log_error_to, :error)
-        print_with_color(Base.error_color(), iob, "Error: "; bold = true)
-        Base.println_with_color(Base.error_color(), iob, chomp(string(msg)))
-        print(STDERR, String(take!(buf)))
-        return
-    end
-    macro error(msg, args...)
-        return :(_error($(esc(msg))))
     end
 end
 
