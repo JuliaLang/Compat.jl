@@ -109,9 +109,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Renaming
 
-* `isupper`, `islower`, `ucfirst` and `lcfirst` are now `isuppercase`, `islowercase`,
-  `uppercasefirst` and `lowercasefirst` ([#26442]).
-
 * `Compat.split` and `Compat.rsplit` accept `keepempty` keyword argument
   if `splitter` is given as second argument ([#26634])
 

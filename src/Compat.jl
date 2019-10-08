@@ -76,14 +76,6 @@ end
     end
 end
 
-if VERSION < v"0.7.0-DEV.4585"
-    export isuppercase, islowercase, uppercasefirst, lowercasefirst
-    const isuppercase = isupper
-    const islowercase = islower
-    const uppercasefirst = ucfirst
-    const lowercasefirst = lcfirst
-end
-
 if VERSION < v"0.7.0-DEV.4064"
     for f in (:mean, :median, :var, :varm, :std, :cov, :cor)
         @eval import .Statistics: $f # compatibility with old Compat versions

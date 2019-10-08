@@ -82,14 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.4585
-@test isuppercase('A')
-@test !isuppercase('a')
-@test islowercase('a')
-@test !islowercase('A')
-@test uppercasefirst("qwerty") == "Qwerty"
-@test lowercasefirst("Qwerty") == "qwerty"
-
 # 0.7.0-DEV.4064
 # some tests are behind a version check below because Julia gave
 # the wrong result between 0.7.0-DEV.3262 and 0.7.0-DEV.4646
