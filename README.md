@@ -68,8 +68,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `range` supporting `stop` as positional argument ([#28708]).
 
-* `mapslices` with `dims` keyword argument ([#27828]).
-
 * `hasproperty` and `hasfield` ([#28850]).
   `hasproperty` is defined only for Julia 0.7 or later.
 

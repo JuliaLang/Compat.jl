@@ -98,16 +98,6 @@ let
     @test_throws UndefKeywordError func5(x=2)
 end
 
-# 0.7.0-beta.73
-let a = rand(5,5)
-    s = mapslices(sort, a, dims=[1])
-    S = mapslices(sort, a, dims=[2])
-    for i = 1:5
-        @test s[:,i] == sort(a[:,i])
-        @test vec(S[i,:]) == sort(vec(a[i,:]))
-    end
-end
-
 # 0.7.0-beta2.169
 @test floatmin(Float16) == @eval $(Core.Intrinsics.bitcast(Float16, 0x0400))
 @test floatmax(Float32) == @eval $(Core.Intrinsics.bitcast(Float32, 0x7f7fffff))

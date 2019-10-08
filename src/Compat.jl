@@ -82,12 +82,6 @@ end
     end
 end
 
-# https://github.com/JuliaLang/julia/pull/27828
-if VERSION < v"0.7.0-beta.73"
-    Base.mapslices(f, A::AbstractArray; dims=error("required keyword argument `dims` missing")) =
-        mapslices(f, A, dims)
-end
-
 # https://github.com/JuliaLang/julia/pull/28302
 if VERSION < v"0.7.0-beta2.169"
     const floatmin = realmin
