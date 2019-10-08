@@ -77,9 +77,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Renaming
 
-* `Compat.split` and `Compat.rsplit` accept `keepempty` keyword argument
-  if `splitter` is given as second argument ([#26634])
-
 * `realmin` and `realmax` are now `floatmin` and `floatmax` ([#28302])
 
 * `squeeze` is now `dropdims` ([#28303], [#26660]).

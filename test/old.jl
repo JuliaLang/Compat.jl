@@ -1225,3 +1225,32 @@ end
 @test atan(1.0, 2.0) == atan(0.5)
 @test atan(-1.0, -2.0) ≈ atan(0.5) - π
 @test atan(big"-1.0", big"-2.0") ≈ atan(big"0.5") - π
+
+# 0.7.0-DEV.4724
+let
+    @test Compat.split("", ','  ; keepempty=false) == []
+    @test Compat.split(",", ',' ; keepempty=false) == []
+    @test Compat.split(",,", ','; keepempty=false) == []
+    @test Compat.rsplit("", ','  ; keepempty=false) == []
+    @test Compat.rsplit(",", ',' ; keepempty=false) == []
+    @test Compat.rsplit(",,", ','; keepempty=false) == []
+
+    str = "a.:.ba..:..cba.:.:.dcba.:."
+    @test Compat.split(str, ".:."; keepempty=false) == ["a","ba.",".cba",":.dcba"]
+    @test Compat.split(str, ".:."; keepempty=true) == ["a","ba.",".cba",":.dcba",""]
+    @test Compat.split(str, ".:."; limit=3, keepempty=false) == ["a","ba.",".cba.:.:.dcba.:."]
+    @test Compat.split(str, ".:."; limit=3, keepempty=true) == ["a","ba.",".cba.:.:.dcba.:."]
+    @test Compat.rsplit(str, ".:."; keepempty=false) == ["a","ba.",".cba.:","dcba"]
+    @test Compat.rsplit(str, ".:."; keepempty=true) == ["a","ba.",".cba.:","dcba",""]
+    @test Compat.rsplit(str, ".:."; limit=3, keepempty=false) == ["a.:.ba.",".cba.:","dcba"]
+    @test Compat.rsplit(str, ".:."; limit=3, keepempty=true) == ["a.:.ba..:..cba.:","dcba",""]
+
+    @test Compat.split(str, r"\.(:\.)+"; keepempty=false) == ["a","ba.",".cba","dcba"]
+    @test Compat.split(str, r"\.(:\.)+"; keepempty=true) == ["a","ba.",".cba","dcba",""]
+    @test Compat.split(str, r"\.(:\.)+"; limit=3, keepempty=false) == ["a","ba.",".cba.:.:.dcba.:."]
+    @test Compat.split(str, r"\.(:\.)+"; limit=3, keepempty=true) == ["a","ba.",".cba.:.:.dcba.:."]
+    @test Compat.split(str, r"\.+:\.+"; keepempty=false) == ["a","ba","cba",":.dcba"]
+    @test Compat.split(str, r"\.+:\.+"; keepempty=true) == ["a","ba","cba",":.dcba",""]
+    @test Compat.split(str, r"\.+:\.+"; limit=3, keepempty=false) == ["a","ba","cba.:.:.dcba.:."]
+    @test Compat.split(str, r"\.+:\.+"; limit=3, keepempty=true) == ["a","ba","cba.:.:.dcba.:."]
+end

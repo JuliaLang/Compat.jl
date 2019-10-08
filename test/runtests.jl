@@ -80,35 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-DEV.4724
-let
-    @test Compat.split("", ','  ; keepempty=false) == []
-    @test Compat.split(",", ',' ; keepempty=false) == []
-    @test Compat.split(",,", ','; keepempty=false) == []
-    @test Compat.rsplit("", ','  ; keepempty=false) == []
-    @test Compat.rsplit(",", ',' ; keepempty=false) == []
-    @test Compat.rsplit(",,", ','; keepempty=false) == []
-
-    str = "a.:.ba..:..cba.:.:.dcba.:."
-    @test Compat.split(str, ".:."; keepempty=false) == ["a","ba.",".cba",":.dcba"]
-    @test Compat.split(str, ".:."; keepempty=true) == ["a","ba.",".cba",":.dcba",""]
-    @test Compat.split(str, ".:."; limit=3, keepempty=false) == ["a","ba.",".cba.:.:.dcba.:."]
-    @test Compat.split(str, ".:."; limit=3, keepempty=true) == ["a","ba.",".cba.:.:.dcba.:."]
-    @test Compat.rsplit(str, ".:."; keepempty=false) == ["a","ba.",".cba.:","dcba"]
-    @test Compat.rsplit(str, ".:."; keepempty=true) == ["a","ba.",".cba.:","dcba",""]
-    @test Compat.rsplit(str, ".:."; limit=3, keepempty=false) == ["a.:.ba.",".cba.:","dcba"]
-    @test Compat.rsplit(str, ".:."; limit=3, keepempty=true) == ["a.:.ba..:..cba.:","dcba",""]
-
-    @test Compat.split(str, r"\.(:\.)+"; keepempty=false) == ["a","ba.",".cba","dcba"]
-    @test Compat.split(str, r"\.(:\.)+"; keepempty=true) == ["a","ba.",".cba","dcba",""]
-    @test Compat.split(str, r"\.(:\.)+"; limit=3, keepempty=false) == ["a","ba.",".cba.:.:.dcba.:."]
-    @test Compat.split(str, r"\.(:\.)+"; limit=3, keepempty=true) == ["a","ba.",".cba.:.:.dcba.:."]
-    @test Compat.split(str, r"\.+:\.+"; keepempty=false) == ["a","ba","cba",":.dcba"]
-    @test Compat.split(str, r"\.+:\.+"; keepempty=true) == ["a","ba","cba",":.dcba",""]
-    @test Compat.split(str, r"\.+:\.+"; limit=3, keepempty=false) == ["a","ba","cba.:.:.dcba.:."]
-    @test Compat.split(str, r"\.+:\.+"; limit=3, keepempty=true) == ["a","ba","cba.:.:.dcba.:."]
-end
-
 let
     # test required keyword arguments
     @compat func1() = 1
