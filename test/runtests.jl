@@ -98,11 +98,6 @@ let
     @test_throws UndefKeywordError func5(x=2)
 end
 
-# 0.7.0-beta2.169
-@test floatmin(Float16) == @eval $(Core.Intrinsics.bitcast(Float16, 0x0400))
-@test floatmax(Float32) == @eval $(Core.Intrinsics.bitcast(Float32, 0x7f7fffff))
-@test floatmin(zero(Float64)) == floatmin(Float64)
-
 # 0.7.0-beta2.143
 if VERSION < v"0.7.0-beta2.143"
     let a = reshape(Vector(1:4),(2,2,1,1)), b = reshape(Vector(1:4), (2,2,1))

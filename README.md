@@ -75,8 +75,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Renaming
 
-* `realmin` and `realmax` are now `floatmin` and `floatmax` ([#28302])
-
 * `squeeze` is now `dropdims` ([#28303], [#26660]).
 
 ## New macros
