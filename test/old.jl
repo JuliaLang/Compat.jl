@@ -1277,3 +1277,21 @@ if VERSION < v"0.7.0-beta2.143"
         @test_throws UndefKeywordError dropdims(a)
     end
 end
+
+let
+    # test required keyword arguments
+    @compat func1() = 1
+    @test func1() == 1 # using the function works
+    @compat func2(x) = x
+    @test func2(3) == 3 # using the function works
+    @compat func3(;y) = y
+    @test func3(y=2) == 2 # using the function works
+    @test_throws UndefKeywordError func3()
+    @compat func4(x; z) = x*z
+    @test func4(2,z=3) == 6 # using the function works
+    @test_throws UndefKeywordError func4(2)
+    @compat func5(;x=1, y) = x*y
+    @test func5(y=3) == 3
+    @test func5(y=3, x=2) == 6
+    @test_throws UndefKeywordError func5(x=2)
+end

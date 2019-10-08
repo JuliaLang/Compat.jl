@@ -4,27 +4,9 @@
 using Base.Meta
 export @compat
 
-if !isdefined(Base, :UndefKeywordError)
-    struct UndefKeywordError <: Exception
-        kw
-    end
-    Base.showerror(io::IO, e::UndefKeywordError) = print(io, "UndefKeywordError: keyword argument $(e.kw) not assigned")
-    export UndefKeywordError
-end
-
-"Convert a functions symbol argument to the corresponding required keyword argument."
-function symbol2kw(sym::Symbol)
-    Expr(:kw, sym, Expr(:call, throw, UndefKeywordError(sym)))
-end
-symbol2kw(arg) = arg
-
 function _compat(ex::Expr)
     if ex.head === :call
         f = ex.args[1]
-        if !isdefined(Base, :UndefKeywordError) && length(ex.args) > 1 && isexpr(ex.args[2], :parameters)
-            params = ex.args[2]
-            params.args = map(symbol2kw, params.args)
-        end
     elseif ex.head === :quote && isa(ex.args[1], Symbol)
         # Passthrough
         return ex

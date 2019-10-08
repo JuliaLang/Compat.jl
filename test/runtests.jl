@@ -80,24 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-let
-    # test required keyword arguments
-    @compat func1() = 1
-    @test func1() == 1 # using the function works
-    @compat func2(x) = x
-    @test func2(3) == 3 # using the function works
-    @compat func3(;y) = y
-    @test func3(y=2) == 2 # using the function works
-    @test_throws UndefKeywordError func3()
-    @compat func4(x; z) = x*z
-    @test func4(2,z=3) == 6 # using the function works
-    @test_throws UndefKeywordError func4(2)
-    @compat func5(;x=1, y) = x*y
-    @test func5(y=3) == 3
-    @test func5(y=3, x=2) == 6
-    @test_throws UndefKeywordError func5(x=2)
-end
-
 # Support for positional `stop`
 @test Compat.range(0, 5, length = 6) == 0.0:1.0:5.0
 @test Compat.range(0, 10, step = 2) == 0:2:10
