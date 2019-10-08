@@ -50,6 +50,7 @@ import Distributed
 import Pkg
 import InteractiveUtils
 import LibGit2
+import UUIDs
 
 
 include("compatmacro.jl")
@@ -72,19 +73,6 @@ end
         dim <= ndims(A) || throw(DimensionMismatch("A doesn't have $dim dimensions"))
         idx1, idx2 = ntuple(d->(:), dim-1), ntuple(d->(:), ndims(A)-dim)
         return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
-    end
-end
-
-if VERSION >= v"0.7.0-DEV.3666"
-    import UUIDs
-else
-    @eval module UUIDs
-        if VERSION < v"0.7.0-DEV.3406"
-            import Base.Random: uuid1, uuid4, uuid_version, UUID
-        else
-            import Random: uuid1, uuid4, uuid_version, UUID
-        end
-        export uuid1, uuid4, uuid_version, UUID
     end
 end
 

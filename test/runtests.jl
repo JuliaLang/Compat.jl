@@ -82,21 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.3666
-module TestUUIDs
-    using Compat
-    using Compat.UUIDs
-    using Compat.Test
-    @test isdefined(@__MODULE__, :uuid1)
-    @test isdefined(@__MODULE__, :uuid4)
-    @test isdefined(@__MODULE__, :uuid_version)
-
-    @test uuid_version(uuid1()) == 1
-    @test uuid_version(uuid4()) == 4
-    @test uuid1() isa UUID
-    @test uuid4() isa UUID
-end
-
 # 0.7.0-DEV.4804
 @test Compat.trunc(pi) == 3.0
 @test Compat.floor(pi) == 3.0

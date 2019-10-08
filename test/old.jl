@@ -217,6 +217,21 @@ module TestLibGit2
     @test isdefined(@__MODULE__, :GitRepo)
 end
 
+# 0.7.0-DEV.3666
+module TestUUIDs
+    using Compat
+    using Compat.UUIDs
+    using Compat.Test
+    @test isdefined(@__MODULE__, :uuid1)
+    @test isdefined(@__MODULE__, :uuid4)
+    @test isdefined(@__MODULE__, :uuid_version)
+
+    @test uuid_version(uuid1()) == 1
+    @test uuid_version(uuid4()) == 4
+    @test uuid1() isa UUID
+    @test uuid4() isa UUID
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 
