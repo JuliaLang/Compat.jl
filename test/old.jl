@@ -232,6 +232,16 @@ module TestUUIDs
     @test uuid4() isa UUID
 end
 
+# 0.7.0-DEV.843 / 0.7.0-DEV.2337
+let A = [1 2; 1 2; 1 2]
+    f = Compat.qr(A, Val(false))
+    @test size(f.Q) == (3, 3)
+    @test f.Q * [f.R; [0 0]] ≈ A
+    f = Compat.qr(A, Val(true))
+    @test size(f.Q) == (3, 3)
+    @test f.Q * [f.R; [0 0]] ≈ A[:,f.p]
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

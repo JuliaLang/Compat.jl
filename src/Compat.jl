@@ -51,6 +51,7 @@ import Pkg
 import InteractiveUtils
 import LibGit2
 import UUIDs
+using LinearAlgebra: qr
 
 
 include("compatmacro.jl")
@@ -74,20 +75,6 @@ end
         idx1, idx2 = ntuple(d->(:), dim-1), ntuple(d->(:), ndims(A)-dim)
         return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
     end
-end
-
-if VERSION < v"0.7.0-DEV.2337"
-    # qr doesn't take the full keyword anymore since 0.7.0-DEV.5211; we still support it
-    # here to avoid unneccesary breakage
-    if VERSION < v"0.7.0-DEV.843"
-        qr(A::Union{Number,AbstractMatrix}, pivot::Union{Val{false},Val{true}}=Val(false); full=false) =
-            Base.qr(A, typeof(pivot), thin=!full)
-    else
-        qr(A::Union{Number,AbstractMatrix}, pivot::Union{Val{false},Val{true}}=Val(false); full=false) =
-            Base.qr(A, pivot, thin=!full)
-    end
-else
-    using LinearAlgebra: qr
 end
 
 # rmul! (NOTE: Purposefully not exported)

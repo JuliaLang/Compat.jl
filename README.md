@@ -78,8 +78,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `fetch` for `Task`s ([#25940]).
 
-* `Compat.qr` takes `pivot` as a `Val` _instance_ ([#22475]).
-
 * `Compat.rmul!` provides a subset of the functionality of `LinearAlgebra.rmul!` for
   use with Julia 0.6 ([#25701], [#25812]).
 
