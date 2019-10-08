@@ -78,60 +78,6 @@ end
     end
 end
 
-if VERSION < v"0.7.0-DEV.2920" # julia#24999
-    Base.length(s::AbstractString, i::Integer, j::Integer) = length(s, Int(i), Int(j))
-    function Base.length(s::AbstractString, i::Int, j::Int)
-        @boundscheck begin
-            0 < i ≤ ncodeunits(s)+1 || throw(BoundsError(s, i))
-            0 ≤ j < ncodeunits(s)+1 || throw(BoundsError(s, j))
-        end
-        n = 0
-        for k = i:j
-            @inbounds n += isvalid(s, k)
-        end
-        return n
-    end
-    Base.codeunit(s::String) = UInt8
-    Base.codeunit(s::SubString) = codeunit(s.string)
-end
-if !isdefined(Base, :thisind) # #24414
-    thisind(s::AbstractString, i::Integer) = thisind(s, Int(i))
-    function thisind(s::AbstractString, i::Int)
-        z = ncodeunits(s) + 1
-        i == z && return i
-        @boundscheck 0 ≤ i ≤ z || throw(BoundsError(s, i))
-        @inbounds while 1 < i && !isvalid(s, i)
-            i -= 1
-        end
-        return i
-    end
-    export thisind
-end
-if VERSION < v"0.7.0-DEV.2019" # julia#23805
-    Base.prevind(s::AbstractString, i::Integer, n::Integer) = prevind(s, Int(i), Int(n))
-    Base.nextind(s::AbstractString, i::Integer, n::Integer) = nextind(s, Int(i), Int(n))
-    function Base.nextind(s::AbstractString, i::Int, n::Int)
-        n < 0 && throw(ArgumentError("n cannot be negative: $n"))
-        z = ncodeunits(s)
-        @boundscheck 0 ≤ i ≤ z || throw(BoundsError(s, i))
-        n == 0 && return thisind(s, i) == i ? i : throw(BoundsError(s, i))
-        while n > 0 && i < z
-            @inbounds n -= isvalid(s, i += 1)
-        end
-        return i + n
-    end
-    function Base.prevind(s::AbstractString, i::Int, n::Int)
-        n < 0 && throw(ArgumentError("n cannot be negative: $n"))
-        z = ncodeunits(s) + 1
-        @boundscheck 0 < i ≤ z || throw(BoundsError(s, i))
-        n == 0 && return thisind(s, i) == i ? i : throw(BoundsError(s, i))
-        while n > 0 && 1 < i
-            @inbounds n -= isvalid(s, i -= 1)
-        end
-        return i - n
-    end
-end
-
 if VERSION < v"0.7.0-DEV.5278"
     something() = throw(ArgumentError("No value arguments present"))
     something(x::Nothing, y...) = something(y...)

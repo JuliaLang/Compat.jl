@@ -66,12 +66,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `@compat finalizer(func, obj)` with the finalizer to run as the first argument and the object to be finalized
   as the second ([#24605]).
 
-* `codeunit(s)` returns the type of the code units of `s` ([#24999]).
-
-* `thisind(s, i)` returns the character index for codeunit `i` ([#24414]).
-
-* Three-argument methods `prevind(s,i,n)`, `nextind(s,i,n)` ([#23805]), and `length(s,i,j)` ([#24999]); the latter two replace `chr2ind` and `ind2chr` in Julia 0.7, respectively.
-
 * `range` supporting `stop` as positional argument ([#28708]).
 
 * Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
