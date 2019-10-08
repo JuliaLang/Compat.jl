@@ -864,3 +864,6 @@ mktempdir(@__DIR__) do dir
     end
     @test readdir(dir) == ["dest.jl"]
 end
+
+# 0.7.0-DEV.3972
+@test Compat.indexin([1, 2], [1, 0, 1]) == [1, nothing]

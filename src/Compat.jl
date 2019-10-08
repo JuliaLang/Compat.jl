@@ -76,19 +76,6 @@ end
     end
 end
 
-if VERSION < v"0.7.0-DEV.3972"
-    function indexin(a, b::AbstractArray)
-        inds = keys(b)
-        bdict = Dict{eltype(b),eltype(inds)}()
-        for (val, ind) in zip(b, inds)
-            get!(bdict, val, ind)
-        end
-        return Union{eltype(inds), Nothing}[
-             get(bdict, i, nothing) for i in a
-         ]
-    end
-end
-
 if VERSION < v"0.7.0-DEV.4585"
     export isuppercase, islowercase, uppercasefirst, lowercasefirst
     const isuppercase = isupper

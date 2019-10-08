@@ -82,9 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.3972
-@test Compat.indexin([1, 2], [1, 0, 1]) == [1, nothing]
-
 # 0.7.0-DEV.4585
 @test isuppercase('A')
 @test !isuppercase('a')

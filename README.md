@@ -109,10 +109,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Renaming
 
-* `Compat.indexin` accepts any iterable as first argument, returns `nothing` (rather than `0`)
-   for entries with no match and gives the index of the first (rather than the last) match
-   ([#25662], [#25998]).
-
 * `isupper`, `islower`, `ucfirst` and `lcfirst` are now `isuppercase`, `islowercase`,
   `uppercasefirst` and `lowercasefirst` ([#26442]).
 
