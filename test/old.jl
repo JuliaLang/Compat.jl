@@ -654,3 +654,10 @@ end
 @test argmin([10 12; 9 11]) == CartesianIndex(2, 1)
 @test argmin(Dict(:z=>10, :y=>12, :x=>9, :w=>11)) == :x
 @test argmin((1.0, -3, 0.f0)) == 2
+
+# 0.7.0-DEV.3460
+@test parentmodule(Compat.Sys) == Compat
+@test parentmodule(sin) == Base
+@test parentmodule(sin, Tuple{Int}) == Base.Math
+@test parentmodule(Int) == Core
+@test parentmodule(Array) == Core

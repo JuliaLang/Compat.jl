@@ -80,13 +80,6 @@ let A = [1]
     @test x == 1
 end
 
-# 0.7.0-DEV.3460
-@test parentmodule(Compat.Sys) == Compat
-@test parentmodule(sin) == Base
-@test parentmodule(sin, Tuple{Int}) == Base.Math
-@test parentmodule(Int) == Core
-@test parentmodule(Array) == Core
-
 @test codeunits("foo") == [0x66,0x6f,0x6f] == codeunits(SubString("fooαβγ",1,3))
 @test ncodeunits("αβγ") == 6 == ncodeunits(SubString("fooαβγ",4,8))
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
