@@ -727,3 +727,6 @@ let buf = IOBuffer()
     end
     @test startswith(String(take!(buf)), Base.text_colors[:red])
 end
+
+# 0.7.0-DEV.3455
+@test hasmethod(sin, Tuple{Float64})

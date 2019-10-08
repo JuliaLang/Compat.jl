@@ -136,8 +136,6 @@ Currently, the `@compat` macro supports the following syntaxes:
    for entries with no match and gives the index of the first (rather than the last) match
    ([#25662], [#25998]).
 
-* `method_exists` is now `hasmethod` ([#25615]).
-
 * `object_id` is now `objectid` ([#25615]).
 
 * `LinSpace` is now `LinRange` ([#25896]).
