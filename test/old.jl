@@ -875,3 +875,159 @@ end
 @test !islowercase('A')
 @test uppercasefirst("qwerty") == "Qwerty"
 @test lowercasefirst("Qwerty") == "qwerty"
+
+# 0.7.0-DEV.4064
+# some tests are behind a version check below because Julia gave
+# the wrong result between 0.7.0-DEV.3262 and 0.7.0-DEV.4646
+# see https://github.com/JuliaLang/julia/issues/26488
+Issue26488 = VERSION < v"0.7.0-DEV.3262" || VERSION >= v"0.7.0-DEV.4646"
+@test Compat.Statistics.mean([1 2; 3 4]) == 2.5
+@test Compat.Statistics.mean([1 2; 3 4], dims=1) == [2 3]
+@test Compat.Statistics.mean([1 2; 3 4], dims=2) == hcat([1.5; 3.5])
+@test Compat.cumsum([1 2; 3 4], dims=1) == [1 2; 4 6]
+@test Compat.cumsum([1 2; 3 4], dims=2) == [1 3; 3 7]
+@test Compat.cumprod([1 2; 3 4], dims=1) == [1 2; 3 8]
+@test Compat.cumprod([1 2; 3 4], dims=2) == [1 2; 3 12]
+@test Compat.sum([1 2; 3 4]) == 10
+@test Compat.sum([1 2; 3 4], dims=1) == [4 6]
+@test Compat.sum([1 2; 3 4], dims=2) == hcat([3; 7])
+@test Compat.sum(x -> x+1, [1 2; 3 4]) == 14
+Issue26488 && @test Compat.sum(x -> x+1, [1 2; 3 4], dims=1) == [6 8]
+Issue26488 && @test Compat.sum(x -> x+1, [1 2; 3 4], dims=2) == hcat([5; 9])
+@test Compat.prod([1 2; 3 4]) == 24
+@test Compat.prod([1 2; 3 4], dims=1) == [3 8]
+@test Compat.prod([1 2; 3 4], dims=2) == hcat([2; 12])
+@test Compat.prod(x -> x+1, [1 2; 3 4]) == 120
+Issue26488 && @test Compat.prod(x -> x+1, [1 2; 3 4], dims=1) == [8 15]
+Issue26488 && @test Compat.prod(x -> x+1, [1 2; 3 4], dims=2) == hcat([6; 20])
+@test Compat.maximum([1 2; 3 4]) == 4
+@test Compat.maximum([1 2; 3 4], dims=1) == [3 4]
+@test Compat.maximum([1 2; 3 4], dims=2) == hcat([2; 4])
+@test Compat.maximum(x -> x+1, [1 2; 3 4]) == 5
+@test Compat.maximum(x -> x+1, [1 2; 3 4], dims=1) == [4 5]
+@test Compat.maximum(x -> x+1, [1 2; 3 4], dims=2) == hcat([3; 5])
+@test Compat.minimum([1 2; 3 4]) == 1
+@test Compat.minimum([1 2; 3 4], dims=1) == [1 2]
+@test Compat.minimum([1 2; 3 4], dims=2) == hcat([1; 3])
+@test Compat.minimum(x -> x+1, [1 2; 3 4]) == 2
+@test Compat.minimum(x -> x+1, [1 2; 3 4], dims=1) == [2 3]
+@test Compat.minimum(x -> x+1, [1 2; 3 4], dims=2) == hcat([2; 4])
+@test Compat.all([true false; true false]) == false
+@test Compat.all([true false; true false], dims=1) == [true false]
+@test Compat.all([true false; true false], dims=2) == hcat([false; false])
+@test Compat.all(isodd, [1 2; 3 4]) == false
+@test Compat.all(isodd, [1 2; 3 4], dims=1) == [true false]
+@test Compat.all(isodd, [1 2; 3 4], dims=2) == hcat([false; false])
+@test Compat.any([true false; true false]) == true
+@test Compat.any([true false; true false], dims=1) == [true false]
+@test Compat.any([true false; true false], dims=2) == hcat([true; true])
+@test Compat.any(isodd, [1 2; 3 4]) == true
+@test Compat.any(isodd, [1 2; 3 4], dims=1) == [true false]
+@test Compat.any(isodd, [1 2; 3 4], dims=2) == hcat([true; true])
+@test Compat.findmax([3, 2, 7, 4]) == (7, 3)
+@test Compat.findmax([3, 2, 7, 4], dims=1) == ([7], [3])
+@test Compat.findmax([1 2; 3 4], dims=1) == ([3 4], [CartesianIndex(2, 1) CartesianIndex(2, 2)])
+@test Compat.findmax([1 2; 3 4]) == (4, CartesianIndex(2, 2))
+@test Compat.findmax([1 2; 3 4], dims=1) == ([3 4], [CartesianIndex(2, 1) CartesianIndex(2, 2)])
+@test Compat.findmax([1 2; 3 4], dims=2) == (hcat([2; 4]), hcat([CartesianIndex(1, 2); CartesianIndex(2, 2)]))
+@test Compat.findmin([3, 2, 7, 4]) == (2, 2)
+@test Compat.findmin([3, 2, 7, 4], dims=1) == ([2], [2])
+@test Compat.findmin([1 2; 3 4]) == (1, CartesianIndex(1, 1))
+@test Compat.findmin([1 2; 3 4], dims=1) == ([1 2], [CartesianIndex(1, 1) CartesianIndex(1, 2)])
+@test Compat.findmin([1 2; 3 4], dims=2) == (hcat([1; 3]), hcat([CartesianIndex(1, 1); CartesianIndex(2, 1)]))
+if VERSION  < v"0.7.0-DEV.5238"
+    # Test these functions if their counterparts are defined in Base. In the future, this
+    # will be dealt with in StatsBase
+    @test Compat.Statistics.varm([1 2; 3 4], -1) == 18
+    @test Compat.Statistics.varm([1 2; 3 4], [-1 -2], dims=1) == [20 52]
+    @test Compat.Statistics.varm([1 2; 3 4], [-1, -2], dims=2) == hcat([13, 61])
+    @test Compat.Statistics.var([1 2; 3 4]) == 5/3
+    @test Compat.Statistics.var([1 2; 3 4], dims=1) == [2 2]
+    @test Compat.Statistics.var([1 2; 3 4], dims=2) == hcat([0.5, 0.5])
+    @test Compat.Statistics.var([1 2; 3 4], corrected=false) == 1.25
+    @test Compat.Statistics.var([1 2; 3 4], corrected=false, dims=1) == [1 1]
+    @test Compat.Statistics.var([1 2; 3 4], corrected=false, dims=2) == hcat([0.25, 0.25])
+    @test Compat.Statistics.std([1 2; 3 4]) == sqrt(5/3)
+    @test Compat.Statistics.std([1 2; 3 4], dims=1) == [sqrt(2) sqrt(2)]
+    @test Compat.Statistics.std([1 2; 3 4], dims=2) == hcat([sqrt(0.5), sqrt(0.5)])
+    @test Compat.Statistics.std([1 2; 3 4], corrected=false) == sqrt(1.25)
+    @test Compat.Statistics.std([1 2; 3 4], corrected=false, dims=1) == [sqrt(1) sqrt(1)]
+    @test Compat.Statistics.std([1 2; 3 4], corrected=false, dims=2) == hcat([sqrt(0.25), sqrt(0.25)])
+    @test Compat.Statistics.cov([1 2; 3 4]) == [2 2; 2 2]
+    @test Compat.Statistics.cov([1 2; 3 4], dims=1) == [2 2; 2 2]
+    @test Compat.Statistics.cov([1 2; 3 4], dims=2) == [0.5 0.5; 0.5 0.5]
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5]) == hcat([1; 1])
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5], dims=1) == hcat([1; 1])
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5], dims=2) == hcat([0.5; 0.5])
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5], corrected=false) == hcat([0.5; 0.5])
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5], corrected=false, dims=1) == hcat([0.5; 0.5])
+    @test Compat.Statistics.cov([1 2; 3 4], [4; 5], corrected=false, dims=2) == hcat([0.25; 0.25])
+    @test Compat.Statistics.cor([1 2; 3 4]) ≈ [1 1; 1 1]
+    @test Compat.Statistics.cor([1 2; 3 4], dims=1) ≈ [1 1; 1 1]
+    @test Compat.Statistics.cor([1 2; 3 4], dims=2) ≈ [1 1; 1 1]
+    @test Compat.Statistics.cor([1 2; 3 4], [4; 5]) ≈ [1; 1]
+    @test Compat.Statistics.cor([1 2; 3 4], [4; 5], dims=1) ≈ [1; 1]
+    @test Compat.Statistics.cor([1 2; 3 4], [4; 5], dims=2) ≈ [1; 1]
+end
+@test Compat.Statistics.median([1 2; 3 4]) == 2.5
+@test Compat.Statistics.median([1 2; 3 4], dims=1) == [2 3]
+@test Compat.Statistics.median([1 2; 3 4], dims=2) == hcat([1.5; 3.5])
+@test Compat.mapreduce(string, *, [1 2; 3 4]) == "1324"
+Issue26488 && @test Compat.mapreduce(string, *, [1 2; 3 4], dims=1) == ["13" "24"]
+Issue26488 && @test Compat.mapreduce(string, *, [1 2; 3 4], dims=2) == hcat(["12", "34"])
+@test Compat.mapreduce(string, *, [1 2; 3 4], init="z") == "z1324"
+@test Compat.mapreduce(string, *, (1, 2, 3, 4), init="z") == "z1234"
+@test Compat.mapreduce(string, *, [1 2; 3 4], dims=1, init="z") == ["z13" "z24"]
+@test Compat.mapreduce(string, *, [1 2; 3 4], dims=2, init="z") == hcat(["z12", "z34"])
+@test Compat.reduce(*, [1 2; 3 4]) == 24
+@test Compat.reduce(*, [1 2; 3 4], dims=1) == [3 8]
+@test Compat.reduce(*, [1 2; 3 4], dims=2) == hcat([2, 12])
+@test Compat.reduce(*, [1 2; 3 4], init=10) == 240
+@test Compat.reduce(*, (1, 2, 3, 4), init=10) == 240
+@test Compat.reduce(*, [1 2; 3 4], dims=1, init=10) == [30 80]
+@test Compat.reduce(*, [1 2; 3 4], dims=2, init=10) == hcat([20, 120])
+@test Compat.sort([1, 2, 3, 4]) == [1, 2, 3, 4]
+@test Compat.sort([1 2; 3 4], dims=1) == [1 2; 3 4]
+@test Compat.sort([1 2; 3 4], dims=2) == [1 2; 3 4]
+@test Compat.sort([1, 2, 3, 4], rev=true) == [4, 3, 2, 1]
+@test Compat.sort([1 2; 3 4], rev=true, dims=1) == [3 4; 1 2]
+@test Compat.sort([1 2; 3 4], rev=true, dims=2) == [2 1; 4 3]
+@test Compat.accumulate(*, [1 2; 3 4], dims=1) == [1 2; 3 8]
+@test Compat.accumulate(*, [1 2; 3 4], dims=2) == [1 2; 3 12]
+@test Compat.cumsum([1 2; 3 4], dims=1) == [1 2; 4 6]
+@test Compat.cumsum([1 2; 3 4], dims=2) == [1 3; 3 7]
+@test Compat.cumprod([1 2; 3 4], dims=1) == [1 2; 3 8]
+@test Compat.cumprod([1 2; 3 4], dims=2) == [1 2; 3 12]
+let b = zeros(2,2)
+    Compat.accumulate!(*, b, [1 2; 3 4], dims=1)
+    @test b == [1 2; 3 8]
+    Compat.accumulate!(*, b, [1 2; 3 4], dims=2)
+    @test b == [1 2; 3 12]
+    Compat.cumsum!(b, [1 2; 3 4], dims=1)
+    @test b == [1 2; 4 6]
+    Compat.cumsum!(b, [1 2; 3 4], dims=2)
+    @test b == [1 3; 3 7]
+    Compat.cumprod!(b, [1 2; 3 4], dims=1)
+    @test b == [1 2; 3 8]
+    Compat.cumprod!(b, [1 2; 3 4], dims=2)
+    @test b == [1 2; 3 12]
+end
+@test Compat.reverse([1, 2, 3, 4]) == [4, 3, 2, 1]
+@test Compat.reverse([1 2; 3 4], dims=1) == [3 4; 1 2]
+@test Compat.reverse([1 2; 3 4], dims=2) == [2 1; 4 3]
+
+# 0.7.0-DEV.4738
+if VERSION < v"0.7.0-beta2.143"
+    @test squeeze([1 2], dims=1) == [1, 2]
+    @test_throws ArgumentError squeeze([1 2], dims=2)
+    @test_throws ArgumentError squeeze(hcat([1, 2]), dims=1)
+    @test squeeze(hcat([1, 2]), dims=2) == [1, 2]
+    @test_throws Exception squeeze([1,2])
+end
+
+# 0.7.0-DEV.5165
+@test Compat.cat([1, 2], [3, 4, 5], dims = 1) == [1, 2, 3, 4, 5]
+@test Compat.cat([1, 2], [3, 4], dims = 2) == [1 3; 2 4]
+if VERSION < v"0.7.0-DEV.5165"
+    @test_throws UndefKeywordError Compat.cat([1, 2], [3, 4])
+end

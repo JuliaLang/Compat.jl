@@ -74,17 +74,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `range` supporting `stop` as positional argument ([#28708]).
 
-* `Compat.accumulate`, `Compat.accumulate!`, `Compat.all`, `Compat.any`,
-  `Compat.cumprod`, `Compat.cumprod!`, `Compat.cumsum`, `Compat.cumsum!`,
-  `Compat.findmax`, `Compat.findmin`, `Compat.mapreduce`, `Compat.maximum`,
-  `Compat.minimum`, `Compat.prod`, `Compat.reduce`, `Compat.sort`,
-  and `Compat.sum`  with `dims` keyword argument ([#25989],[#26369]).
-
-* `Compat.mapreduce` and `Compat.reduce` with `init` keyword argument ([#27711]).
-
 * `selectdim` to obtain a view of an array with a specified index for a specified dimension ([#26009]).
-
-* `Compat.cat` with `dims` as keyword argument ([#27163])
 
 * Single-argument `permutedims(x)` for matrices and vectors ([#24839]).
 
