@@ -1295,3 +1295,9 @@ let
     @test func5(y=3, x=2) == 6
     @test_throws UndefKeywordError func5(x=2)
 end
+
+let
+    @compat cr(::CartesianIndices{2}) = 2
+    @test cr(CartesianIndices((5, 3))) == 2
+    @test_throws MethodError cr(CartesianIndices((5, 3, 2)))
+end

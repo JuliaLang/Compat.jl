@@ -55,20 +55,6 @@ for x in (3.1, -17, 3//4, big(111.1), Inf)
     @test minmax(x) == (x, x)
 end
 
-let
-    @compat cr(::CartesianIndices{2}) = 2
-    @test cr(CartesianIndices((5, 3))) == 2
-    @test_throws MethodError cr(CartesianIndices((5, 3, 2)))
-end
-if VERSION < v"0.7.0-DEV.880"
-    # ensure we don't bork any non-updated expressions
-    let
-        @compat cr(::CartesianRange{CartesianIndex{2}}) = 2
-        @test cr(CartesianRange((5, 3))) == 2
-        @test_throws MethodError cr(CartesianRange((5, 3, 2)))
-    end
-end
-
 # 0.7
 let A = [1]
     local x = 0

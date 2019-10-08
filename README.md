@@ -43,11 +43,6 @@ Please check the list below for the specific syntax you need.
 
 Currently, the `@compat` macro supports the following syntaxes:
 
-* `@compat foo(::CartesianRange{N})` to replace the former
-  `foo(::CartesianRange{CartesianIndex{N}})` ([#20974]). Note that
-  `CartesianRange` now has two type parameters, so using them as
-  fields in other `struct`s requires manual intervention.
-
 ## Module Aliases
 
 ## New functions, macros, and methods
