@@ -82,11 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.5087
-@test isletter('a')
-@test isletter('β')
-@test !isletter('3')
-
 # 0.7.0-DEV.4905
 @test isbitstype(Int)
 @test !isbitstype(Vector{Int})

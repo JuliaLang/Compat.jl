@@ -78,12 +78,6 @@ end
     end
 end
 
-# https://github.com/JuliaLang/julia/pull/27077
-@static if VERSION < v"0.7.0-DEV.5087"
-    export isletter
-    const isletter = isalpha
-end
-
 # https://github.com/JuliaLang/julia/pull/26850
 if !isdefined(Base, :isbitstype) # 0.7.0-DEV.4905
     export isbitstype

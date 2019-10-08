@@ -1078,3 +1078,8 @@ end
     yieldto(t)
     fetch(t)
 end
+
+# 0.7.0-DEV.5087
+@test isletter('a')
+@test isletter('β')
+@test !isletter('3')

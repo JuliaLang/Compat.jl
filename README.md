@@ -93,8 +93,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `Compat.split` and `Compat.rsplit` accept `keepempty` keyword argument
   if `splitter` is given as second argument ([#26634])
 
-* `isalpha` is now `isletter` ([#27077]).
-
 * `cfunction` is now `@cfunction` ([#26486]).
 
 * `vecnorm` and `vecdot` are now `Compat.norm` and `Compat.dot`, respectively, while the
