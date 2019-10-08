@@ -7,16 +7,6 @@ using Compat.SparseArrays
 
 const struct_sym = VERSION < v"0.7.0-DEV.1263" ? :type : :struct
 
-let s = "Koala test: 🐨"
-    @test transcode(UInt16, s) == UInt16[75,111,97,108,97,32,116,101,115,116,58,32,55357,56360]
-    @test transcode(UInt32, s) == UInt32[75,111,97,108,97,32,116,101,115,116,58,32,128040]
-    for T in (UInt8,UInt16,UInt32,Cwchar_t)
-        @test transcode(Compat.String, transcode(T, s)) == s
-        @test transcode(UInt8, transcode(T, s)) == codeunits(s)
-        @test transcode(T, s) == transcode(T, codeunits(s)) == transcode(T, transcode(T, s))
-    end
-end
-
 # julia#29679
 @test !isnothing(1)
 @test isnothing(nothing)
@@ -36,23 +26,6 @@ if VERSION >= v"0.7"
         @test_throws MethodError collect(eachcol(M))
         @test collect(eachslice(M, dims = 1))[1][:, :, 1] == [1 5; 3 7]
     end
-end
-
-let
-    x = view(1:10, 2:4)
-    D = Diagonal(x)
-    @test D[1,1] == 2
-    @test D[3,3] == 4
-    A = view(rand(5,5), 1:3, 1:3)
-    @test D*A == Diagonal(copy(x)) * copy(A)
-    @test A*D == copy(A) * Diagonal(copy(x))
-end
-
-# julia#13998
-for x in (3.1, -17, 3//4, big(111.1), Inf)
-    local x
-    @test min(x) == max(x) == x
-    @test minmax(x) == (x, x)
 end
 
 # Support for positional `stop`
