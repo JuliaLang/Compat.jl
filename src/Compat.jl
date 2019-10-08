@@ -75,11 +75,6 @@ end
     end
 end
 
-# https://github.com/JuliaLang/julia/pull/25647
-@static if VERSION < v"0.7.0-DEV.3526"
-    names(m; all=false, imported=false) = Base.names(m, all, imported)
-end
-
 if VERSION >= v"0.7.0-DEV.3666"
     import UUIDs
 else

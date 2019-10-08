@@ -97,14 +97,6 @@ module TestUUIDs
     @test uuid4() isa UUID
 end
 
-# 0.7.0-DEV.3526
-module TestNames
-    export foo
-    function bar end
-end
-@test :foo in Compat.names(TestNames)
-@test :bar in Compat.names(TestNames, all=true)
-
 # 0.7.0-DEV.4804
 @test Compat.trunc(pi) == 3.0
 @test Compat.floor(pi) == 3.0
