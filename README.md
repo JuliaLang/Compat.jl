@@ -52,9 +52,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Module Aliases
 
-* `using Compat.LibGit2` is provided on versions older than 0.7, where this library is
-  not yet part of the standard library ([#25706]).
-
 * `using Compat.UUIDs` is provided on versions older than 0.7, where this library is
   not yet part of the standard library ([#25819]).
 

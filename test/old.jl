@@ -209,6 +209,14 @@ module TestInteractiveUtils
     @test isdefined(@__MODULE__, :varinfo)
 end
 
+module TestLibGit2
+    using Compat
+    using Compat.LibGit2
+    using Compat.Test
+    @test isdefined(@__MODULE__, :LibGit2)
+    @test isdefined(@__MODULE__, :GitRepo)
+end
+
 
 # tests of removed functionality (i.e. justs tests Base)
 

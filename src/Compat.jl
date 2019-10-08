@@ -49,6 +49,7 @@ enable_debug(x::Bool) = x
 import Distributed
 import Pkg
 import InteractiveUtils
+import LibGit2
 
 
 include("compatmacro.jl")
@@ -72,12 +73,6 @@ end
         idx1, idx2 = ntuple(d->(:), dim-1), ntuple(d->(:), ndims(A)-dim)
         return (view(A, idx1..., i, idx2...) for i in axes(A, dim))
     end
-end
-
-@static if VERSION < v"0.7.0-DEV.3724"
-    const LibGit2 = Base.LibGit2
-else
-    import LibGit2
 end
 
 # 0.7.0-DEV.2695
