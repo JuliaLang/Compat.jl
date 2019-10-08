@@ -136,8 +136,6 @@ Currently, the `@compat` macro supports the following syntaxes:
    for entries with no match and gives the index of the first (rather than the last) match
    ([#25662], [#25998]).
 
-* `object_id` is now `objectid` ([#25615]).
-
 * `LinSpace` is now `LinRange` ([#25896]).
 
 * `isupper`, `islower`, `ucfirst` and `lcfirst` are now `isuppercase`, `islowercase`,

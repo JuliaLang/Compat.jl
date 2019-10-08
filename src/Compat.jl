@@ -75,12 +75,6 @@ end
     end
 end
 
-# 0.7.0-DEV.3455
-@static if !isdefined(Base, :objectid)
-    const objectid = object_id
-    export objectid
-end
-
 @static if VERSION < v"0.7.0-DEV.3272"
     zero2nothing(x::Integer) = x == 0 ? nothing : x
     zero2nothing(x::AbstractUnitRange{<:Integer}) = x == 0:-1 ? nothing : x

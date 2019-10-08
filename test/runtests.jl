@@ -82,11 +82,6 @@ end
 
 @test codeunit("foo") == codeunit(SubString("fooαβγ",1,3)) == UInt8
 
-# 0.7.0-DEV.3455
-let x = y = 1
-    @test objectid(x) == objectid(y)
-end
-
 # 0.7.0-DEV.3415
 for (f1, f2, i) in ((Compat.findfirst, Compat.findnext, 1),
                     (Compat.findlast, Compat.findprev, 2))
