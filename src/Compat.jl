@@ -71,23 +71,6 @@ end
     end
 end
 
-@static if !isdefined(Base, :argmin)
-    if VERSION >= v"0.7.0-DEV.1660" # indmin/indmax return key
-        const argmin = indmin
-        const argmax = indmax
-    else
-        argmin(x::AbstractArray) = CartesianIndex(ind2sub(x, indmin(x)))
-        argmin(x::AbstractVector) = indmin(x)
-        argmin(x::Associative) = first(Iterators.drop(keys(x), indmin(values(x))-1))
-        argmin(x::Tuple) = indmin(x)
-        argmax(x::AbstractArray) = CartesianIndex(ind2sub(x, indmax(x)))
-        argmax(x::AbstractVector) = indmax(x)
-        argmax(x::Associative) = first(Iterators.drop(keys(x), indmax(values(x))-1))
-        argmax(x::Tuple) = indmax(x)
-    end
-    export argmin, argmax
-end
-
 @static if !isdefined(Base, :parentmodule)
     parentmodule(m::Module) = Base.module_parent(m)
     parentmodule(f::Function) = Base.function_module(f)

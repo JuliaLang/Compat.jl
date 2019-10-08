@@ -97,16 +97,6 @@ end
 @test nameof(Float64) == :Float64
 @test nameof(Array) == :Array
 
-# 0.7.0-DEV.3516
-@test argmax([10,12,9,11]) == 2
-@test argmax([10 12; 9 11]) == CartesianIndex(1, 2)
-@test argmax(Dict(:z=>10, :y=>12, :x=>9, :w=>11)) == :y
-@test argmax((-5, 6, 10)) == 3
-@test argmin([10,12,9,11]) == 3
-@test argmin([10 12; 9 11]) == CartesianIndex(2, 1)
-@test argmin(Dict(:z=>10, :y=>12, :x=>9, :w=>11)) == :x
-@test argmin((1.0, -3, 0.f0)) == 2
-
 module TestPkg
     using Compat
     using Compat.Pkg

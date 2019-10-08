@@ -160,8 +160,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `findin(a, b)` is now `findall(in(b), a)` ([#24673]).
 
-* `indmin` and `indmax` are now `argmin` and `argmax`, respectively ([#25654]).
-
 * `Compat.indexin` accepts any iterable as first argument, returns `nothing` (rather than `0`)
    for entries with no match and gives the index of the first (rather than the last) match
    ([#25662], [#25998]).
