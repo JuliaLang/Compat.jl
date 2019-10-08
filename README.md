@@ -142,8 +142,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `endof` is now `lastindex` ([#25458]). (Note that `lastindex(A, n)` is not supported.)
 
-* `nb_available` is now `bytesavailable` ([#25634]).
-
 * `method_exists` is now `hasmethod` ([#25615]).
 
 * `object_id` is now `objectid` ([#25615]).

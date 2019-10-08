@@ -75,12 +75,6 @@ end
     end
 end
 
-# 0.7.0-DEV.3481
-@static if !isdefined(Base, :bytesavailable)
-    const bytesavailable = nb_available
-    export bytesavailable
-end
-
 # 0.7.0-DEV.3583
 @static if !isdefined(Base, :lastindex)
     const lastindex = endof

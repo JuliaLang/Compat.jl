@@ -703,3 +703,9 @@ end
 @test GC.enable(true)
 
 @test eltype(Base.Multimedia.displays) <: AbstractDisplay
+
+# 0.7.0-DEV.3481
+let b = IOBuffer()
+    write(b, "hi")
+    @test bytesavailable(b) == 0
+end
