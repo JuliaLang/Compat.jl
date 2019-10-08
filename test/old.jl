@@ -670,3 +670,10 @@ end
 @test nameof(sin) == :sin
 @test nameof(Float64) == :Float64
 @test nameof(Array) == :Array
+
+# 0.7.0-DEV.3469
+@test GC.enable(true)
+@test GC.enable(false)
+@test !GC.enable(false)
+@test !GC.enable(true)
+@test GC.enable(true)

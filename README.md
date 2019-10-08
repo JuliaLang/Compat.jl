@@ -156,8 +156,6 @@ Currently, the `@compat` macro supports the following syntaxes:
    for entries with no match and gives the index of the first (rather than the last) match
    ([#25662], [#25998]).
 
-* `gc` and `gc_enable` are now `GC.gc` and `GC.enable`, respectively ([#25616]).
-
 * `endof` is now `lastindex` ([#25458]). (Note that `lastindex(A, n)` is not supported.)
 
 * `nb_available` is now `bytesavailable` ([#25634]).

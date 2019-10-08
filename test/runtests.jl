@@ -106,13 +106,6 @@ module TestLibGit2
     @test isdefined(@__MODULE__, :GitRepo)
 end
 
-# 0.7.0-DEV.3469
-@test GC.enable(true)
-@test GC.enable(false)
-@test !GC.enable(false)
-@test !GC.enable(true)
-@test GC.enable(true)
-
 @test eltype(Base.Multimedia.displays) <: AbstractDisplay
 
 # 0.7.0-DEV.3481

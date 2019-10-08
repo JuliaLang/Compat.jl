@@ -71,15 +71,6 @@ end
     end
 end
 
-# 0.7.0-DEV.3469
-@static if !isdefined(Base, :GC)
-    @eval module GC
-        using Base: gc
-        const enable = Base.gc_enable
-    end
-    export GC
-end
-
 if VERSION < v"0.7.0-DEV.2954"
     const Distributed = Base.Distributed
 else
