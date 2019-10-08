@@ -114,8 +114,6 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `squeeze` is now `dropdims` ([#28303], [#26660]).
 
-* `repmat` is now `repeat` ([#26039])
-
 ## New macros
 
 ## Other changes

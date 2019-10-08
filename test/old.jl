@@ -1045,3 +1045,11 @@ let A = rand(5,5)
     @test IndexStyle(selectdim(B, 2, 1)) == IndexStyle(view(B, :, 1, :)) == IndexCartesian()
     @test IndexStyle(selectdim(B, 3, 1)) == IndexStyle(view(B, :, :, 1)) == IndexLinear()
 end
+
+@test repeat([1, 2], 3) == [1, 2, 1, 2, 1, 2]
+@test repeat(1:4, 2) == [1, 2, 3, 4, 1, 2, 3, 4]
+@test repeat([1 2; 3 4], 2, 3) == [1  2  1  2  1  2
+                                   3  4  3  4  3  4
+                                   1  2  1  2  1  2
+                                   3  4  3  4  3  4]
+@test repeat([1, 2], 1, 2, 3) == [x for x in 1:2, y in 1:2, z in 1:3]
