@@ -47,21 +47,28 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
+#### Julia 1.4
+
 * `only(x)` returns the one-and-only element of a collection `x`. ([#33129])
 
+#### Julia 1.3
+
 * `mod` now accepts a unit range as the second argument ([#32628]).
+
+#### Julia 1.2
+
+* `hasproperty` and `hasfield` ([#28850]).
+
+#### Julia 1.1
+
+* `range` supporting `stop` as positional argument ([#28708]).
+
+* `merge` methods with one and `n` `NamedTuple`s ([#29259]).
 
 * `eachrow`, `eachcol`, and `eachslice` to iterate over first, second, or given dimension
   of an array ([#29749]).
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
-
-* `range` supporting `stop` as positional argument ([#28708]).
-
-* `hasproperty` and `hasfield` ([#28850]).
-  `hasproperty` is defined only for Julia 0.7 or later.
-
-* `merge` methods with one and `n` `NamedTuple`s ([#29259]).
 
 ## Renaming
 
