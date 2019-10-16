@@ -93,6 +93,12 @@ if VERSION < v"1.4.0-DEV.329"
     Base.:∘(f, g, h...) = ∘(f ∘ g, h...)
 end
 
+# https://github.com/JuliaLang/julia/pull/33573
+if VERSION < v"1.4.0-DEV.330"
+    export compose
+    const compose = ∘
+end
+
 include("deprecated.jl")
 
 end # module Compat

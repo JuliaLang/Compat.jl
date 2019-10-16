@@ -63,6 +63,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `merge` methods with one and `n` `NamedTuple`s ([#29259]).
 
+* Function composition `∘` now has an ASCII alias `compose` ([#33573]).
+
 ## Renaming
 
 ## New macros
@@ -131,3 +133,4 @@ includes this fix. Find the minimum version from there.
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/pull/33568
+[#33573]: https://github.com/JuliaLang/julia/pull/33573

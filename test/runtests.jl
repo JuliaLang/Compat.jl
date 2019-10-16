@@ -91,10 +91,12 @@ end
 end
 
 # https://github.com/JuliaLang/julia/pull/33568
+# https://github.com/JuliaLang/julia/pull/33573
 @testset "function composition" begin
     @test ∘(x -> x-2, x -> x-3, x -> x+5)(7) == 7
     fs = [x -> x[1:2], uppercase, lowercase]
     @test ∘(fs...)("ABC") == "AB"
+    @test ∘(fs...) === compose(fs...)
 end
 
 nothing
