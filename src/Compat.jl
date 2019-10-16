@@ -88,6 +88,11 @@ if VERSION < v"1.3.0-alpha.8"
     Base.mod(i::Integer, r::AbstractUnitRange{<:Integer}) = mod(i-first(r), length(r)) + first(r)
 end
 
+# https://github.com/JuliaLang/julia/pull/33568
+if VERSION < v"1.4.0-DEV.329"
+    Base.:∘(f, g, h...) = ∘(f ∘ g, h...)
+end
+
 include("deprecated.jl")
 
 end # module Compat

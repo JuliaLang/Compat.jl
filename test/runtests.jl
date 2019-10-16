@@ -90,4 +90,11 @@ end
     @test_throws DivideError mod(3, 1:0)
 end
 
+# https://github.com/JuliaLang/julia/pull/33568
+@testset "function composition" begin
+    @test ∘(x -> x-2, x -> x-3, x -> x+5)(7) == 7
+    fs = [x -> x[1:2], uppercase, lowercase]
+    @test ∘(fs...)("ABC") == "AB"
+end
+
 nothing
