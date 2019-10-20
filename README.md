@@ -69,6 +69,9 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Other changes
 
+* Function composition now supports multiple functions: `∘(f, g, h) = f ∘ g ∘ h`
+  and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).
+
 ## New types
 
 ## Developer tips
@@ -127,3 +130,4 @@ includes this fix. Find the minimum version from there.
 [#29749]: https://github.com/JuliaLang/julia/issues/29749
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
+[#33568]: https://github.com/JuliaLang/julia/pull/33568
