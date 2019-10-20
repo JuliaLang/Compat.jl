@@ -47,21 +47,20 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
-* `only(x)` returns the one-and-only element of a collection `x`. ([#33129])
+* `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
 
-* `mod` now accepts a unit range as the second argument ([#32628]).
+* `mod` now accepts a unit range as the second argument ([#32628]). (since Compat 2.2.0)
 
 * `eachrow`, `eachcol`, and `eachslice` to iterate over first, second, or given dimension
-  of an array ([#29749]).
+  of an array ([#29749]). (since Compat 2.2.0)
 
-* `isnothing` for testing if a variable is equal to `nothing` ([#29674]).
+* `isnothing` for testing if a variable is equal to `nothing` ([#29674]).  (since Compat 2.1.0)
 
-* `range` supporting `stop` as positional argument ([#28708]).
+* `range` supporting `stop` as positional argument ([#28708]). (since Compat 1.3.0)
 
-* `hasproperty` and `hasfield` ([#28850]).
-  `hasproperty` is defined only for Julia 0.7 or later.
+* `hasproperty` and `hasfield` ([#28850]).  (since Compat 2.0.0)
 
-* `merge` methods with one and `n` `NamedTuple`s ([#29259]).
+* `merge` methods with one and `n` `NamedTuple`s ([#29259]). (since Compat 2.0.0)
 
 ## Renaming
 
@@ -101,27 +100,8 @@ is at least this version by `VERSION >= v"X.Y.Z-aaa+NNNN"`.
 
 ### Tagging the correct minimum version of Compat
 
-One of the most frequent problems package developers encounter is finding the right
-version of `Compat` to add to their REQUIRE. This is meant to be a guide on how to
-specify the right lower bound.
-
-* Find the appropriate fix needed for your package from the `Compat` README. Every
-function or feature added to `Compat` is documented in its README, so you are
-guaranteed to find it.
-
-* Navigate to the [blame page of the README](https://github.com/JuliaLang/Compat.jl/blame/master/README.md)
-by clicking on the README file on GitHub, and then clicking on the `blame` button
-which can be found in the top-right corner.
-
-* Now find your fix, and then find the corresponding commit ID of that fix on the
-left-hand side. Click on the commit ID. This navigates to a page which recorded
-that particular commit.
-
-* On the top pane, you should find the list of the tagged versions of Compat that
-includes this fix. Find the minimum version from there.
-
-* Now specify the correct minimum version for Compat in your REQUIRE file by
-`Compat <version>`
+Note that you should specify the correct minimum version for `Compat` in the
+`[compat]` section of your `Project.toml`, as given in above list.
 
 [#28708]: https://github.com/JuliaLang/julia/issues/28708
 [#28850]: https://github.com/JuliaLang/julia/issues/28850
