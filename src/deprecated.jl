@@ -31,6 +31,10 @@ Base.@deprecate enable_debug(x::Bool) x false
 module TypeUtils
     Base.@deprecate_binding isabstract isabstracttype
     Base.@deprecate_binding typename Base.typename
-    Base.@deprecate_binding parameter_upper_bound Base.parameter_upper_bound
+    Base.@pure function _parameter_upper_bound(t::UnionAll, idx)
+        return Base.rewrap_unionall((Base.unwrap_unionall(t)::DataType).parameters[idx], t)
+    end
+    Base.@deprecate_binding(parameter_upper_bound, _parameter_upper_bound, true,
+        ", rewrite your code to use static parameters in dispatch or use `Base.rewrap_unionall((Base.unwrap_unionall(t)::DataType).parameters[idx], t)`.")
 end # module TypeUtils
 Base.@deprecate_binding TypeUtils TypeUtils false ", call the respective Base functions directly"
