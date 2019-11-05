@@ -13,7 +13,7 @@ Compat package provides a macro that lets you use the *latest syntax*
 in a backwards-compatible way.
 
 This is primarily intended for use by other [Julia
-packages](http://docs.julialang.org/en/latest/manual/packages/), where
+packages](https://julialang.github.io/Pkg.jl/v1/creating-packages/), where
 it is important to maintain cross-version compatibility.
 
 ## Usage
