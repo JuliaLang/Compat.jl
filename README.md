@@ -47,6 +47,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
+* `pkgdir(m)` return the root directory of the package that imported module `m` ([#33128]). (since Compat 2.3.0)
+
 * `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
 
 * `mod` now accepts a unit range as the second argument ([#32628]). (since Compat 2.2.0)
@@ -111,3 +113,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/pull/33568
+[#33128]: https://github.com/JuliaLang/julia/pull/33128

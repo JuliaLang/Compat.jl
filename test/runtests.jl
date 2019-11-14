@@ -97,4 +97,10 @@ end
     @test ∘(fs...)("ABC") == "AB"
 end
 
+# https://github.com/JuliaLang/julia/pull/33128
+@testset "pkgdir" begin
+    @test pkgdir(Main) === nothing
+    @test pkgdir(Compat) == rstrip(abspath(joinpath(@__DIR__, "..")), '/')
+end
+
 nothing
