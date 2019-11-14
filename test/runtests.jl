@@ -100,7 +100,7 @@ end
 # https://github.com/JuliaLang/julia/pull/33128
 @testset "pkgdir" begin
     @test pkgdir(Main) === nothing
-    @test pkgdir(Compat) == rstrip(abspath(joinpath(@__DIR__, "..")), '/')
+    @test joinpath(pkgdir(Compat), "") == abspath(joinpath(@__DIR__, ".."))
 end
 
 nothing
