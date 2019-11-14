@@ -93,6 +93,11 @@ if VERSION < v"1.4.0-DEV.329"
     Base.:∘(f, g, h...) = ∘(f ∘ g, h...)
 end
 
+# https://github.com/JuliaLang/julia/pull/33777
+if VERSION < v"1.4.0-DEV.445"
+    Base.LIBEXECDIR = ""
+end
+
 include("deprecated.jl")
 
 end # module Compat
