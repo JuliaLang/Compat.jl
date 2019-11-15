@@ -94,7 +94,7 @@ if VERSION < v"1.4.0-DEV.329"
 end
 
 # https://github.com/JuliaLang/julia/pull/33777
-if VERSION < v"1.3.0-rc5 || v"1.4" <= VERSION < v"1.4.0-DEV.445
+if VERSION < v"1.3.0-rc5" || v"1.4" <= VERSION < v"1.4.0-DEV.445"
     @eval(Base, const LIBEXECDIR = "")
 end
 
