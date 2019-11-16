@@ -45,7 +45,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## Module Aliases
 
-## New functions, macros, and methods
+## New functions, macros, methods, and constants
 
 * `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
 
@@ -61,6 +61,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 * `hasproperty` and `hasfield` ([#28850]).  (since Compat 2.0.0)
 
 * `merge` methods with one and `n` `NamedTuple`s ([#29259]). (since Compat 2.0.0)
+
+* `Base.LIBEXECDIR` constant which emulates the relative directory of the `libexecdir` path ([#33777]). (since Compat 2.3.0)
 
 ## Renaming
 
@@ -111,3 +113,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/pull/33568
+[#33777]: https://github.com/JuliaLang/julia/pull/33777
