@@ -95,13 +95,11 @@ end
 
 # https://github.com/JuliaLang/julia/pull/33777
 if v"1.4.0-DEV.172" <= VERSION < v"1.4.0-DEV.445"
-    libexecdir = Sys.iswindows() ? "..\\libexec" : "../libexec"
-    @eval(Base, const LIBEXECDIR = $libexecdir)
+    @eval(Base, const LIBEXECDIR = $(joinpath("..", "libexec")))
 elseif v"1.4" <= VERSION < v"1.4.0-DEV.172" 
     @eval(Base, const LIBEXECDIR = "")
 elseif v"1.3.0-rc3" <= VERSION <= v"1.3.0-rc5"     
-    libexecdir = Sys.iswindows() ? "..\\libexec" : "../libexec"
-    @eval(Base, const LIBEXECDIR = $libexecdir)
+    @eval(Base, const LIBEXECDIR = $(joinpath("..", "libexec")))
 elseif VERSION < v"1.3.0-rc3"
     @eval(Base, const LIBEXECDIR = "")
 end
