@@ -10,7 +10,7 @@ if VERSION < v"1.1.0-DEV.472"
 end
 
 # https://github.com/JuliaLang/julia/pull/29749
-@static if VERSION < v"1.1.0-DEV.792"
+if VERSION < v"1.1.0-DEV.792"
     export eachrow, eachcol, eachslice
     eachrow(A::AbstractVecOrMat) = (view(A, i, :) for i in axes(A, 1))
     eachcol(A::AbstractVecOrMat) = (view(A, :, i) for i in axes(A, 2))
