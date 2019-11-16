@@ -42,13 +42,7 @@ the syntax on Julia `master`. However, in a few cases where this is not possible
 a slightly different syntax might be used.
 Please check the list below for the specific syntax you need.
 
-## Supported syntax
-
-Currently, the `@compat` macro supports the following syntaxes:
-
-## Module Aliases
-
-## New functions, macros, and methods
+## Supported features
 
 * `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
 
@@ -67,16 +61,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 3.0.0)
 
-## Renaming
-
-## New macros
-
-## Other changes
-
 * Function composition now supports multiple functions: `∘(f, g, h) = f ∘ g ∘ h`
   and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).  (since Compat 3.0.0)
-
-## New types
 
 ## Developer tips
 
