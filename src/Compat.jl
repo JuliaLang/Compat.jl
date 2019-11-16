@@ -94,8 +94,11 @@ if VERSION < v"1.4.0-DEV.329"
 end
 
 # https://github.com/JuliaLang/julia/pull/33777
-if VERSION < v"1.3.0-rc5" || v"1.4" <= VERSION < v"1.4.0-DEV.445"
+if VERSION < v"1.3.0-rc5"
     @eval(Base, const LIBEXECDIR = "")
+elseif v"1.4" <= VERSION < v"1.4.0-DEV.445"
+    libexecdir = Sys.iswindows() ? "..\\libexec" : "../libexec"
+    @eval(Base, const LIBEXECDIR = $libexecdir)
 end
 
 include("deprecated.jl")
