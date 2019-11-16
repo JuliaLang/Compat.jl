@@ -62,7 +62,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `merge` methods with one and `n` `NamedTuple`s ([#29259]). (since Compat 2.0.0)
 
-* `Base.LIBEXECDIR` constant which emulates the relative directory of the `libexecdir` path ([#33777]). (since Compat 2.3.0)
+* `Base.LIBEXECDIR` constant which emulates the relative directory of `libexec` path ([#33777]). (since Compat 2.3.0)
 
 ## Renaming
 
