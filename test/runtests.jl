@@ -97,4 +97,10 @@ end
     @test ∘(fs...)("ABC") == "AB"
 end
 
+# https://github.com/JuliaLang/julia/pull/33736/
+@testset "ReverseOrdering constructor" begin
+    @test Base.Order.ReverseOrdering() == Base.Order.Reverse
+end
+
+
 nothing
