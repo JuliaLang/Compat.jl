@@ -74,7 +74,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 ## Other changes
 
 * Function composition now supports multiple functions: `∘(f, g, h) = f ∘ g ∘ h`
-  and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).
+  and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).  (since Compat 3.0.0)
 
 ## New types
 
