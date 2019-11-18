@@ -65,7 +65,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `merge` methods with one and `n` `NamedTuple`s ([#29259]). (since Compat 2.0.0)
 
-* `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 2.3.0)
+* `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 3.0.0)
 
 ## Renaming
 
