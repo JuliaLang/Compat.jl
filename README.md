@@ -65,6 +65,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `merge` methods with one and `n` `NamedTuple`s ([#29259]). (since Compat 2.0.0)
 
+* `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 3.0.0)
+
 ## Renaming
 
 ## New macros
@@ -72,7 +74,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 ## Other changes
 
 * Function composition now supports multiple functions: `∘(f, g, h) = f ∘ g ∘ h`
-  and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).
+  and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).  (since Compat 3.0.0)
 
 ## New types
 
@@ -114,3 +116,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/pull/33568
+[#33736]: http://github.com/JuliaLang/julia/pull/33736
