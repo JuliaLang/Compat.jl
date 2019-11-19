@@ -50,7 +50,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
-* `pkgdir(m)` return the root directory of the package that imported module `m` ([#33128]). (since Compat 2.3.0)
+* `pkgdir(m)` returns the root directory of the package that imported module `m` ([#33128]).
 
 * `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
 
