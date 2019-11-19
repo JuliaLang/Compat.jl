@@ -10,7 +10,7 @@ if VERSION < v"1.1.0-DEV.472"
 end
 
 # https://github.com/JuliaLang/julia/pull/29749
-@static if VERSION < v"1.1.0-DEV.792"
+if VERSION < v"1.1.0-DEV.792"
     export eachrow, eachcol, eachslice
     eachrow(A::AbstractVecOrMat) = (view(A, i, :) for i in axes(A, 1))
     eachcol(A::AbstractVecOrMat) = (view(A, :, i) for i in axes(A, 2))
@@ -102,6 +102,11 @@ if VERSION < v"1.4.0-DEV.397"
         path === nothing && return nothing
         return dirname(dirname(path))
     end
+end
+
+# https://github.com/JuliaLang/julia/pull/33736/
+if VERSION < v"1.4.0-DEV.493"
+    Base.Order.ReverseOrdering() = Base.Order.ReverseOrdering(Base.Order.Forward)
 end
 
 include("deprecated.jl")

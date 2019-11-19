@@ -103,4 +103,9 @@ end
     @test joinpath(pkgdir(Compat), "") == abspath(joinpath(@__DIR__, ".."))
 end
 
+# https://github.com/JuliaLang/julia/pull/33736/
+@testset "ReverseOrdering constructor" begin
+    @test Base.Order.ReverseOrdering() == Base.Order.Reverse
+end
+
 nothing

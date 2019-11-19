@@ -13,18 +13,21 @@ Compat package provides a macro that lets you use the *latest syntax*
 in a backwards-compatible way.
 
 This is primarily intended for use by other [Julia
-packages](http://docs.julialang.org/en/latest/manual/packages/), where
+packages](https://julialang.github.io/Pkg.jl/v1/creating-packages/), where
 it is important to maintain cross-version compatibility.
 
 ## Usage
 
-To use Compat in your Julia package, add a line `Compat` to the
-`REQUIRE` file in your package directory.  Then, in your package,
-shortly after the `module` statement include lines like these:
+To use Compat in your Julia package, add a line
+`Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"` in the `[deps]` section
+and a line `Compat = "..."` in the `[compat]`section to the `Project.toml` file
+in your package directory. The version in the latter should be the minimum
+version that supports all needed fatures (see list below), and (if applicable)
+any newer major versions verified to be compatible. Then, in your package,
+shortly after the `module` statement a line like this:
 
 ```julia
 using Compat
-import Compat.String
 ```
 
 and then as needed add
@@ -64,6 +67,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 * `merge` methods with one and `n` `NamedTuple`s ([#29259]). (since Compat 2.0.0)
 
+* `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 3.0.0)
+
 ## Renaming
 
 ## New macros
@@ -71,7 +76,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 ## Other changes
 
 * Function composition now supports multiple functions: `∘(f, g, h) = f ∘ g ∘ h`
-  and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).
+  and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).  (since Compat 3.0.0)
 
 ## New types
 
@@ -114,3 +119,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/pull/33568
 [#33128]: https://github.com/JuliaLang/julia/pull/33128
+[#33736]: http://github.com/JuliaLang/julia/pull/33736
