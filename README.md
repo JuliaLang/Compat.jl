@@ -50,6 +50,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
+* `filter` can now act on a `Tuple` [#32968]. (since Compat 3.0.1)
+
 * `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
 
 * `mod` now accepts a unit range as the second argument ([#32628]). (since Compat 2.2.0)
@@ -117,3 +119,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/pull/33568
 [#33736]: http://github.com/JuliaLang/julia/pull/33736
+[#32968]: https://github.com/JuliaLang/julia/pull/32968
