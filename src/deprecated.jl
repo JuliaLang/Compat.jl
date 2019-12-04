@@ -9,7 +9,7 @@ Base.@deprecate_binding IteratorSize Base.IteratorSize false
 Base.@deprecate_binding IteratorEltype Base.IteratorEltype false
 Base.@deprecate_binding opnorm LinearAlgebra.opnorm false
 Base.@deprecate_binding norm LinearAlgebra.norm false
-Base.@deprecate_binding dot LinearAlgebra.dot false
+# Base.@deprecate_binding dot LinearAlgebra.dot false
 Base.@deprecate_binding (⋅) LinearAlgebra.dot false
 Base.@deprecate_binding notnothing Base.notnothing false
 Base.@deprecate_binding qr LinearAlgebra.qr false
