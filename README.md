@@ -50,6 +50,8 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
+* `dot` now has a 3-argument method `dot(x, A, y)` without storing the intermediate result `A*y` ([#32739]). (since Compat 3.0.1)
+
 * `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
 
 * `mod` now accepts a unit range as the second argument ([#32628]). (since Compat 2.2.0)
@@ -114,6 +116,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#29674]: https://github.com/JuliaLang/julia/issues/29674
 [#29749]: https://github.com/JuliaLang/julia/issues/29749
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
+[#32739]: https://github.com/JuliaLang/julia/pull/32739
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/pull/33568
 [#33736]: http://github.com/JuliaLang/julia/pull/33736

@@ -125,7 +125,7 @@ if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
 
     # stdlib/LinearAlgebra/src/symmetric.jl
     function LinearAlgebra.dot(x::AbstractVector, A::LinearAlgebra.RealHermSymComplexHerm, y::AbstractVector)
-        Base.require_one_based_indexing(x, y)
+        require_one_based_indexing(x, y)
         (length(x) == length(y) == size(A, 1)) || throw(DimensionMismatch())
         data = A.data
         r = zero(eltype(x)) * zero(eltype(A)) * zero(eltype(y))
@@ -153,6 +153,11 @@ if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
     LinearAlgebra.dot(x::AbstractVector, J::UniformScaling, y::AbstractVector) = dot(x, J.λ, y)
     LinearAlgebra.dot(x::AbstractVector, a::Number, y::AbstractVector) = sum(t -> dot(t[1], a, t[2]), zip(x, y))
     LinearAlgebra.dot(x::AbstractVector, a::Union{Real,Complex}, y::AbstractVector) = a*dot(x, y)
+end
+
+# https://github.com/JuliaLang/julia/pull/30630
+if VERSION < v"1.2.0-DEV.125" # 1da48c2e4028c1514ed45688be727efbef1db884
+    require_one_based_indexing(A...) = !Base.has_offset_axes(A...) || throw(ArgumentError("offset arrays are not supported but got an array with index other than 1"))
 end
 
 # https://github.com/JuliaLang/julia/pull/33568

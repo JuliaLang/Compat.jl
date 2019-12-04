@@ -10,13 +10,13 @@ Base.@deprecate_binding IteratorEltype Base.IteratorEltype false
 Base.@deprecate_binding opnorm LinearAlgebra.opnorm false
 Base.@deprecate_binding norm LinearAlgebra.norm false
 # Base.@deprecate_binding dot LinearAlgebra.dot false
-Base.@deprecate_binding (⋅) LinearAlgebra.dot false
+# Base.@deprecate_binding (⋅) LinearAlgebra.dot false
 Base.@deprecate_binding notnothing Base.notnothing false
 Base.@deprecate_binding qr LinearAlgebra.qr false
 Base.@deprecate_binding rmul! LinearAlgebra.rmul! false
 
 for stdlib in [:Base64, :Dates, :DelimitedFiles, :Distributed, :InteractiveUtils, :Libdl,
-    :LibGit2, :LinearAlgebra, :Markdown, :Mmap, :Pkg, :Printf, :Random, :REPL,
+    # :LibGit2, :LinearAlgebra, :Markdown, :Mmap, :Pkg, :Printf, :Random, :REPL,
     :Serialization, :SharedArrays, :Sockets, :SparseArrays, :Statistics, :Test, :Unicode,
     :UUIDs]
     @eval begin
