@@ -88,18 +88,19 @@ if VERSION < v"1.3.0-alpha.8"
     Base.mod(i::Integer, r::AbstractUnitRange{<:Integer}) = mod(i-first(r), length(r)) + first(r)
 end
 
-using LinearAlgebra
+import LinearAlgebra
+using LinearAlgebra: Adjoint, Diagonal, Transpose, UniformScaling
 
 # https://github.com/JuliaLang/julia/pull/32739
 # This omits special methods for more exotic matrix types, Triangular and worse.
 if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
 
     # stdlib/LinearAlgebra/src/generic.jl
-    LinearAlgebra.dot(x, A, y) = dot(x, A*y) # generic fallback for cases that are not covered by specialized methods
+    LinearAlgebra.dot(x, A, y) = LinearAlgebra.dot(x, A*y) # generic fallback for cases that are not covered by specialized methods
 
     function LinearAlgebra.dot(x::AbstractVector, A::AbstractMatrix, y::AbstractVector)
         (axes(x)..., axes(y)...) == axes(A) || throw(DimensionMismatch())
-        T = typeof(dot(first(x), first(A), first(y)))
+        T = typeof(LinearAlgebra.dot(first(x), first(A), first(y)))
         s = zero(T)
         i₁ = first(eachindex(x))
         x₁ = first(x)
@@ -110,17 +111,17 @@ if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
                 @simd for i in eachindex(x)
                     temp += adjoint(A[i,j]) * x[i]
                 end
-                s += dot(temp, yj)
+                s += LinearAlgebra.dot(temp, yj)
             end
         end
         return s
     end
-    LinearAlgebra.dot(x::AbstractVector, adjA::Adjoint, y::AbstractVector) = adjoint(dot(y, adjA.parent, x))
-    LinearAlgebra.dot(x::AbstractVector, transA::Transpose{<:Real}, y::AbstractVector) = adjoint(dot(y, transA.parent, x))
+    LinearAlgebra.dot(x::AbstractVector, adjA::Adjoint, y::AbstractVector) = adjoint(LinearAlgebra.dot(y, adjA.parent, x))
+    LinearAlgebra.dot(x::AbstractVector, transA::Transpose{<:Real}, y::AbstractVector) = adjoint(LinearAlgebra.dot(y, transA.parent, x))
 
     # stdlib/LinearAlgebra/src/diagonal.jl
     function LinearAlgebra.dot(x::AbstractVector, D::Diagonal, y::AbstractVector)
-        mapreduce(t -> dot(t[1], t[2], t[3]), +, zip(x, D.diag, y))
+        mapreduce(t -> LinearAlgebra.dot(t[1], t[2], t[3]), +, zip(x, D.diag, y))
     end
 
     # stdlib/LinearAlgebra/src/symmetric.jl
@@ -131,18 +132,18 @@ if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
         r = zero(eltype(x)) * zero(eltype(A)) * zero(eltype(y))
         if A.uplo == 'U'
             @inbounds for j = 1:length(y)
-                r += dot(x[j], real(data[j,j]), y[j])
+                r += LinearAlgebra.dot(x[j], real(data[j,j]), y[j])
                 @simd for i = 1:j-1
                     Aij = data[i,j]
-                    r += dot(x[i], Aij, y[j]) + dot(x[j], adjoint(Aij), y[i])
+                    r += LinearAlgebra.dot(x[i], Aij, y[j]) + LinearAlgebra.dot(x[j], adjoint(Aij), y[i])
                 end
             end
         else # A.uplo == 'L'
             @inbounds for j = 1:length(y)
-                r += dot(x[j], real(data[j,j]), y[j])
+                r += LinearAlgebra.dot(x[j], real(data[j,j]), y[j])
                 @simd for i = j+1:length(y)
                     Aij = data[i,j]
-                    r += dot(x[i], Aij, y[j]) + dot(x[j], adjoint(Aij), y[i])
+                    r += LinearAlgebra.dot(x[i], Aij, y[j]) + LinearAlgebra.dot(x[j], adjoint(Aij), y[i])
                 end
             end
         end
@@ -150,9 +151,9 @@ if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
     end
 
     # stdlib/LinearAlgebra/src/uniformscaling.jl
-    LinearAlgebra.dot(x::AbstractVector, J::UniformScaling, y::AbstractVector) = dot(x, J.λ, y)
-    LinearAlgebra.dot(x::AbstractVector, a::Number, y::AbstractVector) = sum(t -> dot(t[1], a, t[2]), zip(x, y))
-    LinearAlgebra.dot(x::AbstractVector, a::Union{Real,Complex}, y::AbstractVector) = a*dot(x, y)
+    LinearAlgebra.dot(x::AbstractVector, J::UniformScaling, y::AbstractVector) = LinearAlgebra.dot(x, J.λ, y)
+    LinearAlgebra.dot(x::AbstractVector, a::Number, y::AbstractVector) = sum(t -> LinearAlgebra.dot(t[1], a, t[2]), zip(x, y))
+    LinearAlgebra.dot(x::AbstractVector, a::Union{Real,Complex}, y::AbstractVector) = a*LinearAlgebra.dot(x, y)
 end
 
 # https://github.com/JuliaLang/julia/pull/30630
