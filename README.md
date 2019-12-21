@@ -44,6 +44,11 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 3.0.0)
+
+* Function composition now supports multiple functions: `∘(f, g, h) = f ∘ g ∘ h`
+  and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).  (since Compat 3.0.0)
+
 * `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
 
 * `mod` now accepts a unit range as the second argument ([#32628]). (since Compat 2.2.0)
@@ -53,16 +58,11 @@ Please check the list below for the specific syntax you need.
 
 * `isnothing` for testing if a variable is equal to `nothing` ([#29674]).  (since Compat 2.1.0)
 
-* `range` supporting `stop` as positional argument ([#28708]). (since Compat 1.3.0)
-
 * `hasproperty` and `hasfield` ([#28850]).  (since Compat 2.0.0)
 
 * `merge` methods with one and `n` `NamedTuple`s ([#29259]). (since Compat 2.0.0)
 
-* `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 3.0.0)
-
-* Function composition now supports multiple functions: `∘(f, g, h) = f ∘ g ∘ h`
-  and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).  (since Compat 3.0.0)
+* `range` supporting `stop` as positional argument ([#28708]). (since Compat 1.3.0)
 
 ## Developer tips
 
