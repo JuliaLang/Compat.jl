@@ -50,7 +50,7 @@ Currently, the `@compat` macro supports the following syntaxes:
 
 ## New functions, macros, and methods
 
-* `filter` can now act on a `Tuple` [#32968]. (since Compat 3.0.1)
+* `filter` can now act on a `Tuple` [#32968]. (since Compat 3.1.0)
 
 * `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
 
