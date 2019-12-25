@@ -44,14 +44,14 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `pkgdir(m)` returns the root directory of the package that imported module `m` ([#33128]). (since Compat 3.2.0)
+
 * `filter` can now act on a `Tuple` [#32968]. (since Compat 3.1.0)
 
 * `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 3.0.0)
 
 * Function composition now supports multiple functions: `∘(f, g, h) = f ∘ g ∘ h`
   and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).  (since Compat 3.0.0)
-
-* `pkgdir(m)` returns the root directory of the package that imported module `m` ([#33128]).
 
 * `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
 
