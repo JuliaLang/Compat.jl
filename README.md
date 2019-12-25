@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `pkgdir(m)` returns the root directory of the package that imported module `m` ([#33128]). (since Compat 3.2.0)
+
 * `filter` can now act on a `Tuple` [#32968]. (since Compat 3.1.0)
 
 * `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 3.0.0)
@@ -104,5 +106,6 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/pull/33568
+[#33128]: https://github.com/JuliaLang/julia/pull/33128
 [#33736]: http://github.com/JuliaLang/julia/pull/33736
 [#32968]: https://github.com/JuliaLang/julia/pull/32968
