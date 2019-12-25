@@ -108,4 +108,15 @@ end
     @test Base.Order.ReverseOrdering() == Base.Order.Reverse
 end
 
+# https://github.com/JuliaLang/julia/pull/32968
+@testset "filter on Tuples" begin
+    @test filter(isodd, (1,2,3)) == (1, 3)
+    @test filter(isequal(2), (true, 2.0, 3)) === (2.0,)
+    @test filter(i -> true, ()) == ()
+    @test filter(identity, (true,)) === (true,)
+    longtuple = ntuple(identity, 20)
+    @test filter(iseven, longtuple) == ntuple(i->2i, 10)
+    @test filter(x -> x<2, (longtuple..., 1.5)) === (1, 1.5)
+end
+
 nothing
