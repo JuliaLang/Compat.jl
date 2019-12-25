@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `filter` can now act on a `Tuple` [#32968]. (since Compat 3.1.0)
+
 * `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 3.0.0)
 
 * Function composition now supports multiple functions: `∘(f, g, h) = f ∘ g ∘ h`
@@ -103,3 +105,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/pull/33568
 [#33736]: http://github.com/JuliaLang/julia/pull/33736
+[#32968]: https://github.com/JuliaLang/julia/pull/32968
