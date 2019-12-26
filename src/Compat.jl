@@ -88,15 +88,15 @@ if VERSION < v"1.3.0-alpha.8"
     Base.mod(i::Integer, r::AbstractUnitRange{<:Integer}) = mod(i-first(r), length(r)) + first(r)
 end
 
-import LinearAlgebra
-using LinearAlgebra: Adjoint, Diagonal, Transpose, UniformScaling
-
 # https://github.com/JuliaLang/julia/pull/32739
 # This omits special methods for more exotic matrix types, Triangular and worse.
 if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
 
+    import LinearAlgebra
+    using LinearAlgebra: Adjoint, Diagonal, Transpose, UniformScaling, RealHermSymComplexHerm
+
     # stdlib/LinearAlgebra/src/generic.jl
-    LinearAlgebra.dot(x, A, y) = LinearAlgebra.dot(x, A*y) # generic fallback for cases that are not covered by specialized methods
+    LinearAlgebra.dot(x, A, y) = LinearAlgebra.dot(x, A*y) # generic fallback
 
     function LinearAlgebra.dot(x::AbstractVector, A::AbstractMatrix, y::AbstractVector)
         (axes(x)..., axes(y)...) == axes(A) || throw(DimensionMismatch())
@@ -116,8 +116,10 @@ if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
         end
         return s
     end
-    LinearAlgebra.dot(x::AbstractVector, adjA::Adjoint, y::AbstractVector) = adjoint(LinearAlgebra.dot(y, adjA.parent, x))
-    LinearAlgebra.dot(x::AbstractVector, transA::Transpose{<:Real}, y::AbstractVector) = adjoint(LinearAlgebra.dot(y, transA.parent, x))
+    LinearAlgebra.dot(x::AbstractVector, adjA::Adjoint, y::AbstractVector) =
+         adjoint(LinearAlgebra.dot(y, adjA.parent, x))
+    LinearAlgebra.dot(x::AbstractVector, transA::Transpose{<:Real}, y::AbstractVector) =
+        adjoint(LinearAlgebra.dot(y, transA.parent, x))
 
     # stdlib/LinearAlgebra/src/diagonal.jl
     function LinearAlgebra.dot(x::AbstractVector, D::Diagonal, y::AbstractVector)
@@ -125,7 +127,7 @@ if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
     end
 
     # stdlib/LinearAlgebra/src/symmetric.jl
-    function LinearAlgebra.dot(x::AbstractVector, A::LinearAlgebra.RealHermSymComplexHerm, y::AbstractVector)
+    function LinearAlgebra.dot(x::AbstractVector, A::RealHermSymComplexHerm, y::AbstractVector)
         require_one_based_indexing(x, y)
         (length(x) == length(y) == size(A, 1)) || throw(DimensionMismatch())
         data = A.data
@@ -135,7 +137,8 @@ if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
                 r += LinearAlgebra.dot(x[j], real(data[j,j]), y[j])
                 @simd for i = 1:j-1
                     Aij = data[i,j]
-                    r += LinearAlgebra.dot(x[i], Aij, y[j]) + LinearAlgebra.dot(x[j], adjoint(Aij), y[i])
+                    r += LinearAlgebra.dot(x[i], Aij, y[j]) +
+                        LinearAlgebra.dot(x[j], adjoint(Aij), y[i])
                 end
             end
         else # A.uplo == 'L'
@@ -143,7 +146,8 @@ if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
                 r += LinearAlgebra.dot(x[j], real(data[j,j]), y[j])
                 @simd for i = j+1:length(y)
                     Aij = data[i,j]
-                    r += LinearAlgebra.dot(x[i], Aij, y[j]) + LinearAlgebra.dot(x[j], adjoint(Aij), y[i])
+                    r += LinearAlgebra.dot(x[i], Aij, y[j]) +
+                        LinearAlgebra.dot(x[j], adjoint(Aij), y[i])
                 end
             end
         end
@@ -151,14 +155,18 @@ if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
     end
 
     # stdlib/LinearAlgebra/src/uniformscaling.jl
-    LinearAlgebra.dot(x::AbstractVector, J::UniformScaling, y::AbstractVector) = LinearAlgebra.dot(x, J.λ, y)
-    LinearAlgebra.dot(x::AbstractVector, a::Number, y::AbstractVector) = sum(t -> LinearAlgebra.dot(t[1], a, t[2]), zip(x, y))
-    LinearAlgebra.dot(x::AbstractVector, a::Union{Real,Complex}, y::AbstractVector) = a*LinearAlgebra.dot(x, y)
+    LinearAlgebra.dot(x::AbstractVector, J::UniformScaling, y::AbstractVector) =
+        LinearAlgebra.dot(x, J.λ, y)
+    LinearAlgebra.dot(x::AbstractVector, a::Number, y::AbstractVector) =
+        sum(t -> LinearAlgebra.dot(t[1], a, t[2]), zip(x, y))
+    LinearAlgebra.dot(x::AbstractVector, a::Union{Real,Complex}, y::AbstractVector) =
+        a*LinearAlgebra.dot(x, y)
 end
 
 # https://github.com/JuliaLang/julia/pull/30630
 if VERSION < v"1.2.0-DEV.125" # 1da48c2e4028c1514ed45688be727efbef1db884
-    require_one_based_indexing(A...) = !Base.has_offset_axes(A...) || throw(ArgumentError("offset arrays are not supported but got an array with index other than 1"))
+    require_one_based_indexing(A...) = !Base.has_offset_axes(A...) || throw(ArgumentError(
+        "offset arrays are not supported but got an array with index other than 1"))
 else
     using Base: require_one_based_indexing
 end
