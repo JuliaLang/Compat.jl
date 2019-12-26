@@ -167,7 +167,8 @@ end
 if VERSION < v"1.2.0-DEV.125" # 1da48c2e4028c1514ed45688be727efbef1db884
     require_one_based_indexing(A...) = !Base.has_offset_axes(A...) || throw(ArgumentError(
         "offset arrays are not supported but got an array with index other than 1"))
-else
+# At present this is only used in Compat inside the above dot(x,A,y) functions, #32739
+elseif VERSION < v"1.4.0-DEV.92"
     using Base: require_one_based_indexing
 end
 
