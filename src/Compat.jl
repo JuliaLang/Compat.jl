@@ -1,5 +1,8 @@
 module Compat
 
+import LinearAlgebra
+using LinearAlgebra: Adjoint, Diagonal, Transpose, UniformScaling, RealHermSymComplexHerm
+
 include("compatmacro.jl")
 
 # https://github.com/JuliaLang/julia/pull/29679
@@ -91,9 +94,6 @@ end
 # https://github.com/JuliaLang/julia/pull/32739
 # This omits special methods for more exotic matrix types, Triangular and worse.
 if VERSION < v"1.4.0-DEV.92" # 2425ae760fb5151c5c7dd0554e87c5fc9e24de73
-
-    import LinearAlgebra
-    using LinearAlgebra: Adjoint, Diagonal, Transpose, UniformScaling, RealHermSymComplexHerm
 
     # stdlib/LinearAlgebra/src/generic.jl
     LinearAlgebra.dot(x, A, y) = LinearAlgebra.dot(x, A*y) # generic fallback
