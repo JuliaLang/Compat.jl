@@ -153,21 +153,35 @@ using LinearAlgebra
     end
 
     # stdlib/LinearAlgebra/test/uniformscaling.jl
-
-    # Quaternion tests don't work on Julia 1.1
-    # BASE_TEST_PATH = joinpath(Sys.BINDIR, "..", "share", "julia", "test")
-    # isdefined(Main, :Quaternions) || @eval Main include(joinpath($(BASE_TEST_PATH), "testhelpers", "Quaternions.jl"))
-    # using .Main.Quaternions
-
     @testset "generalized dot" begin
         x = rand(-10:10, 3)
         y = rand(-10:10, 3)
         λ = rand(-10:10)
         J = UniformScaling(λ)
         @test dot(x, J, y) == λ*dot(x, y)
-        # λ = Quaternion(0.44567, 0.755871, 0.882548, 0.423612)
-        # x, y = Quaternion(rand(4)...), Quaternion(rand(4)...)
-        # @test dot([x], λ*I, [y]) ≈ dot(x, λ, y) ≈ dot(x, λ*y)
+    end
+
+    # stdlib/LinearAlgebra/test/bidiag.jl
+    # The special method for this is not in Compat #683, so this tests the generic fallback
+    @testset "generalized dot" begin
+        for elty in (Float64, ComplexF64)
+            dv = randn(elty, 5)
+            ev = randn(elty, 4)
+            x = randn(elty, 5)
+            y = randn(elty, 5)
+            for uplo in (:U, :L)
+                B = Bidiagonal(dv, ev, uplo)
+                @test dot(x, B, y) ≈ dot(B'x, y) ≈ dot(x, Matrix(B), y)
+            end
+        end
+    end
+
+    # Diagonal -- no such test in Base.
+    @testset "diagonal" begin
+        x = rand(-10:10, 3) .+ im
+        y = rand(-10:10, 3) .+ im
+        d = Diagonal(rand(-10:10, 3) .+ im)
+        @test dot(x,d,y) == dot(x,collect(d),y) == dot(x, d*y)
     end
 end
 
