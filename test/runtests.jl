@@ -90,6 +90,101 @@ end
     @test_throws DivideError mod(3, 1:0)
 end
 
+using LinearAlgebra
+
+@testset "generalized dot #32739" begin
+    # stdlib/LinearAlgebra/test/generic.jl
+    for elty in (Int, Float32, Float64, BigFloat, Complex{Float32}, Complex{Float64}, Complex{BigFloat})
+        n = 10
+        if elty <: Int
+            A = rand(-n:n, n, n)
+            x = rand(-n:n, n)
+            y = rand(-n:n, n)
+        elseif elty <: Real
+            A = convert(Matrix{elty}, randn(n,n))
+            x = rand(elty, n)
+            y = rand(elty, n)
+        else
+            A = convert(Matrix{elty}, complex.(randn(n,n), randn(n,n)))
+            x = rand(elty, n)
+            y = rand(elty, n)
+        end
+        @test dot(x, A, y) ≈ dot(A'x, y) ≈ *(x', A, y) ≈ (x'A)*y
+        @test dot(x, A', y) ≈ dot(A*x, y) ≈ *(x', A', y) ≈ (x'A')*y
+        elty <: Real && @test dot(x, transpose(A), y) ≈ dot(x, transpose(A)*y) ≈ *(x', transpose(A), y) ≈ (x'*transpose(A))*y
+        B = reshape([A], 1, 1)
+        x = [x]
+        y = [y]
+        @test dot(x, B, y) ≈ dot(B'x, y)
+        @test dot(x, B', y) ≈ dot(B*x, y)
+        elty <: Real && @test dot(x, transpose(B), y) ≈ dot(x, transpose(B)*y)
+    end
+
+    # stdlib/LinearAlgebra/test/symmetric.jl
+    n = 10
+    areal = randn(n,n)/2
+    aimg  = randn(n,n)/2
+    @testset for eltya in (Float32, Float64, ComplexF32, ComplexF64, BigFloat, Int)
+        a = eltya == Int ? rand(1:7, n, n) : convert(Matrix{eltya}, eltya <: Complex ? complex.(areal, aimg) : areal)
+        asym = transpose(a) + a                 # symmetric indefinite
+        aherm = a' + a                 # Hermitian indefinite
+        apos  = a' * a                 # Hermitian positive definite
+        aposs = apos + transpose(apos)        # Symmetric positive definite
+        ε = εa = eps(abs(float(one(eltya))))
+        x = randn(n)
+        y = randn(n)
+        b = randn(n,n)/2
+        x = eltya == Int ? rand(1:7, n) : convert(Vector{eltya}, eltya <: Complex ? complex.(x, zeros(n)) : x)
+        y = eltya == Int ? rand(1:7, n) : convert(Vector{eltya}, eltya <: Complex ? complex.(y, zeros(n)) : y)
+        b = eltya == Int ? rand(1:7, n, n) : convert(Matrix{eltya}, eltya <: Complex ? complex.(b, zeros(n,n)) : b)
+
+        @testset "generalized dot product" begin
+            for uplo in (:U, :L)
+                @test dot(x, Hermitian(aherm, uplo), y) ≈ dot(x, Hermitian(aherm, uplo)*y) ≈ dot(x, Matrix(Hermitian(aherm, uplo)), y)
+                @test dot(x, Hermitian(aherm, uplo), x) ≈ dot(x, Hermitian(aherm, uplo)*x) ≈ dot(x, Matrix(Hermitian(aherm, uplo)), x)
+            end
+            if eltya <: Real
+                for uplo in (:U, :L)
+                    @test dot(x, Symmetric(aherm, uplo), y) ≈ dot(x, Symmetric(aherm, uplo)*y) ≈ dot(x, Matrix(Symmetric(aherm, uplo)), y)
+                    @test dot(x, Symmetric(aherm, uplo), x) ≈ dot(x, Symmetric(aherm, uplo)*x) ≈ dot(x, Matrix(Symmetric(aherm, uplo)), x)
+                end
+            end
+        end
+    end
+
+    # stdlib/LinearAlgebra/test/uniformscaling.jl
+    @testset "generalized dot" begin
+        x = rand(-10:10, 3)
+        y = rand(-10:10, 3)
+        λ = rand(-10:10)
+        J = UniformScaling(λ)
+        @test dot(x, J, y) == λ*dot(x, y)
+    end
+
+    # stdlib/LinearAlgebra/test/bidiag.jl
+    # The special method for this is not in Compat #683, so this tests the generic fallback
+    @testset "generalized dot" begin
+        for elty in (Float64, ComplexF64)
+            dv = randn(elty, 5)
+            ev = randn(elty, 4)
+            x = randn(elty, 5)
+            y = randn(elty, 5)
+            for uplo in (:U, :L)
+                B = Bidiagonal(dv, ev, uplo)
+                @test dot(x, B, y) ≈ dot(B'x, y) ≈ dot(x, Matrix(B), y)
+            end
+        end
+    end
+
+    # Diagonal -- no such test in Base.
+    @testset "diagonal" begin
+        x = rand(-10:10, 3) .+ im
+        y = rand(-10:10, 3) .+ im
+        d = Diagonal(rand(-10:10, 3) .+ im)
+        @test dot(x,d,y) == dot(x,collect(d),y) == dot(x, d*y)
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/33568
 @testset "function composition" begin
     @test ∘(x -> x-2, x -> x-3, x -> x+5)(7) == 7

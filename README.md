@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `dot` now has a 3-argument method `dot(x, A, y)` without storing the intermediate result `A*y` ([#32739]). (since Compat 3.2.0)
+
 * `pkgdir(m)` returns the root directory of the package that imported module `m` ([#33128]). (since Compat 3.2.0)
 
 * `filter` can now act on a `Tuple` [#32968]. (since Compat 3.1.0)
@@ -104,6 +106,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#29674]: https://github.com/JuliaLang/julia/issues/29674
 [#29749]: https://github.com/JuliaLang/julia/issues/29749
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
+[#32739]: https://github.com/JuliaLang/julia/pull/32739
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/pull/33568
 [#33128]: https://github.com/JuliaLang/julia/pull/33128
