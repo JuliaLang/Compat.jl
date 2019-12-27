@@ -177,9 +177,26 @@ if VERSION < v"1.4.0-DEV.329"
     Base.:∘(f, g, h...) = ∘(f ∘ g, h...)
 end
 
+# https://github.com/JuliaLang/julia/pull/33128
+if VERSION < v"1.4.0-DEV.397"
+    export pkgdir
+    function pkgdir(m::Module)
+        rootmodule = Base.moduleroot(m)
+        path = pathof(rootmodule)
+        path === nothing && return nothing
+        return dirname(dirname(path))
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/33736/
 if VERSION < v"1.4.0-DEV.493"
     Base.Order.ReverseOrdering() = Base.Order.ReverseOrdering(Base.Order.Forward)
+end
+
+# https://github.com/JuliaLang/julia/pull/32968
+if VERSION < v"1.4.0-DEV.551"
+    Base.filter(f, xs::Tuple) = Base.afoldl((ys, x) -> f(x) ? (ys..., x) : ys, (), xs...)
+    Base.filter(f, t::Base.Any16) = Tuple(filter(f, collect(t)))
 end
 
 include("deprecated.jl")
