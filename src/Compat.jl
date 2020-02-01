@@ -200,8 +200,8 @@ if VERSION < v"1.4.0-DEV.551"
 end
 
 # https://github.com/JuliaLang/julia/pull/28761
+export uuid5
 if VERSION < v"1.1.0-DEV.326"
-    export uuid5
     import SHA
     import UUIDs: UUID
 
@@ -230,6 +230,8 @@ if VERSION < v"1.1.0-DEV.326"
         end
         return UUID(v)
     end
+else
+    using UUIDs: uuid5, namespace_dns, namespace_url, namespace_oid, namespace_x500
 end
 
 include("deprecated.jl")
