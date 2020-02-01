@@ -199,6 +199,39 @@ if VERSION < v"1.4.0-DEV.551"
     Base.filter(f, t::Base.Any16) = Tuple(filter(f, collect(t)))
 end
 
+# https://github.com/JuliaLang/julia/pull/28761
+if VERSION < v"1.1.0-DEV.326"
+    export uuid5
+    import SHA
+    import UUIDs: UUID
+
+    # Some UUID namespaces provided in the appendix of RFC 4122
+    # https://tools.ietf.org/html/rfc4122.html#appendix-C
+    const namespace_dns  = UUID(0x6ba7b8109dad11d180b400c04fd430c8) # 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+    const namespace_url  = UUID(0x6ba7b8119dad11d180b400c04fd430c8) # 6ba7b811-9dad-11d1-80b4-00c04fd430c8
+    const namespace_oid  = UUID(0x6ba7b8129dad11d180b400c04fd430c8) # 6ba7b812-9dad-11d1-80b4-00c04fd430c8
+    const namespace_x500 = UUID(0x6ba7b8149dad11d180b400c04fd430c8) # 6ba7b814-9dad-11d1-80b4-00c04fd430c8
+
+    function uuid5(ns::UUID, name::String)
+        nsbytes = zeros(UInt8, 16)
+        nsv = ns.value
+        for idx in Base.OneTo(16)
+            nsbytes[idx] = nsv >> 120
+            nsv = nsv << 8
+        end
+        hash_result = SHA.sha1(append!(nsbytes, convert(Vector{UInt8}, codeunits(unescape_string(name)))))
+        # set version number to 5
+        hash_result[7] = (hash_result[7] & 0x0F) | (0x50)
+        hash_result[9] = (hash_result[9] & 0x3F) | (0x80)
+        v = zero(UInt128)
+        #use only the first 16 bytes of the SHA1 hash
+        for idx in Base.OneTo(16)
+            v = (v << 0x08) | hash_result[idx]
+        end
+        return UUID(v)
+    end
+end
+
 include("deprecated.jl")
 
 end # module Compat
