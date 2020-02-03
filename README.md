@@ -44,7 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
-* `uuid5` is added ([#28761]). (since Compat 3.3.0)
+* `uuid5`, `namespace_dns`, `namespace_url`, `namespace_oid` and `namespace_x500` are added
+  ([#28761]). (since Compat 3.3.0)
 
 * `dot` now has a 3-argument method `dot(x, A, y)` without storing the intermediate result `A*y` ([#32739]). (since Compat 3.2.0)
 
