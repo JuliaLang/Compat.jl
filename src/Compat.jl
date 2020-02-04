@@ -204,14 +204,6 @@ export uuid5
 if VERSION < v"1.1.0-DEV.326"
     import SHA
     import UUIDs: UUID
-
-    # Some UUID namespaces provided in the appendix of RFC 4122
-    # https://tools.ietf.org/html/rfc4122.html#appendix-C
-    const namespace_dns  = UUID(0x6ba7b8109dad11d180b400c04fd430c8) # 6ba7b810-9dad-11d1-80b4-00c04fd430c8
-    const namespace_url  = UUID(0x6ba7b8119dad11d180b400c04fd430c8) # 6ba7b811-9dad-11d1-80b4-00c04fd430c8
-    const namespace_oid  = UUID(0x6ba7b8129dad11d180b400c04fd430c8) # 6ba7b812-9dad-11d1-80b4-00c04fd430c8
-    const namespace_x500 = UUID(0x6ba7b8149dad11d180b400c04fd430c8) # 6ba7b814-9dad-11d1-80b4-00c04fd430c8
-
     function uuid5(ns::UUID, name::String)
         nsbytes = zeros(UInt8, 16)
         nsv = ns.value
@@ -231,7 +223,7 @@ if VERSION < v"1.1.0-DEV.326"
         return UUID(v)
     end
 else
-    using UUIDs: uuid5, namespace_dns, namespace_url, namespace_oid, namespace_x500
+    using UUIDs: uuid5
 end
 
 include("deprecated.jl")

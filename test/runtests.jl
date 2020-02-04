@@ -237,12 +237,19 @@ end
         @test next_id == following_uuids[idx+1]
     end
 
+    # Some UUID namespaces provided in the appendix of RFC 4122
+    # https://tools.ietf.org/html/rfc4122.html#appendix-C
+    namespace_dns  = UUID(0x6ba7b8109dad11d180b400c04fd430c8) # 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+    namespace_url  = UUID(0x6ba7b8119dad11d180b400c04fd430c8) # 6ba7b811-9dad-11d1-80b4-00c04fd430c8
+    namespace_oid  = UUID(0x6ba7b8129dad11d180b400c04fd430c8) # 6ba7b812-9dad-11d1-80b4-00c04fd430c8
+    namespace_x500 = UUID(0x6ba7b8149dad11d180b400c04fd430c8) # 6ba7b814-9dad-11d1-80b4-00c04fd430c8
+
     # Python-generated UUID following each of the standard namespaces
     standard_namespace_uuids = [
-        (Compat.namespace_dns,  UUID("00ca23ad-40ef-500c-a910-157de3950d07")),
-        (Compat.namespace_oid,  UUID("b7bf72b0-fb4e-538b-952a-3be296f07f6d")),
-        (Compat.namespace_url,  UUID("997cd5be-4705-5439-9fe6-d77b18d612e5")),
-        (Compat.namespace_x500, UUID("993c6684-82e7-5cdb-bd46-9bff0362e6a9")),
+        (namespace_dns,  UUID("00ca23ad-40ef-500c-a910-157de3950d07")),
+        (namespace_oid,  UUID("b7bf72b0-fb4e-538b-952a-3be296f07f6d")),
+        (namespace_url,  UUID("997cd5be-4705-5439-9fe6-d77b18d612e5")),
+        (namespace_x500, UUID("993c6684-82e7-5cdb-bd46-9bff0362e6a9")),
     ]
 
     for (init_uuid, next_uuid) in standard_namespace_uuids
