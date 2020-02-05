@@ -202,7 +202,7 @@ end
 # https://github.com/JuliaLang/julia/pull/34652
 if VERSION < v"1.5.0-DEV.231"
     export ismutable
-    ismutable(@nospecialize(x)) = (@_pure_meta; typeof(x).mutable)
+    ismutable(@nospecialize(x)) = (Base.@_pure_meta; typeof(x).mutable)
 end
 
 include("deprecated.jl")
