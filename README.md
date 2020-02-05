@@ -44,7 +44,7 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
-* `uuid5` is added ([#28761]). (since Compat 3.3.0)
+* `uuid5` generates a version 5 universally unique identifier (UUID), as specified by RFC 4122 ([#28761]). (since Compat 3.3.0)
 
 * `dot` now has a 3-argument method `dot(x, A, y)` without storing the intermediate result `A*y` ([#32739]). (since Compat 3.2.0)
 
