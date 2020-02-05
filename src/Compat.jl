@@ -199,6 +199,12 @@ if VERSION < v"1.4.0-DEV.551"
     Base.filter(f, t::Base.Any16) = Tuple(filter(f, collect(t)))
 end
 
+# https://github.com/JuliaLang/julia/pull/34652
+if VERSION < v"1.5.0-DEV.231"
+    export ismutable
+    ismutable(@nospecialize(x)) = (@_pure_meta; typeof(x).mutable)
+end
+
 include("deprecated.jl")
 
 end # module Compat

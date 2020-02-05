@@ -70,6 +70,8 @@ Please check the list below for the specific syntax you need.
 
 * `range` supporting `stop` as positional argument ([#28708]). (since Compat 1.3.0)
 
+* `ismutable` support ([#34652]). (since Compat 3.2.1)
+
 ## Developer tips
 
 One of the most important rules for `Compat.jl` is to avoid breaking user code
@@ -112,3 +114,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#33128]: https://github.com/JuliaLang/julia/pull/33128
 [#33736]: http://github.com/JuliaLang/julia/pull/33736
 [#32968]: https://github.com/JuliaLang/julia/pull/32968
+[#34652]: https://github.com/JuliaLang/julia/pull/34652
