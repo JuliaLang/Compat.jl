@@ -215,7 +215,7 @@ end
 end
 
 # https://github.com/JuliaLang/julia/pull/34652
-@testset "ismutable" being
+@testset "ismutable" begin
     @test ismutable(1) == false
     @test ismutable([]) == true
 end
