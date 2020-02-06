@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `ismutable` return `true` iff value `v` is mutable ([#34652]). (since Compat 3.4.0)
+
 * `dot` now has a 3-argument method `dot(x, A, y)` without storing the intermediate result `A*y` ([#32739]). (since Compat 3.2.0)
 
 * `pkgdir(m)` returns the root directory of the package that imported module `m` ([#33128]). (since Compat 3.2.0)
@@ -70,7 +72,6 @@ Please check the list below for the specific syntax you need.
 
 * `range` supporting `stop` as positional argument ([#28708]). (since Compat 1.3.0)
 
-* `ismutable` support ([#34652]). (since Compat 3.2.1)
 
 ## Developer tips
 
