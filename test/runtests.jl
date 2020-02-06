@@ -1,5 +1,6 @@
 using Compat
 using Test
+using UUIDs: UUID, uuid1, uuid_version
 
 @test isempty(detect_ambiguities(Base, Core, Compat))
 
@@ -212,6 +213,49 @@ end
     longtuple = ntuple(identity, 20)
     @test filter(iseven, longtuple) == ntuple(i->2i, 10)
     @test filter(x -> x<2, (longtuple..., 1.5)) === (1, 1.5)
+end
+
+# https://github.com/JuliaLang/julia/pull/28761
+@testset "uuid5" begin
+    u1 = uuid1()
+    u5 = uuid5(u1, "julia")
+    @test uuid_version(u5) == 5
+    @test u5 == UUID(string(u5)) == UUID(GenericString(string(u5)))
+    @test u5 == UUID(UInt128(u5))
+
+    following_uuids = [
+        UUID("22b4a8a1-e548-4eeb-9270-60426d66a48e"),
+        UUID("30ea6cfd-c270-569f-b4cb-795dead63686"),
+        UUID("31099374-e3a0-5fde-9482-791c639bf29b"),
+        UUID("6b34b357-a348-53aa-8c71-fb9b06c3a51e"),
+        UUID("fdbd7d4d-c462-59cc-ae6a-0c3b010240e2"),
+        UUID("d8cc6298-75d5-57e0-996c-279259ab365c"),
+    ]
+
+    for (idx, init_uuid) in enumerate(following_uuids[1:end-1])
+        next_id = uuid5(init_uuid, "julia")
+        @test next_id == following_uuids[idx+1]
+    end
+
+    # Some UUID namespaces provided in the appendix of RFC 4122
+    # https://tools.ietf.org/html/rfc4122.html#appendix-C
+    namespace_dns  = UUID(0x6ba7b8109dad11d180b400c04fd430c8) # 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+    namespace_url  = UUID(0x6ba7b8119dad11d180b400c04fd430c8) # 6ba7b811-9dad-11d1-80b4-00c04fd430c8
+    namespace_oid  = UUID(0x6ba7b8129dad11d180b400c04fd430c8) # 6ba7b812-9dad-11d1-80b4-00c04fd430c8
+    namespace_x500 = UUID(0x6ba7b8149dad11d180b400c04fd430c8) # 6ba7b814-9dad-11d1-80b4-00c04fd430c8
+
+    # Python-generated UUID following each of the standard namespaces
+    standard_namespace_uuids = [
+        (namespace_dns,  UUID("00ca23ad-40ef-500c-a910-157de3950d07")),
+        (namespace_oid,  UUID("b7bf72b0-fb4e-538b-952a-3be296f07f6d")),
+        (namespace_url,  UUID("997cd5be-4705-5439-9fe6-d77b18d612e5")),
+        (namespace_x500, UUID("993c6684-82e7-5cdb-bd46-9bff0362e6a9")),
+    ]
+
+    for (init_uuid, next_uuid) in standard_namespace_uuids
+        result = uuid5(init_uuid, "julia")
+        @test next_uuid == result
+    end
 end
 
 nothing
