@@ -46,6 +46,8 @@ Please check the list below for the specific syntax you need.
 
 * `ismutable` return `true` iff value `v` is mutable ([#34652]). (since Compat 3.4.0)
 
+* `uuid5` generates a version 5 universally unique identifier (UUID), as specified by RFC 4122 ([#28761]). (since Compat 3.3.0)
+
 * `dot` now has a 3-argument method `dot(x, A, y)` without storing the intermediate result `A*y` ([#32739]). (since Compat 3.2.0)
 
 * `pkgdir(m)` returns the root directory of the package that imported module `m` ([#33128]). (since Compat 3.2.0)
@@ -115,4 +117,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#33128]: https://github.com/JuliaLang/julia/pull/33128
 [#33736]: http://github.com/JuliaLang/julia/pull/33736
 [#32968]: https://github.com/JuliaLang/julia/pull/32968
+[#28761]: https://github.com/JuliaLang/julia/pull/28761
 [#34652]: https://github.com/JuliaLang/julia/pull/34652
