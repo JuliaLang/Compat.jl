@@ -44,6 +44,10 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `mergewith(combine, dicts...)` and `mergewith!(combine, dicts...)` are like
+  `merge(combine, dicts...)` and `merge!(combine, dicts...)` but without the restriction
+  that the argument `combine` must be a `Function` ([#34296]). (since Compat 3.9.0).
+
 * `@NamedTuple` macro for convenient `struct`-like syntax for declaring
 `NamedTuple` types via `key::Type` declarations ([#34548]). (since Compat 3.8.0)
 

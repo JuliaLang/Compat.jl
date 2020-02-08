@@ -345,6 +345,18 @@ if VERSION < v"1.5.0-DEV.314"
     export @NamedTuple
 end
 
+_asfunction(f::Function) = f
+_asfunction(f) = (args...) -> f(args...)
+
+# https://github.com/JuliaLang/julia/pull/34296
+if VERSION < v"1.5.0-DEV.182"
+    export mergewith, mergewith!
+    mergewith(f, dicts...) = merge(_asfunction(f), dicts...)
+    mergewith!(f, dicts...) = merge!(_asfunction(f), dicts...)
+    mergewith(f) = (dicts...) -> mergewith(f, dicts...)
+    mergewith!(f) = (dicts...) -> mergewith!(f, dicts...)
+end
+
 include("deprecated.jl")
 
 end # module Compat
