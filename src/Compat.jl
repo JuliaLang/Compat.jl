@@ -200,7 +200,7 @@ if VERSION < v"1.4.0-DEV.551"
 end
 
 # https://github.com/JuliaLang/julia/pull/34652
-if VERSION < v"1.5.0-DEV.231"
+if VERSION < v"1.5.0-DEV.236"
     export ismutable
     ismutable(@nospecialize(x)) = (Base.@_pure_meta; typeof(x).mutable)
 end
