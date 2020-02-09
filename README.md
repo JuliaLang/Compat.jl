@@ -44,6 +44,11 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `I1:I2`, when `I1` and `I2` are CartesianIndex values, constructs a CartesianIndices
+  iterator ([#29440]). (Since Compat 3.5.0)
+
+* `oneunit(::CartesianIndex)` replaces `one(::CartesianIndex)` ([#29442]). (Since Compat 3.5.0)
+
 * `ismutable` return `true` iff value `v` is mutable ([#34652]). (since Compat 3.4.0)
 
 * `uuid5` generates a version 5 universally unique identifier (UUID), as specified by RFC 4122 ([#28761]). (since Compat 3.3.0)
@@ -108,6 +113,8 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#28708]: https://github.com/JuliaLang/julia/issues/28708
 [#28850]: https://github.com/JuliaLang/julia/issues/28850
 [#29259]: https://github.com/JuliaLang/julia/issues/29259
+[#29440]: https://github.com/JuliaLang/julia/pull/29440
+[#29442]: https://github.com/JuliaLang/julia/pull/29442
 [#29674]: https://github.com/JuliaLang/julia/issues/29674
 [#29749]: https://github.com/JuliaLang/julia/issues/29749
 [#32628]: https://github.com/JuliaLang/julia/issues/32628

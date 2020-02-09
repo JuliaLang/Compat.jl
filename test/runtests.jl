@@ -4,6 +4,14 @@ using UUIDs: UUID, uuid1, uuid_version
 
 @test isempty(detect_ambiguities(Base, Core, Compat))
 
+@testset "CartesianIndex" begin
+    # https://github.com/JuliaLang/julia/pull/29440
+    ci = CartesianIndex(1, 1)
+    @test length(-ci:ci) == 9
+    # https://github.com/JuliaLang/julia/pull/29442
+    @test oneunit(ci) === ci
+end
+
 # julia#29679
 @test !isnothing(1)
 @test isnothing(nothing)
@@ -219,7 +227,7 @@ end
 @testset "ismutable" begin
     @test ismutable(1) == false
     @test ismutable([]) == true
-end             
+end
 
 # https://github.com/JuliaLang/julia/pull/28761
 @testset "uuid5" begin
