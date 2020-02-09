@@ -215,6 +215,12 @@ end
     @test filter(x -> x<2, (longtuple..., 1.5)) === (1, 1.5)
 end
 
+# https://github.com/JuliaLang/julia/pull/34652
+@testset "ismutable" begin
+    @test ismutable(1) == false
+    @test ismutable([]) == true
+end             
+
 # https://github.com/JuliaLang/julia/pull/28761
 @testset "uuid5" begin
     u1 = uuid1()

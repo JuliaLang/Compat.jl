@@ -199,6 +199,12 @@ if VERSION < v"1.4.0-DEV.551"
     Base.filter(f, t::Base.Any16) = Tuple(filter(f, collect(t)))
 end
 
+# https://github.com/JuliaLang/julia/pull/34652
+if VERSION < v"1.5.0-DEV.247"
+    export ismutable
+    ismutable(@nospecialize(x)) = (Base.@_pure_meta; typeof(x).mutable)
+end
+
 # https://github.com/JuliaLang/julia/pull/28761
 export uuid5
 if VERSION < v"1.1.0-DEV.326"
