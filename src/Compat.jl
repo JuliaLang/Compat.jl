@@ -244,6 +244,15 @@ else
     using UUIDs: uuid5
 end
 
+# https://github.com/JuliaLang/julia/pull/34773
+if VERSION < v"1.5.0-DEV.301"
+    Base.zero(::AbstractIrrational) = false
+    Base.zero(::Type{<:AbstractIrrational}) = false
+
+    Base.one(::AbstractIrrational) = true
+    Base.one(::Type{<:AbstractIrrational}) = true
+end
+
 include("deprecated.jl")
 
 end # module Compat

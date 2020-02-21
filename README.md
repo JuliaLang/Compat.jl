@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `zero(::Irrational)` and `one` now defined ([#34773]). (since Compat 3.6.0)
+
 * `I1:I2`, when `I1` and `I2` are CartesianIndex values, constructs a CartesianIndices
   iterator ([#29440]). (Since Compat 3.5.0)
 
@@ -126,3 +128,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#32968]: https://github.com/JuliaLang/julia/pull/32968
 [#28761]: https://github.com/JuliaLang/julia/pull/28761
 [#34652]: https://github.com/JuliaLang/julia/pull/34652
+[#34773]: https://github.com/JuliaLang/julia/pull/34773

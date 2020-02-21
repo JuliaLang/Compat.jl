@@ -272,4 +272,11 @@ end
     end
 end
 
+@testset "Irrational zero and one" begin
+    @test one(pi) === true
+    @test zero(pi) === false
+    @test one(typeof(pi)) === true
+    @test zero(typeof(pi)) === false
+end
+
 nothing
