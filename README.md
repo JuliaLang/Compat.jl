@@ -44,6 +44,9 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `evalpoly(x, (p1, p2, ...))`, the function equivalent to `@evalpoly(x, p1, p2, ...)`
+  ([#32753]). (since Compat 3.7.0)
+
 * `zero(::Irrational)` and `one` now defined ([#34773]). (since Compat 3.6.0)
 
 * `I1:I2`, when `I1` and `I2` are CartesianIndex values, constructs a CartesianIndices
@@ -122,6 +125,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#29749]: https://github.com/JuliaLang/julia/issues/29749
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
 [#32739]: https://github.com/JuliaLang/julia/issues/32739
+[#32753]: https://github.com/JuliaLang/julia/issues/32753
 [#32968]: https://github.com/JuliaLang/julia/issues/32968
 [#33128]: https://github.com/JuliaLang/julia/issues/33128
 [#33129]: https://github.com/JuliaLang/julia/issues/33129

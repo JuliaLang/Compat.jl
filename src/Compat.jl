@@ -253,6 +253,82 @@ if VERSION < v"1.5.0-DEV.301"
     Base.one(::Type{<:AbstractIrrational}) = true
 end
 
+# https://github.com/JuliaLang/julia/pull/32753
+if VERSION < v"1.4.0-DEV.513"
+    function evalpoly(x, p::Tuple)
+        if @generated
+            N = length(p.parameters)
+            ex = :(p[end])
+            for i in N-1:-1:1
+                ex = :(muladd(x, $ex, p[$i]))
+            end
+            ex
+        else
+            _evalpoly(x, p)
+        end
+    end
+
+    evalpoly(x, p::AbstractVector) = _evalpoly(x, p)
+
+    function _evalpoly(x, p)
+        N = length(p)
+        ex = p[end]
+        for i in N-1:-1:1
+            ex = muladd(x, ex, p[i])
+        end
+        ex
+    end
+
+    function evalpoly(z::Complex, p::Tuple)
+        if @generated
+            N = length(p.parameters)
+            a = :(p[end])
+            b = :(p[end-1])
+            as = []
+            for i in N-2:-1:1
+                ai = Symbol("a", i)
+                push!(as, :($ai = $a))
+                a = :(muladd(r, $ai, $b))
+                b = :(p[$i] - s * $ai)
+            end
+            ai = :a0
+            push!(as, :($ai = $a))
+            C = Expr(:block,
+            :(x = real(z)),
+            :(y = imag(z)),
+            :(r = x + x),
+            :(s = muladd(x, x, y*y)),
+            as...,
+            :(muladd($ai, z, $b)))
+        else
+            _evalpoly(z, p)
+        end
+    end
+    evalpoly(z::Complex, p::Tuple{<:Any}) = p[1]
+
+    evalpoly(z::Complex, p::AbstractVector) = _evalpoly(z, p)
+
+    function _evalpoly(z::Complex, p)
+        length(p) == 1 && return p[1]
+        N = length(p)
+        a = p[end]
+        b = p[end-1]
+
+        x = real(z)
+        y = imag(z)
+        r = 2x
+        s = muladd(x, x, y*y)
+        for i in N-2:-1:1
+            ai = a
+            a = muladd(r, ai, b)
+            b = p[i] - s * ai
+        end
+        ai = a
+        muladd(ai, z, b)
+    end
+    export evalpoly
+end
+
 include("deprecated.jl")
 
 end # module Compat
