@@ -298,4 +298,14 @@ end
     @test evalpoly(1+im, [2,]) == 2
 end
 
+# https://github.com/JuliaLang/julia/pull/34548
+@testset "@NamedTuple" begin
+    @test (@NamedTuple {a::Int, b::String}) === NamedTuple{(:a, :b),Tuple{Int,String}} ===
+        @NamedTuple begin
+            a::Int
+            b::String
+        end
+    @test (@NamedTuple {a::Int, b}) === NamedTuple{(:a, :b),Tuple{Int,Any}}
+end
+
 nothing
