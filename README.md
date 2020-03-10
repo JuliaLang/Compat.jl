@@ -44,6 +44,9 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `evalpoly(x, (p1, p2, ...))`, the function equivalent to `@evalpoly(x, p1, p2, ...)`
+  ([#32753]). (since Compat 3.7.0)
+
 * `zero(::Irrational)` and `one` now defined ([#34773]). (since Compat 3.6.0)
 
 * `I1:I2`, when `I1` and `I2` are CartesianIndex values, constructs a CartesianIndices
@@ -113,19 +116,20 @@ Note that you should specify the correct minimum version for `Compat` in the
 `[compat]` section of your `Project.toml`, as given in above list.
 
 [#28708]: https://github.com/JuliaLang/julia/issues/28708
+[#28761]: https://github.com/JuliaLang/julia/issues/28761
 [#28850]: https://github.com/JuliaLang/julia/issues/28850
 [#29259]: https://github.com/JuliaLang/julia/issues/29259
-[#29440]: https://github.com/JuliaLang/julia/pull/29440
-[#29442]: https://github.com/JuliaLang/julia/pull/29442
+[#29440]: https://github.com/JuliaLang/julia/issues/29440
+[#29442]: https://github.com/JuliaLang/julia/issues/29442
 [#29674]: https://github.com/JuliaLang/julia/issues/29674
 [#29749]: https://github.com/JuliaLang/julia/issues/29749
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
-[#32739]: https://github.com/JuliaLang/julia/pull/32739
+[#32739]: https://github.com/JuliaLang/julia/issues/32739
+[#32753]: https://github.com/JuliaLang/julia/issues/32753
+[#32968]: https://github.com/JuliaLang/julia/issues/32968
+[#33128]: https://github.com/JuliaLang/julia/issues/33128
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
-[#33568]: https://github.com/JuliaLang/julia/pull/33568
-[#33128]: https://github.com/JuliaLang/julia/pull/33128
-[#33736]: http://github.com/JuliaLang/julia/pull/33736
-[#32968]: https://github.com/JuliaLang/julia/pull/32968
-[#28761]: https://github.com/JuliaLang/julia/pull/28761
-[#34652]: https://github.com/JuliaLang/julia/pull/34652
-[#34773]: https://github.com/JuliaLang/julia/pull/34773
+[#33568]: https://github.com/JuliaLang/julia/issues/33568
+[#33736]: https://github.com/JuliaLang/julia/issues/33736
+[#34652]: https://github.com/JuliaLang/julia/issues/34652
+[#34773]: https://github.com/JuliaLang/julia/issues/34773
