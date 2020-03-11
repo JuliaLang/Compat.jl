@@ -44,6 +44,9 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `@NamedTuple` macro for convenient `struct`-like syntax for declaring
+`NamedTuple` types via `key::Type` declarations ([#34548]). (since Compat 3.8.0)
+
 * `evalpoly(x, (p1, p2, ...))`, the function equivalent to `@evalpoly(x, p1, p2, ...)`
   ([#32753]). (since Compat 3.7.0)
 
@@ -131,5 +134,6 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#33129]: https://github.com/JuliaLang/julia/issues/33129
 [#33568]: https://github.com/JuliaLang/julia/issues/33568
 [#33736]: https://github.com/JuliaLang/julia/issues/33736
+[#34548]: https://github.com/JuliaLang/julia/pull/34548
 [#34652]: https://github.com/JuliaLang/julia/issues/34652
 [#34773]: https://github.com/JuliaLang/julia/issues/34773
