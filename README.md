@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `similar(::PermutedDimsArray)` now uses the parent ([#35304]). (since Compat 3.9.0)
+
 * `@NamedTuple` macro for convenient `struct`-like syntax for declaring
 `NamedTuple` types via `key::Type` declarations ([#34548]). (since Compat 3.8.0)
 
@@ -137,3 +139,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#34548]: https://github.com/JuliaLang/julia/pull/34548
 [#34652]: https://github.com/JuliaLang/julia/issues/34652
 [#34773]: https://github.com/JuliaLang/julia/issues/34773
+[#35304]: https://github.com/JuliaLang/julia/pull/35304

@@ -329,6 +329,11 @@ if VERSION < v"1.4.0-DEV.513"
     export evalpoly
 end
 
+# https://github.com/JuliaLang/julia/pull/35304
+if VERSION < v"1.5.0-DEV.574"
+    Base.similar(A::PermutedDimsArray, T::Type, dims::Base.Dims) = similar(parent(A), T, dims)
+end
+
 # https://github.com/JuliaLang/julia/pull/34548
 if VERSION < v"1.5.0-DEV.314"
     macro NamedTuple(ex)

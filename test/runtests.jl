@@ -298,6 +298,41 @@ end
     @test evalpoly(1+im, [2,]) == 2
 end
 
+@testset "similar(PermutedDimsArray)" begin
+   # https://github.com/JuliaLang/julia/pull/35298
+   # A custom linear slow sparse-like array that relies upon Dict for its storage
+    struct TSlow{T,N} <: AbstractArray{T,N}
+        data::Dict{NTuple{N,Int}, T}
+        dims::NTuple{N,Int}
+    end
+    TSlow(::Type{T}, dims::Int...) where {T} = TSlow(T, dims)
+    TSlow(::Type{T}, dims::NTuple{N,Int}) where {T,N} = TSlow{T,N}(Dict{NTuple{N,Int}, T}(), dims)
+
+    TSlow{T,N}(X::TSlow{T,N})         where {T,N  } = X
+    TSlow(     X::AbstractArray{T,N}) where {T,N  } = TSlow{T,N}(X)
+    TSlow{T  }(X::AbstractArray{_,N}) where {T,N,_} = TSlow{T,N}(X)
+    TSlow{T,N}(X::AbstractArray     ) where {T,N  } = begin
+        A = TSlow(T, size(X))
+        for I in CartesianIndices(X)
+            A[Tuple(I)...] = X[Tuple(I)...]
+        end
+        A
+    end
+
+    Base.size(A::TSlow) = A.dims
+    Base.similar(A::TSlow, ::Type{T}, dims::Dims) where {T} = TSlow(T, dims)
+    Base.IndexStyle(::Type{A}) where {A<:TSlow} = IndexCartesian()
+    Base.getindex(A::TSlow{T,N}, i::Vararg{Int,N}) where {T,N} = get(A.data, i, zero(T))
+    Base.setindex!(A::TSlow{T,N}, v, i::Vararg{Int,N}) where {T,N} = (A.data[i] = v)
+
+    # https://github.com/JuliaLang/julia/pull/35304
+    x = PermutedDimsArray([1 2; 3 4], (2, 1))
+    @test similar(x, 3,3) isa Array
+    z = TSlow([1 2; 3 4])
+    x_slow = PermutedDimsArray(z, (2, 1))
+    @test similar(x_slow, 3,3) isa TSlow
+end
+
 # https://github.com/JuliaLang/julia/pull/34548
 @testset "@NamedTuple" begin
     @test (@NamedTuple {a::Int, b::String}) === NamedTuple{(:a, :b),Tuple{Int,String}} ===
