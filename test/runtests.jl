@@ -298,9 +298,9 @@ end
     @test evalpoly(1+im, [2,]) == 2
 end
 
-@testset "similar(PermutedDimsArray)" begin
-   # https://github.com/JuliaLang/julia/pull/35298
-   # A custom linear slow sparse-like array that relies upon Dict for its storage
+# https://github.com/JuliaLang/julia/pull/35298
+begin
+    # A custom linear slow sparse-like array that relies upon Dict for its storage
     struct TSlow{T,N} <: AbstractArray{T,N}
         data::Dict{NTuple{N,Int}, T}
         dims::NTuple{N,Int}
@@ -318,14 +318,15 @@ end
         end
         A
     end
-
     Base.size(A::TSlow) = A.dims
     Base.similar(A::TSlow, ::Type{T}, dims::Dims) where {T} = TSlow(T, dims)
     Base.IndexStyle(::Type{A}) where {A<:TSlow} = IndexCartesian()
     Base.getindex(A::TSlow{T,N}, i::Vararg{Int,N}) where {T,N} = get(A.data, i, zero(T))
     Base.setindex!(A::TSlow{T,N}, v, i::Vararg{Int,N}) where {T,N} = (A.data[i] = v)
+end
 
-    # https://github.com/JuliaLang/julia/pull/35304
+# https://github.com/JuliaLang/julia/pull/35304
+@testset "similar(PermutedDimsArray)" begin
     x = PermutedDimsArray([1 2; 3 4], (2, 1))
     @test similar(x, 3,3) isa Array
     z = TSlow([1 2; 3 4])
