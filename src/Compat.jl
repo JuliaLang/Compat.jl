@@ -363,7 +363,7 @@ if VERSION < v"1.5.0-DEV.124"
             hasfastin(r) && return !any(in(r), l)
             hasfastin(l) && return !any(in(l), r)
             Base.haslength(r) && length(r) < FASTIN_SET_THRESHOLD &&
-            return !any(in(r), l)
+                return !any(in(r), l)
             return !any(in(Set(r)), l)
         end
         if Base.haslength(l) && Base.haslength(r) && length(r) < length(l)
