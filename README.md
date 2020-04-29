@@ -46,6 +46,10 @@ Please check the list below for the specific syntax you need.
 
 * `isdisjoint(l, r)` indicates whether two collections are disjoint ([#34427]). (since Compat 3.9.0)
 
+* `mergewith(combine, dicts...)` and `mergewith!(combine, dicts...)` are like
+  `merge(combine, dicts...)` and `merge!(combine, dicts...)` but without the restriction
+  that the argument `combine` must be a `Function` ([#34296]). (since Compat 3.9.0).
+
 * `@NamedTuple` macro for convenient `struct`-like syntax for declaring
 `NamedTuple` types via `key::Type` declarations ([#34548]). (since Compat 3.8.0)
 
@@ -139,3 +143,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#34548]: https://github.com/JuliaLang/julia/pull/34548
 [#34652]: https://github.com/JuliaLang/julia/issues/34652
 [#34773]: https://github.com/JuliaLang/julia/issues/34773
+[#34296]: https://github.com/JuliaLang/julia/pull/34296
