@@ -44,7 +44,6 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
-
 * `similar(::PermutedDimsArray)` now uses the parent ([#35304]). (since Compat 3.9.0)
 
 * `isdisjoint(l, r)` indicates whether two collections are disjoint ([#34427]). (since Compat 3.9.0)
