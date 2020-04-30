@@ -337,4 +337,25 @@ end
         Dict("A" => 1, "B" => 21, "C" => 36)
 end
 
+# https://github.com/JuliaLang/julia/pull/34427
+@testset "isdisjoint" begin
+    for S in (Set, BitSet, Vector)
+        for (l,r) in ((S([1,2]),     S([3,4])),
+                      (S([5,6,7,8]), S([7,8,9])),
+                      (S([1,2]),     S([3,4])),
+                      (S([5,6,7,8]), S([7,8,9])),
+                      (S([1,2,3]),   S()),
+                      (S(),          S()),
+                      (S(),          S([1,2,3])),
+                      (S([1,2,3]),   S([1])),
+                      (S([1,2,3]),   S([1,2])),
+                      (S([1,2,3]),   S([1,2,3])),
+                      (S([1,2,3]),   S([4])),
+                      (S([1,2,3]),   S([4,1])))
+            @test isdisjoint(l,l) == isempty(l)
+            @test isdisjoint(l,r) == isempty(intersect(l,r))
+        end
+    end
+end
+
 nothing
