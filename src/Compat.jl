@@ -350,6 +350,47 @@ if VERSION < v"1.5.0-DEV.314"
     export @NamedTuple
 end
 
+# https://github.com/JuliaLang/julia/pull/34296
+if VERSION < v"1.5.0-DEV.182"
+    export mergewith, mergewith!
+    _asfunction(f::Function) = f
+    _asfunction(f) = (args...) -> f(args...)
+    mergewith(f, dicts...) = merge(_asfunction(f), dicts...)
+    mergewith!(f, dicts...) = merge!(_asfunction(f), dicts...)
+    mergewith(f) = (dicts...) -> mergewith(f, dicts...)
+    mergewith!(f) = (dicts...) -> mergewith!(f, dicts...)
+end
+
+# https://github.com/JuliaLang/julia/pull/32003
+if VERSION < v"1.4.0-DEV.29"
+    hasfastin(::Type) = false
+    hasfastin(::Union{Type{<:AbstractSet},Type{<:AbstractDict},Type{<:AbstractRange}}) = true
+    hasfastin(x) = hasfastin(typeof(x))
+else
+    const hasfastin = Base.hasfastin
+end
+
+# https://github.com/JuliaLang/julia/pull/34427
+if VERSION < v"1.5.0-DEV.124"
+    const FASTIN_SET_THRESHOLD = 70
+
+    function isdisjoint(l, r)
+        function _isdisjoint(l, r)
+            hasfastin(r) && return !any(in(r), l)
+            hasfastin(l) && return !any(in(l), r)
+            Base.haslength(r) && length(r) < FASTIN_SET_THRESHOLD &&
+                return !any(in(r), l)
+            return !any(in(Set(r)), l)
+        end
+        if Base.haslength(l) && Base.haslength(r) && length(r) < length(l)
+            return _isdisjoint(r, l)
+        end
+        _isdisjoint(l, r)
+    end
+
+    export isdisjoint
+end
+
 include("deprecated.jl")
 
 end # module Compat
