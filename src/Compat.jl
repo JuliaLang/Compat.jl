@@ -391,6 +391,11 @@ if VERSION < v"1.5.0-DEV.124"
     export isdisjoint
 end
 
+if VERSION < v"1.5.0-DEV.782"
+    # https://github.com/JuliaLang/julia/pull/35150
+    include("hadamard_tensor.jl")
+end
+
 include("deprecated.jl")
 
 end # module Compat
