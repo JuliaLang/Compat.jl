@@ -391,6 +391,17 @@ if VERSION < v"1.5.0-DEV.124"
     export isdisjoint
 end
 
+# https://github.com/JuliaLang/julia/pull/32310
+if v"0.7.0" <= VERSION
+    const EachRow{A,I} = Union{Base.Generator{I,(typeof(eachrow(ones(Int32,2,2)).f).name.wrapper){A}}, Base.Generator{I,(typeof(eachrow(ones(Int32,2,2)).f).name.wrapper){A}}
+    const EachCol{A,I} = Base.Generator{I,(typeof(eachcol(ones(Int32,2,2)).f).name.wrapper){A}}
+                               
+    Base.parent(x::EachRow) = x.f.A
+    Base.parent(x::EachCol) = x.f.A
+end    
+
+
+
 include("deprecated.jl")
 
 end # module Compat

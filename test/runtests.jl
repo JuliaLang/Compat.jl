@@ -394,4 +394,17 @@ end
     end
 end
 
+if VERSION >= v"0.7"
+    @testset "EachRow/EachSlice" begin
+        X = rand(3,3)
+        @test eachrow(X) isa EachRow
+        @test !(eachcol(X) isa EachRow)
+        @test eachcol(X) isa EachCol
+        @test !(eachrow(X) isa EachCol)
+
+        @test parent(eachrow(X)) === X
+        @test parent(eachcol(X)) === X
+    end
+end
+
 nothing
