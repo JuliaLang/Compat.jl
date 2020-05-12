@@ -10,6 +10,9 @@ using UUIDs: UUID, uuid1, uuid_version
     @test length(-ci:ci) == 9
     # https://github.com/JuliaLang/julia/pull/29442
     @test oneunit(ci) === ci
+
+    @test get([1 2 3; 4 5 6], CartesianIndex(1, 2), 5) == 2
+    @test get([1 2 3; 4 5 6], CartesianIndex(10, 2), 5) == 2
 end
 
 # julia#29679
