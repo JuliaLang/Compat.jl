@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `get` supporting `CartesianIndex` when indexing `AbstractArrays` ([#30259]).
+
 * `similar(::PermutedDimsArray)` now uses the parent ([#35304]). (since Compat 3.9.0)
 
 * `isdisjoint(l, r)` indicates whether two collections are disjoint ([#34427]). (since Compat 3.9.0)
@@ -148,3 +150,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#34652]: https://github.com/JuliaLang/julia/issues/34652
 [#34773]: https://github.com/JuliaLang/julia/issues/34773
 [#35304]: https://github.com/JuliaLang/julia/pull/35304
+[#30259]: https://github.com/JuliaLang/julia/pull/30268
