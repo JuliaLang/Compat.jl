@@ -44,7 +44,7 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
-* `get` supporting `CartesianIndex` when indexing `AbstractArrays` ([#30259]).
+* `get` supports `CartesianIndex` when indexing `AbstractArrays` ([#30259]). (since Compat 3.10.0)
 
 * `similar(::PermutedDimsArray)` now uses the parent ([#35304]). (since Compat 3.9.0)
 
