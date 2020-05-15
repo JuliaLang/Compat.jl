@@ -10,6 +10,12 @@ using UUIDs: UUID, uuid1, uuid_version
     @test length(-ci:ci) == 9
     # https://github.com/JuliaLang/julia/pull/29442
     @test oneunit(ci) === ci
+    # https://github.com/JuliaLang/julia/pull/30268
+    A = randn(1,2,3)
+    @test get(A, CartesianIndex(1,2,3), :some_default) === A[1,2,3]
+    @test get(A, CartesianIndex(2,2,3), :some_default) === :some_default
+    @test get(11:15, CartesianIndex(6), nothing) === nothing
+    @test get(11:15, CartesianIndex(5), nothing) === 15
 end
 
 # julia#29679

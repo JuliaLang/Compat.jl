@@ -17,6 +17,11 @@ if VERSION < v"1.1.0-DEV.403"
     Base.oneunit(::Type{CartesianIndex{N}}) where {N} = CartesianIndex(ntuple(x -> 1, Val(N)))
 end
 
+# https://github.com/JuliaLang/julia/pull/30268
+if VERSION < v"1.1.0-DEV.811"
+    Base.get(A::AbstractArray, I::CartesianIndex, default) = get(A, I.I, default)
+end
+
 # https://github.com/JuliaLang/julia/pull/29679
 if VERSION < v"1.1.0-DEV.472"
     export isnothing
