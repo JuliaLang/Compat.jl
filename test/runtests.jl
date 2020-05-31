@@ -205,6 +205,12 @@ end
     @test ∘(x -> x-2, x -> x-3, x -> x+5)(7) == 7
     fs = [x -> x[1:2], uppercase, lowercase]
     @test ∘(fs...)("ABC") == "AB"
+
+    # https://github.com/JuliaLang/julia/pull/34251
+    @testset "unary" begin
+        @test ∘(identity) === identity
+        @test ∘(inv) === inv
+    end
 end
 
 # https://github.com/JuliaLang/julia/pull/33128

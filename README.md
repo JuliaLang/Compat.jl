@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `∘(f) = f` is defined ([#34251]). (since Compat 3.11.0)
+
 * `get` supports `CartesianIndex` when indexing `AbstractArrays` ([#30259]). (since Compat 3.10.0)
 
 * `similar(::PermutedDimsArray)` now uses the parent ([#35304]). (since Compat 3.9.0)
@@ -151,3 +153,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#34773]: https://github.com/JuliaLang/julia/issues/34773
 [#35304]: https://github.com/JuliaLang/julia/pull/35304
 [#30259]: https://github.com/JuliaLang/julia/pull/30268
+[#34251]: https://github.com/JuliaLang/julia/pull/34251
