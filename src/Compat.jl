@@ -607,6 +607,33 @@ if VERSION < v"1.5.0-DEV.438" # 0a43c0f1d21ce9c647c49111d93927369cd20f85
     Base.startswith(s) = Base.Fix2(startswith, s)
 end
 
+# https://github.com/JuliaLang/julia/pull/37517
+if VERSION < v"1.6.0-" # TODO: specify the version when JuliaLang/julia#37517 is merged
+    # https://github.com/JuliaLang/julia/pull/35980
+    if VERSION < v"1.6.0-DEV.85"
+        const ComposedFunction = let h = identity ∘ convert
+            getfield(parentmodule(typeof(h)), nameof(typeof(h)))
+        end
+    else
+        using Base: ComposedFunction
+    end
+    function Base.getproperty(c::ComposedFunction, p::Symbol)
+        if p === :f
+            return getfield(c, :f)
+        elseif p === :g
+            return getfield(c, :g)
+        elseif p === :outer
+            return getfield(c, :f)
+        elseif p === :inner
+            return getfield(c, :g)
+        end
+        error("type ComposedFunction has no property ", p)
+    end
+    Base.propertynames(c::ComposedFunction) = (:f, :g, :outer, :inner)
+else
+    using Base: ComposedFunction
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 

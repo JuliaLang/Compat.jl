@@ -556,6 +556,21 @@ end
     @test endswith("d")("abcd")
 end
 
+# https://github.com/JuliaLang/julia/pull/37517
+@testset "ComposedFunction" begin
+    @test sin ∘ cos isa Compat.ComposedFunction
+    c = sin ∘ cos
+    @test c.outer === sin
+    @test c.inner === cos
+    if VERSION < v"1.6.0-" # TODO: specify the version when JuliaLang/julia#37517 is merged
+        @test c.f === sin
+        @test c.g === cos
+        @test propertynames(c) == (:f, :g, :outer, :inner)
+    else
+        @test propertynames(c) == (:outer, :inner)
+    end
+end
+
 include("iterators.jl")
 
 nothing
