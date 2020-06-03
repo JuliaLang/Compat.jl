@@ -397,7 +397,7 @@ if VERSION < v"1.5.0-DEV.124"
 end
 
 # https://github.com/JuliaLang/julia/pull/35577
-if VERSION < v"1.5.0-DEV.675"
+if VERSION < v"1.5.0-DEV.681"
     Base.union(r::Base.OneTo, s::Base.OneTo) = Base.OneTo(max(r.stop,s.stop))
 end
 
