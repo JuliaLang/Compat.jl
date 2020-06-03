@@ -44,7 +44,7 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
-* `union` supports `Base.OneTo` ([#35577]).
+* `union` supports `Base.OneTo` ([#35577]). (since Compat 3.11.0)
 
 * `get` supports `CartesianIndex` when indexing `AbstractArrays` ([#30268]). (since Compat 3.10.0)
 

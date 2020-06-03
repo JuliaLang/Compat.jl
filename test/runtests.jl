@@ -402,7 +402,7 @@ end
 
 # https://github.com/JuliaLang/julia/pull/35577
 @testset "union on OneTo" begin
-    @test union(Base.OneTo(3), Base.OneTo(4)) == Base.OneTo(4)
+    @test union(Base.OneTo(3), Base.OneTo(4)) === Base.OneTo(4)
 end
 
 nothing
