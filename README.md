@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `∘(f) = f` is defined ([#34251]). (since Compat 3.11.0)
+
 * `union` supports `Base.OneTo` ([#35577]). (since Compat 3.11.0)
 
 * `get` supports `CartesianIndex` when indexing `AbstractArrays` ([#30268]). (since Compat 3.10.0)
@@ -153,4 +155,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#34773]: https://github.com/JuliaLang/julia/issues/34773
 [#35304]: https://github.com/JuliaLang/julia/pull/35304
 [#30268]: https://github.com/JuliaLang/julia/pull/30268
+[#34251]: https://github.com/JuliaLang/julia/pull/34251
 [#35577]: https://github.com/JuliaLang/julia/pull/35577

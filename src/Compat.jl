@@ -193,6 +193,10 @@ end
 if VERSION < v"1.4.0-DEV.329"
     Base.:∘(f, g, h...) = ∘(f ∘ g, h...)
 end
+# https://github.com/JuliaLang/julia/pull/34251
+if VERSION < v"1.5.0-DEV.56"
+    Base.:∘(f) = f
+end
 
 # https://github.com/JuliaLang/julia/pull/33128
 if VERSION < v"1.4.0-DEV.397"
