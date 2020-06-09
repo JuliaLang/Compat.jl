@@ -65,6 +65,15 @@ if VERSION < v"1.2.0-DEV.272"
     export hasproperty
 end
 
+if VERSION < v"1.3.0-alpha"
+    findfirst(ch::AbstractChar, string::AbstractString) = findfirst(==(ch), string)
+    findnext(ch::AbstractChar, string::AbstractString, ind::Integer) =
+        findnext(==(ch), string, ind)
+    findlast(ch::AbstractChar, string::AbstractString) = findlast(==(ch), string)
+    findprev(ch::AbstractChar, string::AbstractString, ind::Integer) =
+        findprev(==(ch), string, ind)
+end
+
 # https://github.com/JuliaLang/julia/pull/29259
 if VERSION < v"1.1.0-DEV.594"
     Base.merge(a::NamedTuple, b::NamedTuple, cs::NamedTuple...) = merge(merge(a, b), cs...)
