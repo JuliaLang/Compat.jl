@@ -455,4 +455,13 @@ end
     @test union(Base.OneTo(3), Base.OneTo(4)) === Base.OneTo(4)
 end
 
+# https://github.com/JuliaLang/julia/pull/27516
+@testset "two arg @inferred" begin
+    g(a) = a < 10 ? missing : 1
+    @test ismissing(g(9))
+    @test g(10) == 1
+    @inferred Missing g(9)
+    @inferred Missing g(10)
+end
+
 nothing

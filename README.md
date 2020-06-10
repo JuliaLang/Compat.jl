@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* `@inferred [AllowedType] f(x)` is defined ([#27516]). (since Compat 3.12.0)
+
 * Search a character in a string with `findfirst`, `findnext`, `findlast` and `findprev` ([#31664]). (since Compat 3.12.0)
 
 * `∘(f) = f` is defined ([#34251]). (since Compat 3.11.0)
@@ -160,3 +162,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#30268]: https://github.com/JuliaLang/julia/pull/30268
 [#34251]: https://github.com/JuliaLang/julia/pull/34251
 [#35577]: https://github.com/JuliaLang/julia/pull/35577
+[#27516]: https://github.com/JuliaLang/julia/pull/27516
