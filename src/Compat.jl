@@ -414,6 +414,56 @@ if VERSION < v"1.5.0-DEV.681"
     Base.union(r::Base.OneTo, s::Base.OneTo) = Base.OneTo(max(r.stop,s.stop))
 end
 
+# https://github.com/JuliaLang/julia/pull/27516
+if VERSION < v"1.2.0-DEV.77"
+    import Test: @inferred
+    using Core.Compiler: typesubtract
+
+    macro inferred(allow, ex)
+        _inferred(ex, __module__, allow)
+    end
+
+    function _inferred(ex, mod, allow = :(Union{}))
+        if Meta.isexpr(ex, :ref)
+            ex = Expr(:call, :getindex, ex.args...)
+        end
+        Meta.isexpr(ex, :call)|| error("@inferred requires a call expression")
+        farg = ex.args[1]
+        if isa(farg, Symbol) && first(string(farg)) == '.'
+            farg = Symbol(string(farg)[2:end])
+            ex = Expr(:call, GlobalRef(Base.Test, :_materialize_broadcasted),
+                farg, ex.args[2:end]...)
+        end
+        Base.remove_linenums!(quote
+            let
+                allow = $(esc(allow))
+                allow isa Type || throw(ArgumentError("@inferred requires a type as second argument"))
+                $(if any(a->(Meta.isexpr(a, :kw) || Meta.isexpr(a, :parameters)), ex.args)
+                    # Has keywords
+                    args = gensym()
+                    kwargs = gensym()
+                    quote
+                        $(esc(args)), $(esc(kwargs)), result = $(esc(Expr(:call, _args_and_call, ex.args[2:end]..., ex.args[1])))
+                        inftypes = $(gen_call_with_extracted_types(mod, Base.return_types, :($(ex.args[1])($(args)...; $(kwargs)...))))
+                    end
+                else
+                    # No keywords
+                    quote
+                        args = ($([esc(ex.args[i]) for i = 2:length(ex.args)]...),)
+                        result = $(esc(ex.args[1]))(args...)
+                        inftypes = Base.return_types($(esc(ex.args[1])), Base.typesof(args...))
+                    end
+                end)
+                @assert length(inftypes) == 1
+                rettype = result isa Type ? Type{result} : typeof(result)
+                rettype <: allow || rettype == typesubtract(inftypes[1], allow) || error("return type $rettype does not match inferred return type $(inftypes[1])")
+                result
+            end
+        end)
+    end
+    #export @inferred
+end
+
 include("deprecated.jl")
 
 end # module Compat
