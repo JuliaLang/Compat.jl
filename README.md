@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* Search a character in a string with `findfirst`, `findnext`, `findlast`, and `findprev`.
+
 * `∘(f) = f` is defined ([#34251]). (since Compat 3.11.0)
 
 * `union` supports `Base.OneTo` ([#35577]). (since Compat 3.11.0)

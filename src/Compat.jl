@@ -66,11 +66,11 @@ if VERSION < v"1.2.0-DEV.272"
 end
 
 if VERSION < v"1.3.0-DEV.349"
-    findfirst(ch::AbstractChar, string::AbstractString) = findfirst(==(ch), string)
-    findnext(ch::AbstractChar, string::AbstractString, ind::Integer) =
+    Base.findfirst(ch::AbstractChar, string::AbstractString) = findfirst(==(ch), string)
+    Base.findnext(ch::AbstractChar, string::AbstractString, ind::Integer) =
         findnext(==(ch), string, ind)
-    findlast(ch::AbstractChar, string::AbstractString) = findlast(==(ch), string)
-    findprev(ch::AbstractChar, string::AbstractString, ind::Integer) =
+    Base.findlast(ch::AbstractChar, string::AbstractString) = findlast(==(ch), string)
+    Base.findprev(ch::AbstractChar, string::AbstractString, ind::Integer) =
         findprev(==(ch), string, ind)
 end
 
