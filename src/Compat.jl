@@ -65,7 +65,7 @@ if VERSION < v"1.2.0-DEV.272"
     export hasproperty
 end
 
-if VERSION < v"1.3.0-alpha"
+if VERSION < v"1.3.0-DEV.349"
     findfirst(ch::AbstractChar, string::AbstractString) = findfirst(==(ch), string)
     findnext(ch::AbstractChar, string::AbstractString, ind::Integer) =
         findnext(==(ch), string, ind)
