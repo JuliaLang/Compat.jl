@@ -44,6 +44,8 @@ Please check the list below for the specific syntax you need.
 
 ## Supported features
 
+* Search a character in a string with `findfirst`, `findnext`, `findlast` and `findprev` ([#31664]). (since Compat 3.12.0)
+
 * `∘(f) = f` is defined ([#34251]). (since Compat 3.11.0)
 
 * `union` supports `Base.OneTo` ([#35577]). (since Compat 3.11.0)
@@ -140,6 +142,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#29442]: https://github.com/JuliaLang/julia/issues/29442
 [#29674]: https://github.com/JuliaLang/julia/issues/29674
 [#29749]: https://github.com/JuliaLang/julia/issues/29749
+[#31664]: https://github.com/JuliaLang/julia/issues/31664
 [#32628]: https://github.com/JuliaLang/julia/issues/32628
 [#32739]: https://github.com/JuliaLang/julia/issues/32739
 [#32753]: https://github.com/JuliaLang/julia/issues/32753

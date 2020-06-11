@@ -105,6 +105,50 @@ end
     @test_throws DivideError mod(3, 1:0)
 end
 
+# https://github.com/JuliaLang/julia/pull/31664
+@testset "search character in strings" begin
+    let astr = "Hello, world.\n",
+        u8str = "∀ ε > 0, ∃ δ > 0: |x-y| < δ ⇒ |f(x)-f(y)| < ε"
+        @test_throws BoundsError findnext('z', astr, 0)
+        @test_throws BoundsError findnext('∀', astr, 0)
+        @test findfirst('x', astr) == nothing
+        @test findfirst('\0', astr) == nothing
+        @test findfirst('\u80', astr) == nothing
+        @test findfirst('∀', astr) == nothing
+        @test findfirst('∀', u8str) == 1
+        @test findfirst('ε', u8str) == 5
+        @test findfirst('H', astr) == 1
+        @test findfirst('l', astr) == 3
+        @test findfirst('e', astr) == 2
+        @test findfirst('u', astr) == nothing
+        @test findnext('l', astr, 4) == 4
+        @test findnext('l', astr, 5) == 11
+        @test findnext('l', astr, 12) == nothing
+        @test findfirst(',', astr) == 6
+        @test findnext(',', astr, 7) == nothing
+        @test findfirst('\n', astr) == 14
+        @test findnext('\n', astr, 15) == nothing
+        @test_throws BoundsError findnext('ε', astr, nextind(astr,lastindex(astr))+1)
+        @test_throws BoundsError findnext('a', astr, nextind(astr,lastindex(astr))+1)
+        @test findlast('x', astr) == nothing
+        @test findlast('\0', astr) == nothing
+        @test findlast('\u80', astr) == nothing
+        @test findlast('∀', astr) == nothing
+        @test findlast('∀', u8str) == 1
+        @test findlast('ε', u8str) == 54
+        @test findlast('H', astr) == 1
+        @test findprev('H', astr, 0) == nothing
+        @test findlast('l', astr) == 11
+        @test findprev('l', astr, 5) == 4
+        @test findprev('l', astr, 4) == 4
+        @test findprev('l', astr, 3) == 3
+        @test findprev('l', astr, 2) == nothing
+        @test findlast(',', astr) == 6
+        @test findprev(',', astr, 5) == nothing
+        @test findlast('\n', astr) == 14
+    end
+end
+
 using LinearAlgebra
 
 @testset "generalized dot #32739" begin
