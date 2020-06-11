@@ -417,7 +417,7 @@ end
 # https://github.com/JuliaLang/julia/pull/27516
 if VERSION < v"1.2.0-DEV.77"
     import Test: @inferred
-    import Core.Compiler: typesubtract
+    using Core.Compiler: typesubtract
 
     macro inferred(allow, ex)
         _inferred(ex, __module__, allow)
