@@ -47,7 +47,8 @@ Please check the list below for the specific syntax you need.
 Features in the development versions of `julia` may be added and released in
 Compat.jl.  However, such features are considered experimental until the
 relevant Julia version is released.  These features can be changed or removed
-without incrementing the major version of Compat.jl.
+without incrementing the major version of Compat.jl if necessary to match
+changes in `julia`.
 
 ## Supported features
 
