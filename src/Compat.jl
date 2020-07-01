@@ -557,8 +557,7 @@ if VERSION < v"1.6.0-DEV.322" # b8110f8d1ec6349bee77efb5022621fdf50bd4a5
 
 else
     # Ensure that these can still be accessed as Compat.get_num_threads() etc:
-    using LinearAlgebra
-    import BLAS: set_num_threads, get_num_threads
+    import LinearAlgebra.BLAS: set_num_threads, get_num_threads
 end
 
 include("deprecated.jl")
