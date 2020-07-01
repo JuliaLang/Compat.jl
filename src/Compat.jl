@@ -414,6 +414,30 @@ if VERSION < v"1.5.0-DEV.681"
     Base.union(r::Base.OneTo, s::Base.OneTo) = Base.OneTo(max(r.stop,s.stop))
 end
 
+# https://github.com/JuliaLang/julia/pull/35929
+# and also https://github.com/JuliaLang/julia/pull/29135 -> Julia 1.5
+if VERSION < v"1.6.0-DEV.323"
+
+    # This is Int not Integer, to be more strict than an existing method:
+    function stride(A::AbstractArray, k::Int)
+        st = strides(A)
+        k ≤ ndims(A) && return st[k]
+        return sum(st .* size(A))
+    end
+
+    # These were first defined for Adjoint{...,StridedVector} etc in #29135
+    Base.strides(A::Adjoint{<:Real, <:AbstractVector}) = (stride(A.parent, 2), stride(A.parent, 1))
+    Base.strides(A::Transpose{<:Any, <:AbstractVector}) = (stride(A.parent, 2), stride(A.parent, 1))
+    Base.strides(A::Adjoint{<:Real, <:AbstractMatrix}) = reverse(strides(A.parent))
+    Base.strides(A::Transpose{<:Any, <:AbstractMatrix}) = reverse(strides(A.parent))
+    Base.unsafe_convert(::Type{Ptr{T}}, A::Adjoint{<:Real, <:AbstractVecOrMat}) where {T} = Base.unsafe_convert(Ptr{T}, A.parent)
+    Base.unsafe_convert(::Type{Ptr{T}}, A::Transpose{<:Any, <:AbstractVecOrMat}) where {T} = Base.unsafe_convert(Ptr{T}, A.parent)
+
+    Base.elsize(::Type{<:Adjoint{<:Real, P}}) where {P<:AbstractVecOrMat} = Base.elsize(P)
+    Base.elsize(::Type{<:Transpose{<:Any, P}}) where {P<:AbstractVecOrMat} = Base.elsize(P)
+
+end
+
 # https://github.com/JuliaLang/julia/pull/27516
 if VERSION < v"1.2.0-DEV.77"
     import Test: @inferred
