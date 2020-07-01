@@ -464,4 +464,35 @@ end
     @inferred Missing g(10)
 end
 
+# https://github.com/JuliaLang/julia/pull/36360
+@testset "get_set_num_threads" begin
+    default = Compat.get_num_threads()
+    @test default isa Int # seems dodgy, could be nothing!
+    @test default > 0
+    Compat.set_num_threads(1)
+    @test Compat.get_num_threads() === 1
+    Compat.set_num_threads(default)
+    @test Compat.get_num_threads() === default
+
+    if VERSION < v"1.6.0-DEV.322"
+        # These tests from PR rely on internal functions which would be BLAS. not Compat.
+        @test_logs (:warn,) match_mode=:any Compat._set_num_threads(1, _blas=:unknown)
+        if Compat.guess_vendor() !== :osxblas
+            # test osxblas which is not covered by CI
+            withenv("VECLIB_MAXIMUM_THREADS" => nothing) do
+                @test @test_logs(
+                    (:warn,),
+                    (:warn,),
+                    match_mode=:any,
+                    Compat._get_num_threads(_blas=:osxblas),
+                ) === nothing
+                @test_logs Compat._set_num_threads(1, _blas=:osxblas)
+                @test @test_logs(Compat._get_num_threads(_blas=:osxblas)) === 1
+                @test_logs Compat._set_num_threads(2, _blas=:osxblas)
+                @test @test_logs(Compat._get_num_threads(_blas=:osxblas)) === 2
+            end
+        end
+    end
+end
+
 nothing
