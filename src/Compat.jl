@@ -520,7 +520,7 @@ if VERSION < v"1.6.0-DEV.322" # b8110f8d1ec6349bee77efb5022621fdf50bd4a5
             _tryparse_env_int("OMP_NUM_THREADS"),
             max(1, Sys.CPU_THREADS ÷ 2),
         )
-        _set_num_threads(n; _blas)
+        _set_num_threads(n; _blas = _blas)
     end
 
     """
