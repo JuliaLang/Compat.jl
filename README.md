@@ -52,6 +52,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `Compat.get_num_threads()` adds the functionality of `LinearAlgebra.BLAS.get_num_threads()`, and has matching `Compat.set_num_threads(n)` ([#36360]). (since Compat 3.13.0)
+
 * `@inferred [AllowedType] f(x)` is defined ([#27516]). (since Compat 3.12.0)
 
 * Search a character in a string with `findfirst`, `findnext`, `findlast` and `findprev` ([#31664]). (since Compat 3.12.0)
@@ -171,3 +173,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#34251]: https://github.com/JuliaLang/julia/pull/34251
 [#35577]: https://github.com/JuliaLang/julia/pull/35577
 [#27516]: https://github.com/JuliaLang/julia/pull/27516
+[#36360]: https://github.com/JuliaLang/julia/pull/36360

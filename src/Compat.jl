@@ -1,7 +1,7 @@
 module Compat
 
 import LinearAlgebra
-using LinearAlgebra: Adjoint, Diagonal, Transpose, UniformScaling, RealHermSymComplexHerm
+using LinearAlgebra: Adjoint, Diagonal, Transpose, UniformScaling, RealHermSymComplexHerm, BLAS
 
 include("compatmacro.jl")
 
@@ -462,6 +462,102 @@ if VERSION < v"1.2.0-DEV.77"
         end)
     end
     #export @inferred
+end
+
+# https://github.com/JuliaLang/julia/pull/36360
+if VERSION < v"1.6.0-DEV.322" # b8110f8d1ec6349bee77efb5022621fdf50bd4a5
+
+    function guess_vendor()
+        # like determine_vendor, but guesses blas in some cases
+        # where determine_vendor returns :unknown
+        ret = BLAS.vendor()
+        if Base.Sys.isapple() && (ret == :unknown)
+            ret = :osxblas
+        end
+        ret
+    end
+
+    """
+        Compat.set_num_threads(n)
+
+    Set the number of threads the BLAS library should use.
+
+    Also accepts `nothing`, in which case julia tries to guess the default number of threads.
+    Passing `nothing` is discouraged and mainly exists because,
+    on exotic variants of BLAS, `nothing` may be returned by `get_num_threads()`.
+    Thus the following pattern may fail to set the number of threads, but will not error:
+    ```julia
+    old = get_num_threads()
+    set_num_threads(1)
+    @threads for i in 1:10
+        # single-threaded BLAS calls
+    end
+    set_num_threads(old)
+    ```
+    """
+    set_num_threads(n)::Nothing = _set_num_threads(n)
+
+    function _set_num_threads(n::Integer; _blas = guess_vendor())
+        if _blas === :openblas || _blas == :openblas64
+            return ccall((BLAS.@blasfunc(openblas_set_num_threads), BLAS.libblas), Cvoid, (Cint,), n)
+        elseif _blas === :mkl
+           # MKL may let us set the number of threads in several ways
+            return ccall((:MKL_Set_Num_Threads, BLAS.libblas), Cvoid, (Cint,), n)
+            elseif _blas === :osxblas
+            # OSX BLAS looks at an environment variable
+            ENV["VECLIB_MAXIMUM_THREADS"] = n
+        else
+            @assert _blas === :unknown
+            @warn "Failed to set number of BLAS threads." maxlog=1
+        end
+        return nothing
+    end
+    _tryparse_env_int(key) = tryparse(Int, get(ENV, key, ""))
+
+    function _set_num_threads(::Nothing; _blas = guess_vendor())
+        n = something(
+            _tryparse_env_int("OPENBLAS_NUM_THREADS"),
+            _tryparse_env_int("OMP_NUM_THREADS"),
+            max(1, Base.Sys.CPU_THREADS ÷ 2),
+        )
+        _set_num_threads(n; _blas = _blas)
+    end
+
+    """
+        Compat.get_num_threads()
+
+    Get the number of threads the BLAS library is using.
+
+    On exotic variants of `BLAS` this function can fail,
+    which is indicated by returning `nothing`.
+
+    In Julia 1.6 this is `LinearAlgebra.BLAS.get_num_threads()`
+    """
+    get_num_threads(;_blas=guess_vendor())::Union{Int, Nothing} = _get_num_threads()
+
+    function _get_num_threads(; _blas = guess_vendor())::Union{Int, Nothing}
+        if _blas === :openblas || _blas === :openblas64
+            return Int(ccall((BLAS.@blasfunc(openblas_get_num_threads), BLAS.libblas), Cint, ()))
+        elseif _blas === :mkl
+            return Int(ccall((:mkl_get_max_threads, BLAS.libblas), Cint, ()))
+        elseif _blas === :osxblas
+            key = "VECLIB_MAXIMUM_THREADS"
+            nt = _tryparse_env_int(key)
+            if nt === nothing
+                @warn "Failed to read environment variable $key" maxlog=1
+            else
+                return nt
+            end
+        else
+            @assert _blas === :unknown
+        end
+        @warn "Could not get number of BLAS threads. Returning `nothing` instead." maxlog=1
+        return nothing
+    end
+
+else
+    # Ensure that these can still be accessed as Compat.get_num_threads() etc:
+    import LinearAlgebra.BLAS: set_num_threads, get_num_threads
 end
 
 include("deprecated.jl")
