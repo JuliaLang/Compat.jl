@@ -52,7 +52,7 @@ changes in `julia`.
 
 ## Supported features
 
-* `Compat.get_num_threads()` adds the functionality of  `LinearAlgebra.BLAS.get_num_threads()` ([#36360]). (since Compat 3.13.0)
+* `Compat.get_num_threads()` adds the functionality of `LinearAlgebra.BLAS.get_num_threads()`, and has matching `Compat.set_num_threads(n)` ([#36360]). (since Compat 3.13.0)
 
 * `@inferred [AllowedType] f(x)` is defined ([#27516]). (since Compat 3.12.0)
 

@@ -474,6 +474,10 @@ end
     Compat.set_num_threads(default)
     @test Compat.get_num_threads() === default
 
+    # Run the ::Nothing method, to check no error:
+    Compat.set_num_threads(nothing)
+    Compat.set_num_threads(default)
+
     if VERSION < v"1.6.0-DEV.322"
         # These tests from PR rely on internal functions which would be BLAS. not Compat.
         @test_logs (:warn,) match_mode=:any Compat._set_num_threads(1, _blas=:unknown)
