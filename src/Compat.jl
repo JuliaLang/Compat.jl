@@ -418,12 +418,13 @@ end
 # and also https://github.com/JuliaLang/julia/pull/29135 -> Julia 1.5
 if VERSION < v"1.6.0-DEV.323"
 
-    # This is Int not Integer, to be more strict than an existing method:
-    function stride(A::AbstractArray, k::Int)
+    # Compat.stride not Base.stride, so as not to overwrite the method, and not to create ambiguities:
+    function stride(A::AbstractArray, k::Integer)
         st = strides(A)
         k ≤ ndims(A) && return st[k]
         return sum(st .* size(A))
     end
+    stride(A,k) = Base.stride(A,k) # Fall-through for other methods.
 
     # These were first defined for Adjoint{...,StridedVector} etc in #29135
     Base.strides(A::Adjoint{<:Real, <:AbstractVector}) = (stride(A.parent, 2), stride(A.parent, 1))
