@@ -18,7 +18,7 @@ it is important to maintain cross-version compatibility.
 
 ## Usage
 
-To use Compat in your Julia package, add the package
+To use Compat in your Julia package, add it as a dependency of your package using the package manager
 
 ```julia
 pkg> add Compat
