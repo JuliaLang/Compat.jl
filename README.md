@@ -23,7 +23,7 @@ To use Compat in your Julia package, add it as a dependency of your package usin
 ```julia
 pkg> add Compat
 ```
-and add a line `Compat = "..."` in the `[compat]`section of the `Project.toml` file
+and add a line such as `Compat = "2.2, 3"` in the `[compat]`section of the `Project.toml` file
 in your package directory. The version in the latter should be the minimum
 version that supports all needed fatures (see list below), and (if applicable)
 any newer major versions verified to be compatible. Then, in your package,
