@@ -18,9 +18,12 @@ it is important to maintain cross-version compatibility.
 
 ## Usage
 
-To use Compat in your Julia package, add a line
-`Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"` in the `[deps]` section
-and a line `Compat = "..."` in the `[compat]`section to the `Project.toml` file
+To use Compat in your Julia package, add it as a dependency of your package using the package manager
+
+```julia
+pkg> add Compat
+```
+and add a [version specifier line](https://julialang.github.io/Pkg.jl/v1/compatibility/#Version-specifier-format-1) such as `Compat = "2.2, 3"` in the `[compat]`section of the `Project.toml` file
 in your package directory. The version in the latter should be the minimum
 version that supports all needed fatures (see list below), and (if applicable)
 any newer major versions verified to be compatible. Then, in your package,
