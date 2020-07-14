@@ -416,7 +416,7 @@ end
 
 # https://github.com/JuliaLang/julia/pull/35929
 # and also https://github.com/JuliaLang/julia/pull/29135 -> Julia 1.5
-if VERSION < v"1.6.0-DEV.323"
+if VERSION < v"1.5.0-rc1.13" || v"1.6.0-" < VERSION < v"1.6.0-DEV.323"
 
     # Compat.stride not Base.stride, so as not to overwrite the method, and not to create ambiguities:
     function stride(A::AbstractArray, k::Integer)
