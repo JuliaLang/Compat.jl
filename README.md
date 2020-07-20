@@ -55,6 +55,9 @@ changes in `julia`.
 
 ## Supported features
 
+* Curried comparisons `!=(x)`, `>=(x)`, `<=(x)`, `>(x)`, and `<(x)` are defined as, e.g.,
+  `!=(x) = y -> y != x` ([#30915]). (since Compat 3.14)
+
 * `strides` is defined for Adjoint and Transpose ([#35929]). (since Compat 3.14)
 
 * `Compat.get_num_threads()` adds the functionality of `LinearAlgebra.BLAS.get_num_threads()`, and has matching `Compat.set_num_threads(n)` ([#36360]). (since Compat 3.13.0)
