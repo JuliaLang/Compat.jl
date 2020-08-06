@@ -1,4 +1,16 @@
 module CompatIterators
+# Defining this module with the name `CompatIterators` and define
+# `const Iterators = CompatIterators` at the end of this file so that
+#
+#     julia> using Compat.Iterators
+#
+#     julia> Iterators
+#     Base.Iterators
+#
+# works without conflict in identifiers.  Users still need to
+# explicitly import `Compat.Iterators` via `using Compat: Iterators`
+# to use, e.g., `Iterators.map` before Julia 1.6.  This is the case
+# with and without the `CompatIterators` hack.
 
 using Base:
     @inline, Pair, AbstractDict, IndexLinear, IndexCartesian, IndexStyle, AbstractVector, Vector,
