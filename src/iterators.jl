@@ -12,19 +12,12 @@ module CompatIterators
 # to use, e.g., `Iterators.map` before Julia 1.6.  This is the case
 # with and without the `CompatIterators` hack.
 
-using Base:
-    @inline, Pair, AbstractDict, IndexLinear, IndexCartesian, IndexStyle, AbstractVector, Vector,
-    tail, tuple_type_head, tuple_type_tail, tuple_type_cons, SizeUnknown, HasLength, HasShape,
-    IsInfinite, EltypeUnknown, HasEltype, OneTo, @propagate_inbounds, Generator, AbstractRange,
-    LinearIndices, (:), |, +, -, !==, !, <=, <, missing, any, @boundscheck, @inbounds
+using Base: SizeUnknown
 
-import .Base:
-    first, last,
-    isempty, length, size, axes, ndims,
-    eltype, IteratorSize, IteratorEltype,
-    haskey, keys, values, pairs,
-    getindex, setindex!, get, iterate,
-    popfirst!, isdone, peek
+# We normally use `Base.f(...) = ...` style for overloading.  However,
+# we use `import Base: f` style here to make synchronizing the code
+# with `Base` easier.
+import Base: IteratorEltype, IteratorSize, eltype, iterate
 
 # Import exported APIs
 for n in names(Base.Iterators)
