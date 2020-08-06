@@ -1,7 +1,7 @@
 module TestIterators
 
 using Compat.Iterators
-using Compat: Iterators
+using Compat: Compat, Iterators
 using Test
 
 # https://github.com/JuliaLang/julia/pull/33437
@@ -29,6 +29,12 @@ end
 @testset "Iterators.map" begin
     @test collect(Iterators.map(string, 1:3)::Base.Generator) == map(string, 1:3)
     @test collect(Iterators.map(tuple, 1:3, 4:6)::Base.Generator) == map(tuple, 1:3, 4:6)
+end
+
+@testset "Iterators.filter" begin
+    # `Iterators.filter` already existed in Julia 1.0.  We just make
+    # sure that it is available under `Compat.Iterators` namespace.
+    @test Compat.Iterators.filter === Base.Iterators.filter
 end
 
 end  # module
