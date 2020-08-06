@@ -585,6 +585,15 @@ else
     import LinearAlgebra.BLAS: set_num_threads, get_num_threads
 end
 
+# https://github.com/JuliaLang/julia/pull/30915
+if VERSION < v"1.2.0-DEV.257" # e7e726b3df1991e1306ef0c566d363c0a83b2dea
+    Base.:(!=)(x) = Base.Fix2(!=, x)
+    Base.:(>=)(x) = Base.Fix2(>=, x)
+    Base.:(<=)(x) = Base.Fix2(<=, x)
+    Base.:(>)(x) = Base.Fix2(>, x)
+    Base.:(<)(x) = Base.Fix2(<, x)
+end
+
 include("deprecated.jl")
 
 end # module Compat
