@@ -14,9 +14,6 @@ import .Base:
     getindex, setindex!, get, iterate,
     popfirst!, isdone, peek
 
-const Iterators = @__MODULE__
-export Iterators
-
 # Import exported APIs
 for n in names(Base.Iterators)
     n === :Iterators && continue
