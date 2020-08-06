@@ -7,10 +7,13 @@ module CompatIterators
 #     julia> Iterators
 #     Base.Iterators
 #
-# works without conflict in identifiers.  Users still need to
-# explicitly import `Compat.Iterators` via `using Compat: Iterators`
-# to use, e.g., `Iterators.map` before Julia 1.6.  This is the case
-# with and without the `CompatIterators` hack.
+#     julia> takewhile
+#     takewhile (generic function with 1 method)
+#
+# works without conflict in identifiers in all Julia versions.  Users
+# still need to explicitly import `Compat.Iterators` via `using
+# Compat: Iterators` to use, e.g., `Iterators.map` before Julia 1.6.
+# This is the case with and without the `CompatIterators` hack.
 
 using Base: SizeUnknown
 
