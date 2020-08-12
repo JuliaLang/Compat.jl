@@ -149,9 +149,11 @@ end
     end
 end
 
-using LinearAlgebra
+using LinearAlgebra, Random
 
 @testset "generalized dot #32739" begin
+    Random.seed!(42) # https://github.com/JuliaLang/Compat.jl/issues/712
+
     # stdlib/LinearAlgebra/test/generic.jl
     for elty in (Int, Float32, Float64, BigFloat, Complex{Float32}, Complex{Float64}, Complex{BigFloat})
         n = 10
