@@ -93,7 +93,14 @@ end
 end
 
 module TypeUtils
-    using Base: parameter_upper_bound, typename
+    using Base: typename
+    if isdefined(Base, :parameter_upper_bound)
+        using Base: parameter_upper_bound
+    else
+        Base.@pure function parameter_upper_bound(t::UnionAll, idx)
+            return Base.rewrap_unionall((Base.unwrap_unionall(t)::DataType).parameters[idx], t)
+        end
+    end
     using Compat: isabstracttype
     const isabstract = isabstracttype
     export isabstract, parameter_upper_bound, typename
