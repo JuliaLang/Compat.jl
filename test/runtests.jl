@@ -545,4 +545,6 @@ end
     @test lt5(4) && !lt5(5)
 end
 
+include("iterators.jl")
+
 nothing

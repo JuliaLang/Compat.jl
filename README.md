@@ -55,6 +55,12 @@ changes in `julia`.
 
 ## Supported features
 
+* `Compat.Iterators.map` is added. It provides another syntax `Iterators.map(f, iterators...)`
+  for writing `(f(args...) for args in zip(iterators...))`, i.e. a lazy `map`  ([#34352]).
+  (since Compat 3.14)
+
+* `takewhle` and `dropwhile` are added in `Compat.Iterators` ([#33437]). (since Compat 3.14)
+
 * Curried comparisons `!=(x)`, `>=(x)`, `<=(x)`, `>(x)`, and `<(x)` are defined as, e.g.,
   `!=(x) = y -> y != x` ([#30915]). (since Compat 3.14)
 
@@ -184,3 +190,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#36360]: https://github.com/JuliaLang/julia/pull/36360
 [#35929]: https://github.com/JuliaLang/julia/pull/35929
 [#30915]: https://github.com/JuliaLang/julia/pull/30915
+[#33437]: https://github.com/JuliaLang/julia/pull/33437
+[#34352]: https://github.com/JuliaLang/julia/pull/34352
