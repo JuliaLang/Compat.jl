@@ -596,6 +596,7 @@ end
 
 # https://github.com/JuliaLang/julia/pull/35132
 if VERSION < v"1.5.0-DEV.639" # cc6e121386758dff6ba7911770e48dfd59520199
+    export contains
     contains(haystack::AbstractString, needle) = occursin(needle, haystack)
     contains(needle) = Base.Fix2(contains, needle)
 end
