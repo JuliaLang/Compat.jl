@@ -594,6 +594,12 @@ if VERSION < v"1.2.0-DEV.257" # e7e726b3df1991e1306ef0c566d363c0a83b2dea
     Base.:(<)(x) = Base.Fix2(<, x)
 end
 
+# https://github.com/JuliaLang/julia/pull/35132
+if VERSION < v"1.5.0-DEV.639" # cc6e121386758dff6ba7911770e48dfd59520199
+    contains(haystack::AbstractString, needle) = occursin(needle, haystack)
+    contains(needle) = Base.Fix2(contains, needle)
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
