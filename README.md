@@ -57,6 +57,8 @@ changes in `julia`.
 
 * `contains(haystack, needle)` and its one argument partially applied form `contains(haystack)` have been added, it acts like `occursin(needle, haystack)` ([#35132]). (since Compat 3.15)
 
+* `startswith(x)` and `endswith(x)`, returning partially-applied versions of the functions, similar to existing methods like `isequal(x)` ([#35052]). (since Compat 3.15)
+
 * `Compat.Iterators.map` is added. It provides another syntax `Iterators.map(f, iterators...)`
   for writing `(f(args...) for args in zip(iterators...))`, i.e. a lazy `map`  ([#34352]).
   (since Compat 3.14)
@@ -131,7 +133,6 @@ changes in `julia`.
 
 * `range` supporting `stop` as positional argument ([#28708]). (since Compat 1.3.0)
 
-
 ## Developer tips
 
 One of the most important rules for `Compat.jl` is to avoid breaking user code
@@ -195,3 +196,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#33437]: https://github.com/JuliaLang/julia/pull/33437
 [#34352]: https://github.com/JuliaLang/julia/pull/34352
 [#35132]: https://github.com/JuliaLang/julia/pull/35132
+[#35052]: https://github.com/JuliaLang/julia/pull/35052
