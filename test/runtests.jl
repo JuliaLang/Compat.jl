@@ -545,6 +545,11 @@ end
     @test lt5(4) && !lt5(5)
 end
 
+@testset "contains" begin
+    @test contains("foo", "o")
+    @test contains("o")("foo")
+end
+
 include("iterators.jl")
 
 nothing
