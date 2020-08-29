@@ -601,6 +601,12 @@ if VERSION < v"1.5.0-DEV.639" # cc6e121386758dff6ba7911770e48dfd59520199
     contains(needle) = Base.Fix2(contains, needle)
 end
 
+# https://github.com/JuliaLang/julia/pull/35052
+if VERSION < v"1.5.0-DEV.438" # 0a43c0f1d21ce9c647c49111d93927369cd20f85
+    Base.endswith(s) = Base.Fix2(endswith, s)
+    Base.startswith(s) = Base.Fix2(startswith, s)
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 

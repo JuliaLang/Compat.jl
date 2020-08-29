@@ -550,6 +550,12 @@ end
     @test contains("o")("foo")
 end
 
+# https://github.com/JuliaLang/julia/pull/35052
+@testset "curried startswith/endswith" begin
+    @test startswith("a")("abcd")
+    @test endswith("d")("abcd")
+end
+
 include("iterators.jl")
 
 nothing
