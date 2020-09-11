@@ -559,6 +559,7 @@ end
 # https://github.com/JuliaLang/julia/pull/37517
 @testset "ComposedFunction" begin
     @test sin ∘ cos isa Compat.ComposedFunction
+    @test sin ∘ cos === Compat.ComposedFunction(sin, cos)
     c = sin ∘ cos
     @test c.outer === sin
     @test c.inner === cos

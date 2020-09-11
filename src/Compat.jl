@@ -614,6 +614,9 @@ if VERSION < v"1.6.0-" # TODO: specify the version when JuliaLang/julia#37517 is
         const ComposedFunction = let h = identity ∘ convert
             Base.typename(typeof(h)).wrapper
         end
+        @eval ComposedFunction{F,G}(f, g) where {F,G} =
+            $(Expr(:new, :(ComposedFunction{F,G}), :f, :g))
+        ComposedFunction(f::F, g::G) where {F,G} = ComposedFunction{F,G}(f, g)
     else
         using Base: ComposedFunction
     end
