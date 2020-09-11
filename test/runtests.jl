@@ -563,7 +563,7 @@ end
     c = sin ∘ cos
     @test c.outer === sin
     @test c.inner === cos
-    if VERSION < v"1.6.0-" # TODO: specify the version when JuliaLang/julia#37517 is merged
+    if VERSION < v"1.6.0" # TODO: specify the version when JuliaLang/julia#37517 is merged
         @test c.f === sin
         @test c.g === cos
         @test propertynames(c) == (:f, :g, :outer, :inner)
