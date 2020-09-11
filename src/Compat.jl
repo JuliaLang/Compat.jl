@@ -612,7 +612,7 @@ if VERSION < v"1.6.0-" # TODO: specify the version when JuliaLang/julia#37517 is
     # https://github.com/JuliaLang/julia/pull/35980
     if VERSION < v"1.6.0-DEV.85"
         const ComposedFunction = let h = identity ∘ convert
-            getfield(parentmodule(typeof(h)), nameof(typeof(h)))
+            Base.typename(typeof(h)).wrapper
         end
     else
         using Base: ComposedFunction
