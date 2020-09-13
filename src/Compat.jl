@@ -607,6 +607,31 @@ if VERSION < v"1.5.0-DEV.438" # 0a43c0f1d21ce9c647c49111d93927369cd20f85
     Base.startswith(s) = Base.Fix2(startswith, s)
 end
 
+# https://github.com/JuliaLang/julia/pull/37244
+if VERSION < v"1.6.0-DEV.873" # 18198b1bf85125de6cec266eac404d31ccc2e65c
+    export addenv
+    function addenv(cmd::Cmd, env::Dict)
+        new_env = Dict{String,String}()
+        if cmd.env !== nothing
+            for (k, v) in split.(cmd.env, "=")
+                new_env[string(k)::String] = string(v)::String
+            end
+        end
+        for (k, v) in env
+            new_env[string(k)::String] = string(v)::String
+        end
+        return setenv(cmd, new_env)
+    end
+
+    function addenv(cmd::Cmd, pairs::Pair{<:AbstractString}...)
+        return addenv(cmd, Dict(k => v for (k, v) in pairs))
+    end
+
+    function addenv(cmd::Cmd, env::Vector{<:AbstractString})
+        return addenv(cmd, Dict(k => v for (k, v) in split.(env, "=")))
+    end
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 

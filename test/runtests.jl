@@ -556,6 +556,34 @@ end
     @test endswith("d")("abcd")
 end
 
+# From spawn.jl
+shcmd = `sh`
+havebb = false
+if Sys.iswindows()
+    busybox = download("https://cache.julialang.org/https://frippery.org/files/busybox/busybox.exe", joinpath(tempdir(), "busybox.exe"))
+    havebb = try # use busybox-w32 on windows, if available
+        success(`$busybox`)
+        true
+    catch
+        false
+    end
+    if havebb
+        shcmd = `$busybox sh`
+    end
+end
+
+# https://github.com/JuliaLang/julia/pull/37244
+@testset "addenv()" begin
+    cmd = Cmd(`$shcmd -c "echo \$FOO \$BAR"`, env=Dict("FOO" => "foo"))
+    @test strip(String(read(cmd))) == "foo"
+    cmd = addenv(cmd, "BAR" => "bar")
+    @test strip(String(read(cmd))) == "foo bar"
+    cmd = addenv(cmd, Dict("FOO" => "bar"))
+    @test strip(String(read(cmd))) == "bar bar"
+    cmd = addenv(cmd, ["FOO=baz"])
+    @test strip(String(read(cmd))) == "baz bar"
+end
+
 include("iterators.jl")
 
 nothing
