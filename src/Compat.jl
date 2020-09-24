@@ -608,7 +608,7 @@ if VERSION < v"1.5.0-DEV.438" # 0a43c0f1d21ce9c647c49111d93927369cd20f85
 end
 
 # https://github.com/JuliaLang/julia/pull/37517
-if VERSION < v"1.6.0" # TODO: specify the version when JuliaLang/julia#37517 is merged
+if VERSION < v"1.6.0-DEV.1037"
     export ComposedFunction
     # https://github.com/JuliaLang/julia/pull/35980
     if VERSION < v"1.6.0-DEV.85"
