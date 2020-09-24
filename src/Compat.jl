@@ -617,7 +617,7 @@ if VERSION < v"1.6.0-DEV.1037"
         end
         @eval ComposedFunction{F,G}(f, g) where {F,G} =
             $(Expr(:new, :(ComposedFunction{F,G}), :f, :g))
-        ComposedFunction(f::F, g::G) where {F,G} = ComposedFunction{F,G}(f, g)
+        ComposedFunction(f, g) = ComposedFunction{Core.Typeof(f),Core.Typeof(g)}(f, g)
     else
         using Base: ComposedFunction
     end
