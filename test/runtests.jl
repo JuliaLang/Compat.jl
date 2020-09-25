@@ -556,6 +556,22 @@ end
     @test endswith("d")("abcd")
 end
 
+# https://github.com/JuliaLang/julia/pull/37517
+@testset "ComposedFunction" begin
+    @test sin ∘ cos isa Compat.ComposedFunction
+    @test sin ∘ cos === Compat.ComposedFunction(sin, cos)
+    c = sin ∘ cos
+    @test c.outer === sin
+    @test c.inner === cos
+    if VERSION < v"1.6.0-DEV.1037"
+        @test c.f === sin
+        @test c.g === cos
+        @test propertynames(c) == (:f, :g, :outer, :inner)
+    else
+        @test propertynames(c) == (:outer, :inner)
+    end
+end
+
 # From spawn.jl
 shcmd = `sh`
 havebb = false

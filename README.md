@@ -55,6 +55,8 @@ changes in `julia`.
 
 ## Supported features
 
+* The composition operator `∘` now returns a `Compat.ComposedFunction` instead of an anonymous function ([#37517]). (since Compat 3.17)
+
 * New function `addenv` for adding environment mappings into a `Cmd` object, returning the new `Cmd` object ([#37244]). (since Compat 3.16)
 
 * `contains(haystack, needle)` and its one argument partially applied form `contains(haystack)` have been added, it acts like `occursin(needle, haystack)` ([#35132]). (since Compat 3.15)
@@ -200,3 +202,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#35132]: https://github.com/JuliaLang/julia/pull/35132
 [#35052]: https://github.com/JuliaLang/julia/pull/35052
 [#37244]: https://github.com/JuliaLang/julia/pull/37244
+[#37517]: https://github.com/JuliaLang/julia/pull/37517

@@ -607,6 +607,37 @@ if VERSION < v"1.5.0-DEV.438" # 0a43c0f1d21ce9c647c49111d93927369cd20f85
     Base.startswith(s) = Base.Fix2(startswith, s)
 end
 
+# https://github.com/JuliaLang/julia/pull/37517
+if VERSION < v"1.6.0-DEV.1037"
+    export ComposedFunction
+    # https://github.com/JuliaLang/julia/pull/35980
+    if VERSION < v"1.6.0-DEV.85"
+        const ComposedFunction = let h = identity ∘ convert
+            Base.typename(typeof(h)).wrapper
+        end
+        @eval ComposedFunction{F,G}(f, g) where {F,G} =
+            $(Expr(:new, :(ComposedFunction{F,G}), :f, :g))
+        ComposedFunction(f, g) = ComposedFunction{Core.Typeof(f),Core.Typeof(g)}(f, g)
+    else
+        using Base: ComposedFunction
+    end
+    function Base.getproperty(c::ComposedFunction, p::Symbol)
+        if p === :f
+            return getfield(c, :f)
+        elseif p === :g
+            return getfield(c, :g)
+        elseif p === :outer
+            return getfield(c, :f)
+        elseif p === :inner
+            return getfield(c, :g)
+        end
+        error("type ComposedFunction has no property ", p)
+    end
+    Base.propertynames(c::ComposedFunction) = (:f, :g, :outer, :inner)
+else
+    using Base: ComposedFunction
+end
+
 # https://github.com/JuliaLang/julia/pull/37244
 if VERSION < v"1.6.0-DEV.873" # 18198b1bf85125de6cec266eac404d31ccc2e65c
     export addenv
