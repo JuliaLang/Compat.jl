@@ -55,6 +55,10 @@ changes in `julia`.
 
 ## Supported features
 
+* `reinterpret(reshape, T, a::AbstractArray{S})` reinterprets `a` to have eltype `T` while
+  inserting or consuming the first dimension depending on the ratio of `sizeof(T)` and `sizeof(S)`.
+  ([#37559]). (since Compat 3.18)
+
 * The composition operator `∘` now returns a `Compat.ComposedFunction` instead of an anonymous function ([#37517]). (since Compat 3.17)
 
 * New function `addenv` for adding environment mappings into a `Cmd` object, returning the new `Cmd` object ([#37244]). (since Compat 3.16)
@@ -203,3 +207,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#35052]: https://github.com/JuliaLang/julia/pull/35052
 [#37244]: https://github.com/JuliaLang/julia/pull/37244
 [#37517]: https://github.com/JuliaLang/julia/pull/37517
+[#37559]: https://github.com/JuliaLang/julia/pull/37559
