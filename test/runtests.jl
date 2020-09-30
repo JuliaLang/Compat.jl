@@ -600,6 +600,85 @@ end
     @test strip(String(read(cmd))) == "baz bar"
 end
 
+# https://github.com/JuliaLang/julia/pull/37559
+@testset "reinterpred(reshape, ...)" begin
+    # simplified from PR
+    Ar = Int64[1 3; 2 4]
+    @test @inferred(ndims(reinterpret(reshape, Complex{Int64}, Ar))) == 1
+    @test @inferred(axes(reinterpret(reshape, Complex{Int64}, Ar))) === (Base.OneTo(2),)
+    @test @inferred(size(reinterpret(reshape, Complex{Int64}, Ar))) == (2,)
+
+    _B = Complex{Int64}[5+6im, 7+8im, 9+10im]
+    @test @inferred(ndims(reinterpret(reshape, Int64, _B))) == 2
+    @test @inferred(axes(reinterpret(reshape, Int64, _B))) === (Base.OneTo(2), Base.OneTo(3))
+    @test @inferred(size(reinterpret(reshape, Int64, _B))) == (2, 3)
+    @test @inferred(ndims(reinterpret(reshape, Int128, _B))) == 1
+    @test @inferred(axes(reinterpret(reshape, Int128, _B))) === (Base.OneTo(3),)
+    @test @inferred(size(reinterpret(reshape, Int128, _B))) == (3,)
+
+    A = Int64[1, 2, 3, 4]
+    Av = [Int32[1,2], Int32[3,4]]
+
+    @test_throws ArgumentError reinterpret(Vector{Int64}, A) # ("cannot reinterpret `Int64` as `Vector{Int64}`, type `Vector{Int64}` is not a bits type")
+    @test_throws ArgumentError reinterpret(Int32, Av) # ("cannot reinterpret `Vector{Int32}` as `Int32`, type `Vector{Int32}` is not a bits type")
+    @test_throws ArgumentError("cannot reinterpret a zero-dimensional `Int64` array to `Int32` which is of a different size") reinterpret(Int32, reshape([Int64(0)]))
+    @test_throws ArgumentError("cannot reinterpret a zero-dimensional `Int32` array to `Int64` which is of a different size") reinterpret(Int64, reshape([Int32(0)]))
+    @test_throws ArgumentError reinterpret(Tuple{Int,Int}, [1,2,3,4,5]) # ("""cannot reinterpret an `$Int` array to `Tuple{$Int, $Int}` whose first dimension has size `5`.
+                               # The resulting array would have non-integral first dimension.
+                               # """)
+    @test_throws ArgumentError("`reinterpret(reshape, Complex{Int64}, a)` where `eltype(a)` is Int64 requires that `axes(a, 1)` (got Base.OneTo(4)) be equal to 1:2 (from the ratio of element sizes)") reinterpret(reshape, Complex{Int64}, A)
+    @test_throws ArgumentError("`reinterpret(reshape, T, a)` requires that one of `sizeof(T)` (got 24) and `sizeof(eltype(a))` (got 16) be an integer multiple of the other") reinterpret(reshape, NTuple{3, Int64}, _B)
+    @test_throws ArgumentError reinterpret(reshape, Vector{Int64}, Ar) # ("cannot reinterpret `Int64` as `Vector{Int64}`, type `Vector{Int64}` is not a bits type")
+    @test_throws ArgumentError("cannot reinterpret a zero-dimensional `UInt8` array to `UInt16` which is of a larger size") reinterpret(reshape, UInt16, reshape([0x01]))
+
+    # getindex
+    _A = A
+    @test reinterpret(Complex{Int64}, _A) == [1 + 2im, 3 + 4im]
+    @test reinterpret(Float64, _A) == reinterpret.(Float64, A)
+    @test reinterpret(reshape, Float64, _A) == reinterpret.(Float64, A)
+
+    Ars = Ar
+    @test reinterpret(reshape, Complex{Int64}, Ar) == [1 + 2im, 3 + 4im]
+    @test reinterpret(reshape, Float64, Ar) == reinterpret.(Float64, Ars)
+
+    # setindex
+    A3 = collect(reshape(1:18, 2, 3, 3))
+    A3r = reinterpret(reshape, Complex{Int}, A3)
+    @test A3r[4] === A3r[1,2] === A3r[CartesianIndex(1, 2)] === 7+8im
+    A3r[2,3] = -8-15im
+    @test A3[1,2,3] == -8
+    @test A3[2,2,3] == -15
+    A3r[4] = 100+200im
+    @test A3[1,1,2] == 100
+    @test A3[2,1,2] == 200
+    A3r[CartesianIndex(1,2)] = 300+400im
+    @test A3[1,1,2] == 300
+    @test A3[2,1,2] == 400
+
+    # Test 0-dimensional Arrays
+    A = zeros(UInt32)
+    B = reinterpret(Int32,A)
+    Brs = reinterpret(reshape,Int32,A)
+    @test size(B) == size(Brs) == ()
+    @test axes(B) == axes(Brs) == ()
+    B[] = Int32(5)
+    @test B[] === Int32(5)
+    @test Brs[] === Int32(5)
+    @test A[] === UInt32(5)
+
+    # reductions
+    a = [(1,2,3), (4,5,6)]
+    ars = reinterpret(reshape, Int, a)
+    @test sum(ars) == 21
+    @test sum(ars; dims=1) == [6 15]
+    @test sum(ars; dims=2) == reshape([5,7,9], (3, 1))
+    @test sum(ars; dims=(1,2)) == reshape([21], (1, 1))
+    # also test large sizes for the pairwise algorithm
+    a = [(k,k+1,k+2) for k = 1:3:4000]
+    ars = reinterpret(reshape, Int, a)
+    @test sum(ars) == 8010003
+end
+
 include("iterators.jl")
 
 nothing
