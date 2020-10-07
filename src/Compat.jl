@@ -739,6 +739,27 @@ if VERSION < v"1.6.0-DEV.1083"
     end
 end
 
+if VERSION < v"1.3"
+    # Note this is much less performant than real 5-arg mul!, but is provided so old versions of julia don't error at least
+
+    function _mul!(C, A, B, alpha, beta)
+        Y = similar(C)
+        mul!(Y, A, B)
+        Y .= alpha.*Y .+ beta.*C
+        return Y
+    end
+    # all combination of Number and AbstractArray for A and B except both being Number
+    function LinearAlgebra.mul!(C::AbstractArray, A::Number, B::AbstractArray, alpha::Number, beta::Number)
+        return _mul!(C, A, B, alpha, beta)
+    end
+    function LinearAlgebra.mul!(C::AbstractArray, A::AbstractArray, B::Number, alpha::Number, beta::Number)
+        return _mul!(C, A, B, alpha, beta)
+    end
+    function LinearAlgebra.mul!(C::AbstractArray, A::AbstractArray, B::AbstractArray, alpha::Number, beta::Number)
+        return _mul!(C, A, B, alpha, beta)
+    end
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
