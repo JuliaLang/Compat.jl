@@ -745,8 +745,8 @@ if VERSION < v"1.3"
     function _mul!(C, A, B, alpha, beta)
         Y = similar(C)
         mul!(Y, A, B)
-        Y .= alpha.*Y .+ beta.*C
-        return Y
+        C .= Y .* alpha .+ C .* beta
+        return C
     end
     # all combination of Number and AbstractArray for A and B except both being Number
     function LinearAlgebra.mul!(C::AbstractArray, A::Number, B::AbstractArray, alpha::Number, beta::Number)
