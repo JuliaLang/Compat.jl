@@ -745,7 +745,7 @@ if VERSION < v"1.3.0-alpha.115"
 
     function _mul!(C, A, B, alpha, beta)
         Y = similar(C)
-        mul!(Y, A, B)
+        LinearAlgebra.mul!(Y, A, B)
         C .= Y .* alpha .+ C .* beta
         return C
     end
