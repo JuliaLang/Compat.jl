@@ -762,6 +762,28 @@ if VERSION < v"1.3.0-alpha.115"
     end
 end
 
+# https://github.com/JuliaLang/julia/pull/35243
+if VERSION < v"1.6.0-DEV.15"
+    _replace_filename(@nospecialize(x), filename) = x
+    _replace_filename(x::LineNumberNode, filename) = LineNumberNode(x.line, filename)
+    function _replace_filename(ex::Expr, filename)
+        return Expr(ex.head, Any[_replace_filename(i, filename) for i in ex.args]...)
+    end
+
+    function parseatom(text::AbstractString, pos::Integer; filename="none")
+        ex, i = Meta.parse(text, pos, greedy=false)
+        return _replace_filename(ex, Symbol(filename)), i
+    end
+    
+    function parseall(text::AbstractString; filename="none")
+        _filename = Symbol(filename)
+        ex = _replace_filename(Meta.parse(text), _filename)
+        return Expr(:toplevel, LineNumberNode(1, _filename), ex)
+    end
+else
+    using .Meta: parseatom, parseall
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 

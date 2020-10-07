@@ -698,6 +698,35 @@ end
     @test  Cmut == mul!(Cmut, B, x, alpha, beta) ≈ ((B * x * alpha) + (C * beta))
 end
 
+# https://github.com/JuliaLang/julia/pull/35243
+@testset "parseatom and parseall" begin
+    @test Compat.parseatom(raw"foo$(@bar)baz", 5; filename="foo") ==
+        (Expr(:macrocall, Symbol("@bar"), LineNumberNode(1, :foo)), 11)
+
+    ex = Compat.parseall(
+        raw"""
+        begin
+            @a b
+            @c() + 1
+        end
+        """;
+        filename="foo",
+    )
+    @test ex == Expr(:toplevel,
+        LineNumberNode(1, :foo),
+        Expr(:block,
+            LineNumberNode(2, :foo),
+            Expr(:macrocall, Symbol("@a"), LineNumberNode(2, :foo), :b),
+            LineNumberNode(3, :foo),
+            Expr(:call,
+                 :+,
+                 Expr(:macrocall, Symbol("@c"), LineNumberNode(3, :foo)),
+                 1,
+            ),
+        ),
+    )
+end
+
 include("iterators.jl")
 
 nothing
