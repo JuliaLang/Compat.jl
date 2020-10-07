@@ -55,6 +55,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `mul!(C, A, B, alpha, beta)` now performs in-place multiply add ([#29634]). (since Compat 3.19).
+
 * `reinterpret(reshape, T, a::AbstractArray{S})` reinterprets `a` to have eltype `T` while
   inserting or consuming the first dimension depending on the ratio of `sizeof(T)` and `sizeof(S)`.
   ([#37559]). (since Compat 3.18)
@@ -208,3 +210,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#37244]: https://github.com/JuliaLang/julia/pull/37244
 [#37517]: https://github.com/JuliaLang/julia/pull/37517
 [#37559]: https://github.com/JuliaLang/julia/pull/37559
+[#29634]: https://github.com/JuliaLang/julia/pull/29634

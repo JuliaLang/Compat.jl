@@ -739,7 +739,8 @@ if VERSION < v"1.6.0-DEV.1083"
     end
 end
 
-if VERSION < v"1.3"
+if VERSION < v"1.3.0-alpha.115"
+    # https://github.com/JuliaLang/julia/pull/29634
     # Note this is much less performant than real 5-arg mul!, but is provided so old versions of julia don't error at least
 
     function _mul!(C, A, B, alpha, beta)
@@ -748,6 +749,7 @@ if VERSION < v"1.3"
         C .= Y .* alpha .+ C .* beta
         return C
     end
+
     # all combination of Number and AbstractArray for A and B except both being Number
     function LinearAlgebra.mul!(C::AbstractArray, A::Number, B::AbstractArray, alpha::Number, beta::Number)
         return _mul!(C, A, B, alpha, beta)
