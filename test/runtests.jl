@@ -679,6 +679,25 @@ end
     @test sum(ars) == 8010003
 end
 
+# https://github.com/JuliaLang/julia/pull/29634
+@testset "5-arg mul!" begin
+    A = [1.0 2.0; 3.0 4.0]
+    B = [10.0, 2.0]
+    C = [100.0, 1000.0]
+    x = -20.0
+    alpha = 0.1
+    beta = 0.1
+
+    Cmut = copy(C)
+    @test  Cmut == mul!(Cmut, A, B, alpha, beta) ≈ ((A * B * alpha) + (C * beta))
+
+    Cmut = copy(C)
+    @test  Cmut == mul!(Cmut, x, B, alpha, beta) ≈ ((x * B * alpha) + (C * beta))
+
+    Cmut = copy(C)
+    @test  Cmut == mul!(Cmut, B, x, alpha, beta) ≈ ((B * x * alpha) + (C * beta))
+end
+
 include("iterators.jl")
 
 nothing
