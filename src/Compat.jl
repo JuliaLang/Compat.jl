@@ -764,21 +764,43 @@ end
 
 # https://github.com/JuliaLang/julia/pull/35243
 if VERSION < v"1.6.0-DEV.15"
-    _replace_filename(@nospecialize(x), filename) = x
-    _replace_filename(x::LineNumberNode, filename) = LineNumberNode(x.line, filename)
-    function _replace_filename(ex::Expr, filename)
-        return Expr(ex.head, Any[_replace_filename(i, filename) for i in ex.args]...)
+    _replace_filename(@nospecialize(x), filename, line_offset=0) = x
+    function _replace_filename(x::LineNumberNode, filename, line_offset=0)
+        return LineNumberNode(x.line + line_offset, filename)
+    end
+    function _replace_filename(ex::Expr, filename, line_offset=0)
+        return Expr(
+            ex.head,
+            Any[_replace_filename(i, filename, line_offset) for i in ex.args]...,
+        )
     end
 
     function parseatom(text::AbstractString, pos::Integer; filename="none")
         ex, i = Meta.parse(text, pos, greedy=false)
         return _replace_filename(ex, Symbol(filename)), i
     end
+
+    function _skip_newlines(text, line, i)
+        while i <= lastindex(text) && isspace(text[i])
+            line += text[i] == '\n'
+            i = nextind(text, i)
+        end
+        return line, i
+    end
     
     function parseall(text::AbstractString; filename="none")
-        _filename = Symbol(filename)
-        ex = _replace_filename(Meta.parse(text), _filename)
-        return Expr(:toplevel, LineNumberNode(1, _filename), ex)
+        filename = Symbol(filename)
+        ex = Expr(:toplevel)
+        line, prev_i = _skip_newlines(text, 1, firstindex(text))
+        ex_n, i = Meta.parse(text, prev_i)
+        while ex_n !== nothing
+            push!(ex.args, LineNumberNode(line, filename))
+            push!(ex.args, _replace_filename(ex_n, filename, line-1))
+            line += count(==('\n'), SubString(text, prev_i:prevind(text, i)))
+            line, prev_i = _skip_newlines(text, line, i)
+            ex_n, i = Meta.parse(text, prev_i)
+        end
+        return ex
     end
 else
     using .Meta: parseatom, parseall

@@ -725,6 +725,30 @@ end
             ),
         ),
     )
+
+    ex = Compat.parseall(
+        raw"""
+        
+        begin a = 1 end
+
+        begin
+            b = 2
+        end
+        """;
+        filename="foo",
+    )
+    @test ex == Expr(:toplevel,
+        LineNumberNode(2, :foo),
+        Expr(:block,
+            LineNumberNode(2, :foo),
+            :(a = 1),
+        ),
+        LineNumberNode(4, :foo),
+        Expr(:block,
+            LineNumberNode(5, :foo),
+            :(b = 2),
+        ),
+    )
 end
 
 include("iterators.jl")
