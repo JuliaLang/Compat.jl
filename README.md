@@ -55,6 +55,13 @@ changes in `julia`.
 
 ## Supported features
 
+* `Compat.parseatom(text::AbstractString, pos::Integer; filename="none")` parses a single
+  atom from `text` starting at index `pos`. Returns a `Tuple` consisting of the
+  parsed expression and the index to resume parsing from. ([#35243]) (since Compat 3.20)
+
+* `Compat.parseall(text::AbstractString; filename="none")` parses the whole string `text`
+  and returns the parsed expression. ([#35243]) (since Compat 3.20)
+
 * `mul!(C, A, B, alpha, beta)` now performs in-place multiply add ([#29634]). (since Compat 3.19).
 
 * `reinterpret(reshape, T, a::AbstractArray{S})` reinterprets `a` to have eltype `T` while
@@ -211,3 +218,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#37517]: https://github.com/JuliaLang/julia/pull/37517
 [#37559]: https://github.com/JuliaLang/julia/pull/37559
 [#29634]: https://github.com/JuliaLang/julia/pull/29634
+[#35243]: https://github.com/JuliaLang/julia/pull/35243
