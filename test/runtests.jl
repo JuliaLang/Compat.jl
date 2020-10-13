@@ -753,4 +753,38 @@ end
 
 include("iterators.jl")
 
-nothing
+# Import renaming, https://github.com/JuliaLang/julia/pull/37396,
+# and https://github.com/JuliaLang/julia/pull/37965
+module ImportRename
+    using Compat
+    compat"import LinearAlgebra as LA"
+    compat"import LinearAlgebra.BLAS as BL"
+    compat"import LinearAlgebra.BLAS: dotc as dc"
+    compat"import LinearAlgebra: cholesky as chol, lu as lufact"
+    compat"using LinearAlgebra.BLAS: hemm as hm"
+    compat"import Base.Cartesian: @nloops as @nl"
+    compat"import Base.Cartesian.@ntuple as @nt"
+    compat"using Base.Cartesian: @nexprs as @ne"
+end
+
+import .ImportRename
+import LinearAlgebra
+
+@testset "import renaming" begin
+    @test ImportRename.LA === LinearAlgebra
+    @test !isdefined(ImportRename, :LinearAlgebra)
+    @test ImportRename.BL === LinearAlgebra.BLAS
+    @test !isdefined(ImportRename, :BLAS)
+    @test ImportRename.dc === LinearAlgebra.BLAS.dotc
+    @test !isdefined(ImportRename, :dotc)
+    @test ImportRename.chol === LinearAlgebra.cholesky
+    @test ImportRename.lufact === LinearAlgebra.lu
+    @test ImportRename.hm === LinearAlgebra.BLAS.hemm
+    @test !isdefined(ImportRename, :hemm)
+    @test isdefined(ImportRename, Symbol("@nl"))
+    @test !isdefined(ImportRename, Symbol("@nloops"))
+    @test isdefined(ImportRename, Symbol("@nt"))
+    @test !isdefined(ImportRename, Symbol("@ntuple"))
+    @test isdefined(ImportRename, Symbol("@ne"))
+    @test !isdefined(ImportRename, Symbol("@nexprs"))
+end
