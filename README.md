@@ -55,6 +55,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `Dates.canonicalize` can now take a `Period` as an input ([#37391]) (since Compat 3.22)
+
 * Import renaming is available through the `@compat` macro, e.g. `@compat import LinearAlgebra as LA` and
   `@compat import LinearAlgebra: cholesky as c, lu as l`. *Note:* Import renaming of macros is not
   supported due to differences in parsing behavior ([#37396]). (since Compat 3.21).
@@ -224,3 +226,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#29634]: https://github.com/JuliaLang/julia/pull/29634
 [#35243]: https://github.com/JuliaLang/julia/pull/35243
 [#37396]: https://github.com/JuliaLang/julia/pull/37396
+[#37391]: https://github.com/JuliaLang/julia/pull/37391

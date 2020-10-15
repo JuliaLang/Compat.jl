@@ -1,4 +1,5 @@
 using Compat
+using Dates
 using Test
 using UUIDs: UUID, uuid1, uuid_version
 
@@ -728,7 +729,7 @@ end
 
     ex = Compat.parseall(
         raw"""
-        
+
         begin a = 1 end
 
         begin
@@ -749,6 +750,19 @@ end
             :(b = 2),
         ),
     )
+end
+
+# https://github.com/JuliaLang/julia/pull/37391
+@testset "Dates.canonicalize(::Period)" begin
+    # reduce individual Period into most basic CompoundPeriod
+    @test Dates.canonicalize(Dates.Nanosecond(1000000)) == Dates.canonicalize(Dates.Millisecond(1))
+    @test Dates.canonicalize(Dates.Millisecond(1000)) == Dates.canonicalize(Dates.Second(1))
+    @test Dates.canonicalize(Dates.Second(60)) == Dates.canonicalize(Dates.Minute(1))
+    @test Dates.canonicalize(Dates.Minute(60)) == Dates.canonicalize(Dates.Hour(1))
+    @test Dates.canonicalize(Dates.Hour(24)) == Dates.canonicalize(Dates.Day(1))
+    @test Dates.canonicalize(Dates.Day(7)) == Dates.canonicalize(Dates.Week(1))
+    @test Dates.canonicalize(Dates.Month(12)) == Dates.canonicalize(Dates.Year(1))
+    @test Dates.canonicalize(Dates.Minute(24*60*1 + 12*60)) == Dates.canonicalize(Dates.CompoundPeriod([Dates.Day(1),Dates.Hour(12)]))
 end
 
 include("iterators.jl")
