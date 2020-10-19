@@ -753,4 +753,29 @@ end
 
 include("iterators.jl")
 
-nothing
+# Import renaming, https://github.com/JuliaLang/julia/pull/37396,
+# and https://github.com/JuliaLang/julia/pull/37965
+module ImportRename
+    using Compat
+    @compat import LinearAlgebra as LA
+    @compat import LinearAlgebra.BLAS as BL
+    @compat import LinearAlgebra.BLAS: dotc as dc
+    @compat import LinearAlgebra: cholesky as chol, lu as lufact
+    @compat using LinearAlgebra.BLAS: hemm as hm
+end
+
+import .ImportRename
+import LinearAlgebra
+
+@testset "import renaming" begin
+    @test ImportRename.LA === LinearAlgebra
+    @test !isdefined(ImportRename, :LinearAlgebra)
+    @test ImportRename.BL === LinearAlgebra.BLAS
+    @test !isdefined(ImportRename, :BLAS)
+    @test ImportRename.dc === LinearAlgebra.BLAS.dotc
+    @test !isdefined(ImportRename, :dotc)
+    @test ImportRename.chol === LinearAlgebra.cholesky
+    @test ImportRename.lufact === LinearAlgebra.lu
+    @test ImportRename.hm === LinearAlgebra.BLAS.hemm
+    @test !isdefined(ImportRename, :hemm)
+end
