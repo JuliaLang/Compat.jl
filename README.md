@@ -55,8 +55,9 @@ changes in `julia`.
 
 ## Supported features
 
-* Import renaming is available through the `compat"..."` string macro, e.g. `compat"import LinearAlgebra as LA"` and
-  `compat"import LinearAlgebra: cholesky as c, lu as l"` ([#37396]). (since Compat 3.21).
+* Import renaming is available through the `@compat` macro, e.g. `@compat import LinearAlgebra as LA` and
+  `@compat import LinearAlgebra: cholesky as c, lu as l`. *Note:* Import renaming of macros is not
+  supported due to differences in parsing behavior ([#37396]). (since Compat 3.21).
 
 * `Compat.parseatom(text::AbstractString, pos::Integer; filename="none")` parses a single
   atom from `text` starting at index `pos`. Returns a `Tuple` consisting of the

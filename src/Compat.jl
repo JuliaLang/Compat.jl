@@ -787,7 +787,7 @@ if VERSION < v"1.6.0-DEV.15"
         end
         return line, i
     end
-    
+
     function parseall(text::AbstractString; filename="none")
         filename = Symbol(filename)
         ex = Expr(:toplevel)
@@ -806,55 +806,6 @@ else
     using .Meta: parseatom, parseall
 end
 
-# Import renaming, https://github.com/JuliaLang/julia/pull/37396,
-# and https://github.com/JuliaLang/julia/pull/37965
-export @compat_str
-
-macro compat_str(str)
-    return compat_str(str)
-end
-
-function compat_str(str)
-    str = strip(str)
-    if VERSION >= v"1.6.0-DEV.1189"
-        return Meta.parse(str)
-    end
-    if (m = match(r"^import\s+([\w\.@]+)\s+as\s+(@?\w+)$", str)) !== nothing
-        lhs = Symbol.(split(m[1], '.'))
-        alias = Symbol(m[2])
-        return _create_expression([lhs => alias])
-    elseif (m = match(r"^(import|using)\s+([\w\.]+):\s+(.*)$", str)) !== nothing &&
-           (ms = match.(Ref(r"^(@?\w+)\s+as\s+(@?\w+)$"), strip.(split(m[3], ','))); all(x -> x !== nothing, ms))
-        path_aliases = Pair{Vector{Symbol},Symbol}[]
-        for mss in ms
-           lhs = Symbol.(split(m[2], '.'))
-           push!(lhs, Symbol(mss[1]))
-           alias = Symbol(mss[2])
-           push!(path_aliases, lhs => alias)
-        end
-        return _create_expression(path_aliases)
-    else
-        throw(ArgumentError("could not parse $(repr(str)) as a valid import statement"))
-    end
-end
-
-function _create_expression(path_aliases::Vector{Pair{Vector{Symbol}, Symbol}})
-    # Create an gensymd baremodule to hide names in
-    s = gensym()
-    # Create all import/const exprs
-    import_exprs = Expr[]
-    const_exprs = Expr[]
-    for (path, alias) in path_aliases
-        import_expr = Expr(:import, Expr(:., path...))
-        push!(import_exprs, import_expr)
-        rhs_expr = Expr(:escape, Expr(:., s, QuoteNode(last(path))))
-        const_expr = Expr(:const, Expr(:global, Expr(:(=), alias, rhs_expr)))
-        push!(const_exprs, const_expr)
-    end
-    module_expr = Expr(:module, false, Expr(:escape, s), Expr(:block, import_exprs...))
-    return_expr = Expr(:toplevel, module_expr, const_exprs..., nothing)
-    return return_expr
-end
 
 include("iterators.jl")
 include("deprecated.jl")
