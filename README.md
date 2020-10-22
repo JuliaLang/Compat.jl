@@ -55,6 +55,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `sincospi(x)` for calculating the tuple `(sinpi(x), cospi(x))` ([#35816]) (since Compat 3.23)
+
 * `Dates.canonicalize` can now take a `Period` as an input ([#37391]) (since Compat 3.22)
 
 * Import renaming is available through the `@compat` macro, e.g. `@compat import LinearAlgebra as LA` and
@@ -227,3 +229,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#35243]: https://github.com/JuliaLang/julia/pull/35243
 [#37396]: https://github.com/JuliaLang/julia/pull/37396
 [#37391]: https://github.com/JuliaLang/julia/pull/37391
+[#35816]: https://github.com/JuliaLang/julia/pull/35816

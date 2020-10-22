@@ -814,6 +814,12 @@ if VERSION < v"1.6.0-DEV.820"
     Dates.canonicalize(p::Period) = Dates.canonicalize(CompoundPeriod(p))
 end
 
+# https://github.com/JuliaLang/julia/pull/35816
+if VERSION < v"1.6.0-DEV.292" # 6cd329c371c1db3d9876bc337e82e274e50420e8
+    export sincospi
+    sincospi(x) = (sinpi(x), cospi(x))
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
