@@ -1,5 +1,8 @@
 module Compat
 
+import Dates
+using Dates: Period, CompoundPeriod
+
 import LinearAlgebra
 using LinearAlgebra: Adjoint, Diagonal, Transpose, UniformScaling, RealHermSymComplexHerm, BLAS
 
@@ -787,7 +790,7 @@ if VERSION < v"1.6.0-DEV.15"
         end
         return line, i
     end
-    
+
     function parseall(text::AbstractString; filename="none")
         filename = Symbol(filename)
         ex = Expr(:toplevel)
@@ -804,6 +807,11 @@ if VERSION < v"1.6.0-DEV.15"
     end
 else
     using .Meta: parseatom, parseall
+end
+
+# https://github.com/JuliaLang/julia/pull/37391
+if VERSION < v"1.6.0-DEV.820"
+    Dates.canonicalize(p::Period) = Dates.canonicalize(CompoundPeriod(p))
 end
 
 include("iterators.jl")
