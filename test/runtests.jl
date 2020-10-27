@@ -765,6 +765,15 @@ end
     @test Dates.canonicalize(Dates.Minute(24*60*1 + 12*60)) == Dates.canonicalize(Dates.CompoundPeriod([Dates.Day(1),Dates.Hour(12)]))
 end
 
+# https://github.com/JuliaLang/julia/pull/35816
+@testset "sincospi(x)" begin
+    @test sincospi(0.13) == (sinpi(0.13), cospi(0.13))
+    @test sincospi(1//3) == (sinpi(1//3), cospi(1//3))
+    @test sincospi(5) == (sinpi(5), cospi(5))
+    @test sincospi(ℯ) == (sinpi(ℯ), cospi(ℯ))
+    @test sincospi(0.13im) == (sinpi(0.13im), cospi(0.13im))
+end
+
 include("iterators.jl")
 
 # Import renaming, https://github.com/JuliaLang/julia/pull/37396,
