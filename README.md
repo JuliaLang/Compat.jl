@@ -59,6 +59,8 @@ changes in `julia`.
 
 * `startswith(s, r::Regex)` and `endswith(s, r::Regex)` ([#29790]) (since Compat 3.24)
 
+* `muladd(A,B,z)` now accepts arrays ([#37065]) (since Compat 3.26)
+
 * `sincospi(x)` for calculating the tuple `(sinpi(x), cospi(x))` ([#35816]) (since Compat 3.23)
 
 * `Dates.canonicalize` can now take a `Period` as an input ([#37391]) (since Compat 3.22)
@@ -234,5 +236,9 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#37396]: https://github.com/JuliaLang/julia/pull/37396
 [#37391]: https://github.com/JuliaLang/julia/pull/37391
 [#35816]: https://github.com/JuliaLang/julia/pull/35816
+<<<<<<< HEAD
 [#29790]: https://github.com/JuliaLang/julia/pull/29790
 [#38449]: https://github.com/JuliaLang/julia/pull/38449
+=======
+[#37065]: https://github.com/JuliaLang/julia/pull/37065
+>>>>>>> readme + version
