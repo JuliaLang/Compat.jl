@@ -832,7 +832,7 @@ end
 
 # https://github.com/JuliaLang/julia/pull/37065
 if VERSION < v"1.6.0-DEV.1368" # 72971c41160720d4182a6486cc155ee7645b5bb1
-    using LinearAlgebra: mul!, AdjointAbsVec, TransposeAbsVec, AdjOrTransAbsVec, _dot_nonrecursive
+    using LinearAlgebra: mul!, AdjointAbsVec, TransposeAbsVec, AdjOrTransAbsVec
 
     """
         muladd(A, y, z)
@@ -876,6 +876,18 @@ if VERSION < v"1.6.0-DEV.1368" # 72971c41160720d4182a6486cc155ee7645b5bb1
         uv = _dot_nonrecursive(u, v)
         ndims(z) > ndims(uv) && throw(DimensionMismatch("cannot broadcast array to have fewer dimensions"))
         uv .+ z
+    end
+
+    function _dot_nonrecursive(u, v) # in LinearAlgebra on Julia 1.5
+        lu = length(u)
+        if lu != length(v)
+            throw(DimensionMismatch("first array has length $(lu) which does not match the length of the second, $(length(v))."))
+        end
+        if lu == 0
+            zero(eltype(u)) * zero(eltype(v))
+        else
+            sum(uu*vv for (uu, vv) in zip(u, v))
+        end
     end
 end
 
