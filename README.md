@@ -1,7 +1,6 @@
 # Compat Package for Julia
 
-[![Build Status](https://travis-ci.org/JuliaLang/Compat.jl.svg?branch=master)](https://travis-ci.org/JuliaLang/Compat.jl)
-[![Build status](https://ci.appveyor.com/api/projects/status/github/JuliaLang/Compat.jl?branch=master)](https://ci.appveyor.com/project/quinnj/compat-jl/branch/master)
+![Tests](https://github.com/JuliaLang/Compat.jl/workflows/Run%20tests/badge.svg)
 
 The **Compat** package is designed to ease interoperability between
 older and newer versions of the [Julia
