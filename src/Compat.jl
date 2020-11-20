@@ -852,7 +852,7 @@ if VERSION < v"1.6.0-DEV.1536" # 5be3e27e029835cb56dd6934d302680c26f6e21b
     ```
     """
     function Base.muladd(A::AbstractMatrix, y::AbstractVecOrMat, z::Union{Number, AbstractArray})
-        Ay = A * y
+        Ay = _safe_mul(A, y)
         for d in 1:ndims(Ay)
             # Same error as Ay .+= z would give, to match StridedMatrix method:
             size(z,d) > size(Ay,d) && throw(DimensionMismatch("array could not be broadcast to match destination"))
@@ -863,6 +863,11 @@ if VERSION < v"1.6.0-DEV.1536" # 5be3e27e029835cb56dd6934d302680c26f6e21b
                 axes(z), ", must have singleton at dim ", d)))
         end
         Ay .+ z
+    end
+
+    _safe_mul(A, y) = A * y
+    if VERSION < v"1.5"
+        _safe_mul(vt::AdjOrTransAbsVec, y::AbstractVector) = _dot_nonrecursive(vt, y)
     end
 
     function Base.muladd(u::AbstractVector, v::AdjOrTransAbsVec, z::Union{Number, AbstractArray})
