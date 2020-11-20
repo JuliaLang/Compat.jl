@@ -854,7 +854,12 @@ end
         vofm = [rand(1:9,2,2) for _ in 1:3]
         Mofm = [rand(1:9,2,2) for _ in 1:3, _ in 1:3]
 
-        @test muladd(vofm', vofm, vofm[1]) == vofm' * vofm .+ vofm[1] # inner
+        if VERSION >= v"1.5"
+            # Julia 1.4 gets vofm' * vofm wrong, gives a scalar
+            @test muladd(vofm', vofm, vofm[1]) == vofm' * vofm .+ vofm[1] # inner
+        else
+            @test muladd(vofm', vofm, vofm[1]) == only(convert(Matrix, vofm') * vofm) .+ vofm[1] # inner
+        end
         @test muladd(vofm, vofm', Mofm) == vofm * vofm' .+ Mofm       # outer
         @test muladd(vofm', Mofm, vofm') == vofm' * Mofm .+ vofm'     # bra-mat
         @test muladd(Mofm, Mofm, vofm) == Mofm * Mofm .+ vofm         # mat-mat
