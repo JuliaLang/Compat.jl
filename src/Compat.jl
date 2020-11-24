@@ -820,6 +820,27 @@ if VERSION < v"1.6.0-DEV.292" # 6cd329c371c1db3d9876bc337e82e274e50420e8
     sincospi(x) = (sinpi(x), cospi(x))
 end
 
+# https://github.com/JuliaLang/julia/pull/37803
+if VERSION < v"1.5.3"
+    function Base.tryparse(::Type{VersionNumber}, v::AbstractString)
+        VerTuple = Tuple{Vararg{Union{UInt64,String}}}
+
+        v == "∞" && return typemax(VersionNumber)
+        m = match(Base.VERSION_REGEX, v)
+        m === nothing && return nothing
+        major, minor, patch, minus, prerl, plus, build = m.captures
+        major = parse(Base.VInt, major)
+        minor = minor !== nothing ? parse(Base.VInt, minor) : Base.VInt(0)
+        patch = patch !== nothing ? parse(Base.VInt, patch) : Base.VInt(0)
+        if prerl !== nothing && !isempty(prerl) && prerl[1] == '-'
+            prerl = prerl[2:end] # strip leading '-'
+        end
+        prerl = prerl !== nothing ? split_idents(prerl) : minus !== nothing ? ("",) : ()
+        build = build !== nothing ? split_idents(build) : plus  !== nothing ? ("",) : ()
+        return VersionNumber(major, minor, patch, prerl::VerTuple, build::VerTuple)
+    end
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 

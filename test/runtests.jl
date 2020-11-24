@@ -774,6 +774,18 @@ end
     @test sincospi(0.13im) == (sinpi(0.13im), cospi(0.13im))
 end
 
+@testset "tryparse(::VersionNumber, ::AbstractString)" begin
+    @test tryparse(VersionNumber, "v1.2.3") == v"1.2.3"
+    @test tryparse(VersionNumber, "v1.2") == v"1.2.0"
+    @test tryparse(VersionNumber, "v1") == v"1.0.0"
+    @test tryparse(VersionNumber, "v0.1") == v"0.1.0"
+    @test tryparse(VersionNumber, "v0.0.1") == v"0.0.1"
+    @test tryparse(VersionNumber, "∞") == v"∞"
+    @test tryparse(VersionNumber, "") === nothing
+    @test tryparse(VersionNumber, "foobar") === nothing
+    @test tryparse(VersionNumber, "v0.0.0.1") === nothing
+end
+
 include("iterators.jl")
 
 # Import renaming, https://github.com/JuliaLang/julia/pull/37396,
