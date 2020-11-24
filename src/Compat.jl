@@ -821,7 +821,7 @@ if VERSION < v"1.6.0-DEV.292" # 6cd329c371c1db3d9876bc337e82e274e50420e8
 end
 
 # https://github.com/JuliaLang/julia/pull/37803
-if VERSION < v"1.5.3"
+if VERSION < v"1.6.0-DEV.1090"
     function Base.tryparse(::Type{VersionNumber}, v::AbstractString)
         VerTuple = Tuple{Vararg{Union{UInt64,String}}}
 
