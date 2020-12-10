@@ -820,6 +820,35 @@ if VERSION < v"1.6.0-DEV.292" # 6cd329c371c1db3d9876bc337e82e274e50420e8
     sincospi(x) = (sinpi(x), cospi(x))
 end
 
+# https://github.com/JuliaLang/julia/pull/29790
+if VERSION < v"1.2.0-DEV.246"
+    using Base.PCRE
+
+    function Base.startswith(s::AbstractString, r::Regex)
+        Base.compile(r)
+        return PCRE.exec(
+            r.regex, String(s), 0, r.match_options | PCRE.ANCHORED, r.match_data
+        )
+    end
+
+    function Base.startswith(s::SubString, r::Regex)
+        Base.compile(r)
+        return PCRE.exec(r.regex, s, 0, r.match_options | PCRE.ANCHORED, r.match_data)
+    end
+
+    function Base.endswith(s::AbstractString, r::Regex)
+        Base.compile(r)
+        return PCRE.exec(
+            r.regex, String(s), 0, r.match_options | PCRE.ENDANCHORED, r.match_data
+        )
+    end
+
+    function Base.endswith(s::SubString, r::Regex)
+        Base.compile(r)
+        return PCRE.exec(r.regex, s, 0, r.match_options | PCRE.ENDANCHORED, r.match_data)
+    end
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
