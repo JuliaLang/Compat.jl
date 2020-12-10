@@ -54,7 +54,7 @@ without incrementing the major version of Compat.jl if necessary to match
 changes in `julia`.
 
 ## Supported features
-* `startswith(s, r)`, and `endswith(s, r)` where `r` is a `regex` ([#29790]) (since Compat 3.24)
+* `startswith(s, r::Regex)` and `endswith(s, r::Regex)` ([#29790]) (since Compat 3.24)
 
 * `sincospi(x)` for calculating the tuple `(sinpi(x), cospi(x))` ([#35816]) (since Compat 3.23)
 
