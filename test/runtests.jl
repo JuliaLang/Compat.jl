@@ -802,3 +802,26 @@ import LinearAlgebra
     @test ImportRename.hm === LinearAlgebra.BLAS.hemm
     @test !isdefined(ImportRename, :hemm)
 end
+
+# https://github.com/JuliaLang/julia/pull/29790
+@testset "regex startswith and endswith" begin
+    @test startswith("abc", r"a")
+    @test startswith("abc", r"ab")
+    @test endswith("abc", r"c")
+    @test endswith("abc", r"bc")
+    @test !startswith("abc", r"b")
+    @test !startswith("abc", r"c")
+    @test !startswith("abc", r"bc")
+    @test !endswith("abc", r"a")
+    @test !endswith("abc", r"b")
+    @test !endswith("abc", r"ab")
+
+    @test !startswith("abc", r"A")
+    @test !startswith("abc", r"aB")
+    @test startswith("abc", r"A"i)
+    @test startswith("abc", r"aB"i)
+    @test !endswith("abc", r"C")
+    @test !endswith("abc", r"Bc")
+    @test endswith("abc", r"C"i)
+    @test endswith("abc", r"Bc"i)
+end
