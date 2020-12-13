@@ -54,6 +54,9 @@ without incrementing the major version of Compat.jl if necessary to match
 changes in `julia`.
 
 ## Supported features
+
+* `cispi(x)` for accurately calculating `cis(pi * x)` ([#38449]) (since Compat 3.25)
+
 * `startswith(s, r::Regex)` and `endswith(s, r::Regex)` ([#29790]) (since Compat 3.24)
 
 * `sincospi(x)` for calculating the tuple `(sinpi(x), cospi(x))` ([#35816]) (since Compat 3.23)
@@ -232,3 +235,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#37391]: https://github.com/JuliaLang/julia/pull/37391
 [#35816]: https://github.com/JuliaLang/julia/pull/35816
 [#29790]: https://github.com/JuliaLang/julia/pull/29790
+[#38449]: https://github.com/JuliaLang/julia/pull/38449

@@ -820,6 +820,16 @@ if VERSION < v"1.6.0-DEV.292" # 6cd329c371c1db3d9876bc337e82e274e50420e8
     sincospi(x) = (sinpi(x), cospi(x))
 end
 
+# https://github.com/JuliaLang/julia/pull/38449
+if VERSION < v"1.6.0-DEV.1591" # 96d59f957e4c0413e2876592072c0f08a7482cf2
+    export cispi
+    cispi(theta::Real) = Complex(reverse(sincospi(theta))...)
+    function cispi(z::Complex)
+        sipi, copi = sincospi(z)
+        return complex(real(copi) - imag(sipi), imag(copi) + real(sipi))
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/29790
 if VERSION < v"1.2.0-DEV.246"
     using Base.PCRE

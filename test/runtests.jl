@@ -774,6 +774,14 @@ end
     @test sincospi(0.13im) == (sinpi(0.13im), cospi(0.13im))
 end
 
+# https://github.com/JuliaLang/julia/pull/38449
+@testset "cispi(x)" begin
+    @test cispi(true) == -1 + 0im
+    @test cispi(1)    == -1.0 + 0.0im
+    @test cispi(2.0)  == 1.0 + 0.0im
+    @test cispi(0.25 + 1im) ≈ cis(π/4 + π*im)
+end
+
 include("iterators.jl")
 
 # Import renaming, https://github.com/JuliaLang/julia/pull/37396,
