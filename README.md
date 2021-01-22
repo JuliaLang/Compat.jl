@@ -236,9 +236,6 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#37396]: https://github.com/JuliaLang/julia/pull/37396
 [#37391]: https://github.com/JuliaLang/julia/pull/37391
 [#35816]: https://github.com/JuliaLang/julia/pull/35816
-<<<<<<< HEAD
 [#29790]: https://github.com/JuliaLang/julia/pull/29790
 [#38449]: https://github.com/JuliaLang/julia/pull/38449
-=======
 [#37065]: https://github.com/JuliaLang/julia/pull/37065
->>>>>>> readme + version
