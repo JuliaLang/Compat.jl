@@ -833,3 +833,36 @@ end
     @test endswith("abc", r"C"i)
     @test endswith("abc", r"Bc"i)
 end
+
+# https://github.com/JuliaLang/julia/pull/35316
+@testset "2arg" begin
+    @testset "findmin(f, domain)" begin
+        @test findmin(-, 1:10) == (-10, 10)
+        @test findmin(identity, [1, 2, 3, missing]) === (missing, missing)
+        @test findmin(identity, [1, NaN, 3, missing]) === (missing, missing)
+        @test findmin(identity, [1, missing, NaN, 3]) === (missing, missing)
+        @test findmin(identity, [1, NaN, 3]) === (NaN, NaN)
+        @test findmin(identity, [1, 3, NaN]) === (NaN, NaN)
+        @test all(findmin(cos, 0:π/2:2π) .≈ (-1.0, π))
+    end
+
+    @testset "findmax(f, domain)" begin
+        @test findmax(-, 1:10) == (-1, 1)
+        @test findmax(identity, [1, 2, 3, missing]) === (missing, missing)
+        @test findmax(identity, [1, NaN, 3, missing]) === (missing, missing)
+        @test findmax(identity, [1, missing, NaN, 3]) === (missing, missing)
+        @test findmax(identity, [1, NaN, 3]) === (NaN, NaN)
+        @test findmax(identity, [1, 3, NaN]) === (NaN, NaN)
+        @test findmax(cos, 0:π/2:2π) == (1.0, 0.0)
+    end
+
+    @testset "argmin(f, domain)" begin
+        @test argmin(-, 1:10) == 10
+        @test argmin(sum, Iterators.product(1:5, 1:5)) == (1, 1)
+    end
+
+    @testset "argmax(f, domain)" begin
+        @test argmax(-, 1:10) == 1
+        @test argmax(sum, Iterators.product(1:5, 1:5)) == (5, 5)
+    end
+end
