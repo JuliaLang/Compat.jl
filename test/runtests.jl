@@ -41,7 +41,7 @@ end
 # Support for positional `stop`
 @test range(0, 5, length = 6) == 0.0:1.0:5.0
 @test range(0, 10, step = 2) == 0:2:10
-@test_throws ArgumentError range(0, 10)
+Base.VERSION < v"1.7.0-DEV.445" && @test_throws ArgumentError range(0, 10)
 
 mutable struct TLayout
     x::Int8
