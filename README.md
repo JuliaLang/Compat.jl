@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `UUID(::UUID)` and `parse(::Type{UUID}, string)` ([#36018] / [#36199]) (since Compat 3.27)
+
 * `cispi(x)` for accurately calculating `cis(pi * x)` ([#38449]) (since Compat 3.25)
 
 * `startswith(s, r::Regex)` and `endswith(s, r::Regex)` ([#29790]) (since Compat 3.24)
@@ -235,3 +237,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#35816]: https://github.com/JuliaLang/julia/pull/35816
 [#29790]: https://github.com/JuliaLang/julia/pull/29790
 [#38449]: https://github.com/JuliaLang/julia/pull/38449
+[#36018]: https://github.com/JuliaLang/julia/pull/36018
+[#36199]: https://github.com/JuliaLang/julia/pull/36199
