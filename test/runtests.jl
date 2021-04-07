@@ -866,3 +866,15 @@ end
         @test argmax(sum, Iterators.product(1:5, 1:5)) == (5, 5)
     end
 end
+
+@testset "UUID(::UUID)" begin
+    u1 = uuid1()
+    @test UUID(u1) === u1
+end
+
+# https://github.com/JuliaLang/julia/pull/36199
+@testset "parse(UUID, str)" begin
+    uuidstr2 = "ba"^4 * "-" * "ba"^2 * "-" * "ba"^2 * "-" * "ba"^2 * "-" * "ba"^6
+    uuid2 = UUID(uuidstr2)
+    @test parse(UUID, uuidstr2) == uuid2
+end
