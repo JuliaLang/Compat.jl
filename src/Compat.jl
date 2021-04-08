@@ -877,6 +877,18 @@ if VERSION < v"1.7.0-DEV.119"
     Base.argmin(f, domain) = findmin(f, domain)[2]
 end
 
+# Part of: https://github.com/JuliaLang/julia/pull/36018
+if VERSION < v"1.6.0-DEV.749"
+    import UUIDs: UUID
+    UUID(u::UUID) = u
+end
+
+# https://github.com/JuliaLang/julia/pull/36199
+if VERSION < v"1.6.0-DEV.196"
+    using UUIDs: UUID
+    Base.parse(::Type{UUID}, s::AbstractString) = UUID(s)
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
