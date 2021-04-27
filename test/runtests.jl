@@ -866,8 +866,7 @@ end
         @test muladd(Mofm, vofm, vofm) == Mofm * vofm .+ vofm         # mat-vec
     end
 
-    # end
-    # @testset "muladd & structured matrices" begin
+    # muladd & structured matrices
 
     A33 = reshape(1:9, 3,3) .+ im
     v3 = [3,5,7im]
