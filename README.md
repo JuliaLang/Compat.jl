@@ -1,7 +1,6 @@
 # Compat Package for Julia
 
-[![Build Status](https://travis-ci.org/JuliaLang/Compat.jl.svg?branch=master)](https://travis-ci.org/JuliaLang/Compat.jl)
-[![Build status](https://ci.appveyor.com/api/projects/status/github/JuliaLang/Compat.jl?branch=master)](https://ci.appveyor.com/project/quinnj/compat-jl/branch/master)
+[![Build Status](https://github.com/JuliaLang/Compat.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaLang/Compat.jl/actions/workflows/CI.yml)
 
 The **Compat** package is designed to ease interoperability between
 older and newer versions of the [Julia
@@ -55,11 +54,13 @@ changes in `julia`.
 
 ## Supported features
 
+* `muladd(A,B,z)` now accepts arrays ([#37065]) (since Compat 3.28)
+
+* `UUID(::UUID)` and `parse(::Type{UUID}, string)` ([#36018] / [#36199]) (since Compat 3.27)
+
 * `cispi(x)` for accurately calculating `cis(pi * x)` ([#38449]) (since Compat 3.25)
 
 * `startswith(s, r::Regex)` and `endswith(s, r::Regex)` ([#29790]) (since Compat 3.24)
-
-* `muladd(A,B,z)` now accepts arrays ([#37065]) (since Compat 3.26)
 
 * `sincospi(x)` for calculating the tuple `(sinpi(x), cospi(x))` ([#35816]) (since Compat 3.23)
 
@@ -238,4 +239,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#35816]: https://github.com/JuliaLang/julia/pull/35816
 [#29790]: https://github.com/JuliaLang/julia/pull/29790
 [#38449]: https://github.com/JuliaLang/julia/pull/38449
+[#37065]: https://github.com/JuliaLang/julia/pull/37065
+[#36018]: https://github.com/JuliaLang/julia/pull/36018
+[#36199]: https://github.com/JuliaLang/julia/pull/36199
 [#37065]: https://github.com/JuliaLang/julia/pull/37065

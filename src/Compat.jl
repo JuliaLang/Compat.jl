@@ -956,6 +956,36 @@ if VERSION < v"1.2.0-DEV.246"
     end
 end
 
+if VERSION < v"1.7.0-DEV.119"
+    # Part of https://github.com/JuliaLang/julia/pull/35316
+    isunordered(x) = false
+    isunordered(x::AbstractFloat) = isnan(x)
+    isunordered(x::Missing) = true
+
+    isgreater(x, y) = isunordered(x) || isunordered(y) ? isless(x, y) : isless(y, x)
+
+    Base.findmax(f, domain) = mapfoldl(x -> (f(x), x), _rf_findmax, domain)
+    _rf_findmax((fm, m), (fx, x)) = isless(fm, fx) ? (fx, x) : (fm, m)
+
+    Base.findmin(f, domain) = mapfoldl(x -> (f(x), x), _rf_findmin, domain)
+    _rf_findmin((fm, m), (fx, x)) = isgreater(fm, fx) ? (fx, x) : (fm, m)
+
+    Base.argmax(f, domain) = findmax(f, domain)[2]
+    Base.argmin(f, domain) = findmin(f, domain)[2]
+end
+
+# Part of: https://github.com/JuliaLang/julia/pull/36018
+if VERSION < v"1.6.0-DEV.749"
+    import UUIDs: UUID
+    UUID(u::UUID) = u
+end
+
+# https://github.com/JuliaLang/julia/pull/36199
+if VERSION < v"1.6.0-DEV.196"
+    using UUIDs: UUID
+    Base.parse(::Type{UUID}, s::AbstractString) = UUID(s)
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 

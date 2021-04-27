@@ -41,7 +41,7 @@ end
 # Support for positional `stop`
 @test range(0, 5, length = 6) == 0.0:1.0:5.0
 @test range(0, 10, step = 2) == 0:2:10
-@test_throws ArgumentError range(0, 10)
+Base.VERSION < v"1.7.0-DEV.445" && @test_throws ArgumentError range(0, 10)
 
 mutable struct TLayout
     x::Int8
@@ -944,4 +944,49 @@ end
     @test !endswith("abc", r"Bc")
     @test endswith("abc", r"C"i)
     @test endswith("abc", r"Bc"i)
+end
+
+# https://github.com/JuliaLang/julia/pull/35316
+@testset "2arg" begin
+    @testset "findmin(f, domain)" begin
+        @test findmin(-, 1:10) == (-10, 10)
+        @test findmin(identity, [1, 2, 3, missing]) === (missing, missing)
+        @test findmin(identity, [1, NaN, 3, missing]) === (missing, missing)
+        @test findmin(identity, [1, missing, NaN, 3]) === (missing, missing)
+        @test findmin(identity, [1, NaN, 3]) === (NaN, NaN)
+        @test findmin(identity, [1, 3, NaN]) === (NaN, NaN)
+        @test all(findmin(cos, 0:π/2:2π) .≈ (-1.0, π))
+    end
+
+    @testset "findmax(f, domain)" begin
+        @test findmax(-, 1:10) == (-1, 1)
+        @test findmax(identity, [1, 2, 3, missing]) === (missing, missing)
+        @test findmax(identity, [1, NaN, 3, missing]) === (missing, missing)
+        @test findmax(identity, [1, missing, NaN, 3]) === (missing, missing)
+        @test findmax(identity, [1, NaN, 3]) === (NaN, NaN)
+        @test findmax(identity, [1, 3, NaN]) === (NaN, NaN)
+        @test findmax(cos, 0:π/2:2π) == (1.0, 0.0)
+    end
+
+    @testset "argmin(f, domain)" begin
+        @test argmin(-, 1:10) == 10
+        @test argmin(sum, Iterators.product(1:5, 1:5)) == (1, 1)
+    end
+
+    @testset "argmax(f, domain)" begin
+        @test argmax(-, 1:10) == 1
+        @test argmax(sum, Iterators.product(1:5, 1:5)) == (5, 5)
+    end
+end
+
+@testset "UUID(::UUID)" begin
+    u1 = uuid1()
+    @test UUID(u1) === u1
+end
+
+# https://github.com/JuliaLang/julia/pull/36199
+@testset "parse(UUID, str)" begin
+    uuidstr2 = "ba"^4 * "-" * "ba"^2 * "-" * "ba"^2 * "-" * "ba"^2 * "-" * "ba"^6
+    uuid2 = UUID(uuidstr2)
+    @test parse(UUID, uuidstr2) == uuid2
 end
