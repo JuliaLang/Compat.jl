@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `NamedTuple(::Pairs)` ([#37454]) (since Compat XXX)
+
 * `UUID(::UUID)` and `parse(::Type{UUID}, string)` ([#36018] / [#36199]) (since Compat 3.27)
 
 * `cispi(x)` for accurately calculating `cis(pi * x)` ([#38449]) (since Compat 3.25)
