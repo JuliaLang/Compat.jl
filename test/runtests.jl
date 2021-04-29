@@ -881,7 +881,6 @@ end
 
 # https://github.com/JuliaLang/julia/pull/37454
 @testset "Base.NamedTuple(itr) = (; itr...)" begin
-    @test let f(;kwargs...) = NamedTuple(kwargs)
-        f(a=1, b=2) == (a=1, b=2)
-    end
+    f(;kwargs...) = NamedTuple(kwargs)
+    @test f(a=1, b=2) == (a=1, b=2)
 end
