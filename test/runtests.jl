@@ -878,3 +878,9 @@ end
     uuid2 = UUID(uuidstr2)
     @test parse(UUID, uuidstr2) == uuid2
 end
+
+# https://github.com/JuliaLang/julia/pull/37454
+@testset "Base.NamedTuple(itr) = (; itr...)" begin
+    f(;kwargs...) = NamedTuple(kwargs)
+    @test f(a=1, b=2) == (a=1, b=2)
+end

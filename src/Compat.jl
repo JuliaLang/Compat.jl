@@ -889,6 +889,11 @@ if VERSION < v"1.6.0-DEV.196"
     Base.parse(::Type{UUID}, s::AbstractString) = UUID(s)
 end
 
+# https://github.com/JuliaLang/julia/pull/37454
+if VERSION < v"1.6.0-DEV.877"
+    Base.NamedTuple(itr) = (; itr...)
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
