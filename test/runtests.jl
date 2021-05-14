@@ -884,3 +884,24 @@ end
     f(;kwargs...) = NamedTuple(kwargs)
     @test f(a=1, b=2) == (a=1, b=2)
 end
+
+# https://github.com/JuliaLang/julia/pull/40729
+@testset "@something" begin
+    @test_throws ArgumentError @something()
+    @test_throws ArgumentError @something(nothing)
+    @test @something(1) === 1
+    @test @something(Some(nothing)) === nothing
+
+    @test @something(1, error("failed")) === 1
+    @test_throws ErrorException @something(nothing, error("failed"))
+end
+
+@testset "@coalesce" begin
+    @test @coalesce() === missing
+    @test @coalesce(1) === 1
+    @test @coalesce(nothing) === nothing
+    @test @coalesce(missing) === missing
+
+    @test @coalesce(1, error("failed")) === 1
+    @test_throws ErrorException @coalesce(missing, error("failed"))
+end
