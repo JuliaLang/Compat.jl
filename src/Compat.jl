@@ -986,6 +986,32 @@ if VERSION < v"1.6.0-DEV.196"
     Base.parse(::Type{UUID}, s::AbstractString) = UUID(s)
 end
 
+# https://github.com/JuliaLang/julia/pull/37454
+if VERSION < v"1.6.0-DEV.877"
+    Base.NamedTuple(itr) = (; itr...)
+end
+
+# https://github.com/JuliaLang/julia/pull/40729
+if VERSION < v"1.7.0-DEV.1088"
+    macro something(args...)
+        expr = :(nothing)
+        for arg in reverse(args)
+            expr = :((val = $arg) !== nothing ? val : $expr)
+        end
+        return esc(:(something(let val; $expr; end)))
+    end
+
+    macro coalesce(args...)
+        expr = :(missing)
+        for arg in reverse(args)
+            expr = :((val = $arg) !== missing ? val : $expr)
+        end
+        return esc(:(let val; $expr; end))
+    end
+
+    export @something, @coalesce
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
