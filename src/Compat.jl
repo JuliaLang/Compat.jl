@@ -830,6 +830,103 @@ if VERSION < v"1.6.0-DEV.1591" # 96d59f957e4c0413e2876592072c0f08a7482cf2
     end
 end
 
+# https://github.com/JuliaLang/julia/pull/37065
+# https://github.com/JuliaLang/julia/pull/38250
+if VERSION < v"1.6.0-DEV.1536" # 5be3e27e029835cb56dd6934d302680c26f6e21b
+    using LinearAlgebra: mul!, AdjointAbsVec, TransposeAbsVec, AdjOrTransAbsVec
+
+    """
+        muladd(A, y, z)
+
+    Combined multiply-add, `A*y .+ z`, for matrix-matrix or matrix-vector multiplication.
+    The result is always the same size as `A*y`, but `z` may be smaller, or a scalar.
+
+    # Examples
+    ```jldoctest
+    julia> A=[1.0 2.0; 3.0 4.0]; B=[1.0 1.0; 1.0 1.0]; z=[0, 100];
+
+    julia> muladd(A, B, z)
+    2×2 Matrix{Float64}:
+       3.0    3.0
+     107.0  107.0
+    ```
+    """
+    function Base.muladd(A::AbstractMatrix, y::AbstractVecOrMat, z::Union{Number, AbstractArray})
+        Ay = _safe_mul(A, y)
+        for d in 1:ndims(Ay)
+            # Same error as Ay .+= z would give, to match StridedMatrix method:
+            size(z,d) > size(Ay,d) && throw(DimensionMismatch("array could not be broadcast to match destination"))
+        end
+        for d in ndims(Ay)+1:ndims(z)
+            # Similar error to what Ay + z would give, to match (Any,Any,Any) method:
+            size(z,d) > 1 && throw(DimensionMismatch(string("dimensions must match: z has dims ",
+                axes(z), ", must have singleton at dim ", d)))
+        end
+        Ay .+ z
+    end
+
+    _safe_mul(A, y) = A * y
+    if VERSION < v"1.5"
+        _safe_mul(vt::AdjOrTransAbsVec, y::AbstractVector) = _dot_nonrecursive(vt, y)
+    end
+
+    function Base.muladd(u::AbstractVector, v::AdjOrTransAbsVec, z::Union{Number, AbstractArray})
+        if size(z,1) > length(u) || size(z,2) > length(v)
+            # Same error as (u*v) .+= z:
+            throw(DimensionMismatch("array could not be broadcast to match destination"))
+        end
+        for d in 3:ndims(z)
+            # Similar error to (u*v) + z:
+            size(z,d) > 1 && throw(DimensionMismatch(string("dimensions must match: z has dims ",
+                axes(z), ", must have singleton at dim ", d)))
+        end
+        (u .* v) .+ z
+    end
+
+    Base.muladd(x::AdjointAbsVec, A::AbstractMatrix, z::Union{Number, AbstractVecOrMat}) =
+        muladd(A', x', z')'
+    Base.muladd(x::TransposeAbsVec, A::AbstractMatrix, z::Union{Number, AbstractVecOrMat}) =
+        transpose(muladd(transpose(A), transpose(x), transpose(z)))
+
+    StridedMaybeAdjOrTransMat{T} = Union{StridedMatrix{T}, Adjoint{T, <:StridedMatrix}, Transpose{T, <:StridedMatrix}}
+
+    function Base.muladd(A::StridedMaybeAdjOrTransMat{<:Number}, y::AbstractVector{<:Number}, z::Union{Number, AbstractVector})
+        T = promote_type(eltype(A), eltype(y), eltype(z))
+        C = similar(A, T, axes(A,1))
+        C .= z
+        mul!(C, A, y, true, true)
+    end
+
+    function Base.muladd(A::StridedMaybeAdjOrTransMat{<:Number}, B::StridedMaybeAdjOrTransMat{<:Number}, z::Union{Number, AbstractVecOrMat})
+        T = promote_type(eltype(A), eltype(B), eltype(z))
+        C = similar(A, T, axes(A,1), axes(B,2))
+        C .= z
+        mul!(C, A, B, true, true)
+    end
+
+    Base.muladd(A::Diagonal, B::Diagonal, z::Diagonal) =
+        Diagonal(A.diag .* B.diag .+ z.diag)
+    Base.muladd(A::UniformScaling, B::UniformScaling, z::UniformScaling) =
+        UniformScaling(A.λ * B.λ + z.λ)
+    Base.muladd(A::Union{Diagonal, UniformScaling}, B::Union{Diagonal, UniformScaling}, z::Union{Diagonal, UniformScaling}) =
+        Diagonal(_diag_or_value(A) .* _diag_or_value(B) .+ _diag_or_value(z))
+
+    _diag_or_value(A::Diagonal) = A.diag
+    _diag_or_value(A::UniformScaling) = A.λ
+
+    function _dot_nonrecursive(u, v) # in LinearAlgebra on Julia 1.5
+        lu = length(u)
+        if lu != length(v)
+            throw(DimensionMismatch("first array has length $(lu) which does not match the length of the second, $(length(v))."))
+        end
+        if lu == 0
+            zero(eltype(u)) * zero(eltype(v))
+        else
+            sum(uu*vv for (uu, vv) in zip(u, v))
+        end
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/29790
 if VERSION < v"1.2.0-DEV.246"
     using Base.PCRE

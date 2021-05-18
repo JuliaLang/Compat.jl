@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `muladd(A,B,z)` now accepts arrays ([#37065]) (since Compat 3.30)
+
 * `@something` and `@coalesce` as short-circuiting versions of `something` and `coalesce` ([#40729]) (since Compat 3.29)
 
 * `NamedTuple(::Pairs)` ([#37454]) (since Compat 3.28)
@@ -245,3 +247,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#36199]: https://github.com/JuliaLang/julia/pull/36199
 [#37454]: https://github.com/JuliaLang/julia/pull/37454
 [#40729]: https://github.com/JuliaLang/julia/pull/40729
+[#37065]: https://github.com/JuliaLang/julia/pull/37065
