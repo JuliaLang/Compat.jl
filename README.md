@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `get` accepts tuples and numbers ([#41007], [#41032]) (since Compat 3.31)
+
 * `muladd(A,B,z)` now accepts arrays ([#37065]) (since Compat 3.30)
 
 * `@something` and `@coalesce` as short-circuiting versions of `something` and `coalesce` ([#40729]) (since Compat 3.29)
@@ -248,3 +250,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#37454]: https://github.com/JuliaLang/julia/pull/37454
 [#40729]: https://github.com/JuliaLang/julia/pull/40729
 [#37065]: https://github.com/JuliaLang/julia/pull/37065
+[#41007]: https://github.com/JuliaLang/julia/pull/41007
+[#41032]: https://github.com/JuliaLang/julia/pull/41032
