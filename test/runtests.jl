@@ -1016,3 +1016,54 @@ end
     @test @coalesce(1, error("failed")) === 1
     @test_throws ErrorException @coalesce(missing, error("failed"))
 end
+
+@testset "get" begin
+     A = reshape([1:24...], 4, 3, 2)
+     B = reshape([1:24...], 4, 3, 2)
+
+     global c = 0
+     f() = (global c = c+1; 0)
+     @test get(f, A, ()) == 0
+     @test c == 1
+     @test get(f, B, ()) == 0
+     @test c == 2
+     @test get(f, A, (1,)) == get(f, A, 1) == A[1] == 1
+     @test c == 2
+     @test get(f, B, (1,)) == get(f, B, 1) == B[1] == 1
+     @test c == 2
+     @test get(f, A, (25,)) == get(f, A, 25) == 0
+     @test c == 4
+     @test get(f, B, (25,)) == get(f, B, 25) == 0
+     @test c == 6
+     @test get(f, A, (1,1,1)) == A[1,1,1] == 1
+     @test get(f, B, (1,1,1)) == B[1,1,1] == 1
+     @test get(f, A, (1,1,3)) == 0
+     @test c == 7
+     @test get(f, B, (1,1,3)) == 0
+     @test c == 8
+     @test get(f, TSlow([]), ()) == 0
+     @test c == 9
+
+     @test get((5, 6, 7), 1, 0) == 5
+     @test get((), 5, 0) == 0
+     @test get((1,), 3, 0) == 0
+     @test get(()->0, (5, 6, 7), 1) == 5
+     @test get(()->0, (), 4) == 0
+     @test get(()->0, (1,), 3) == 0
+
+    for x in [1.23, 7, ℯ, 4//5] #[FP, Int, Irrational, Rat]
+         @test get(x, 1, 99) == x
+         @test get(x, (), 99) == x
+         @test get(x, (1,), 99) == x
+         @test get(x, 2, 99) == 99
+         @test get(x, 0, pi) == pi
+         @test get(x, (1,2), pi) == pi
+         c = Ref(0)
+         @test get(() -> c[]+=1, x, 1) == x
+         @test get(() -> c[]+=1, x, ()) == x
+         @test get(() -> c[]+=1, x, (1,1,1)) == x
+         @test get(() -> c[]+=1, x, 2) == 1
+         @test get(() -> c[]+=1, x, -1) == 2
+         @test get(() -> c[]+=1, x, (3,2,1)) == 3
+    end
+end

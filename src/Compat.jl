@@ -1012,6 +1012,26 @@ if VERSION < v"1.7.0-DEV.1088"
     export @something, @coalesce
 end
 
+import Base: get, Dims, Callable
+
+# https://github.com/JuliaLang/julia/pull/41007
+if VERSION < v"1.7.0-DEV.1220"
+    get(f::Callable, A::AbstractArray, i::Integer) = checkbounds(Bool, A, i) ? A[i] : f()
+    get(f::Callable, A::AbstractArray, I::Tuple{}) = checkbounds(Bool, A) ? A[] : f()
+    get(f::Callable, A::AbstractArray, I::Dims) = checkbounds(Bool, A, I...) ? A[I...] : f()
+
+    get(t::Tuple, i::Integer, default) = i in 1:length(t) ? getindex(t, i) : default
+    get(f::Callable, t::Tuple, i::Integer) = i in 1:length(t) ? getindex(t, i) : f()
+end
+
+# https://github.com/JuliaLang/julia/pull/41032
+if VERSION < v"1.7.0-DEV.1230"
+    get(x::Number, i::Integer, default) = isone(i) ? x : default
+    get(x::Number, ind::Tuple, default) = all(isone, ind) ? x : default
+    get(f::Callable, x::Number, i::Integer) = isone(i) ? x : f()
+    get(f::Callable, x::Number, ind::Tuple) = all(isone, ind) ? x : f()
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
