@@ -1109,3 +1109,28 @@ end
     @test m.y === 3
     @test !isdefined(m, :x)
 end
+
+# https://github.com/JuliaLang/julia/pull/29901
+VERSION >= v"1.1" && @testset "current_exceptions" begin
+    # Display of errors which cause more than one entry on the exception stack
+    excs = try
+        try
+            __not_a_binding__
+        catch
+            1 ÷ 0  # Generate error while handling error
+        end
+    catch
+        current_exceptions()
+    end
+
+    @test typeof.(first.(excs)) == [UndefVarError, DivideError]
+
+    @test occursin(r"""
+    2-element ExceptionStack:
+    DivideError: integer division error
+    Stacktrace:.*
+
+    caused by: UndefVarError: __not_a_binding__ not defined
+    Stacktrace:.*
+    """s, sprint(show, excs))
+end
