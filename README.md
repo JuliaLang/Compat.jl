@@ -54,7 +54,7 @@ changes in `julia`.
 
 ## Supported features
 
-* Implicit keywords arguments or named tuples is supported using the `@compat` macro, e.g. `@compat f(; x, f.p)` and `@compat (; x, f.p)` is equivalent to `f(; x=x, p=f.p)` and `(; x=x, f.p)` respectively. ([#34331]) (since Compat 3.32.0)
+* Implicit keywords arguments or named tuples is supported using the `@compat` macro, e.g. `@compat f(; x, f.p)` and `@compat (; x, f.p)` is equivalent to `f(; x=x, p=f.p)` and `(; x=x, p=f.p)` respectively. ([#34331]) (since Compat 3.32.0)
 
 * Two argument methods `findmax(f, domain)`, `argmax(f, domain)` and the corresponding `min` versions ([#35316], [#41076]) (since Compat 3.31.1)
 
