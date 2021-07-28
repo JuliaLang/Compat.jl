@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+* Implicit keywords arguments or named tuples is supported using the `@compat` macro, e.g. `@compat f(; x, f.p)` and `@compat (; x, f.p)` is equivalent to `f(; x=x, p=f.p)` and `(; x=x, p=f.p)` respectively. ([#34331]) (since Compat 3.32.0)
+
 * Two argument methods `findmax(f, domain)`, `argmax(f, domain)` and the corresponding `min` versions ([#35316], [#41076]) (since Compat 3.31.1)
 
 * `isunordered(x)` returns true if `x` is value that is normally unordered, such as `NaN` or `missing` ([#35316]) (since Compat 3.31.1)
@@ -258,3 +260,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#41032]: https://github.com/JuliaLang/julia/pull/41032
 [#35316]: https://github.com/JuliaLang/julia/pull/35316
 [#41076]: https://github.com/JuliaLang/julia/pull/41076
+[#34331]: https://github.com/JuliaLang/julia/pull/34331

@@ -1068,3 +1068,22 @@ end
          @test get(() -> c[]+=1, x, (3,2,1)) == 3
     end
 end
+
+# https://github.com/JuliaLang/julia/pull/34331
+struct X
+    x
+end
+
+@testset "implicit keywords" begin
+    f(; x=0) = x
+    x = 1
+    s = X(2)
+    nested = X(X(3))
+
+    @test (@compat f(; x)) == 1
+    @test (@compat f(; s.x)) == 2
+    @test (@compat f(; nested.x.x)) == 3
+    @test (@compat (; x)) == (; x=1)
+    @test (@compat (; s.x)) == (; x=2)
+    @test (@compat (; nested.x.x)) == (; x=3)
+end

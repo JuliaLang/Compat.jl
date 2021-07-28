@@ -8,6 +8,14 @@ function _compat(ex::Expr)
         # Passthrough
         return ex
     end
+
+    # https://github.com/JuliaLang/julia/pull/34331
+    @static if VERSION < v"1.5.0-DEV.499"
+        if ex.head === :call || ex.head === :tuple
+            ex = _assign_implicit_keywords(ex)
+        end
+    end
+
     return Expr(ex.head, map(_compat, ex.args)...)
 end
 
@@ -65,4 +73,24 @@ function _create_import_expression(path_aliases::Vector{Pair{Vector{Symbol}, Sym
     module_expr = Expr(:module, false, Expr(:escape, s), Expr(:block, import_exprs...))
     return_expr = Expr(:toplevel, module_expr, const_exprs..., nothing)
     return return_expr
+end
+
+function _assign_implicit_keywords(ex::Expr)
+    kwargs = if ex.head === :call && Meta.isexpr(ex.args[2], :parameters)
+        ex.args[2].args
+    elseif ex.head === :tuple && Meta.isexpr(ex.args[1], :parameters)
+        ex.args[1].args
+    else
+        []
+    end
+
+    for (i, k) in enumerate(kwargs)
+        if k isa Symbol
+            kwargs[i] = Expr(:kw, k, k)
+        elseif Meta.isexpr(k, :.)
+            kwargs[i] = Expr(:kw, k.args[2].value, k)
+        end
+    end
+
+    return ex
 end
