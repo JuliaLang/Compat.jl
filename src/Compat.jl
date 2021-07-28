@@ -957,21 +957,23 @@ if VERSION < v"1.2.0-DEV.246"
 end
 
 if VERSION < v"1.7.0-DEV.119"
-    # Part of https://github.com/JuliaLang/julia/pull/35316
+    # Part of:
+    # https://github.com/JuliaLang/julia/pull/35316
+    # https://github.com/JuliaLang/julia/pull/41076
     isunordered(x) = false
     isunordered(x::AbstractFloat) = isnan(x)
     isunordered(x::Missing) = true
 
     isgreater(x, y) = isunordered(x) || isunordered(y) ? isless(x, y) : isless(y, x)
 
-    Base.findmax(f, domain) = mapfoldl(x -> (f(x), x), _rf_findmax, domain)
-    _rf_findmax((fm, m), (fx, x)) = isless(fm, fx) ? (fx, x) : (fm, m)
+    Base.findmax(f, domain) = mapfoldl( ((k, v),) -> (f(v), k), _rf_findmax, pairs(domain) )
+    _rf_findmax((fm, im), (fx, ix)) = isless(fm, fx) ? (fx, ix) : (fm, im)
 
-    Base.findmin(f, domain) = mapfoldl(x -> (f(x), x), _rf_findmin, domain)
-    _rf_findmin((fm, m), (fx, x)) = isgreater(fm, fx) ? (fx, x) : (fm, m)
+    Base.findmin(f, domain) = mapfoldl( ((k, v),) -> (f(v), k), _rf_findmin, pairs(domain) )
+    _rf_findmin((fm, im), (fx, ix)) = isgreater(fm, fx) ? (fx, ix) : (fm, im)
 
-    Base.argmax(f, domain) = findmax(f, domain)[2]
-    Base.argmin(f, domain) = findmin(f, domain)[2]
+    Base.argmax(f, domain) = mapfoldl(x -> (f(x), x), _rf_findmax, domain)[2]
+    Base.argmin(f, domain) = mapfoldl(x -> (f(x), x), _rf_findmin, domain)[2]
 end
 
 # Part of: https://github.com/JuliaLang/julia/pull/36018
