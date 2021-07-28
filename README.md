@@ -54,6 +54,10 @@ changes in `julia`.
 
 ## Supported features
 
+* Two argument methods `findmax(f, domain)`, `argmax(f, domain)` and the corresponding `min` versions ([#35316], [#41076]) (since Compat 3.31.1)
+
+* `isunordered(x)` returns true if `x` is value that is normally unordered, such as `NaN` or `missing` ([#35316]) (since Compat 3.31.1)
+
 * `get` accepts tuples and numbers ([#41007], [#41032]) (since Compat 3.31)
 
 * `muladd(A,B,z)` now accepts arrays ([#37065]) (since Compat 3.30)
@@ -252,3 +256,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#37065]: https://github.com/JuliaLang/julia/pull/37065
 [#41007]: https://github.com/JuliaLang/julia/pull/41007
 [#41032]: https://github.com/JuliaLang/julia/pull/41032
+[#35316]: https://github.com/JuliaLang/julia/pull/35316
+[#41076]: https://github.com/JuliaLang/julia/pull/41076
