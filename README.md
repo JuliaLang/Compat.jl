@@ -54,6 +54,9 @@ changes in `julia`.
 
 ## Supported features
 
+* The methods `Base.include(::Function, ::Module, path)` and
+  `Base.include_string(::Function, ::Module, code[, filename])` have been added. ([#34595]) (since Compat 3.33)
+
 * Implicit keywords arguments or named tuples is supported using the `@compat` macro, e.g. `@compat f(; x, f.p)` and `@compat (; x, f.p)` is equivalent to `f(; x=x, p=f.p)` and `(; x=x, p=f.p)` respectively. ([#34331]) (since Compat 3.32.0)
 
 * Two argument methods `findmax(f, domain)`, `argmax(f, domain)` and the corresponding `min` versions ([#35316], [#41076]) (since Compat 3.31.1)
@@ -239,6 +242,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#30915]: https://github.com/JuliaLang/julia/pull/30915
 [#33437]: https://github.com/JuliaLang/julia/pull/33437
 [#34352]: https://github.com/JuliaLang/julia/pull/34352
+[#34595]: https://github.com/JuliaLang/julia/pull/34595
 [#35132]: https://github.com/JuliaLang/julia/pull/35132
 [#35052]: https://github.com/JuliaLang/julia/pull/35052
 [#37244]: https://github.com/JuliaLang/julia/pull/37244
