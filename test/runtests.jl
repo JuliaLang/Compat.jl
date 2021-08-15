@@ -1087,3 +1087,25 @@ end
     @test (@compat (; s.x)) == (; x=2)
     @test (@compat (; nested.x.x)) == (; x=3)
 end
+
+# https://github.com/JuliaLang/julia/pull/34595
+@testset "include(mapexpr::Function, ...)" begin
+    m = Module()
+    Base.include(m, "example.jl") do x
+        if Meta.isexpr(x, :(=)) && x.args[1] === :x
+            :(y = $(x.args[2]))
+        else
+            x
+        end
+    end
+
+    @test isdefined(m, :f)
+    meths = methods(m.f)
+    @test length(meths) == 1
+    @test first(meths).file === Symbol(joinpath(@__DIR__(), "example.jl"))
+    @test m.f(7, 8) === 15
+
+    @test isdefined(m, :y)
+    @test m.y === 3
+    @test !isdefined(m, :x)
+end

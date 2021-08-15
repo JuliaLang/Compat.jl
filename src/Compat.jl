@@ -1034,6 +1034,21 @@ if VERSION < v"1.7.0-DEV.1230"
     get(f::Callable, x::Number, ind::Tuple) = all(isone, ind) ? x : f()
 end
 
+# https://github.com/JuliaLang/julia/pull/34595
+if VERSION < v"1.5.0-DEV.263"
+    function Base.include(mapexpr::Function, m::Module, path::AbstractString)
+        code = read(path, String)
+        return include_string(mapexpr, m, code, abspath(path))
+    end
+    function Base.include_string(mapexpr::Function, m::Module, code::AbstractString,
+                                 filename::AbstractString="string")
+        ex = parseall(code; filename=filename)
+        @assert Meta.isexpr(ex, :toplevel)
+        map!(x -> x isa LineNumberNode ? x : mapexpr(x), ex.args, ex.args)
+        return Core.eval(m, ex)
+    end
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
