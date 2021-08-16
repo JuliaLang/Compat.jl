@@ -1050,14 +1050,28 @@ if VERSION < v"1.5.0-DEV.263"
 end
 
 # https://github.com/JuliaLang/julia/pull/29901
-if VERSION >= v"1.1" && VERSION < v"1.7.0-DEV.1106"
+if VERSION < v"1.7.0-DEV.1106"
     struct ExceptionStack <: AbstractArray{Any,1}
         stack
     end
 
-    function current_exceptions(task=current_task(); backtrace=true)
-        stack = Base.catch_stack(task, include_bt=backtrace)
-        ExceptionStack(Any[(exception=x[1],backtrace=x[2]) for x in stack])
+    if VERSION >= v"1.1"
+        function current_exceptions(task=current_task(); backtrace=true)
+            stack = Base.catch_stack(task, include_bt=backtrace)
+            ExceptionStack(Any[(exception=x[1],backtrace=x[2]) for x in stack])
+        end
+    else
+        # There's no exception stack in 1.0, but we can fall back to returning
+        # the (single) current exception and backtrace instead.
+        @eval function current_exceptions(task=current_task(); backtrace=true)
+            bt = catch_backtrace()
+            # `exc = Expr(:the_exception)` is the lowering for `catch exc`
+            exc = isempty(bt) ? nothing : $(Expr(:the_exception))
+            ExceptionStack(isempty(bt) ? Any[] : Any[(exception=exc, backtrace=bt)])
+        end
+        @eval function the_stack()
+           $(Expr(:the_exception)), catch_backtrace()
+        end
     end
 
     Base.size(s::ExceptionStack) = size(s.stack)
