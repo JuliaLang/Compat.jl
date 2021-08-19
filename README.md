@@ -54,7 +54,10 @@ changes in `julia`.
 
 ## Supported features
 
-* The function `current_exceptions()` has been added to get the current exception stack. ([#29901]) (since Compat 3.34)
+* The function `current_exceptions()` has been added to get the current
+  exception stack. Julia-1.0 lacks runtime support for full execption stacks,
+  so we return only the most recent exception in that case. ([#29901]) (since
+  Compat 3.34)
 
 * The methods `Base.include(::Function, ::Module, path)` and
   `Base.include_string(::Function, ::Module, code[, filename])` have been added. ([#34595]) (since Compat 3.33)
