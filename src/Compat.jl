@@ -1049,6 +1049,59 @@ if VERSION < v"1.5.0-DEV.263"
     end
 end
 
+# https://github.com/JuliaLang/julia/pull/29901
+if VERSION < v"1.7.0-DEV.1106"
+    struct ExceptionStack <: AbstractArray{Any,1}
+        stack
+    end
+
+    if VERSION >= v"1.1"
+        function current_exceptions(task=current_task(); backtrace=true)
+            stack = Base.catch_stack(task, include_bt=backtrace)
+            ExceptionStack(Any[(exception=x[1],backtrace=x[2]) for x in stack])
+        end
+    else
+        # There's no exception stack in 1.0, but we can fall back to returning
+        # the (single) current exception and backtrace instead.
+        @eval function current_exceptions(task=current_task(); backtrace=true)
+            bt = catch_backtrace()
+            # `exc = Expr(:the_exception)` is the lowering for `catch exc`
+            exc = isempty(bt) ? nothing : $(Expr(:the_exception))
+            ExceptionStack(isempty(bt) ? Any[] : Any[(exception=exc, backtrace=bt)])
+        end
+        @eval function the_stack()
+           $(Expr(:the_exception)), catch_backtrace()
+        end
+    end
+
+    Base.size(s::ExceptionStack) = size(s.stack)
+    Base.getindex(s::ExceptionStack, i::Int) = s.stack[i]
+
+    function show_exception_stack(io::IO, stack)
+        # Display exception stack with the top of the stack first.  This ordering
+        # means that the user doesn't have to scroll up in the REPL to discover the
+        # root cause.
+        nexc = length(stack)
+        for i = nexc:-1:1
+            if nexc != i
+                printstyled(io, "\ncaused by: ", color=Base.error_color())
+            end
+            exc, bt = stack[i]
+            showerror(io, exc, bt, backtrace = bt!==nothing)
+            i == 1 || println(io)
+        end
+    end
+
+    function Base.show(io::IO, ::MIME"text/plain", stack::ExceptionStack)
+        nexc = length(stack)
+        printstyled(io, nexc, "-element ExceptionStack", nexc == 0 ? "" : ":\n")
+        show_exception_stack(io, stack)
+    end
+    Base.show(io::IO, stack::ExceptionStack) = show(io, MIME("text/plain"), stack)
+
+    export current_exceptions
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
