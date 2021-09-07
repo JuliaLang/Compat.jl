@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `Returns(value)` returns `value` for any arguments ([#39794]) (since Compat 3.35)
+
 * The function `current_exceptions()` has been added to get the current
   exception stack. Julia-1.0 lacks runtime support for full execption stacks,
   so we return only the most recent exception in that case. ([#29901]) (since
@@ -270,3 +272,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#35316]: https://github.com/JuliaLang/julia/pull/35316
 [#41076]: https://github.com/JuliaLang/julia/pull/41076
 [#34331]: https://github.com/JuliaLang/julia/pull/34331
+[#39794]: https://github.com/JuliaLang/julia/pull/39794
