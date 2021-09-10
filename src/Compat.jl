@@ -1128,7 +1128,7 @@ if !isdefined(Base, Symbol("@constprop"))
             if isa(setting, QuoteNode)
                 setting = setting.value
             end
-            setting === :aggressive && return :(Base.@aggressive_constprop $(esc(ex)))
+            setting === :aggressive && return esc(:(Base.@aggressive_constprop $ex))
             setting === :none && return esc(ex)
             throw(ArgumentError("@constprop $setting not supported"))
         end
