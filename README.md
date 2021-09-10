@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+    * `Compat.@constprop :aggressive ex` and `Compat.@constprop :none ex` allow control over constant-propagation during inference on Julia versions that support this feature, and otherwise just pass back `ex`. ([#42125]) (since Compat 3.36)
+
 * `Returns(value)` returns `value` for any arguments ([#39794]) (since Compat 3.35)
 
 * The function `current_exceptions()` has been added to get the current

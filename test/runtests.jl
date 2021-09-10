@@ -1159,3 +1159,15 @@ end
     @test Returns(val)(1) === val
     @test sprint(show, Returns(1.0)) == "Returns{Float64}(1.0)"
 end
+
+# https://github.com/JuliaLang/julia/pull/42125
+@testset "@constprop" begin
+    Compat.@constprop :aggressive aggf(x) = Symbol(x)
+    Compat.@constprop :none      nonef(x) = Symbol(x)
+    @test_throws Exception Meta.lower(@__MODULE__,
+        quote
+            Compat.@constprop :other brokenf(x) = Symbol(x)
+        end
+    )
+    @test aggf("hi") == nonef("hi") == :hi
+end
