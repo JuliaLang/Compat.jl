@@ -1171,3 +1171,44 @@ end
     )
     @test aggf("hi") == nonef("hi") == :hi
 end
+
+# https://github.com/JuliaLang/julia/pull/41312
+@testset "`@inline`/`@noinline` annotations within a function body" begin
+    callf(f, args...) = f(args...)
+    function foo1(a)
+        Compat.@inline
+        sum(sincos(a))
+    end
+    foo2(a) = (Compat.@inline; sum(sincos(a)))
+    foo3(a) = callf(a) do a
+        Compat.@inline
+        sum(sincos(a))
+    end
+    function foo4(a)
+        Compat.@noinline
+        sum(sincos(a))
+    end
+    foo5(a) = (Compat.@noinline; sum(sincos(a)))
+    foo6(a) = callf(a) do a
+        Compat.@noinline
+        sum(sincos(a))
+    end
+
+    @test foo1(42) == foo2(42) == foo3(42) == foo4(42) == foo5(42) == foo6(42)
+end
+
+# https://github.com/JuliaLang/julia/pull/41328
+@testset "callsite annotations of inlining" begin
+    function foo1(a)
+        Compat.@inline begin
+            return sum(sincos(a))
+        end
+    end
+    function foo2(a)
+        Compat.@noinline begin
+            return sum(sincos(a))
+        end
+    end
+    
+    @test foo1(42) == foo2(42)
+end
