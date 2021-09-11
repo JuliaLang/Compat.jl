@@ -275,3 +275,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#41076]: https://github.com/JuliaLang/julia/pull/41076
 [#34331]: https://github.com/JuliaLang/julia/pull/34331
 [#39794]: https://github.com/JuliaLang/julia/pull/39794
+[#42125]: https://github.com/JuliaLang/julia/pull/42125
