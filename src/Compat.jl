@@ -8,6 +8,50 @@ using LinearAlgebra: Adjoint, Diagonal, Transpose, UniformScaling, RealHermSymCo
 
 include("compatmacro.jl")
 
+# NOTE these `@inline` and `@noinline` definitions overwrite the definitions implicitly
+# imported from Base and so should happen before any usages of them within this module
+
+# https://github.com/JuliaLang/julia/pull/41312: `@inline`/`@noinline` annotations within a function body
+@static if !hasmethod(getfield(Base, Symbol("@inline")), (LineNumberNode,Module))
+    macro inline()   Expr(:meta, :inline)   end
+    macro noinline() Expr(:meta, :noinline) end
+end
+
+# https://github.com/JuliaLang/julia/pull/41328: callsite annotations of inlining
+@static if !isdefined(Base, :annotate_meta_def_or_block)
+    macro inline(ex)   annotate_meta_def_or_nothing(ex, :inline)   end
+    macro noinline(ex) annotate_meta_def_or_nothing(ex, :noinline) end
+    function annotate_meta_def_or_nothing(@nospecialize(ex), meta::Symbol)
+        inner = unwrap_macrocalls(ex)
+        if is_function_def(inner)
+            # annotation on a definition
+            return esc(Base.pushmeta!(ex, meta))
+        else
+            # do nothing
+            return esc(ex)
+        end
+    end
+    unwrap_macrocalls(@nospecialize(x)) = x
+    function unwrap_macrocalls(ex::Expr)
+        inner = ex
+        while inner.head === :macrocall
+            inner = inner.args[end]::Expr
+        end
+        return inner
+    end
+    is_function_def(@nospecialize(ex)) =
+        return Meta.isexpr(ex, :function) || is_short_function_def(ex) || Meta.isexpr(ex, :->)
+    function is_short_function_def(@nospecialize(ex))
+        Meta.isexpr(ex, :(=)) || return false
+        while length(ex.args) >= 1 && isa(ex.args[1], Expr)
+            (ex.args[1].head === :call) && return true
+            (ex.args[1].head === :where || ex.args[1].head === :(::)) || return false
+            ex = ex.args[1]
+        end
+        return false
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/29440
 if VERSION < v"1.1.0-DEV.389"
     Base.:(:)(I::CartesianIndex{N}, J::CartesianIndex{N}) where N =

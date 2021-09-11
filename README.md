@@ -54,6 +54,10 @@ changes in `julia`.
 
 ## Supported features
 
+* `Compat.@inline` and `Compat.@noinline` can be used at function callsites to encourage the compiler to (not) inline the function calls on Julia versions that support these features, and otherwise do not have any effects ([#41312]) (since Compat 3.37)
+
+* `Compat.@inline` and `Compat.@noinline` can be used within function body to hint to the compiler the inlineability of the defined function ([#41312]) (since Compat 3.37)
+
 * `Compat.@constprop :aggressive ex` and `Compat.@constprop :none ex` allow control over constant-propagation during inference on Julia versions that support this feature, and otherwise just pass back `ex`. ([#42125]) (since Compat 3.36)
 
 * `Returns(value)` returns `value` for any arguments ([#39794]) (since Compat 3.35)
@@ -276,3 +280,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#34331]: https://github.com/JuliaLang/julia/pull/34331
 [#39794]: https://github.com/JuliaLang/julia/pull/39794
 [#42125]: https://github.com/JuliaLang/julia/pull/42125
+[#41312]: https://github.com/JuliaLang/julia/pull/41312
+[#41328]: https://github.com/JuliaLang/julia/pull/41328
