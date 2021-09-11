@@ -1121,6 +1121,30 @@ if VERSION < v"1.7.0-DEV.793"
     end
 end
 
+# https://github.com/JuliaLang/julia/pull/42125
+if !isdefined(Base, Symbol("@constprop"))
+    if isdefined(Base, Symbol("@aggressive_constprop"))
+        macro constprop(setting, ex)
+            if isa(setting, QuoteNode)
+                setting = setting.value
+            end
+            setting === :aggressive && return esc(:(Base.@aggressive_constprop $ex))
+            setting === :none && return esc(ex)
+            throw(ArgumentError("@constprop $setting not supported"))
+        end
+    else
+        macro constprop(setting, ex)
+            if isa(setting, QuoteNode)
+                setting = setting.value
+            end
+            setting === :aggressive || setting === :none || throw(ArgumentError("@constprop $setting not supported"))
+            return esc(ex)
+        end
+    end
+else
+    using Base: @constprop
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
