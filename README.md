@@ -54,7 +54,7 @@ changes in `julia`.
 
 ## Supported features
 
-* `convert(::Type{<:Period}, ::CompoundPeriod)` can convert `CompoundPeriod`s into the specified `Period` type.
+* `convert(::Type{<:Period}, ::CompoundPeriod)` can convert `CompoundPeriod`s into the specified `Period` type. (since Compat 3.38.0)
 
 * `Compat.@inline` and `Compat.@noinline` can be used at function callsites to encourage the compiler to (not) inline the function calls on Julia versions that support these features, and otherwise do not have any effects ([#41312]) (since Compat 3.37)
 
