@@ -1189,6 +1189,13 @@ else
     using Base: @constprop
 end
 
+# https://github.com/JuliaLang/julia/pull/40803
+if VERSION < v"1.8.0-DEV.300"
+    function Base.convert(::Type{T}, x::CompoundPeriod) where T<:Period
+        return isconcretetype(T) ? sum(T, x.periods) : throw(MethodError(convert, (T, x)))
+    end
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
