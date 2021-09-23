@@ -1101,17 +1101,37 @@ if VERSION < v"1.7.0-DEV.1106"
 
     if VERSION >= v"1.1"
         function current_exceptions(task=current_task(); backtrace=true)
-            stack = Base.catch_stack(task, include_bt=backtrace)
-            ExceptionStack(Any[(exception=x[1],backtrace=x[2]) for x in stack])
+            old_stack = Base.catch_stack(task, include_bt=backtrace)
+            # If include_bt=true, Base.catch_stack yields a Vector of two-tuples,
+            # where the first element of each tuple is an exception and the second
+            # element is the corresponding backtrace. If instead include_bt=false,
+            # Base.catch_stack yields a Vector of exceptions.
+            #
+            # Independent of its backtrace keyword argument, Base.current_exceptions
+            # yields an ExceptionStack that wraps a Vector of two-element
+            # NamedTuples, where the first element of each named tuple is an exception
+            # and the second element is either a correpsonding backtrace or `nothing`.
+            #
+            # The following constructs the ExceptionStack-wrapped Vector appropriately.
+            new_stack = backtrace ?
+                Any[(exception=exc_and_bt[1], backtrace=exc_and_bt[2]) for exc_and_bt in old_stack] :
+                Any[(exception=exc_only,      backtrace=nothing) for exc_only in old_stack]
+            return ExceptionStack(new_stack)
         end
     else
         # There's no exception stack in 1.0, but we can fall back to returning
         # the (single) current exception and backtrace instead.
         @eval function current_exceptions(task=current_task(); backtrace=true)
             bt = catch_backtrace()
-            # `exc = Expr(:the_exception)` is the lowering for `catch exc`
-            exc = isempty(bt) ? nothing : $(Expr(:the_exception))
-            ExceptionStack(isempty(bt) ? Any[] : Any[(exception=exc, backtrace=bt)])
+            stack = if isempty(bt)
+                Any[]
+            else
+                # Note that `exc = Expr(:the_exception)` is the lowering for `catch exc`,
+                # and please see the comment in the implementation for >v1.1 regarding
+                # the `backtrace ? bt : nothing`.
+                Any[(exception=$(Expr(:the_exception)), backtrace = backtrace ? bt : nothing)]
+            end
+            return ExceptionStack(stack)
         end
         @eval function the_stack()
            $(Expr(:the_exception)), catch_backtrace()
