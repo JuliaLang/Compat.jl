@@ -1112,20 +1112,42 @@ end
 
 # https://github.com/JuliaLang/julia/pull/29901
 @testset "current_exceptions" begin
-    # Display of errors which cause more than one entry on the exception stack
-    excs = try
-        try
-            __not_a_binding__
+    # Helper method to retrieve an ExceptionStack that should contain two exceptions,
+    # each of which accompanied by a backtrace or `nothing` according to `with_backtraces`.
+    function _retrieve_exception_stack(;with_backtraces::Bool)
+        exception_stack = try
+            try
+                # Generate the first exception:
+                __not_a_binding__
+            catch
+                # Catch the first exception, and generate a second exception
+                # during what would be handling of the first exception:
+                1 ÷ 0
+            end
         catch
-            1 ÷ 0  # Generate error while handling error
+            # Retrieve an ExceptionStack with both exceptions,
+            # and bind `exception_stack` (at the top of this block) thereto:
+            current_exceptions(;backtrace=with_backtraces)
         end
-    catch
-        current_exceptions()
+        return exception_stack
     end
 
-    if VERSION >= v"1.1"
-        @test typeof.(first.(excs)) == [UndefVarError, DivideError]
+    excs_with_bts = _retrieve_exception_stack(with_backtraces = true)
+    excs_sans_bts = _retrieve_exception_stack(with_backtraces = false)
 
+    # Check that the ExceptionStack with backtraces contains backtraces:
+    BACKTRACE_TYPE = Vector{Union{Ptr{Nothing}, Base.InterpreterIP}}
+    @test all(exc_with_bt[2] isa BACKTRACE_TYPE for exc_with_bt in excs_with_bts)
+
+    # Check that the ExceptionStack without backtraces contains `nothing`s:
+    @test all(exc_sans_bt[2] isa Nothing for exc_sans_bt in excs_sans_bts)
+
+    if VERSION >= v"1.1"
+        # Check that the ExceptionStacks contain the expected exception types:
+        @test typeof.(first.(excs_with_bts)) == [UndefVarError, DivideError]
+        @test typeof.(first.(excs_sans_bts)) == [UndefVarError, DivideError]
+
+        # Check that the ExceptionStack with backtraces `show`s correctly:
         @test occursin(r"""
         2-element ExceptionStack:
         DivideError: integer division error
@@ -1133,15 +1155,34 @@ end
 
         caused by: UndefVarError: __not_a_binding__ not defined
         Stacktrace:.*
-        """s, sprint(show, excs))
+        """s, sprint(show, excs_with_bts))
+
+        # Check that the ExceptionStack without backtraces `show`s correctly:
+        @test occursin(r"""
+        2-element ExceptionStack:
+        DivideError: integer division error
+
+        caused by: UndefVarError: __not_a_binding__ not defined"""s,
+        sprint(show, excs_sans_bts))
     else
-        # Due to runtime limitations, julia-1.0 only retains the last exception
-        @test typeof.(first.(excs)) == [DivideError]
+        # Due to runtime limitations, julia-1.0 only retains the last exception.
+
+        # Check that the ExceptionStacks contain the expected last exception type:
+        @test typeof.(first.(excs_with_bts)) == [DivideError]
+        @test typeof.(first.(excs_sans_bts)) == [DivideError]
+        
+        # Check that the ExceptionStack with backtraces `show`s correctly:
         @test occursin(r"""
         1-element ExceptionStack:
         DivideError: integer division error
         Stacktrace:.*
-        """, sprint(show, excs))
+        """, sprint(show, excs_with_bts))
+
+        # Check that the ExceptionStack without backtraces `show`s correctly:
+        @test occursin(r"""
+        1-element ExceptionStack:
+        DivideError: integer division error""",
+        sprint(show, excs_sans_bts))
     end
 end
 
