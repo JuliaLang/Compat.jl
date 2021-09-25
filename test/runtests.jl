@@ -1164,6 +1164,22 @@ end
 
         caused by: UndefVarError: __not_a_binding__ not defined"""s,
         sprint(show, excs_sans_bts))
+
+        # Check that the ExceptionStack with backtraces `display_error`s correctly:
+        @test occursin(r"""
+        ERROR: DivideError: integer division error
+        Stacktrace:.*
+
+        caused by: UndefVarError: __not_a_binding__ not defined
+        Stacktrace:.*
+        """s, sprint(Base.display_error, excs_with_bts))
+
+        # Check that the ExceptionStack without backtraces `display_error`s correctly:
+        @test occursin(r"""
+        ERROR: DivideError: integer division error
+
+        caused by: UndefVarError: __not_a_binding__ not defined"""s,
+        sprint(Base.display_error, excs_sans_bts))
     else
         # Due to runtime limitations, julia-1.0 only retains the last exception.
 
@@ -1183,6 +1199,17 @@ end
         1-element ExceptionStack:
         DivideError: integer division error""",
         sprint(show, excs_sans_bts))
+
+        # Check that the ExceptionStack with backtraces `display_error`s correctly:
+        @test occursin(r"""
+        ERROR: DivideError: integer division error
+        Stacktrace:.*
+        """, sprint(Base.display_error, excs_with_bts))
+
+        # Check that the ExceptionStack without backtraces `display_error`s correctly:
+        @test occursin(r"""
+        ERROR: DivideError: integer division error""",
+        sprint(Base.display_error, excs_sans_bts))
     end
 end
 
