@@ -1156,15 +1156,14 @@ if VERSION < v"1.7.0-DEV.1106"
         end
     end
 
-    if VERSION >= v"1.2"
-        # Base.scrub_repl_backtrace only exists as of Julia 1.2,
-        # hence the immediately preceding version guard.
-        function Base.display_error(io::IO, stack::ExceptionStack)
-            printstyled(io, "ERROR: "; bold=true, color=Base.error_color())
-            bt = Any[ (x[1], Base.scrub_repl_backtrace(x[2])) for x in stack ]
-            show_exception_stack(IOContext(io, :limit => true), bt)
-            println(io)
-        end
+    function Base.display_error(io::IO, stack::ExceptionStack)
+        printstyled(io, "ERROR: "; bold=true, color=Base.error_color())
+        # Julia >=1.2 provides Base.scrub_repl_backtrace; we use it
+        # where possible and otherwise leave backtraces unscrubbed.
+        backtrace_scrubber = VERSION >= v"1.2" ? Base.scrub_repl_backtrace : identity
+        bt = Any[ (x[1], backtrace_scrubber(x[2])) for x in stack ]
+        show_exception_stack(IOContext(io, :limit => true), bt)
+        println(io)
     end
 
     function Base.show(io::IO, ::MIME"text/plain", stack::ExceptionStack)
