@@ -1195,6 +1195,17 @@ if VERSION < v"1.7.0-DEV.793"
     end
 end
 
+# https://github.com/JuliaLang/julia/pull/39037
+if VERSION < v"1.7.0-DEV.204"
+    # Borrowed from julia base
+    export ismutabletype
+    function ismutabletype(@nospecialize(t::Type))
+        t = Base.unwrap_unionall(t)
+        # TODO: what to do for `Union`?
+        return isa(t, DataType) && t.mutable
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/42125
 if !isdefined(Base, Symbol("@constprop"))
     if isdefined(Base, Symbol("@aggressive_constprop"))
