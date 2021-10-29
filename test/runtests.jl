@@ -1293,3 +1293,76 @@ end
     @test_throws MethodError convert(Period, Minute(1) + Second(30))
     @test_throws MethodError convert(Dates.FixedPeriod, Minute(1) + Second(30))
 end
+
+# https://github.com/JuliaLang/julia/pull/39245
+
+#=
+cmcaine commented on Sep 8, 2021
+
+This PR implements split with eachsplit and uses eachsplit in a few other places in Base, 
+so it's kind of already covered by the existing tests. 
+Not sure it needs any more?
+
+so, these are the Base.split tests, but replacing split with eachsplit |> collect
+=#
+@testset "eachsplit" begin
+    @test eachsplit("foo,bar,baz", 'x') |> collect == ["foo,bar,baz"]
+    @test eachsplit("foo,bar,baz", ',') |> collect == ["foo","bar","baz"]
+    @test eachsplit("foo,bar,baz", ",") |> collect == ["foo","bar","baz"]
+    @test eachsplit("foo,bar,baz", r",") |> collect == ["foo","bar","baz"]
+    @test eachsplit("foo,bar,baz", ','; limit=0) |> collect == ["foo","bar","baz"]
+    @test eachsplit("foo,bar,baz", ','; limit=1) |> collect == ["foo,bar,baz"]
+    @test eachsplit("foo,bar,baz", ','; limit=2) |> collect == ["foo","bar,baz"]
+    @test eachsplit("foo,bar,baz", ','; limit=3) |> collect == ["foo","bar","baz"]
+    @test eachsplit("foo,bar", "o,b") |> collect == ["fo","ar"]
+
+    @test eachsplit("", ',') |> collect == [""]
+    @test eachsplit(",", ',') |> collect == ["",""]
+    @test eachsplit(",,", ',') |> collect == ["","",""]
+    @test eachsplit("", ','  ; keepempty=false) |> collect == SubString[]
+    @test eachsplit(",", ',' ; keepempty=false) |> collect == SubString[]
+    @test eachsplit(",,", ','; keepempty=false) |> collect == SubString[]
+
+    @test eachsplit("a b c") |> collect == ["a","b","c"]
+    @test eachsplit("a  b \t c\n") |> collect == ["a","b","c"]
+    @test eachsplit("α  β \u2009 γ\n") |> collect == ["α","β","γ"]
+
+    @test eachsplit("a b c"; limit=2) |> collect == ["a","b c"]
+    @test eachsplit("a  b \t c\n"; limit=3) |> collect == ["a","b","\t c\n"]
+    @test eachsplit("a b c"; keepempty=true) |> collect == ["a","b","c"]
+    @test eachsplit("a  b \t c\n"; keepempty=true) |> collect == ["a","","b","","","c",""]
+
+    let str = "a.:.ba..:..cba.:.:.dcba.:."
+    @test eachsplit(str, ".:.") |> collect == ["a","ba.",".cba",":.dcba",""]
+    @test eachsplit(str, ".:."; keepempty=false) |> collect == ["a","ba.",".cba",":.dcba"]
+    @test eachsplit(str, ".:.") |> collect == ["a","ba.",".cba",":.dcba",""]
+    @test eachsplit(str, r"\.(:\.)+") |> collect == ["a","ba.",".cba","dcba",""]
+    @test eachsplit(str, r"\.(:\.)+"; keepempty=false) |> collect == ["a","ba.",".cba","dcba"]
+    @test eachsplit(str, r"\.+:\.+") |> collect == ["a","ba","cba",":.dcba",""]
+    @test eachsplit(str, r"\.+:\.+"; keepempty=false) |> collect == ["a","ba","cba",":.dcba"]
+    end
+
+    # zero-width splits
+    @test eachsplit("", "") |> collect == rsplit("", "") == [""]
+    @test eachsplit("abc", "") |> collect == rsplit("abc", "") == ["a","b","c"]
+    @test eachsplit("abc", "", limit=2)  |> collect == ["a","bc"]
+
+    @test eachsplit("", r"")  |> collect == [""]
+    @test eachsplit("abc", r"") |> collect == ["a","b","c"]
+    @test eachsplit("abcd", r"b?") |> collect == ["a","c","d"]
+    @test eachsplit("abcd", r"b*") |> collect == ["a","c","d"]
+    @test eachsplit("abcd", r"b+") |> collect == ["a","cd"]
+    @test eachsplit("abcd", r"b?c?") |> collect == ["a","d"]
+    @test eachsplit("abcd", r"[bc]?") |> collect == ["a","","d"]
+    @test eachsplit("abcd", r"a*") |> collect == ["","b","c","d"]
+    @test eachsplit("abcd", r"a+") |> collect == ["","bcd"]
+    @test eachsplit("abcd", r"d*") |> collect == ["a","b","c",""]
+    @test eachsplit("abcd", r"d+") |> collect == ["abc",""]
+    @test eachsplit("abcd", r"[ad]?") |> collect == ["","b","c",""]
+
+    # multi-byte unicode characters (issue #26225)
+    @test eachsplit("α β γ", " ") |> collect == rsplit("α β γ", " ") ==
+        eachsplit("α β γ", isspace) |> collect == rsplit("α β γ", isspace) == ["α","β","γ"]
+    @test eachsplit("ö.", ".") |> collect == rsplit("ö.", ".") == ["ö",""]
+    @test eachsplit("α β γ", "β") |> collect == rsplit("α β γ", "β") == ["α "," γ"]
+end

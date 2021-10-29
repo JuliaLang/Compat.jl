@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `eachsplit` for iteratively performing split(str). ([#39245]). (since Compat 3.40.0)
+
 * `convert(::Type{<:Period}, ::CompoundPeriod)` can convert `CompoundPeriod`s into the specified `Period` type ([#40803]) (since Compat 3.38.0)
 
 * `Compat.@inline` and `Compat.@noinline` can be used at function callsites to encourage the compiler to (not) inline the function calls on Julia versions that support these features, and otherwise do not have any effects ([#41312]) (since Compat 3.37)
