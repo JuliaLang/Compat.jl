@@ -1227,7 +1227,7 @@ if VERSION < v"1.8.0-DEV.300"
 end
 
 # https://github.com/JuliaLang/julia/pull/39245
-if VERSION < v"1.8.0-DEV.300"  
+if VERSION < v"1.8.0-DEV.487"  
     export eachsplit
     function eachsplit end
     struct SplitIterator{S<:AbstractString,F}
