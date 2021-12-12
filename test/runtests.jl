@@ -1186,7 +1186,7 @@ end
         # Check that the ExceptionStacks contain the expected last exception type:
         @test typeof.(first.(excs_with_bts)) == [DivideError]
         @test typeof.(first.(excs_sans_bts)) == [DivideError]
-        
+
         # Check that the ExceptionStack with backtraces `show`s correctly:
         @test occursin(r"""
         1-element ExceptionStack:
@@ -1277,7 +1277,7 @@ end
             return sum(sincos(a))
         end
     end
-    
+
     @test foo1(42) == foo2(42)
 end
 
@@ -1292,6 +1292,11 @@ end
     @test_throws MethodError convert(Second, Month(1) + Second(30))
     @test_throws MethodError convert(Period, Minute(1) + Second(30))
     @test_throws MethodError convert(Dates.FixedPeriod, Minute(1) + Second(30))
+end
+
+@testset "ismutabletype" begin
+    @test ismutabletype(Array)
+    @test !ismutabletype(Tuple)
 end
 
 # https://github.com/JuliaLang/julia/pull/39245

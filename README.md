@@ -54,7 +54,9 @@ changes in `julia`.
 
 ## Supported features
 
-* `eachsplit` for iteratively performing split(str). ([#39245]). (since Compat 3.40.0)
+* `eachsplit` for iteratively performing split(str). ([#39245]). (since Compat 3.41.0)
+
+* `ismutabletype(t::Type)` check whether a type is mutable (the field `mutable` of `DataType` was removed. [#39037]) (since Compat 3.40)
 
 * `convert(::Type{<:Period}, ::CompoundPeriod)` can convert `CompoundPeriod`s into the specified `Period` type ([#40803]) (since Compat 3.38.0)
 
@@ -227,6 +229,7 @@ is at least this version by `VERSION >= v"X.Y.Z-aaa+NNNN"`.
 Note that you should specify the correct minimum version for `Compat` in the
 `[compat]` section of your `Project.toml`, as given in above list.
 
+[#39037]: https://github.com/JuliaLang/julia/pull/39037
 [#28708]: https://github.com/JuliaLang/julia/issues/28708
 [#28761]: https://github.com/JuliaLang/julia/issues/28761
 [#28850]: https://github.com/JuliaLang/julia/issues/28850
