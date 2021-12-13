@@ -1338,13 +1338,13 @@ so, these are the Base.split tests, but replacing split with eachsplit |> collec
     @test eachsplit("a  b \t c\n"; keepempty=true) |> collect == ["a","","b","","","c",""]
 
     let str = "a.:.ba..:..cba.:.:.dcba.:."
-    @test eachsplit(str, ".:.") |> collect == ["a","ba.",".cba",":.dcba",""]
-    @test eachsplit(str, ".:."; keepempty=false) |> collect == ["a","ba.",".cba",":.dcba"]
-    @test eachsplit(str, ".:.") |> collect == ["a","ba.",".cba",":.dcba",""]
-    @test eachsplit(str, r"\.(:\.)+") |> collect == ["a","ba.",".cba","dcba",""]
-    @test eachsplit(str, r"\.(:\.)+"; keepempty=false) |> collect == ["a","ba.",".cba","dcba"]
-    @test eachsplit(str, r"\.+:\.+") |> collect == ["a","ba","cba",":.dcba",""]
-    @test eachsplit(str, r"\.+:\.+"; keepempty=false) |> collect == ["a","ba","cba",":.dcba"]
+        @test eachsplit(str, ".:.") |> collect == ["a","ba.",".cba",":.dcba",""]
+        @test eachsplit(str, ".:."; keepempty=false) |> collect == ["a","ba.",".cba",":.dcba"]
+        @test eachsplit(str, ".:.") |> collect == ["a","ba.",".cba",":.dcba",""]
+        @test eachsplit(str, r"\.(:\.)+") |> collect == ["a","ba.",".cba","dcba",""]
+        @test eachsplit(str, r"\.(:\.)+"; keepempty=false) |> collect == ["a","ba.",".cba","dcba"]
+        @test eachsplit(str, r"\.+:\.+") |> collect == ["a","ba","cba",":.dcba",""]
+        @test eachsplit(str, r"\.+:\.+"; keepempty=false) |> collect == ["a","ba","cba",":.dcba"]
     end
 
     # zero-width splits
