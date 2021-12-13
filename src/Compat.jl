@@ -1240,6 +1240,33 @@ end
 # https://github.com/JuliaLang/julia/pull/39245
 if VERSION < v"1.8.0-DEV.487"  
     export eachsplit
+    
+    """
+        eachsplit(str::AbstractString, dlm; limit::Integer=0)
+        eachsplit(str::AbstractString; limit::Integer=0)
+
+    Split `str` on occurrences of the delimiter(s) `dlm` and return an iterator over the
+    substrings.  `dlm` can be any of the formats allowed by [`findnext`](@ref)'s first argument
+    (i.e. as a string, regular expression or a function), or as a single character or collection
+    of characters.
+    
+    If `dlm` is omitted, it defaults to [`isspace`](@ref).
+    
+    The iterator will return a maximum of `limit` results if the keyword argument is supplied.
+    The default of `limit=0` implies no maximum.
+    
+    See also [`split`](@ref).
+    
+    # Examples
+    ```julia
+    julia> a = "Ma.rch"
+    "Ma.rch"
+    julia> collect(eachsplit(a, "."))
+    2-element Vector{SubString}:
+    "Ma"
+    "rch"
+    ```
+    """
     function eachsplit end
     
     struct SplitIterator{S<:AbstractString,F}
