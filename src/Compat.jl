@@ -1237,6 +1237,83 @@ if VERSION < v"1.8.0-DEV.300"
     end
 end
 
+# https://github.com/JuliaLang/julia/pull/39245
+if VERSION < v"1.8.0-DEV.487"  
+    export eachsplit
+    
+    """
+        eachsplit(str::AbstractString, dlm; limit::Integer=0)
+        eachsplit(str::AbstractString; limit::Integer=0)
+
+    Split `str` on occurrences of the delimiter(s) `dlm` and return an iterator over the
+    substrings.  `dlm` can be any of the formats allowed by [`findnext`](@ref)'s first argument
+    (i.e. as a string, regular expression or a function), or as a single character or collection
+    of characters.
+    
+    If `dlm` is omitted, it defaults to [`isspace`](@ref).
+    
+    The iterator will return a maximum of `limit` results if the keyword argument is supplied.
+    The default of `limit=0` implies no maximum.
+    
+    See also [`split`](@ref).
+    
+    # Examples
+    ```julia
+    julia> a = "Ma.rch"
+    "Ma.rch"
+    julia> collect(eachsplit(a, "."))
+    2-element Vector{SubString}:
+    "Ma"
+    "rch"
+    ```
+    """
+    function eachsplit end
+    
+    struct SplitIterator{S<:AbstractString,F}
+        str::S
+        splitter::F
+        limit::Int
+        keepempty::Bool
+    end
+
+    Base.eltype(::Type{<:SplitIterator}) = SubString
+    Base.IteratorSize(::Type{<:SplitIterator}) = Base.SizeUnknown()
+    
+    function Base.iterate(iter::SplitIterator, (i, k, n)=(firstindex(iter.str), firstindex(iter.str), 0))
+        i - 1 > ncodeunits(iter.str)::Int && return nothing
+        r = findnext(iter.splitter, iter.str, k)::Union{Nothing,Int,UnitRange{Int}}
+        while r !== nothing && n != iter.limit - 1 && first(r) <= ncodeunits(iter.str)
+            r = r::Union{Int,UnitRange{Int}} #commit dcc2182db228935fe97d03a44ae3b6889e40c542
+            #follow #39245, improve inferrability of iterate(::SplitIterator)            
+            #Somehow type constraints from the complex `while` condition don't
+            #propagate to the `while` body.
+            j, k = first(r), nextind(iter.str, last(r))::Int
+            k_ = k <= j ? nextind(iter.str, j) : k
+            if i < k
+                substr = @inbounds SubString(iter.str, i, prevind(iter.str, j)::Int)
+                (iter.keepempty || i < j) && return (substr, (k, k_, n + 1))
+                i = k
+            end
+            k = k_
+            r = findnext(iter.splitter, iter.str, k)::Union{Nothing,Int,UnitRange{Int}}
+        end
+        iter.keepempty || i <= ncodeunits(iter.str) || return nothing
+        @inbounds SubString(iter.str, i), (ncodeunits(iter.str) + 2, k, n + 1)
+    end
+
+    eachsplit(str::T, splitter; limit::Integer=0, keepempty::Bool=true) where {T<:AbstractString} =
+        SplitIterator(str, splitter, limit, keepempty)
+
+    eachsplit(str::T, splitter::Union{Tuple{Vararg{AbstractChar}},AbstractVector{<:AbstractChar},Set{<:AbstractChar}};
+            limit::Integer=0, keepempty=true) where {T<:AbstractString} =
+        eachsplit(str, in(splitter); limit=limit, keepempty=keepempty)
+
+    eachsplit(str::T, splitter::AbstractChar; limit::Integer=0, keepempty=true) where {T<:AbstractString} =
+        eachsplit(str, isequal(splitter); limit=limit, keepempty=keepempty)
+
+    eachsplit(str::AbstractString; limit::Integer=0, keepempty=false) =
+        eachsplit(str, isspace; limit=limit, keepempty=keepempty)
+end
 include("iterators.jl")
 include("deprecated.jl")
 

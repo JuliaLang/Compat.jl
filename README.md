@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `eachsplit` for iteratively performing split(str). ([#39245]). (since Compat 3.41.0)
+
 * `ismutabletype(t::Type)` check whether a type is mutable (the field `mutable` of `DataType` was removed. [#39037]) (since Compat 3.40)
 
 * `convert(::Type{<:Period}, ::CompoundPeriod)` can convert `CompoundPeriod`s into the specified `Period` type ([#40803]) (since Compat 3.38.0)
