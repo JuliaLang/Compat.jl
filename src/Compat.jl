@@ -1317,8 +1317,9 @@ end
 
 # https://github.com/JuliaLang/julia/pull/43787
 if VERSION < v"1.8.0-DEV.1310"
-    Base.display(d::TextDisplay, M::MIME"text/plain", @nospecialize x) = (show(d.io, M, x); println(d.io))
-    function Base.display(d::TextDisplay, M::MIME, @nospecialize x)
+    display(d::TextDisplay, M::MIME"text/plain", @nospecialize x) = (show(d.io, M, x); println(d.io))
+    display(d::TextDisplay, @nospecialize x) = display(d, MIME"text/plain"(), x)
+    function display(d::TextDisplay, M::MIME, @nospecialize x)
         displayable(d, M) || throw(MethodError(display, (d, M, x)))
         show(d.io, M, x); println(d.io)
     end

@@ -1375,6 +1375,6 @@ end
 # https://github.com/JuliaLang/julia/pull/43787
 @testset "display" begin
     td = TextDisplay(PipeBuffer())
-    display(td, 1)
+    Compat.display(td, 1)
     @test read(td.io, String) == "1\n"
 end
