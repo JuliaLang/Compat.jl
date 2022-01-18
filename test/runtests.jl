@@ -1371,3 +1371,10 @@ so, these are the Base.split tests, but replacing split with eachsplit |> collec
     @test eachsplit("ö.", ".") |> collect == rsplit("ö.", ".") == ["ö",""]
     @test eachsplit("α β γ", "β") |> collect == rsplit("α β γ", "β") == ["α "," γ"]
 end
+
+# https://github.com/JuliaLang/julia/pull/43787
+@testset "display" begin
+    td = TextDisplay(PipeBuffer())
+    display(td, 1)
+    @test read(td.io, String) == "1\n"
+end

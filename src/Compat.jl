@@ -1314,6 +1314,16 @@ if VERSION < v"1.8.0-DEV.487"
     eachsplit(str::AbstractString; limit::Integer=0, keepempty=false) =
         eachsplit(str, isspace; limit=limit, keepempty=keepempty)
 end
+
+# https://github.com/JuliaLang/julia/pull/43787
+if VERSION < v"1.8.0-DEV.1310"
+    Base.display(d::TextDisplay, M::MIME"text/plain", @nospecialize x) = (show(d.io, M, x); println(d.io))
+    function Base.display(d::TextDisplay, M::MIME, @nospecialize x)
+        displayable(d, M) || throw(MethodError(display, (d, M, x)))
+        show(d.io, M, x); println(d.io)
+    end
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
