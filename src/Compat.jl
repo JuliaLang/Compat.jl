@@ -1314,6 +1314,16 @@ if VERSION < v"1.8.0-DEV.487"
     eachsplit(str::AbstractString; limit::Integer=0, keepempty=false) =
         eachsplit(str, isspace; limit=limit, keepempty=keepempty)
 end
+
+# https://github.com/JuliaLang/julia/pull/43354
+if VERSION < v"1.8.0-DEV.1494" # 98e60ffb11ee431e462b092b48a31a1204bd263d
+    export allequal
+    allequal(itr) = isempty(itr) ? true : all(isequal(first(itr)), itr)
+    allequal(c::Union{AbstractSet,AbstractDict}) = length(c) <= 1
+    allequal(r::AbstractRange) = iszero(step(r)) || length(r) <= 1
+end
+
+
 include("iterators.jl")
 include("deprecated.jl")
 

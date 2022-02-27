@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `allequal`, the opposite of `allunique` ([#43354]). (since Compat 3.42.0)
+
 * `eachsplit` for iteratively performing split(str). ([#39245]). (since Compat 3.41.0)
 
 * `ismutabletype(t::Type)` check whether a type is mutable (the field `mutable` of `DataType` was removed. [#39037]) (since Compat 3.40)
@@ -290,3 +292,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#42125]: https://github.com/JuliaLang/julia/pull/42125
 [#41312]: https://github.com/JuliaLang/julia/pull/41312
 [#41328]: https://github.com/JuliaLang/julia/pull/41328
+[#43354]: https://github.com/JuliaLang/julia/pull/43354
