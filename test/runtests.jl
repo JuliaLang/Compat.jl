@@ -1371,3 +1371,33 @@ so, these are the Base.split tests, but replacing split with eachsplit |> collec
     @test eachsplit("ö.", ".") |> collect == rsplit("ö.", ".") == ["ö",""]
     @test eachsplit("α β γ", "β") |> collect == rsplit("α β γ", "β") == ["α "," γ"]
 end
+
+# https://github.com/JuliaLang/julia/pull/43354
+@testset "allequal" begin
+    @test allequal(Set())
+    @test allequal(Set(1))
+    @test !allequal(Set([1, 2]))
+    @test allequal(Dict())
+    @test allequal(Dict(:a => 1))
+    @test !allequal(Dict(:a => 1, :b => 2))
+    @test allequal([])
+    @test allequal([1])
+    @test allequal([1, 1])
+    @test !allequal([1, 1, 2])
+    @test allequal([:a, :a])
+    @test !allequal([:a, :b])
+    @test !allequal(1:2)
+    @test allequal(1:1)
+    @test !allequal(4.0:0.3:7.0)
+    @test allequal(4:-1:5)       # empty range
+    @test !allequal(7:-1:1)       # negative step
+    @test !allequal(Date(2018, 8, 7):Day(1):Date(2018, 8, 11))  # JuliaCon 2018
+    @test !allequal(DateTime(2018, 8, 7):Hour(1):DateTime(2018, 8, 11))
+    @test allequal(StepRangeLen(1.0, 0.0, 2))
+    @test !allequal(StepRangeLen(1.0, 1.0, 2))
+    @test allequal(LinRange(1, 1, 0))
+    @test allequal(LinRange(1, 1, 1))
+    @test allequal(LinRange(1, 1, 2))
+    @test !allequal(LinRange(1, 2, 2))
+end
+
