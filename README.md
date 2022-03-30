@@ -77,131 +77,13 @@ changes in `julia`.
   so we return only the most recent exception in that case. ([#29901]) (since
   Compat 3.34)
 
-* The methods `Base.include(::Function, ::Module, path)` and
-  `Base.include_string(::Function, ::Module, code[, filename])` have been added. ([#34595]) (since Compat 3.33)
-
-* Implicit keywords arguments or named tuples is supported using the `@compat` macro, e.g. `@compat f(; x, f.p)` and `@compat (; x, f.p)` is equivalent to `f(; x=x, p=f.p)` and `(; x=x, p=f.p)` respectively. ([#34331]) (since Compat 3.32.0)
-
 * Two argument methods `findmax(f, domain)`, `argmax(f, domain)` and the corresponding `min` versions ([#35316], [#41076]) (since Compat 3.31.1)
 
 * `isunordered(x)` returns true if `x` is value that is normally unordered, such as `NaN` or `missing` ([#35316]) (since Compat 3.31.1)
 
 * `get` accepts tuples and numbers ([#41007], [#41032]) (since Compat 3.31)
 
-* `muladd(A,B,z)` now accepts arrays ([#37065]) (since Compat 3.30)
-
 * `@something` and `@coalesce` as short-circuiting versions of `something` and `coalesce` ([#40729]) (since Compat 3.29)
-
-* `NamedTuple(::Pairs)` ([#37454]) (since Compat 3.28)
-
-* `UUID(::UUID)` and `parse(::Type{UUID}, string)` ([#36018] / [#36199]) (since Compat 3.27)
-
-* `cispi(x)` for accurately calculating `cis(pi * x)` ([#38449]) (since Compat 3.25)
-
-* `startswith(s, r::Regex)` and `endswith(s, r::Regex)` ([#29790]) (since Compat 3.24)
-
-* `sincospi(x)` for calculating the tuple `(sinpi(x), cospi(x))` ([#35816]) (since Compat 3.23)
-
-* `Dates.canonicalize` can now take a `Period` as an input ([#37391]) (since Compat 3.22)
-
-* Import renaming is available through the `@compat` macro, e.g. `@compat import LinearAlgebra as LA` and
-  `@compat import LinearAlgebra: cholesky as c, lu as l`. *Note:* Import renaming of macros is not
-  supported due to differences in parsing behavior ([#37396]). (since Compat 3.21).
-
-* `Compat.parseatom(text::AbstractString, pos::Integer; filename="none")` parses a single
-  atom from `text` starting at index `pos`. Returns a `Tuple` consisting of the
-  parsed expression and the index to resume parsing from. ([#35243]) (since Compat 3.20)
-
-* `Compat.parseall(text::AbstractString; filename="none")` parses the whole string `text`
-  and returns the parsed expression. ([#35243]) (since Compat 3.20)
-
-* `mul!(C, A, B, alpha, beta)` now performs in-place multiply add ([#29634]). (since Compat 3.19).
-
-* `reinterpret(reshape, T, a::AbstractArray{S})` reinterprets `a` to have eltype `T` while
-  inserting or consuming the first dimension depending on the ratio of `sizeof(T)` and `sizeof(S)`.
-  ([#37559]). (since Compat 3.18)
-
-* The composition operator `∘` now returns a `Compat.ComposedFunction` instead of an anonymous function ([#37517]). (since Compat 3.17)
-
-* New function `addenv` for adding environment mappings into a `Cmd` object, returning the new `Cmd` object ([#37244]). (since Compat 3.16)
-
-* `contains(haystack, needle)` and its one argument partially applied form `contains(haystack)` have been added, it acts like `occursin(needle, haystack)` ([#35132]). (since Compat 3.15)
-
-* `startswith(x)` and `endswith(x)`, returning partially-applied versions of the functions, similar to existing methods like `isequal(x)` ([#35052]). (since Compat 3.15)
-
-* `Compat.Iterators.map` is added. It provides another syntax `Iterators.map(f, iterators...)`
-  for writing `(f(args...) for args in zip(iterators...))`, i.e. a lazy `map`  ([#34352]).
-  (since Compat 3.14)
-
-* `takewhle` and `dropwhile` are added in `Compat.Iterators` ([#33437]). (since Compat 3.14)
-
-* Curried comparisons `!=(x)`, `>=(x)`, `<=(x)`, `>(x)`, and `<(x)` are defined as, e.g.,
-  `!=(x) = y -> y != x` ([#30915]). (since Compat 3.14)
-
-* `strides` is defined for Adjoint and Transpose ([#35929]). (since Compat 3.14)
-
-* `Compat.get_num_threads()` adds the functionality of `LinearAlgebra.BLAS.get_num_threads()`, and has matching `Compat.set_num_threads(n)` ([#36360]). (since Compat 3.13.0)
-
-* `@inferred [AllowedType] f(x)` is defined ([#27516]). (since Compat 3.12.0)
-
-* Search a character in a string with `findfirst`, `findnext`, `findlast` and `findprev` ([#31664]). (since Compat 3.12.0)
-
-* `∘(f) = f` is defined ([#34251]). (since Compat 3.11.0)
-
-* `union` supports `Base.OneTo` ([#35577]). (since Compat 3.11.0)
-
-* `get` supports `CartesianIndex` when indexing `AbstractArrays` ([#30268]). (since Compat 3.10.0)
-
-* `similar(::PermutedDimsArray)` now uses the parent ([#35304]). (since Compat 3.9.0)
-
-* `isdisjoint(l, r)` indicates whether two collections are disjoint ([#34427]). (since Compat 3.9.0)
-
-* `mergewith(combine, dicts...)` and `mergewith!(combine, dicts...)` are like
-  `merge(combine, dicts...)` and `merge!(combine, dicts...)` but without the restriction
-  that the argument `combine` must be a `Function` ([#34296]). (since Compat 3.9.0).
-
-* `@NamedTuple` macro for convenient `struct`-like syntax for declaring
-`NamedTuple` types via `key::Type` declarations ([#34548]). (since Compat 3.8.0)
-
-* `evalpoly(x, (p1, p2, ...))`, the function equivalent to `@evalpoly(x, p1, p2, ...)`
-  ([#32753]). (since Compat 3.7.0)
-
-* `zero(::Irrational)` and `one` now defined ([#34773]). (since Compat 3.6.0)
-
-* `I1:I2`, when `I1` and `I2` are CartesianIndex values, constructs a CartesianIndices
-  iterator ([#29440]). (Since Compat 3.5.0)
-
-* `oneunit(::CartesianIndex)` replaces `one(::CartesianIndex)` ([#29442]). (Since Compat 3.5.0)
-
-* `ismutable` return `true` iff value `v` is mutable ([#34652]). (since Compat 3.4.0)
-
-* `uuid5` generates a version 5 universally unique identifier (UUID), as specified by RFC 4122 ([#28761]). (since Compat 3.3.0)
-
-* `dot` now has a 3-argument method `dot(x, A, y)` without storing the intermediate result `A*y` ([#32739]). (since Compat 3.2.0)
-
-* `pkgdir(m)` returns the root directory of the package that imported module `m` ([#33128]). (since Compat 3.2.0)
-
-* `filter` can now act on a `Tuple` [#32968]. (since Compat 3.1.0)
-
-* `Base.Order.ReverseOrdering` has a zero arg constructor [#33736]. (since Compat 3.0.0)
-
-* Function composition now supports multiple functions: `∘(f, g, h) = f ∘ g ∘ h`
-  and splatting `∘(fs...)` for composing an iterable collection of functions ([#33568]).  (since Compat 3.0.0)
-
-* `only(x)` returns the one-and-only element of a collection `x` ([#33129]). (since Compat 2.2.0)
-
-* `mod` now accepts a unit range as the second argument ([#32628]). (since Compat 2.2.0)
-
-* `eachrow`, `eachcol`, and `eachslice` to iterate over first, second, or given dimension
-  of an array ([#29749]). (since Compat 2.2.0)
-
-* `isnothing` for testing if a variable is equal to `nothing` ([#29674]).  (since Compat 2.1.0)
-
-* `hasproperty` and `hasfield` ([#28850]).  (since Compat 2.0.0)
-
-* `merge` methods with one and `n` `NamedTuple`s ([#29259]). (since Compat 2.0.0)
-
-* `range` supporting `stop` as positional argument ([#28708]). (since Compat 1.3.0)
 
 ## Developer tips
 
