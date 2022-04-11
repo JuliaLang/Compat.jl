@@ -16,6 +16,15 @@ function _compat(ex::Expr)
         end
     end
 
+    # https://github.com/JuliaLang/julia/pull/39285
+    @static if VERSION < v"1.7.0-DEV.364"
+        if Meta.isexpr(ex, :(=)) && Meta.isexpr(ex.args[1], :tuple) &&
+            Meta.isexpr(ex.args[1].args[1], :parameters)
+            
+            ex = _destructure_named_tuple(ex)
+        end
+    end
+    
     return Expr(ex.head, map(_compat, ex.args)...)
 end
 
@@ -92,5 +101,18 @@ function _assign_implicit_keywords(ex::Expr)
         end
     end
 
+    return ex
+end
+
+function _destructure_named_tuple(ex::Expr)
+    ex.args[1].args[1] isa Expr && ex.args[1].args[1].head === :parameters
+    values = ex.args[2]
+    parameters = ex.args[1].args[1].args
+    ex = Expr(:block)
+    for p in parameters
+        asgn = Expr(:(=), p, Expr(:., values, QuoteNode(p)))
+        push!(ex.args, asgn)
+    end
+    push!(ex.args, values)
     return ex
 end
