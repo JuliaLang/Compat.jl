@@ -1094,6 +1094,9 @@ end
     @compat (; c, b) = nt
     @test c == nt.c
     @test b == nt.b
+
+    @compat (; x) = X(1)
+    @test x == 1
 end
 
 
