@@ -16,6 +16,10 @@ function _compat(ex::Expr)
         end
     end
 
+    @static if VERSION < v"1.7.0"
+        ex = _destructure_named_tuple(ex)
+    end
+    
     return Expr(ex.head, map(_compat, ex.args)...)
 end
 
@@ -92,5 +96,20 @@ function _assign_implicit_keywords(ex::Expr)
         end
     end
 
+    return ex
+end
+
+function _destructure_named_tuple(ex::Expr)
+    if ex.head === :(=) && ex.args[1] isa Expr && ex.args[1].head === :tuple &&
+        ex.args[1].args[1] isa Expr && ex.args[1].args[1].head === :parameters
+        values = ex.args[2]
+        parameters = ex.args[1].args[1].args
+        ex = Expr(:block)
+        for p in parameters
+            asgn = Expr(:(=), p, Expr(:., values, QuoteNode(p)))
+            push!(ex.args, asgn)
+        end
+        push!(ex.args, values)
+    end
     return ex
 end

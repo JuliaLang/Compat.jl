@@ -1088,6 +1088,15 @@ end
     @test (@compat (; nested.x.x)) == (; x=3)
 end
 
+# https://github.com/JuliaLang/julia/pull/39285
+@testset "property destructuring assignment" begin
+    nt = (; a=1, b=2, c=3)
+    @compat (; c, b) = nt
+    @test c == nt.c
+    @test b == nt.b
+end
+
+
 # https://github.com/JuliaLang/julia/pull/34595
 @testset "include(mapexpr::Function, ...)" begin
     m = Module()
