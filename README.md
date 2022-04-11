@@ -54,6 +54,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `@compat (; a, b) = (; c=1, b=2, a=3)` supports property descturing assignment syntax ([#39285]).
+
 * `allequal`, the opposite of `allunique` ([#43354]). (since Compat 3.42.0)
 
 * `eachsplit` for iteratively performing split(str). ([#39245]). (since Compat 3.41.0)
@@ -293,3 +295,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#41312]: https://github.com/JuliaLang/julia/pull/41312
 [#41328]: https://github.com/JuliaLang/julia/pull/41328
 [#43354]: https://github.com/JuliaLang/julia/pull/43354
+[#39285]: https://github.com/JuliaLang/julia/pull/39285
