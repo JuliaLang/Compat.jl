@@ -16,7 +16,8 @@ function _compat(ex::Expr)
         end
     end
 
-    @static if VERSION < v"1.7.0"
+    # https://github.com/JuliaLang/julia/pull/39285
+    @static if VERSION < v"1.7.0-DEV.364"
         ex = _destructure_named_tuple(ex)
     end
     
