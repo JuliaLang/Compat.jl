@@ -235,9 +235,9 @@ if VERSION < v"1.8.0-DEV.300"
 end
 
 # https://github.com/JuliaLang/julia/pull/39245
-if VERSION < v"1.8.0-DEV.487"  
+if VERSION < v"1.8.0-DEV.487"
     export eachsplit
-    
+
     """
         eachsplit(str::AbstractString, dlm; limit::Integer=0)
         eachsplit(str::AbstractString; limit::Integer=0)
@@ -246,14 +246,14 @@ if VERSION < v"1.8.0-DEV.487"
     substrings.  `dlm` can be any of the formats allowed by [`findnext`](@ref)'s first argument
     (i.e. as a string, regular expression or a function), or as a single character or collection
     of characters.
-    
+
     If `dlm` is omitted, it defaults to [`isspace`](@ref).
-    
+
     The iterator will return a maximum of `limit` results if the keyword argument is supplied.
     The default of `limit=0` implies no maximum.
-    
+
     See also [`split`](@ref).
-    
+
     # Examples
     ```julia
     julia> a = "Ma.rch"
@@ -265,7 +265,7 @@ if VERSION < v"1.8.0-DEV.487"
     ```
     """
     function eachsplit end
-    
+
     struct SplitIterator{S<:AbstractString,F}
         str::S
         splitter::F
@@ -275,13 +275,13 @@ if VERSION < v"1.8.0-DEV.487"
 
     Base.eltype(::Type{<:SplitIterator}) = SubString
     Base.IteratorSize(::Type{<:SplitIterator}) = Base.SizeUnknown()
-    
+
     function Base.iterate(iter::SplitIterator, (i, k, n)=(firstindex(iter.str), firstindex(iter.str), 0))
         i - 1 > ncodeunits(iter.str)::Int && return nothing
         r = findnext(iter.splitter, iter.str, k)::Union{Nothing,Int,UnitRange{Int}}
         while r !== nothing && n != iter.limit - 1 && first(r) <= ncodeunits(iter.str)
             r = r::Union{Int,UnitRange{Int}} #commit dcc2182db228935fe97d03a44ae3b6889e40c542
-            #follow #39245, improve inferrability of iterate(::SplitIterator)            
+            #follow #39245, improve inferrability of iterate(::SplitIterator)
             #Somehow type constraints from the complex `while` condition don't
             #propagate to the `while` body.
             j, k = first(r), nextind(iter.str, last(r))::Int
@@ -318,6 +318,47 @@ if VERSION < v"1.8.0-DEV.1494" # 98e60ffb11ee431e462b092b48a31a1204bd263d
     allequal(itr) = isempty(itr) ? true : all(isequal(first(itr)), itr)
     allequal(c::Union{AbstractSet,AbstractDict}) = length(c) <= 1
     allequal(r::AbstractRange) = iszero(step(r)) || length(r) <= 1
+end
+
+@static if !isdefined(Base, :keepat!)
+    export keepat!
+
+    keepat!(B::BitVector, inds) = _keepat!(B, inds)
+    keepat!(B::BitVector, inds::AbstractVector{Bool}) = _keepat!(B, inds)
+    keepat!(a::Vector, inds) = _keepat!(a, inds)
+    keepat!(a::Vector, m::AbstractVector{Bool}) = _keepat!(a, m)
+
+    function _keepat!(a::AbstractVector, inds)
+        local prev
+        i = firstindex(a)
+        for k in inds
+            if @isdefined(prev)
+                prev < k || throw(ArgumentError("indices must be unique and sorted"))
+            end
+            ak = a[k] # must happen even when i==k for bounds checking
+            if i != k
+                @inbounds a[i] = ak # k > i, so a[i] is inbounds
+            end
+            prev = k
+            i = nextind(a, i)
+        end
+        deleteat!(a, i:lastindex(a))
+        return a
+    end
+
+    function _keepat!(a::AbstractVector, m::AbstractVector{Bool})
+        length(m) == length(a) || throw(BoundsError(a, m))
+        j = firstindex(a)
+        for i in eachindex(a, m)
+            @inbounds begin
+                if m[i]
+                    i == j || (a[j] = a[i])
+                    j = nextind(a, j)
+                end
+            end
+        end
+        deleteat!(a, j:lastindex(a))
+    end
 end
 
 include("deprecated.jl")

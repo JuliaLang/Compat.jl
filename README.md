@@ -54,6 +54,9 @@ changes in `julia`.
 
 ## Supported features
 
+* `keepat!` removes the items at all the indices which are not given and returns
+  the modified source ([#36229], [#42351]). (since Compat 3.44.0)
+
 * `@compat (; a, b) = (; c=1, b=2, a=3)` supports property descturing assignment syntax ([#39285]).
 
 * `allequal`, the opposite of `allunique` ([#43354]). (since Compat 3.42.0)
@@ -178,3 +181,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#41328]: https://github.com/JuliaLang/julia/pull/41328
 [#43354]: https://github.com/JuliaLang/julia/pull/43354
 [#39285]: https://github.com/JuliaLang/julia/pull/39285
+[#42351]: https://github.com/JuliaLang/julia/pull/42351
+[#36229]: https://github.com/JuliaLang/julia/pull/36229
