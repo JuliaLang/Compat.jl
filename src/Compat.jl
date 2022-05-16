@@ -320,6 +320,7 @@ if VERSION < v"1.8.0-DEV.1494" # 98e60ffb11ee431e462b092b48a31a1204bd263d
     allequal(r::AbstractRange) = iszero(step(r)) || length(r) <= 1
 end
 
+# This function is available as of Julia 1.7.
 @static if !isdefined(Base, :keepat!)
     export keepat!
 
