@@ -55,7 +55,7 @@ changes in `julia`.
 ## Supported features
 
 * `keepat!` removes the items at all the indices which are not given and returns
-  the modified source ([#36229], [#42351]). (since Compat 3.44.0)
+  the modified source ([#36229], [#42351]). (since Compat 4.1.0)
 
 * `@compat (; a, b) = (; c=1, b=2, a=3)` supports property descturing assignment syntax ([#39285]).
 
