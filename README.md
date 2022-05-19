@@ -37,6 +37,8 @@ compatibility with v4 with `Compat = 3.x, 4` (unless you use one the very few
 things that got removed between Compat v3 and v4, which you most probably
 don't).
 
+To minimize dependency conflicts between packages it is recommended that packages allow for both appropriate v4 and v3 versions of Compat.jl in their Project.toml (except for rare cases of packages that support only v4 or v3 version of Compat.jl).
+
 Then, in your package, shortly after the `module` statement include a line like
 this:
 
