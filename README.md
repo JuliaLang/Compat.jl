@@ -27,8 +27,8 @@ such as `Compat = "3.22, 4"` in the `[compat]`section of the `Project.toml` file
 in your package directory. The version in the latter should be the minimum
 version that supports all needed features (see list below). Note that Compat v4
 requires Julia v1.6, but some features may have been backported to Compat v3
-(see the [feature list of the release-3 branch]
-(https://github.com/JuliaLang/Compat.jl/tree/release-3#supported-features)).
+(see the
+[feature list of the release-3 branch](https://github.com/JuliaLang/Compat.jl/tree/release-3#supported-features)).
 If you require any of those backported features, be sure to specify the correct
 compatibility in your `Project.toml`. E.g. if the feature from Compat v4.x has
 been backported to v3.y, use `Compat = 3.y, 4.x`. If you use a feature that had
