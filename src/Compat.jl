@@ -1365,8 +1365,8 @@ end
     end
 end
 
-# This function is available as of Julia 1.7.
-@static if !isdefined(Base, :keepat!)
+# This function is available as of Julia 1.5.
+@static if !isdefined(Base, :popat!)
     export popat!
 
     function popat!(a::Vector, i::Integer)
