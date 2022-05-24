@@ -22,11 +22,26 @@ To use Compat in your Julia package, add it as a dependency of your package usin
 ```julia
 pkg> add Compat
 ```
-and add a [version specifier line](https://julialang.github.io/Pkg.jl/v1/compatibility/#Version-specifier-format-1) such as `Compat = "2.2, 3"` in the `[compat]`section of the `Project.toml` file
+and add a [version specifier line](https://julialang.github.io/Pkg.jl/v1/compatibility/#Version-specifier-format-1)
+such as `Compat = "3.22, 4"` in the `[compat]`section of the `Project.toml` file
 in your package directory. The version in the latter should be the minimum
-version that supports all needed fatures (see list below), and (if applicable)
-any newer major versions verified to be compatible. Then, in your package,
-shortly after the `module` statement a line like this:
+version that supports all needed features (see list below). Note that Compat v4
+requires Julia v1.6, but some features may have been backported to Compat v3
+(see the
+[feature list of the release-3 branch](https://github.com/JuliaLang/Compat.jl/tree/release-3#supported-features)).
+If you require any of those backported features, be sure to specify the correct
+compatibility in your `Project.toml`. E.g. if the feature from Compat v4.x has
+been backported to v3.y, use `Compat = 3.y, 4.x`. If you use a feature that had
+originally been added in Compat v3 (e.g. in 3.x), don't forget to also declare
+compatibility with v4 with `Compat = 3.x, 4` (unless you use one the very few
+things that got removed between Compat v3 and v4, which you most probably
+don't).
+
+To minimize dependency conflicts between packages it is recommended that packages
+allow for both appropriate v4 and v3 versions of Compat.jl in their Project.toml
+(except for rare cases of packages that support only v4 or v3 version of Compat.jl).
+
+Then, in your package, shortly after the `module` statement a line like this:
 
 ```julia
 using Compat
@@ -53,6 +68,9 @@ without incrementing the major version of Compat.jl if necessary to match
 changes in `julia`.
 
 ## Supported features
+
+* `keepat!` removes the items at all the indices which are not given and returns
+  the modified source ([#36229], [#42351]). (since Compat 3.44.0, 4.1.0)
 
 * `@compat (; a, b) = (; c=1, b=2, a=3)` supports property descturing assignment syntax ([#39285]).
 
@@ -296,3 +314,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#41328]: https://github.com/JuliaLang/julia/pull/41328
 [#43354]: https://github.com/JuliaLang/julia/pull/43354
 [#39285]: https://github.com/JuliaLang/julia/pull/39285
+[#29901]: https://github.com/JuliaLang/julia/issues/29901
+[#36229]: https://github.com/JuliaLang/julia/issues/36229
+[#39245]: https://github.com/JuliaLang/julia/issues/39245
+[#42351]: https://github.com/JuliaLang/julia/issues/42351
