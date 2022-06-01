@@ -69,6 +69,9 @@ changes in `julia`.
 
 ## Supported features
 
+* `popat!` removes the item at the given `i` and returns it ([#36070]). (since
+  Compat 3.45.0)
+
 * `keepat!` removes the items at all the indices which are not given and returns
   the modified source ([#36229], [#42351]). (since Compat 3.44.0, 4.1.0)
 
@@ -298,6 +301,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#29790]: https://github.com/JuliaLang/julia/pull/29790
 [#38449]: https://github.com/JuliaLang/julia/pull/38449
 [#36018]: https://github.com/JuliaLang/julia/pull/36018
+[#36070]: https://github.com/JuliaLang/julia/pull/36070
 [#36199]: https://github.com/JuliaLang/julia/pull/36199
 [#37454]: https://github.com/JuliaLang/julia/pull/37454
 [#40729]: https://github.com/JuliaLang/julia/pull/40729

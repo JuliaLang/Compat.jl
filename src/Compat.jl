@@ -1365,6 +1365,27 @@ end
     end
 end
 
+# This function is available as of Julia 1.5.
+@static if !isdefined(Base, :popat!)
+    export popat!
+
+    function popat!(a::Vector, i::Integer)
+        x = a[i]
+        Base._deleteat!(a, i, 1)
+        x
+    end
+
+    function popat!(a::Vector, i::Integer, default)
+        if 1 <= i <= length(a)
+            x = @inbounds a[i]
+            Base._deleteat!(a, i, 1)
+            x
+        else
+            default
+        end
+    end
+end
+
 include("iterators.jl")
 include("deprecated.jl")
 
