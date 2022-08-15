@@ -34,8 +34,8 @@ compatibility in your `Project.toml`. E.g. if the feature from Compat v4.x has
 been backported to v3.y, use `Compat = 3.y, 4.x`. If you use a feature that had
 originally been added in Compat v3 (e.g. in 3.x), don't forget to also declare
 compatibility with v4 with `Compat = 3.x, 4` (unless you use one the very few
-things that got removed between Compat v3 and v4, which you most probably
-don't).
+[things that got removed between Compat v3 and v4](https://github.com/JuliaLang/Compat.jl/releases/tag/v4.0.0),
+which you most probably don't).
 
 To minimize dependency conflicts between packages it is recommended that packages
 allow for both appropriate v4 and v3 versions of Compat.jl in their Project.toml
