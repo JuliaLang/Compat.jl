@@ -552,7 +552,7 @@ if VERSION < v"1.9.0-DEV.1163"
         x1, xrest = xit
         ax1 = _iterator_axes(x1)
         N1 = length(ax1)+1
-        dims in 1:N1 || throw(ArgumentError(LazyString("cannot stack slices ndims(x) = ", N1-1, " along dims = ", dims)))
+        dims in 1:N1 || throw(ArgumentError(string("cannot stack slices ndims(x) = ", N1-1, " along dims = ", dims)))
 
         newaxis = _vec_axis(A)
         outax = ntuple(d -> d==dims ? newaxis : ax1[d - (d>dims)], N1)
@@ -587,7 +587,7 @@ if VERSION < v"1.9.0-DEV.1163"
             uax1 = map(UnitRange, ax1)
             uaxN = map(UnitRange, axes(x))
             throw(DimensionMismatch(
-                LazyString("stack expects uniform slices, got axes(x) == ", uaxN, " while first had ", uax1)))
+                string("stack expects uniform slices, got axes(x) == ", uaxN, " while first had ", uax1)))
         end
     end
 
