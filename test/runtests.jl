@@ -493,7 +493,7 @@ end
 
     # stack(f, iter)
     @test @inferred(stack(x -> [x, 2x], 3:5)) == [3 4 5; 6 8 10]
-    @test @inferred(stack(x -> x*x'/2, [1:2, 3:4])) == [0.5 1.0; 1.0 2.0;;; 4.5 6.0; 6.0 8.0]
+    @test @inferred(stack(x -> x*x'/2, [1:2, 3:4])) == reshape([0.5, 1.0, 1.0, 2.0, 4.5, 6.0, 6.0, 8.0], 2, 2, 2)
     @test @inferred(stack(*, [1:2, 3:4], 5:6)) == [5 18; 10 24]
 
     # Iterators
