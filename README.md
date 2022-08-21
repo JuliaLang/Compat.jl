@@ -70,6 +70,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `stack` combines a collection of slices into one array ([#43334]). (since Compat 4.2.0)
+
 * `keepat!` removes the items at all the indices which are not given and returns
   the modified source ([#36229], [#42351]). (since Compat 4.1.0)
 
@@ -150,3 +152,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#42125]: https://github.com/JuliaLang/julia/issues/42125
 [#42351]: https://github.com/JuliaLang/julia/issues/42351
 [#43354]: https://github.com/JuliaLang/julia/issues/43354
+[#43334]: https://github.com/JuliaLang/julia/issues/43334
