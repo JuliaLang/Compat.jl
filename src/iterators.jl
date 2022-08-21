@@ -32,7 +32,7 @@ for n in names(Base.Iterators)
 end
 
 # Import unexported public APIs
-using Base.Iterators: filter
+using Base.Iterators: filter, peel
 
 # https://github.com/JuliaLang/julia/pull/33437
 if VERSION < v"1.4.0-DEV.291"  # 5f013d82f92026f7dfbe4234f283658beb1f8a2a

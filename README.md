@@ -72,6 +72,8 @@ changes in `julia`.
 * `popat!` removes the item at the given `i` and returns it ([#36070]). (since
   Compat 3.45.0)
 
+* `stack` combines a collection of slices into one array ([#43334]). (since Compat 3.46.0, 4.2.0)
+
 * `keepat!` removes the items at all the indices which are not given and returns
   the modified source ([#36229], [#42351]). (since Compat 3.44.0, 4.1.0)
 
@@ -322,3 +324,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#36229]: https://github.com/JuliaLang/julia/issues/36229
 [#39245]: https://github.com/JuliaLang/julia/issues/39245
 [#42351]: https://github.com/JuliaLang/julia/issues/42351
+[#43334]: https://github.com/JuliaLang/julia/issues/43334
