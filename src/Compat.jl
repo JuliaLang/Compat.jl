@@ -387,7 +387,7 @@ if VERSION < v"1.9.0-DEV.1163"
     They also accept arrays as separate arguments, rather than a single collection.
 
     !!! compat "Julia 1.9"
-        This function requires at least Julia 1.9.
+        This function is available in Julia 1.9, or in Compat 4.2.
 
     # Examples
     ```jldoctest
