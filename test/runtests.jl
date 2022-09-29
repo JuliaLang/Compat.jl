@@ -556,3 +556,15 @@ end
     @test_throws ArgumentError stack([])
     @test_throws ArgumentError stack(x for x in 1:3 if false)
 end
+
+@testset "promoting ops for TimePeriod" begin
+    x = 10
+    y = 3
+    xs = Second(x)
+    ys = Second(y)
+    xms = Millisecond(xs)
+    yms = Millisecond(ys)
+    for op in (/, div, rem, mod, lcm, gcd)
+        @test op(xms, yms) == op(xms, ys) == op(xs, yms)
+    end
+end
