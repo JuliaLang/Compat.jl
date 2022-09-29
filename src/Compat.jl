@@ -321,8 +321,7 @@ if VERSION < v"1.8.0-DEV.1494" # 98e60ffb11ee431e462b092b48a31a1204bd263d
 end
 
 # https://github.com/JuliaLang/julia/commit/bdf9ead91e5a8dfd91643a17c1626032faada329
-# TODO: figure out correct dev version
-if VERSION < v"1.8.0"
+if VERSION < v"1.8.0-DEV.1109"
     # we do not add the methods for == and isless that are included in the above
     # commit, since they are already present in earlier versions.
     import Base: /, rem, mod, lcm, gcd, div
