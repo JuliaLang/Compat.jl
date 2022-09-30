@@ -70,6 +70,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `div`, `lcm`, `gcd`, `/`, `rem`, and `mod` will `promote` heterogenous `Dates.Period`s ([`@bdf9ead9`]). (since Compat 4.3.0)
+
 * `stack` combines a collection of slices into one array ([#43334]). (since Compat 4.2.0)
 
 * `keepat!` removes the items at all the indices which are not given and returns
@@ -153,3 +155,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#42351]: https://github.com/JuliaLang/julia/issues/42351
 [#43354]: https://github.com/JuliaLang/julia/issues/43354
 [#43334]: https://github.com/JuliaLang/julia/issues/43334
+[`@bdf9ead9`]: https://github.com/JuliaLang/julia/commit/bdf9ead91e5a8dfd91643a17c1626032faada329
