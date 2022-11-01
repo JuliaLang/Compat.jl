@@ -248,7 +248,7 @@ end
     end
     # the compiler won't ever infer `:total` without knowledge of the inputs
     Compat.@assume_effects :total foo(x) = x + 1
-    Compat.@assume_effects bar(x) = x + 1
+    Compat.@assume_effects :nothrow bar(x) = x + 1
     @test is_total(foo)
     @test !is_total(bar)
 end
