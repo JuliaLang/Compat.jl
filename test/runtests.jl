@@ -238,19 +238,11 @@ end
 
 # https://github.com/JuliaLang/julia/pull/43852
 @testset "@assume_effects" begin
-    # ensure that replacing `@pure` with `@assume_effects :total` works
-    function is_total(f)
-        if isdefined(Core.Compiler, :is_total)
-            Core.Compiler.is_total(Base.infer_effects(f))
-        else
-            which(f, (Any,)).pure
-        end
-    end
-    # the compiler won't ever infer `:total` without knowledge of the inputs
-    Compat.@assume_effects :total foo(x) = x + 1
-    Compat.@assume_effects :nothrow bar(x) = x + 1
-    @test is_total(foo)
-    @test !is_total(bar)
+    # ensure proper macro hygiene across versions 
+    Compat.@assume_effects :total foo() = true
+    Compat.@assume_effects bar() = true
+    @test foo()
+    @test bar()
 end
 
 # https://github.com/JuliaLang/julia/pull/42125
