@@ -52,7 +52,7 @@ end
 end
 
 # https://github.com/JuliaLang/julia/pull/43852
-if VERSION < v"1.8.0-DEV.1484"
+@static if VERSION < v"1.8.0-DEV.1484"
     using Base: @assume_effects
 else
     macro assume_effects(args...)
