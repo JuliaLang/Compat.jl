@@ -52,7 +52,7 @@ end
 end
 
 # https://github.com/JuliaLang/julia/pull/43852
-if isdefined(Base, Symbol("@assume_effects"))
+if VERSION < v"1.8.0-DEV.1484"
     using Base: @assume_effects
 else
     macro assume_effects(args...)
