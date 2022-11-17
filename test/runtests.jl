@@ -192,7 +192,7 @@ end
     DivideError: integer division error
     Stacktrace:.*
 
-    caused by: UndefVarError: __not_a_binding__ not defined
+    caused by: UndefVarError: `?__not_a_binding__`? not defined
     Stacktrace:.*
     """s, sprint(show, excs_with_bts))
 
@@ -201,7 +201,7 @@ end
     2-element ExceptionStack:
     DivideError: integer division error
 
-    caused by: UndefVarError: __not_a_binding__ not defined"""s,
+    caused by: UndefVarError: `?__not_a_binding__`? not defined"""s,
     sprint(show, excs_sans_bts))
 
     # Check that the ExceptionStack with backtraces `display_error`s correctly:
@@ -209,7 +209,7 @@ end
     ERROR: DivideError: integer division error
     Stacktrace:.*
 
-    caused by: UndefVarError: __not_a_binding__ not defined
+    caused by: UndefVarError: `?__not_a_binding__`? not defined
     Stacktrace:.*
     """s, sprint(Base.display_error, excs_with_bts))
 
@@ -217,7 +217,7 @@ end
     @test occursin(r"""
     ERROR: DivideError: integer division error
 
-    caused by: UndefVarError: __not_a_binding__ not defined"""s,
+    caused by: UndefVarError: `?__not_a_binding__`? not defined"""s,
     sprint(Base.display_error, excs_sans_bts))
 end
 
