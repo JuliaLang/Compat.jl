@@ -618,9 +618,9 @@ end
     end
 
     (s::Splat)(args) = s.f(args...)
-    print(io::IO, s::Splat) = print(io, "Splat(", s.f, ')')
-    show(io::IO, s::Splat) = print(io, s)
-    show(io::IO, ::MIME"text/plain", s::Splat) = show(io, s)
+    Base.print(io::IO, s::Splat) = print(io, "Splat(", s.f, ')')
+    Base.show(io::IO, s::Splat) = print(io, s)
+    Base.show(io::IO, ::MIME"text/plain", s::Splat) = show(io, s)
     @doc """
     Splat(f)
 Equivalent to
