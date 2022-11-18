@@ -3,7 +3,10 @@ using Dates
 using Test
 
 @test isempty(detect_ambiguities(Base, Core, Compat))
-
+@testset "Splat" begin
+    @test Splat(+)((1,2,3)) == 6
+    @test repr(Splat(+)) == "Splat(+)"
+end
 begin
     # A custom linear slow sparse-like array that relies upon Dict for its storage
     struct TSlow{T,N} <: AbstractArray{T,N}
