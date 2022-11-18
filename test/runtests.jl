@@ -236,6 +236,15 @@ end
     @test sprint(show, Returns(1.0)) == "Returns{Float64}(1.0)"
 end
 
+# https://github.com/JuliaLang/julia/pull/43852
+@testset "@assume_effects" begin
+    # ensure proper macro hygiene across versions 
+    Compat.@assume_effects :total foo() = true
+    Compat.@assume_effects bar() = true
+    @test foo()
+    @test bar()
+end
+
 # https://github.com/JuliaLang/julia/pull/42125
 @testset "@constprop" begin
     Compat.@constprop :aggressive aggf(x) = Symbol(x)

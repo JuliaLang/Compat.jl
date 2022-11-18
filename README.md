@@ -70,6 +70,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `Compat.@assume_effects setting... ex` overrides the compiler's effect modeling for the method definition `ex` on Julia versions that support this feature. Julia version without support just pass back `ex`. ([#43852]) (since Compat 4.4.0)
+
 * `div`, `lcm`, `gcd`, `/`, `rem`, and `mod` will `promote` heterogenous `Dates.Period`s ([`@bdf9ead9`]). (since Compat 4.3.0)
 
 * `stack` combines a collection of slices into one array ([#43334]). (since Compat 4.2.0)
