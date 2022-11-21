@@ -617,7 +617,7 @@ if VERSION < v"1.9.0-DEV.1163"
     _empty_stack(_...) = throw(ArgumentError("`stack` on an empty collection is not allowed"))
 end
                                 
-@static if !isdefined(Base, :Splat)
+@static if VERSION < v"1.9.0-DEV.513"
     # https://github.com/JuliaLang/julia/pull/42717
     export Splat
 
