@@ -616,6 +616,44 @@ if VERSION < v"1.9.0-DEV.1163"
 
     _empty_stack(_...) = throw(ArgumentError("`stack` on an empty collection is not allowed"))
 end
+                                
+@static if VERSION < v"1.9.0-DEV.513"
+    # https://github.com/JuliaLang/julia/pull/42717
+    export Splat
+
+    struct Splat{F} <: Function
+        f::F
+        Splat(f) = new{Core.Typeof(f)}(f)
+    end
+
+    (s::Splat)(args) = s.f(args...)
+    Base.print(io::IO, s::Splat) = print(io, "Splat(", s.f, ')')
+    Base.show(io::IO, s::Splat) = print(io, s)
+    Base.show(io::IO, ::MIME"text/plain", s::Splat) = show(io, s)
+    @doc """
+    Splat(f)
+Equivalent to
+```julia
+    my_splat(f) = args->f(args...)
+```
+i.e. given a function returns a new function that takes one argument and splats
+its argument into the original function. This is useful as an adaptor to pass
+a multi-argument function in a context that expects a single argument, but
+passes a tuple as that single argument. Additionally has pretty printing.
+# Example usage:
+```jldoctest
+julia> map(Base.Splat(+), zip(1:3,4:6))
+3-element Vector{Int64}:
+ 5
+ 7
+ 9
+julia> my_add = Base.Splat(+)
+Splat(+)
+julia> my_add((1,2,3))
+6
+```
+""" Splat
+end 
 
 include("deprecated.jl")
 
