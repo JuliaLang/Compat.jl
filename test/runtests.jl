@@ -583,3 +583,25 @@ end
     @test repr(Splat(+)) == "Splat(+)"
     @test repr(MIME"text/plain"(), Splat(+)) == "Splat(+)"
 end
+
+using Compat: @const
+mutable struct ConstFields{T}
+    @const x
+    @const y::Int
+    @const z::Vector{T}
+end
+@testset "const struct fields" begin
+    cf = ConstFields(1.0, 2, [3, 4])
+    if VERSION >= v"1.8.0-DEV.1148"
+        @test_throws Exception cf.x = 2.0
+        @test_throws Exception cf.y = 3
+        @test_throws Exception cf.z = [4, 5]
+    else
+        cf.x = 2.0
+        @test cf.x == 2.0
+        cf.y = 3
+        @test cf.y == 3
+        cf.z = [4, 5]
+        @test cf.z == [4, 5]
+    end
+end

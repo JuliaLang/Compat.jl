@@ -655,6 +655,14 @@ julia> my_add((1,2,3))
 """ Splat
 end 
 
+@eval macro $(Symbol("const"))(field)
+    if VERSION >= v"1.8.0-DEV.1148"
+        Expr(:const, esc(field))
+    else
+        return esc(field)
+    end
+end
+
 include("deprecated.jl")
 
 end # module Compat
