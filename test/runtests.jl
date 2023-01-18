@@ -578,8 +578,16 @@ end
     end
 end
 
-@testset "Splat" begin
-    @test Splat(+)((1,2,3)) == 6
-    @test repr(Splat(+)) == "Splat(+)"
-    @test repr(MIME"text/plain"(), Splat(+)) == "Splat(+)"
+@testset "splat" begin
+    @test splat(+)((1,2,3)) == 6
+
+    if v"1.10.0-" <= VERSION < v"1.10.0-DEV.360" ||
+        v"1.9.0-DEV.513" <= VERSION < v"1.9.0-beta3"
+        # these versions of Base export Splat (which we use) but pretty-print with capital `S`
+        @test repr(splat(+)) == "Splat(+)"
+        @test repr(MIME"text/plain"(), splat(+)) == "Splat(+)"
+    else
+        @test repr(splat(+)) == "splat(+)"
+        @test repr(MIME"text/plain"(), splat(+)) == "splat(+)"
+    end
 end
