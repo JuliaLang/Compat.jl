@@ -70,7 +70,7 @@ changes in `julia`.
 
 ## Supported features
 
-* `Splat(f)` which is equivalent to `args -> f(args...)`. ([#42717]) (since Compat 4.5.0) 
+* `splat(f)` which is equivalent to `args -> f(args...)`. ([#42717], [#48038]) (since Compat 4.6.0) (Note: for historical reasons, `Compat` on Julia before v1.9 also exports `Splat`; its usage is discouraged, however.)
 
 * `Compat.@assume_effects setting... ex` overrides the compiler's effect modeling for the method definition `ex` on Julia versions that support this feature. Julia version without support just pass back `ex`. ([#43852]) (since Compat 4.4.0)
 
@@ -142,6 +142,7 @@ is at least this version by `VERSION >= v"X.Y.Z-aaa+NNNN"`.
 Note that you should specify the correct minimum version for `Compat` in the
 `[compat]` section of your `Project.toml`, as given in above list.
 
+[`@bdf9ead9`]: https://github.com/JuliaLang/julia/commit/bdf9ead91e5a8dfd91643a17c1626032faada329
 [#29901]: https://github.com/JuliaLang/julia/issues/29901
 [#35316]: https://github.com/JuliaLang/julia/issues/35316
 [#36229]: https://github.com/JuliaLang/julia/issues/36229
@@ -157,6 +158,8 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#41312]: https://github.com/JuliaLang/julia/issues/41312
 [#42125]: https://github.com/JuliaLang/julia/issues/42125
 [#42351]: https://github.com/JuliaLang/julia/issues/42351
-[#43354]: https://github.com/JuliaLang/julia/issues/43354
+[#42717]: https://github.com/JuliaLang/julia/issues/42717
 [#43334]: https://github.com/JuliaLang/julia/issues/43334
-[`@bdf9ead9`]: https://github.com/JuliaLang/julia/commit/bdf9ead91e5a8dfd91643a17c1626032faada329
+[#43354]: https://github.com/JuliaLang/julia/issues/43354
+[#43852]: https://github.com/JuliaLang/julia/issues/43852
+[#48038]: https://github.com/JuliaLang/julia/issues/48038
