@@ -11,7 +11,11 @@ UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 julia = "1.6"
 
 [extras]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Dates", "Test"]
+
+[weakdeps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
