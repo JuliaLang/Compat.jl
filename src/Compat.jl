@@ -104,7 +104,7 @@ if VERSION < v"1.1.0-DEV.506"
 end
 
 # https://github.com/JuliaLang/julia/pull/30496
-if VERSION < v"1.2.0-DEV.272"
+@static if VERSION < v"1.2.0-DEV.272"
     Base.@pure hasfield(::Type{T}, name::Symbol) where T =
         Base.fieldindex(T, name, false) > 0
     export hasfield
@@ -277,7 +277,7 @@ if VERSION < v"1.4.0-DEV.551"
 end
 
 # https://github.com/JuliaLang/julia/pull/34652
-if VERSION < v"1.5.0-DEV.247"
+@static if VERSION < v"1.5.0-DEV.247"
     export ismutable
     ismutable(@nospecialize(x)) = (Base.@_pure_meta; typeof(x).mutable)
 end
