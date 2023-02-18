@@ -1,7 +1,12 @@
 module Compat
 
-import Dates
-using Dates: Period, CompoundPeriod
+if VERSION < v"1.9.0-"
+    # `Dates` is a weakdep, so won't be available on Julia versions with weakdep support,
+    # i.e. Julia 1.9 and later, so this `using` has to be inside the conditional.
+    # Should a post-1.9 feature of Dates be added to Compat, the way forward will be a
+    # package extension
+    using Dates: Period, CompoundPeriod
+end
 
 import LinearAlgebra
 
