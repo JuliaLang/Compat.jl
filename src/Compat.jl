@@ -643,7 +643,4 @@ end
 
 include("deprecated.jl")
 
-if !isdefined(Base, :get_extension)
-    include("../ext/CompatLinearAlgebraExt.jl")
-end
 end # module Compat
