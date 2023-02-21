@@ -24,4 +24,4 @@ CompatDatesExt = "Dates"
 CompatLinearAlgebraExt = "LinearAlgebra"
 
 [targets]
-test = ["Test", "Dates", "LinearAlgebra"]
+test = ["Dates", "LinearAlgebra", "Test"]
