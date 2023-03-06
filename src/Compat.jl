@@ -8,8 +8,6 @@ if VERSION < v"1.9.0-"
     using Dates: Period, CompoundPeriod
 end
 
-import LinearAlgebra
-
 include("compatmacro.jl")
 
 # NOTE these `@inline` and `@noinline` definitions overwrite the definitions implicitly
