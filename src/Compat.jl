@@ -489,6 +489,8 @@ end
 # https://github.com/JuliaLang/julia/pull/27516
 if VERSION < v"1.2.0-DEV.77"
     import Test: @inferred
+    using Test: _args_and_call
+    using InteractiveUtils: gen_call_with_extracted_types
     using Core.Compiler: typesubtract
 
     macro inferred(allow, ex)
