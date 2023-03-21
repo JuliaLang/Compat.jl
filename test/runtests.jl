@@ -492,6 +492,16 @@ end
     @test g(10) == 1
     @inferred Missing g(9)
     @inferred Missing g(10)
+
+    @testset "with kwargs (#795)" begin
+        h(a; b=1) = a < 10 ? missing : b
+        @test ismissing(h(9))
+        @test h(10) == 1
+        @inferred Missing h(9)
+        @inferred Missing h(10)
+        @inferred Missing h(9; b=2)
+        @inferred Missing h(10; b=2)
+    end
 end
 
 # https://github.com/JuliaLang/julia/pull/36360
