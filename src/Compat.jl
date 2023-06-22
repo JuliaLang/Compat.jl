@@ -642,7 +642,7 @@ if v"1.10.0-" <= VERSION < v"1.10.0-DEV.360" || VERSION < v"1.9.0-beta3"
 end
 
 # https://github.com/JuliaLang/julia/pull/25085
-if VERSION < v"1.8.0-beta2.17" || v"1.9.0-" <= VERSION < v"1.9.0-DEV.94
+if VERSION < v"1.8.0-beta2.17" || v"1.9.0-" <= VERSION < v"1.9.0-DEV.94"
     import Base: trunc, floor, ceil, round
     trunc(::Type{Bool}, x::AbstractFloat) = (-1 < x < 2) ? 1 <= x : throw(InexactError(:trunc, Bool, x))
     floor(::Type{Bool}, x::AbstractFloat) = (0 <= x < 2) ? 1 <= x : throw(InexactError(:floor, Bool, x))
