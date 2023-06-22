@@ -70,7 +70,7 @@ changes in `julia`.
 
 ## Supported features
 
-* `trunc`, `floor`, `ceil`, and `round` to `Bool`. ([#25085]) (since Compat 4.7.0)
+* `trunc`, `floor`, `ceil`, and `round` to `Bool`. ([#25074]) (since Compat 4.7.0)
 
 * `splat(f)` which is equivalent to `args -> f(args...)`. ([#42717], [#48038]) (since Compat 4.6.0) (Note: for historical reasons, `Compat` on Julia before v1.9 also exports `Splat`; its usage is discouraged, however.)
 
@@ -145,6 +145,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 `[compat]` section of your `Project.toml`, as given in above list.
 
 [`@bdf9ead9`]: https://github.com/JuliaLang/julia/commit/bdf9ead91e5a8dfd91643a17c1626032faada329
+[#25074]: https://github.com/JuliaLang/julia/issues/25074
 [#29901]: https://github.com/JuliaLang/julia/issues/29901
 [#35316]: https://github.com/JuliaLang/julia/issues/35316
 [#36229]: https://github.com/JuliaLang/julia/issues/36229
