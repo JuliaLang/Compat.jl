@@ -70,6 +70,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `trunc`, `floor`, `ceil`, and `round` to `Bool`. ([#25085]) (since Compat 4.7.0)
+
 * `splat(f)` which is equivalent to `args -> f(args...)`. ([#42717], [#48038]) (since Compat 4.6.0) (Note: for historical reasons, `Compat` on Julia before v1.9 also exports `Splat`; its usage is discouraged, however.)
 
 * `Compat.@assume_effects setting... ex` overrides the compiler's effect modeling for the method definition `ex` on Julia versions that support this feature. Julia version without support just pass back `ex`. ([#43852]) (since Compat 4.4.0)
