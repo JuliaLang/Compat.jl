@@ -650,6 +650,34 @@ if VERSION < v"1.8.0-beta2.17" || v"1.9.0-" <= VERSION < v"1.9.0-DEV.94"
     round(::Type{Bool}, x::AbstractFloat) = (-0.5 <= x < 1.5) ? 0.5 < x : throw(InexactError(:round, Bool, x))
 end
 
+# https://github.com/JuliaLang/julia/pull/37978
+if VERSION < v"1.7.0-beta1"
+    function redirect_stdio(;stdin=nothing, stderr=nothing, stdout=nothing)
+        stdin  === nothing || redirect_stdin(stdin)
+        stderr === nothing || redirect_stderr(stderr)
+        stdout === nothing || redirect_stdout(stdout)
+    end
+
+    maybe_redirect_stdin(f, ::Nothing) = f()
+    maybe_redirect_stdin(f, stream) = redirect_stdin(f, stream)
+    maybe_redirect_stderr(f, ::Nothing) = f()
+    maybe_redirect_stderr(f, stream) = redirect_stderr(f, stream)
+    maybe_redirect_stdout(f, ::Nothing) = f()
+    maybe_redirect_stdout(f, stream) = redirect_stdout(f, stream)
+
+    function redirect_stdio(f; stdin=nothing, stderr=nothing, stdout=nothing)
+        maybe_redirect_stdin(stdin) do
+            maybe_redirect_stderr(stderr) do
+                maybe_redirect_stdout(stdout) do
+                    f()
+                end
+            end
+        end
+    end
+
+    export redirect_stdio
+end
+
 include("deprecated.jl")
 
 end # module Compat
