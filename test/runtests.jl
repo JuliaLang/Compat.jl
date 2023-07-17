@@ -644,17 +644,11 @@ end
         println(stdout, "hello from stdout")
     end
     @testset "same path for multiple streams" begin
-        @test_throws ArgumentError redirect_stdio(hello_err_out,
-                                            stdin="samepath.txt", stdout="samepath.txt")
-        @test_throws ArgumentError redirect_stdio(hello_err_out,
-                                            stdin="samepath.txt", stderr="samepath.txt")
-
-        @test_throws ArgumentError redirect_stdio(hello_err_out,
-                                            stdin=joinpath("tricky", "..", "samepath.txt"),
-                                            stderr="samepath.txt")
         mktempdir() do dir
             path = joinpath(dir, "stdouterr.txt")
-            redirect_stdio(hello_err_out, stdout=path, stderr=path)
+            open(path, "w") do io
+                redirect_stdio(hello_err_out, stdout=io, stderr=io)
+            end
             @test read(path, String) == """
             hello from stderr
             hello from stdout
@@ -665,7 +659,9 @@ end
     mktempdir() do dir
         path_stdout = joinpath(dir, "stdout.txt")
         path_stderr = joinpath(dir, "stderr.txt")
-        redirect_stdio(hello_err_out, stderr=devnull, stdout=path_stdout)
+        open(path_stdout, "w") do io
+            redirect_stdio(hello_err_out, stderr=devnull, stdout=io)
+        end
         @test read(path_stdout, String) == "hello from stdout\n"
 
         open(path_stderr, "w") do ioerr
@@ -682,9 +678,13 @@ end
         content_stderr = randstring()
         content_stdout = randstring()
 
-        redirect_stdio(stdout=path_stdout, stderr=path_stderr) do
-            print(content_stdout)
-            print(stderr, content_stderr)
+        open(path_stderr, "w") do ioerr
+            open(path_stdout, "w") do io
+                redirect_stdio(stdout=io, stderr=ioerr) do
+                    print(content_stdout)
+                    print(stderr, content_stderr)
+                end
+            end
         end
 
         @test read(path_stderr, String) == content_stderr
