@@ -70,6 +70,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `redirect_stdio`, for simple stream redirection. ([#37978]) (since Compat 4.8.0)
+
 * `trunc`, `floor`, `ceil`, and `round` to `Bool`. ([#25085]) (since Compat 4.7.0)
 
 * `splat(f)` which is equivalent to `args -> f(args...)`. ([#42717], [#48038]) (since Compat 4.6.0) (Note: for historical reasons, `Compat` on Julia before v1.9 also exports `Splat`; its usage is discouraged, however.)
