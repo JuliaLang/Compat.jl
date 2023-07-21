@@ -651,7 +651,7 @@ if VERSION < v"1.8.0-beta2.17" || v"1.9.0-" <= VERSION < v"1.9.0-DEV.94"
 end
 
 # https://github.com/JuliaLang/julia/pull/37978
-if VERSION < v"1.7.0-beta1"
+if VERSION < v"1.7.0-DEV.1187"
     function redirect_stdio(;stdin=nothing, stderr=nothing, stdout=nothing)
         stdin  === nothing || redirect_stdin(stdin)
         stderr === nothing || redirect_stderr(stderr)
