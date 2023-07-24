@@ -151,6 +151,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#29901]: https://github.com/JuliaLang/julia/issues/29901
 [#35316]: https://github.com/JuliaLang/julia/issues/35316
 [#36229]: https://github.com/JuliaLang/julia/issues/36229
+[#37978]: https://github.com/JuliaLang/julia/issues/37978
 [#39037]: https://github.com/JuliaLang/julia/issues/39037
 [#39245]: https://github.com/JuliaLang/julia/issues/39245
 [#39285]: https://github.com/JuliaLang/julia/issues/39285
