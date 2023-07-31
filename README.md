@@ -70,6 +70,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `sort` for `NTuple` and iterables. ([#46104]) (since Compat 4.9.0)
+
 * `redirect_stdio`, for simple stream redirection. ([#37978]) (since Compat 4.8.0)
 
 * `trunc`, `floor`, `ceil`, and `round` to `Bool`. ([#25085]) (since Compat 4.7.0)
@@ -168,4 +170,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#43334]: https://github.com/JuliaLang/julia/issues/43334
 [#43354]: https://github.com/JuliaLang/julia/issues/43354
 [#43852]: https://github.com/JuliaLang/julia/issues/43852
+[#46104]: https://github.com/JuliaLang/julia/issues/46104
 [#48038]: https://github.com/JuliaLang/julia/issues/48038
