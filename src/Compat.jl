@@ -643,11 +643,10 @@ end
 
 # https://github.com/JuliaLang/julia/pull/25085
 if VERSION < v"1.8.0-beta2.17" || v"1.9.0-" <= VERSION < v"1.9.0-DEV.94"
-    import Base: trunc, floor, ceil, round
-    trunc(::Type{Bool}, x::AbstractFloat) = (-1 < x < 2) ? 1 <= x : throw(InexactError(:trunc, Bool, x))
-    floor(::Type{Bool}, x::AbstractFloat) = (0 <= x < 2) ? 1 <= x : throw(InexactError(:floor, Bool, x))
-    ceil(::Type{Bool}, x::AbstractFloat)  = (-1 < x <= 1) ? 0 < x : throw(InexactError(:ceil, Bool, x))
-    round(::Type{Bool}, x::AbstractFloat) = (-0.5 <= x < 1.5) ? 0.5 < x : throw(InexactError(:round, Bool, x))
+    Base.trunc(::Type{Bool}, x::AbstractFloat) = (-1 < x < 2) ? 1 <= x : throw(InexactError(:trunc, Bool, x))
+    Base.floor(::Type{Bool}, x::AbstractFloat) = (0 <= x < 2) ? 1 <= x : throw(InexactError(:floor, Bool, x))
+    Base.ceil(::Type{Bool}, x::AbstractFloat)  = (-1 < x <= 1) ? 0 < x : throw(InexactError(:ceil, Bool, x))
+    Base.round(::Type{Bool}, x::AbstractFloat) = (-0.5 <= x < 1.5) ? 0.5 < x : throw(InexactError(:round, Bool, x))
 end
 
 # https://github.com/JuliaLang/julia/pull/37978
@@ -708,19 +707,19 @@ end
 
 # https://github.com/JuliaLang/julia/pull/46104
 if VERSION < v"1.10.0-DEV.1404"
-    import Base: sort, Ordering, Forward, ord, lt, tail, copymutable, DEFAULT_STABLE, IteratorSize, HasShape, IsInfinite
-    function sort(v; kws...)
+    using Base: Ordering, Forward, ord, lt, tail, copymutable, DEFAULT_STABLE, IteratorSize, HasShape, IsInfinite
+    function Base.sort(v; kws...)
         size = IteratorSize(v)
         size == HasShape{0}() && throw(ArgumentError("$v cannot be sorted"))
         size == IsInfinite() && throw(ArgumentError("infinite iterator $v cannot be sorted"))
         sort!(copymutable(v); kws...)
     end
-    sort(::AbstractString; kws...) =
+    Base.sort(::AbstractString; kws...) =
         throw(ArgumentError("sort(::AbstractString) is not supported"))
-    sort(::Tuple; kws...) =
+    Base.sort(::Tuple; kws...) =
         throw(ArgumentError("sort(::Tuple) is only supported for NTuples"))
 
-    function sort(x::NTuple{N}; lt::Function=isless, by::Function=identity,
+    function Base.sort(x::NTuple{N}; lt::Function=isless, by::Function=identity,
                   rev::Union{Bool,Nothing}=nothing, order::Ordering=Forward) where N
         o = ord(lt,by,rev,order)
         if N > 9

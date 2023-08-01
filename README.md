@@ -70,7 +70,7 @@ changes in `julia`.
 
 ## Supported features
 
-* `sort` for `NTuple` and iterables. ([#46104]) (since Compat 4.9.0)
+* `sort` for `NTuple` and other iterables. ([#46104]) (since Compat 4.9.0)
 
 * `redirect_stdio`, for simple stream redirection. ([#37978]) (since Compat 4.8.0)
 
