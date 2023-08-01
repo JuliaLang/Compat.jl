@@ -714,6 +714,7 @@ if VERSION < v"1.10.0-DEV.1404"
         size == IsInfinite() && throw(ArgumentError("infinite iterator $v cannot be sorted"))
         sort!(copymutable(v); kws...)
     end
+    sort(v::AbstractVector; kws...) = sort!(copymutable(v); kws...) # for method disambiguation
     Base.sort(::AbstractString; kws...) =
         throw(ArgumentError("sort(::AbstractString) is not supported"))
     Base.sort(::Tuple; kws...) =
