@@ -758,7 +758,7 @@ end
 
 _get_symbols(symbol::Symbol) = (symbol,)
 function _get_symbols(symbols)
-    if Base.isexpr(symbols, :tuple) && all(x -> x isa Symbol, symbols.args)
+    if symbols isa Expr && symbols.head == :tuple && all(x -> x isa Symbol, symbols.args)
         symbols.args
     else
         throw(ArgumentError("cannot mark `$symbols` as public. Try `@public foo, bar, baz`."))
