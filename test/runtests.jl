@@ -238,7 +238,7 @@ end
 
 # https://github.com/JuliaLang/julia/pull/43852
 @testset "@assume_effects" begin
-    # ensure proper macro hygiene across versions 
+    # ensure proper macro hygiene across versions
     Compat.@assume_effects :total foo() = true
     Compat.@assume_effects bar() = true
     @test foo()
@@ -723,4 +723,22 @@ end
         @test_throws ArgumentError sort("string")
         @test_throws ArgumentError("1 cannot be sorted") sort(1)
     end
+end
+
+module Mod50105
+    using Compat
+    @public foo, bar, baz
+end
+
+# https://github.com/JuliaLang/julia/pull/50105
+@testset "@public" begin
+    @public foo_50105
+    # foo_50105 = 4 # Uncommenting this line would cause errors due to https://github.com/JuliaLang/julia/issues/51325
+    @test Base.isexported(@__MODULE__, :foo_50105) === false
+    VERSION >= v"1.11.0-DEV.469" && @test Base.ispublic(@__MODULE__, :foo_50105)
+    @test Base.isexported(Mod50105, :bar) === false
+    VERSION >= v"1.11.0-DEV.469" && @test Base.ispublic(Mod50105, :bar)
+
+    @test_throws LoadError @eval @public 4, bar
+    @test_throws LoadError @eval @public foo bar
 end

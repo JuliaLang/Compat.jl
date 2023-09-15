@@ -70,6 +70,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `@public` as an alias for the `public` keyword (no-op on Julia 1.10 and earlier). ([#50105]) (since Compat 4.10.0)
+
 * `sort` for `NTuple` and other iterables. ([#46104]) (since Compat 4.9.0)
 
 * `redirect_stdio`, for simple stream redirection. ([#37978]) (since Compat 4.8.0)
@@ -172,3 +174,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#43852]: https://github.com/JuliaLang/julia/issues/43852
 [#46104]: https://github.com/JuliaLang/julia/issues/46104
 [#48038]: https://github.com/JuliaLang/julia/issues/48038
+[#50105]: https://github.com/JuliaLang/julia/issues/50105

@@ -389,7 +389,7 @@ end
 if VERSION < v"1.9.0-DEV.1163"
     import Base: IteratorSize, HasLength, HasShape, OneTo
     export stack
-    
+
     """
         stack(iter; [dims])
 
@@ -740,6 +740,31 @@ if VERSION < v"1.10.0-DEV.1404"
     merge(x::NTuple, y::NTuple, o::Ordering) =
         (lt(o, y[1], x[1]) ? (y[1], merge(x, tail(y), o)...) : (x[1], merge(tail(x), y, o)...))
 end
+
+# https://github.com/JuliaLang/julia/pull/50105
+export @public
+"""
+    @public foo, bar, baz
+
+Equivalent to `public foo, bar, baz` on versions of Julia that support the `public` keyword;
+a no-op on versions of Julia that do not support the `public` keyword.
+"""
+macro public(arg)
+    symbols = _get_symbols(arg)
+    if VERSION >= v"1.11.0-DEV.469"
+        esc(Expr(:public, symbols...))
+    end
+end
+
+_get_symbols(symbol::Symbol) = (symbol,)
+function _get_symbols(symbols)
+    if Base.isexpr(symbols, :tuple) && all(x -> x isa Symbol, symbols.args)
+        symbols.args
+    else
+        throw(ArgumentError("cannot mark `$symbols` as public. Try `@public foo, bar, baz`."))
+    end
+end
+
 
 include("deprecated.jl")
 
