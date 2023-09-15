@@ -70,7 +70,7 @@ changes in `julia`.
 
 ## Supported features
 
-* `@public` as an alias for the `public` keyword (no-op on Julia 1.10 and earlier). ([#50105]) (since Compat 4.10.0)
+* `@compat public foo, bar` marks `foo` and `bar` as public in Julia 1.11+ and is a no-op in Julia 1.10 and earlier. ([#50105]) (since Compat 4.10.0)
 
 * `sort` for `NTuple` and other iterables. ([#46104]) (since Compat 4.9.0)
 

@@ -727,18 +727,19 @@ end
 
 module Mod50105
     using Compat
-    @public foo, bar, baz
+    @compat public foo, bar, baz
 end
 
 # https://github.com/JuliaLang/julia/pull/50105
-@testset "@public" begin
-    @public foo_50105
+@testset "@compat public" begin
+    @compat public foo_50105
     # foo_50105 = 4 # Uncommenting this line would cause errors due to https://github.com/JuliaLang/julia/issues/51325
     @test Base.isexported(@__MODULE__, :foo_50105) === false
     VERSION >= v"1.11.0-DEV.469" && @test Base.ispublic(@__MODULE__, :foo_50105)
     @test Base.isexported(Mod50105, :bar) === false
     VERSION >= v"1.11.0-DEV.469" && @test Base.ispublic(Mod50105, :bar)
 
-    @test_throws LoadError @eval @public 4, bar
-    @test_throws LoadError @eval @public foo bar
+    @test_throws LoadError @eval @compat public 4, bar
+    @test_throws LoadError @eval @compat public foo bar
+    @test_throws LoadError @eval @compat publac foo, bar
 end
