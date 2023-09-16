@@ -49,11 +49,28 @@ macro compat(public::Symbol, symbols_expr::Union{Expr, Symbol})
     end
 end
 
-_get_symbols(symbol::Symbol) = (symbol,)
-function _get_symbols(symbols::Expr)
-    if symbols.head == :tuple && all(x -> x isa Symbol, symbols.args)
-        symbols.args
-    else
-        throw(ArgumentError("cannot mark `$symbols` as public. Try `@compat public foo, bar`."))
+"""
+    _valid_macro(expr)
+
+Check if `expr` is a valid macro call with no arguments.
+"""
+_valid_macro(expr) = Meta.isexpr(expr, :macrocall) && length(expr.args) == 2 &&
+    expr.args[1] isa Symbol && string(expr.args[1])[1] == '@' &&
+    expr.args[2] isa LineNumberNode
+
+_get_symbols(symbol::Symbol) = [symbol]
+function _get_symbols(expr::Expr)
+    _valid_macro(expr) && return [expr.args[1]]
+    expr.head == :tuple || throw(ArgumentError("cannot mark `$expr` as public. Try `@compat public foo, bar`."))
+    symbols = Vector{Symbol}(undef, length(expr.args))
+    for (i, arg) in enumerate(expr.args)
+        if arg isa Symbol
+            symbols[i] = arg
+        elseif _valid_macro(arg)
+            symbols[i] = arg.args[1]
+        else
+            throw(ArgumentError("cannot mark `$arg` as public. Try `@compat public foo, bar`."))
+        end
     end
+    symbols
 end
