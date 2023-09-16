@@ -728,6 +728,9 @@ end
 module Mod50105
     using Compat
     @compat public foo, bar, baz
+    @compat public @mac1
+    @compat public f00, @mac2, @mac3
+    @compat public @mac4, @mac5
 end
 
 # https://github.com/JuliaLang/julia/pull/50105
@@ -736,10 +739,18 @@ end
     # foo_50105 = 4 # Uncommenting this line would cause errors due to https://github.com/JuliaLang/julia/issues/51325
     @test Base.isexported(@__MODULE__, :foo_50105) === false
     VERSION >= v"1.11.0-DEV.469" && @test Base.ispublic(@__MODULE__, :foo_50105)
-    @test Base.isexported(Mod50105, :bar) === false
-    VERSION >= v"1.11.0-DEV.469" && @test Base.ispublic(Mod50105, :bar)
+    for sym in [:foo, :bar, :baz, Symbol("@mac1"), :f00, Symbol("@mac2"), Symbol("@mac3"), Symbol("@mac4"), Symbol("@mac5")]
+        @test Base.isexported(Mod50105, sym) === false
+        VERSION >= v"1.11.0-DEV.469" && @test Base.ispublic(Mod50105, sym)
+    end
 
     @test_throws LoadError @eval @compat public 4, bar
     @test_throws LoadError @eval @compat public foo bar
     @test_throws LoadError @eval @compat publac foo, bar
+    @test_throws LoadError @eval @compat public 4, @bar
+    @test_throws LoadError @eval @compat public foo @bar
+    @test_throws LoadError @eval @compat publac foo, @bar
+    @test_throws LoadError @eval @compat public @bar, 4
+    @test_throws LoadError @eval @compat public @bar foo
+    @test_throws LoadError @eval @compat publac @bar, foo
 end
