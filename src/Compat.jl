@@ -389,7 +389,7 @@ end
 if VERSION < v"1.9.0-DEV.1163"
     import Base: IteratorSize, HasLength, HasShape, OneTo
     export stack
-    
+
     """
         stack(iter; [dims])
 
