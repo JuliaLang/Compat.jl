@@ -84,7 +84,7 @@ changes in `julia`.
 
 * `div`, `lcm`, `gcd`, `/`, `rem`, and `mod` will `promote` heterogenous `Dates.Period`s ([`@bdf9ead9`]). (since Compat 4.3.0)
 
-* `stack` combines a collection of slices into one array ([#43334]). (since Compat 4.2.0)
+* `stack` combines a collection of slices into one array ([#43334]). (since Compat 3.46.0, 4.2.0)
 
 * `keepat!` removes the items at all the indices which are not given and returns
   the modified source ([#36229], [#42351]). (since Compat 3.44.0, 4.1.0)
