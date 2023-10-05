@@ -461,6 +461,7 @@ end
 @testset "pkgversion" begin
     toml = joinpath(pkgdir(Compat), "Project.toml")
     @test pkgversion(Compat) == VersionNumber(TOML.parsefile(toml)["version"])
+    @test pkgversion(Base) === nothing
 end
 
 # https://github.com/JuliaLang/julia/pull/43334
