@@ -385,6 +385,58 @@ end
     end
 end
 
+# this function is available as of Julia 1.9
+# https://github.com/JuliaLang/julia/pull/45607
+@static if !isdefined(Base, :pkgversion)
+    using TOML: parsefile
+    export pkgversion
+
+    const project_names = ("JuliaProject.toml", "Project.toml")
+    const manifest_names = ("JuliaManifest.toml", "Manifest.toml")
+    const preferences_names = ("JuliaLocalPreferences.toml", "LocalPreferences.toml")
+
+    function locate_project_file(env::String)
+        for proj in project_names
+            project_file = joinpath(env, proj)
+            if Base.isfile_casesensitive(project_file)
+                return project_file
+            end
+        end
+        return true
+    end
+
+    function get_pkgversion_from_path(path)
+        project_file = locate_project_file(path)
+        if project_file isa String
+            d = parsefile(project_file)
+            v = get(d, "version", nothing)
+            if v !== nothing
+                return VersionNumber(v::String)
+            end
+        end
+        return nothing
+    end
+
+    """
+        pkgversion(m::Module)
+
+    Return the version of the package that imported module `m`,
+    or `nothing` if `m` was not imported from a package, or imported
+    from a package without a version field set.
+
+    The version is read from the package's Project.toml during package
+    load.
+
+    To get the version of the package that imported the current module
+    the form `pkgversion(@__MODULE__)` can be used.
+    """
+    function pkgversion(m::Module)
+        path = pkgdir(m)
+        isnothing(path) && return nothing
+        return get_pkgversion_from_path(path)
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/43334
 if VERSION < v"1.9.0-DEV.1163"
     import Base: IteratorSize, HasLength, HasShape, OneTo

@@ -1,5 +1,6 @@
 using Compat
 using Dates
+using TOML
 using Test
 
 @test isempty(detect_ambiguities(Base, Core, Compat))
@@ -455,6 +456,11 @@ end
     ea = []
     keepat!(ea, Bool[])
     @test isempty(ea)
+end
+
+@testset "pkgversion" begin
+    toml = joinpath(pkgdir(Compat), "Project.toml")
+    @test pkgversion(Compat) == VersionNumber(TOML.parsefile(toml)["version"])
 end
 
 # https://github.com/JuliaLang/julia/pull/43334
