@@ -392,8 +392,6 @@ end
     export pkgversion
 
     const project_names = ("JuliaProject.toml", "Project.toml")
-    const manifest_names = ("JuliaManifest.toml", "Manifest.toml")
-    const preferences_names = ("JuliaLocalPreferences.toml", "LocalPreferences.toml")
 
     function locate_project_file(env::String)
         for proj in project_names
@@ -402,7 +400,7 @@ end
                 return project_file
             end
         end
-        return true
+        return nothing
     end
 
     function get_pkgversion_from_path(path)
