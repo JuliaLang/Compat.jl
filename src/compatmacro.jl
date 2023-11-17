@@ -118,6 +118,7 @@ function _destructure_named_tuple(ex::Expr)
 end
 
 # https://github.com/JuliaLang/julia/pull/50105
+# No ambiguity with import because this requires the first argument to be a symbol.
 macro compat(public::Symbol, symbols_expr::Union{Expr, Symbol})
     public == :public || throw(ArgumentError("Invalid Syntax: `@compat $public $symbols_expr`"))
     symbols = _get_symbols(symbols_expr)
@@ -135,9 +136,14 @@ _valid_macro(expr) = Meta.isexpr(expr, :macrocall) && length(expr.args) == 2 &&
     expr.args[1] isa Symbol && string(expr.args[1])[1] == '@' &&
     expr.args[2] isa LineNumberNode
 
+_var_str_macro(expr) = Meta.isexpr(expr, :macrocall) && length(expr.args) == 3 &&
+    expr.args[1] === Symbol("@var_str") &&
+    expr.args[2] isa LineNumberNode
+
 _get_symbols(symbol::Symbol) = [symbol]
 function _get_symbols(expr::Expr)
     _valid_macro(expr) && return [expr.args[1]]
+    _var_str_macro(expr) && return [Symbol(expr.args[3])]
     expr.head == :tuple || throw(ArgumentError("cannot mark `$expr` as public. Try `@compat public foo, bar`."))
     symbols = Vector{Symbol}(undef, length(expr.args))
     for (i, arg) in enumerate(expr.args)
@@ -145,6 +151,8 @@ function _get_symbols(expr::Expr)
             symbols[i] = arg
         elseif _valid_macro(arg)
             symbols[i] = arg.args[1]
+        elseif _var_str_macro(arg)
+            symbols[i] = Symbol(expr.args[3])
         else
             throw(ArgumentError("cannot mark `$arg` as public. Try `@compat public foo, bar`."))
         end

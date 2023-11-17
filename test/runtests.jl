@@ -1590,6 +1590,7 @@ end
 module Mod50105
     using Compat
     @compat public foo, var"#", baz
+    @compat public var"blah"
     @compat public @mac1
     @compat public f00, @mac2, @mac3
     @compat public @mac4, @mac5
