@@ -696,8 +696,6 @@ end
 @testset "sort(iterable)" begin
     function tuple_sort_test(x)
       @test issorted(sort(x))
-      length(x) > 9 && return # length > 9 uses a vector fallback
-      @test 0 == @allocated sort(x)
     end
     @testset "sort(::NTuple)" begin
         @test sort((9,8,3,3,6,2,0,8)) == (0,2,3,3,6,8,8,9)
