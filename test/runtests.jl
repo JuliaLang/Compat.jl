@@ -192,7 +192,7 @@ end
     DivideError: integer division error
     Stacktrace:.*
 
-    caused by: UndefVarError: `?__not_a_binding__`? not defined
+    caused by: UndefVarError: `?__not_a_binding__`? not defined( in `Main`)?
     Stacktrace:.*
     """s, sprint(show, excs_with_bts))
 
@@ -209,7 +209,7 @@ end
     ERROR: DivideError: integer division error
     Stacktrace:.*
 
-    caused by: UndefVarError: `?__not_a_binding__`? not defined
+    caused by: UndefVarError: `?__not_a_binding__`? not defined( in `Main`)?
     Stacktrace:.*
     """s, sprint(Base.display_error, excs_with_bts))
 
