@@ -69,6 +69,9 @@ changes in `julia`.
 
 ## Supported features
 
+
+* `@compat public foo, bar` marks `foo` and `bar` as public in Julia 1.11+ and is a no-op in Julia 1.10 and earlier. ([#50105]) (since Compat 3.47.0)
+
 * `popat!` removes the item at the given `i` and returns it ([#36070]). (since
   Compat 3.45.0)
 
@@ -325,3 +328,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#39245]: https://github.com/JuliaLang/julia/issues/39245
 [#42351]: https://github.com/JuliaLang/julia/issues/42351
 [#43334]: https://github.com/JuliaLang/julia/issues/43334
+[#50105]: https://github.com/JuliaLang/julia/issues/50105
