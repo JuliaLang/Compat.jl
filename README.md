@@ -72,8 +72,6 @@ changes in `julia`.
 
 * `@compat public foo, bar` marks `foo` and `bar` as public in Julia 1.11+ and is a no-op in Julia 1.10 and earlier. ([#50105]) (since Compat 4.10.0)
 
-* `sort` for `NTuple` and other iterables. ([#46104]) (since Compat 4.9.0)
-
 * `redirect_stdio`, for simple stream redirection. ([#37978]) (since Compat 4.8.0)
 
 * `trunc`, `floor`, `ceil`, and `round` to `Bool`. ([#25085]) (since Compat 4.7.0)
@@ -172,6 +170,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#43334]: https://github.com/JuliaLang/julia/issues/43334
 [#43354]: https://github.com/JuliaLang/julia/issues/43354
 [#43852]: https://github.com/JuliaLang/julia/issues/43852
-[#46104]: https://github.com/JuliaLang/julia/issues/46104
 [#48038]: https://github.com/JuliaLang/julia/issues/48038
 [#50105]: https://github.com/JuliaLang/julia/issues/50105
