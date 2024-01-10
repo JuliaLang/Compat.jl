@@ -118,6 +118,8 @@ changes in `julia`.
 
 * `@something` and `@coalesce` as short-circuiting versions of `something` and `coalesce` ([#40729]) (since Compat 3.29)
 
+* `pkgversion(m::Module)` returns the version of the package that loaded a given module ([#45607]) (since Compat 4.11)
+
 ## Developer tips
 
 One of the most important rules for `Compat.jl` is to avoid breaking user code
@@ -170,5 +172,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#43334]: https://github.com/JuliaLang/julia/issues/43334
 [#43354]: https://github.com/JuliaLang/julia/issues/43354
 [#43852]: https://github.com/JuliaLang/julia/issues/43852
+[#45607]: https://github.com/JuliaLang/julia/issues/45607
+[#46104]: https://github.com/JuliaLang/julia/issues/46104
 [#48038]: https://github.com/JuliaLang/julia/issues/48038
 [#50105]: https://github.com/JuliaLang/julia/issues/50105

@@ -385,6 +385,71 @@ end
     end
 end
 
+# this function is available as of Julia 1.9
+# https://github.com/JuliaLang/julia/pull/45607
+# https://github.com/JuliaLang/julia/pull/45695
+# https://github.com/JuliaLang/julia/pull/45861
+# https://github.com/JuliaLang/julia/pull/46738
+@static if !isdefined(Base, :pkgversion)
+    using TOML: parsefile
+    export pkgversion
+
+    const require_lock = isdefined(Base, :require_lock) ? Base.require_lock : Base.ReentrantLock()
+    const project_names = ("JuliaProject.toml", "Project.toml")
+
+    function locate_project_file(env::String)
+        for proj in project_names
+            project_file = joinpath(env, proj)
+            if Base.isfile_casesensitive(project_file)
+                return project_file
+            end
+        end
+        return nothing
+    end
+
+    function get_pkgversion_from_path(path)
+        project_file = locate_project_file(path)
+        if project_file isa String
+            d = parsefile(project_file)
+            v = get(d, "version", nothing)
+            if v !== nothing
+                return VersionNumber(v::String)
+            end
+        end
+        return nothing
+    end
+
+    """
+        pkgversion(m::Module)
+
+    Return the version of the package that imported module `m`,
+    or `nothing` if `m` was not imported from a package, or imported
+    from a package without a version field set.
+
+    The version is read from the package's Project.toml during package
+    load.
+
+    To get the version of the package that imported the current module
+    the form `pkgversion(@__MODULE__)` can be used.
+    """
+    function pkgversion(m::Module)
+        path = pkgdir(m)
+        path === nothing && return nothing
+        Base.@lock require_lock begin
+            v = get_pkgversion_from_path(path)
+            # https://github.com/JuliaLang/julia/pull/44318
+            @static if hasfield(Base.PkgOrigin, :version)
+                pkgorigin = get(Base.pkgorigins, Base.PkgId(Base.moduleroot(m)), nothing)
+                # Cache the version
+                if pkgorigin !== nothing && pkgorigin.version === nothing
+                    pkgorigin.version = v
+                end
+            end
+            return v
+        end
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/43334
 if VERSION < v"1.9.0-DEV.1163"
     import Base: IteratorSize, HasLength, HasShape, OneTo
