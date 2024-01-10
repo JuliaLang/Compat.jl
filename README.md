@@ -118,7 +118,7 @@ changes in `julia`.
 
 * `@something` and `@coalesce` as short-circuiting versions of `something` and `coalesce` ([#40729]) (since Compat 3.29)
 
-* `pkgversion` Return the version of the package that imported module ([#45607]) (since Compat 4.11)
+* `pkgversion(m::Module)` returns the version of the package that loaded a given module ([#45607]) (since Compat 4.11)
 
 ## Developer tips
 
