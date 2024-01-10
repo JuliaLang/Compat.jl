@@ -387,10 +387,14 @@ end
 
 # this function is available as of Julia 1.9
 # https://github.com/JuliaLang/julia/pull/45607
+# https://github.com/JuliaLang/julia/pull/45695
+# https://github.com/JuliaLang/julia/pull/45861
+# https://github.com/JuliaLang/julia/pull/46738
 @static if !isdefined(Base, :pkgversion)
     using TOML: parsefile
     export pkgversion
 
+    const require_lock = isdefined(Base, :require_lock) ? Base.require_lock : Base.ReentrantLock()
     const project_names = ("JuliaProject.toml", "Project.toml")
 
     function locate_project_file(env::String)
@@ -430,8 +434,19 @@ end
     """
     function pkgversion(m::Module)
         path = pkgdir(m)
-        isnothing(path) && return nothing
-        return get_pkgversion_from_path(path)
+        path === nothing && return nothing
+        Base.@lock require_lock begin
+            v = get_pkgversion_from_path(path)
+            # https://github.com/JuliaLang/julia/pull/44318
+            @static if hasfield(Base.PkgOrigin, :version)
+                pkgorigin = get(Base.pkgorigins, Base.PkgId(Base.moduleroot(m)), nothing)
+                # Cache the version
+                if pkgorigin !== nothing && pkgorigin.version === nothing
+                    pkgorigin.version = v
+                end
+            end
+            return v
+        end
     end
 end
 
