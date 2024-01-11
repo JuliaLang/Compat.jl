@@ -770,6 +770,11 @@ if VERSION < v"1.7.0-DEV.1187"
     export redirect_stdio
 end
 
+# https://github.com/JuliaLang/julia/pull/45052
+if VERSION < v"1.9.0-DEV.461"
+    Base.VersionNumber(v::VersionNumber) = v
+end
+
 include("deprecated.jl")
 
 end # module Compat
