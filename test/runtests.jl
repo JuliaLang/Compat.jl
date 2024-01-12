@@ -728,3 +728,9 @@ end
     @test_throws LoadError @eval @compat public @bar foo
     @test_throws LoadError @eval @compat publac @bar, foo
 end
+
+# https://github.com/JuliaLang/julia/pull/45052
+@testset "VersionNumber no-op constructor" begin
+    v = VersionNumber("1.2.3")
+    @test VersionNumber(v) === v
+end

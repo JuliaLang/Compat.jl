@@ -120,6 +120,8 @@ changes in `julia`.
 
 * `pkgversion(m::Module)` returns the version of the package that loaded a given module ([#45607]) (since Compat 4.11)
 
+* `VersionNumber(::VersionNumber)` defined as a no-op constructor ([#45052]) (since Compat 4.12)
+
 ## Developer tips
 
 One of the most important rules for `Compat.jl` is to avoid breaking user code
@@ -172,6 +174,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#43334]: https://github.com/JuliaLang/julia/issues/43334
 [#43354]: https://github.com/JuliaLang/julia/issues/43354
 [#43852]: https://github.com/JuliaLang/julia/issues/43852
+[#45052]: https://github.com/JuliaLang/julia/issues/45052
 [#45607]: https://github.com/JuliaLang/julia/issues/45607
 [#46104]: https://github.com/JuliaLang/julia/issues/46104
 [#48038]: https://github.com/JuliaLang/julia/issues/48038
