@@ -330,6 +330,8 @@ if VERSION < v"1.8.0-DEV.1494" # 98e60ffb11ee431e462b092b48a31a1204bd263d
     allequal(itr) = isempty(itr) ? true : all(isequal(first(itr)), itr)
     allequal(c::Union{AbstractSet,AbstractDict}) = length(c) <= 1
     allequal(r::AbstractRange) = iszero(step(r)) || length(r) <= 1
+else
+    import Base: allequal  # extended below
 end
 
 # https://github.com/JuliaLang/julia/commit/bdf9ead91e5a8dfd91643a17c1626032faada329
@@ -779,8 +781,9 @@ if VERSION < v"1.11.0-DEV.1562"
         return allunique(map(f, t))
     end
     
-    Base.allequal(f, xs) = allequal(Base.Generator(f, xs))
-    function Base.allequal(f, xs::Tuple)
+    # allequal is either imported or defined above
+    allequal(f, xs) = allequal(Base.Generator(f, xs))
+    function allequal(f, xs::Tuple)
         length(xs) <= 1 && return true
         f1 = f(xs[1])
         for x in Base.tail(xs)
