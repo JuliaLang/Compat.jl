@@ -771,7 +771,7 @@ if VERSION < v"1.7.0-DEV.1187"
 end
 
 # https://github.com/JuliaLang/julia/pull/47679
-if VERSION < v"1.11-"
+if VERSION < v"1.11.0-DEV.1562"
     Base.allunique(f, xs) = allunique(Base.Generator(f, xs))
     function Base.allunique(f::F, t::Tuple) where {F}
         length(t) < 2 && return true

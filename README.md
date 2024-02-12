@@ -181,3 +181,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#46104]: https://github.com/JuliaLang/julia/issues/46104
 [#48038]: https://github.com/JuliaLang/julia/issues/48038
 [#50105]: https://github.com/JuliaLang/julia/issues/50105
+[#47679]: https://github.com/JuliaLang/julia/pull/47679
