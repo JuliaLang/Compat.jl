@@ -770,6 +770,26 @@ if VERSION < v"1.7.0-DEV.1187"
     export redirect_stdio
 end
 
+# https://github.com/JuliaLang/julia/pull/47679
+if VERSION < v"1.11-"
+    Base.allunique(f, xs) = allunique(Base.Generator(f, xs))
+    function Base.allunique(f::F, t::Tuple) where {F}
+        length(t) < 2 && return true
+        length(t) < 32 || return Base._hashed_allunique(Base.Generator(f, t))
+        return allunique(map(f, t))
+    end
+    
+    Base.allequal(f, xs) = allequal(Base.Generator(f, xs))
+    function Base.allequal(f, xs::Tuple)
+        length(xs) <= 1 && return true
+        f1 = f(xs[1])
+        for x in Base.tail(xs)
+            isequal(f1, f(x)) || return false
+        end
+        return true
+    end
+end
+
 # https://github.com/JuliaLang/julia/pull/45052
 if VERSION < v"1.9.0-DEV.461"
     Base.VersionNumber(v::VersionNumber) = v

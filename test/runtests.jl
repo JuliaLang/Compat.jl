@@ -729,6 +729,34 @@ end
     @test_throws LoadError @eval @compat publac @bar, foo
 end
 
+# https://github.com/JuliaLang/julia/pull/47679
+@testset "allunique(f, xs)" begin
+    @test allunique(sin, 1:3)
+    @test !allunique(sin, [1,2,3,1])
+    @test allunique(sin, (1, 2, pi, im))  # eltype Any
+    @test allunique(abs2, 1:100)
+    @test !allunique(abs, -10:10)
+    @test allunique(abs2, Vector{Any}(1:100))
+    # These cases don't call the function at all:
+    @test allunique(error, [])
+    @test allunique(error, [1])
+end
+@testset "allequal(f, xs)" begin
+    @test allequal(abs2, [3, -3])
+    @test allequal(x -> 1, rand(3))
+    @test !allequal(x -> rand(), [1,1,1])
+    # tuples
+    @test allequal(abs2, (3, -3))
+    @test allequal(x -> 1, Tuple(rand(3)))
+    @test !allequal(x -> rand(), (1,1,1))
+    # These cases don't call the function at all:
+    @test allequal(error, [])
+    @test allequal(error, ())
+    @test allequal(error, (x for x in 1:3 if false))
+    @test_skip allequal(error, [1])  # fixed not by new code but by upgrades to old code
+    @test allequal(error, (1,))
+end
+
 # https://github.com/JuliaLang/julia/pull/45052
 @testset "VersionNumber no-op constructor" begin
     v = VersionNumber("1.2.3")

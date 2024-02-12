@@ -70,6 +70,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `allequal(f, itr)` and `allunique(f, itr)` methods. ([#47679]) (since Compat 4.13.0)
+
 * `@compat public foo, bar` marks `foo` and `bar` as public in Julia 1.11+ and is a no-op in Julia 1.10 and earlier. ([#50105]) (since Compat 3.47.0, 4.10.0)
 
 * `redirect_stdio`, for simple stream redirection. ([#37978]) (since Compat 4.8.0)
