@@ -737,7 +737,7 @@ end
 
 # https://github.com/JuliaLang/julia/pull/47354
 @testset "cycle(iter, n)"  begin
-    using Iterators: cycle
+    using Base.Iterators: cycle
     @test collect(cycle(0:3, 2)) == [0, 1, 2, 3, 0, 1, 2, 3]
     @test collect(cycle(Iterators.filter(iseven, 1:4), 2)) == [2, 4, 2, 4]
     @test collect(take(cycle(countfrom(11), 3), 4)) == 11:14
