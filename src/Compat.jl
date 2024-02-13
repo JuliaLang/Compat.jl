@@ -776,7 +776,7 @@ if VERSION < v"1.9.0-DEV.461"
 end
 
 # https://github.com/JuliaLang/julia/pull/47354
-if VERION < v"1.11-"  # e6992f74b003eead40d928a31e1c5baaba79f377
+if VERSION < v"1.11.0-DEV.1579"
     Iterators.cycle(xs, n::Integer) = Iterators.flatten(Iterators.repeated(xs, n))
 end
 
