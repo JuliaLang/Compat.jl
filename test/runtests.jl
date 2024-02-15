@@ -739,7 +739,7 @@ end
     @test allunique(abs2, Vector{Any}(1:100))
     # These cases don't call the function at all:
     @test allunique(error, [])
-    @test_skip allunique(error, [1])
+    @test_skip allunique(error, [1]) # depends on updated code in Base to work
 end
 @testset "allequal(f, xs)" begin
     @test allequal(abs2, [3, -3])
