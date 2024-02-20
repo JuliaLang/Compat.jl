@@ -70,6 +70,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `allequal(f, itr)` and `allunique(f, itr)` methods. ([#47679]) (since Compat 4.13.0)
+
 * `logrange(lo, hi; length)` is like `range` but for `*` not `+`. ([#39071]) (since Compat 4.13.0)
 
 * `Iterators.cycle(itr, n)` is the lazy version of `repeat(vector, n)`. ([#47354]) (since Compat 4.13.0)
@@ -184,5 +186,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#47354]: https://github.com/JuliaLang/julia/issues/47354
 [#48038]: https://github.com/JuliaLang/julia/issues/48038
 [#50105]: https://github.com/JuliaLang/julia/issues/50105
-
-
+[#47679]: https://github.com/JuliaLang/julia/pull/47679
