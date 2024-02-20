@@ -804,7 +804,7 @@ if VERSION < v"1.11.0-DEV.1579"
 end
 
 # https://github.com/JuliaLang/julia/pull/39071
-if VERSION < v"1.12.0-DEV.2"  # might become wrong! PR will be backported to 1.11
+if !isdefined(Base, :logrange)  # VERSION < v"1.12.0-DEV.2" or appropriate 1.11.x after backporting
 
     export logrange
 
@@ -994,7 +994,7 @@ if VERSION < v"1.12.0-DEV.2"  # might become wrong! PR will be backported to 1.1
 
     _exp_allowing_twice64(x::Number) = exp(x)
 
-    if VERSION >= v"1.9"  # then Base.Math._log_ext exists, allowing this high-precision path:
+    if isdefined(Base.Math, :_log_ext)  # allows this high-precision path:
         
         _exp_allowing_twice64(x::Base.TwicePrecision{Float64}) = Base.Math.exp_impl(x.hi, x.lo, Val(:ℯ))
         
