@@ -72,7 +72,7 @@ changes in `julia`.
 
 * `allequal(f, itr)` and `allunique(f, itr)` methods. ([#47679]) (since Compat 4.13.0)
 
-* `logrange(lo, hi; length)` is like `range` but for `*` not `+`. ([#39071]) (since Compat 4.13.0)
+* `logrange(lo, hi; length)` is like `range` but for `*` not `+`. ([#39071]) (since Compat 4.14.0)
 
 * `Iterators.cycle(itr, n)` is the lazy version of `repeat(vector, n)`. ([#47354]) (since Compat 4.13.0)
 

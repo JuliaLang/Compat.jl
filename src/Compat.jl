@@ -994,7 +994,7 @@ if !isdefined(Base, :logrange)  # VERSION < v"1.12.0-DEV.2" or appropriate 1.11.
 
     _exp_allowing_twice64(x::Number) = exp(x)
 
-    if isdefined(Base.Math, :_log_ext)  # allows this high-precision path:
+    if VERSION >= v"1.9"  # allows this high-precision path:
         
         _exp_allowing_twice64(x::Base.TwicePrecision{Float64}) = Base.Math.exp_impl(x.hi, x.lo, Val(:ℯ))
         
