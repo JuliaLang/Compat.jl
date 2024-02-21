@@ -250,7 +250,7 @@ end
 if VERSION < v"1.8.0-DEV.487"
     export eachsplit
 
-    """
+    @doc """
         eachsplit(str::AbstractString, dlm; limit::Integer=0)
         eachsplit(str::AbstractString; limit::Integer=0)
 
@@ -275,7 +275,8 @@ if VERSION < v"1.8.0-DEV.487"
     "Ma"
     "rch"
     ```
-    """
+    """ eachsplit
+
     function eachsplit end
 
     struct SplitIterator{S<:AbstractString,F}
@@ -421,7 +422,7 @@ end
         return nothing
     end
 
-    """
+    @doc """
         pkgversion(m::Module)
 
     Return the version of the package that imported module `m`,
@@ -433,7 +434,8 @@ end
 
     To get the version of the package that imported the current module
     the form `pkgversion(@__MODULE__)` can be used.
-    """
+    """ pkgversion
+
     function pkgversion(m::Module)
         path = pkgdir(m)
         path === nothing && return nothing
@@ -457,7 +459,7 @@ if VERSION < v"1.9.0-DEV.1163"
     import Base: IteratorSize, HasLength, HasShape, OneTo
     export stack
 
-    """
+    @doc """
         stack(iter; [dims])
 
     Combine a collection of arrays (or other iterable objects) of equal size
@@ -547,10 +549,11 @@ if VERSION < v"1.9.0-DEV.1163"
     julia> hvcat(5, M...) |> size  # hvcat puts matrices next to each other
     (14, 15)
     ```
-    """
+    """ stack
+
     stack(iter; dims=:) = _stack(dims, iter)
 
-    """
+    @doc """
         stack(f, args...; [dims])
 
     Apply a function to each element of a collection, and `stack` the result.
@@ -576,7 +579,8 @@ if VERSION < v"1.9.0-DEV.1163"
      1.0  2.0  3.0   10.0   20.0   30.0  0.1   0.2   0.3
      4.0  5.0  6.0  400.0  500.0  600.0  0.04  0.05  0.06
     ```
-    """
+    """ stack(f, iter)
+
     stack(f, iter; dims=:) = _stack(dims, f(x) for x in iter)
     stack(f, xs, yzs...; dims=:) = _stack(dims, f(xy...) for xy in zip(xs, yzs...))
 
@@ -808,7 +812,7 @@ if !isdefined(Base, :logrange)  # VERSION < v"1.12.0-DEV.2" or appropriate 1.11.
 
     export logrange
 
-    """
+    @doc """
         logrange(start, stop, length)
         logrange(start, stop; length)
 
@@ -850,11 +854,12 @@ if !isdefined(Base, :logrange)  # VERSION < v"1.12.0-DEV.2" or appropriate 1.11.
     !!! compat "Julia 1.11"
         The printing of Compat.jl's version of the struct is also different,
         less like `LinRange` and more like `Vector`.
-    """
+    """ logrange
+
     logrange(start::Real, stop::Real, length::Integer) = LogRange(start, stop, Int(length))
     logrange(start::Real, stop::Real; length::Integer) = logrange(start, stop, length)
 
-    """
+    @doc """
         LogRange{T}(start, stop, len) <: AbstractVector{T}
 
     A range whose elements are spaced logarithmically between `start` and `stop`,
@@ -908,7 +913,8 @@ if !isdefined(Base, :logrange)  # VERSION < v"1.12.0-DEV.2" or appropriate 1.11.
     julia> 2 .^ (0:3:9) |> println
     [1, 8, 64, 512]
     ```
-    """
+    """ LogRange
+
     struct LogRange{T<:Real,X} <: AbstractArray{T,1}
         start::T
         stop::T
