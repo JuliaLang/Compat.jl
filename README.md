@@ -72,6 +72,8 @@ changes in `julia`.
 
 * `allequal(f, itr)` and `allunique(f, itr)` methods. ([#47679]) (since Compat 4.13.0)
 
+* `logrange(lo, hi; length)` is like `range` but with a constant ratio, not difference. ([#39071]) (since Compat 4.14.0) Note that on Julia 1.8 and earlier, the version from Compat has slightly lower floating-point accuracy than the one in Base (Julia 1.11 and later).
+
 * `Iterators.cycle(itr, n)` is the lazy version of `repeat(vector, n)`. ([#47354]) (since Compat 4.13.0)
 
 * `@compat public foo, bar` marks `foo` and `bar` as public in Julia 1.11+ and is a no-op in Julia 1.10 and earlier. ([#50105]) (since Compat 3.47.0, 4.10.0)
@@ -163,6 +165,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#36229]: https://github.com/JuliaLang/julia/issues/36229
 [#37978]: https://github.com/JuliaLang/julia/issues/37978
 [#39037]: https://github.com/JuliaLang/julia/issues/39037
+[#39071]: https://github.com/JuliaLang/julia/pull/39071
 [#39245]: https://github.com/JuliaLang/julia/issues/39245
 [#39285]: https://github.com/JuliaLang/julia/issues/39285
 [#39794]: https://github.com/JuliaLang/julia/issues/39794
