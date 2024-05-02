@@ -70,9 +70,11 @@ changes in `julia`.
 
 ## Supported features
 
-* `allequal(f, itr)` and `allunique(f, itr)` methods. ([#47679]) (since Compat 4.13.0)
+* `chopprefix(s, prefix)` and `chopsuffix(s, suffix)` ([#40995]) (since Compat 4.15.0)
 
 * `logrange(lo, hi; length)` is like `range` but with a constant ratio, not difference. ([#39071]) (since Compat 4.14.0) Note that on Julia 1.8 and earlier, the version from Compat has slightly lower floating-point accuracy than the one in Base (Julia 1.11 and later).
+
+* `allequal(f, itr)` and `allunique(f, itr)` methods. ([#47679]) (since Compat 4.13.0)
 
 * `Iterators.cycle(itr, n)` is the lazy version of `repeat(vector, n)`. ([#47354]) (since Compat 4.13.0)
 
@@ -171,6 +173,7 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#39794]: https://github.com/JuliaLang/julia/issues/39794
 [#40729]: https://github.com/JuliaLang/julia/issues/40729
 [#40803]: https://github.com/JuliaLang/julia/issues/40803
+[#40995]: https://github.com/JuliaLang/julia/pull/40995
 [#41007]: https://github.com/JuliaLang/julia/issues/41007
 [#41032]: https://github.com/JuliaLang/julia/issues/41032
 [#41076]: https://github.com/JuliaLang/julia/issues/41076
@@ -184,6 +187,6 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#45052]: https://github.com/JuliaLang/julia/issues/45052
 [#45607]: https://github.com/JuliaLang/julia/issues/45607
 [#47354]: https://github.com/JuliaLang/julia/issues/47354
+[#47679]: https://github.com/JuliaLang/julia/pull/47679
 [#48038]: https://github.com/JuliaLang/julia/issues/48038
 [#50105]: https://github.com/JuliaLang/julia/issues/50105
-[#47679]: https://github.com/JuliaLang/julia/pull/47679

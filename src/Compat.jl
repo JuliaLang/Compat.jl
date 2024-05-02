@@ -784,7 +784,7 @@ if VERSION < v"1.11.0-DEV.1562"
         length(t) < 32 || return Base._hashed_allunique(Base.Generator(f, t))
         return allunique(map(f, t))
     end
-    
+
     # allequal is either imported or defined above
     allequal(f, xs) = allequal(Base.Generator(f, xs))
     function allequal(f, xs::Tuple)
@@ -1001,9 +1001,9 @@ if !isdefined(Base, :logrange)  # VERSION < v"1.12.0-DEV.2" or appropriate 1.11.
     _exp_allowing_twice64(x::Number) = exp(x)
 
     if VERSION >= v"1.9.0-DEV.318"  # Julia PR #44717 allows this high-precision path:
-        
+
         _exp_allowing_twice64(x::Base.TwicePrecision{Float64}) = Base.Math.exp_impl(x.hi, x.lo, Val(:ℯ))
-        
+
         function _log_twice64_unchecked(x::Float64)
             xu = reinterpret(UInt64, x)
             if xu < (UInt64(1)<<52) # x is subnormal
@@ -1025,6 +1025,101 @@ if !isdefined(Base, :logrange)  # VERSION < v"1.12.0-DEV.2" or appropriate 1.11.
 else
     # Ensure that Compat.LogRange is always this struct, not exported from Base
     using Base: LogRange
+end
+
+# https://github.com/JuliaLang/julia/pull/40995: add chopprefix, chopsuffix
+if VERSION < v"1.8.0-DEV.1016"
+    function chopprefix(s::AbstractString, prefix::Regex)
+        m = match(prefix, s, firstindex(s), Base.PCRE.ANCHORED)
+        m === nothing && return SubString(s)
+        return SubString(s, ncodeunits(m.match) + 1)
+    end
+
+    function chopsuffix(s::AbstractString, suffix::Regex)
+        m = match(suffix, s, firstindex(s), Base.PCRE.ENDANCHORED)
+        m === nothing && return SubString(s)
+        isempty(m.match) && return SubString(s)
+        return SubString(s, firstindex(s), prevind(s, m.offset))
+    end
+
+    """
+    chopprefix(s::AbstractString, prefix::Union{AbstractString,Regex}) -> SubString
+
+    Remove the prefix `prefix` from `s`. If `s` does not start with `prefix`, a string equal to `s` is returned.
+
+    See also [`chopsuffix`](@ref).
+
+    # Examples
+    ```jldoctest
+    julia> chopprefix("Hamburger", "Ham")
+    "burger"
+
+    julia> chopprefix("Hamburger", "hotdog")
+    "Hamburger"
+    ```
+    """
+    function chopprefix(s::AbstractString, prefix::AbstractString)
+        k = firstindex(s)
+        i, j = iterate(s), iterate(prefix)
+        while true
+            j === nothing && i === nothing && return SubString(s, 1, 0) # s == prefix: empty result
+            j === nothing && return @inbounds SubString(s, k) # ran out of prefix: success!
+            i === nothing && return SubString(s) # ran out of source: failure
+            i[1] == j[1] || return SubString(s) # mismatch: failure
+            k = i[2]
+            i, j = iterate(s, k), iterate(prefix, j[2])
+        end
+    end
+
+    function chopprefix(s::Union{String, SubString{String}},
+                        prefix::Union{String, SubString{String}})
+        if startswith(s, prefix)
+            SubString(s, 1 + ncodeunits(prefix))
+        else
+            SubString(s)
+        end
+    end
+
+    """
+    chopsuffix(s::AbstractString, suffix::Union{AbstractString,Regex}) -> SubString
+
+    Remove the suffix `suffix` from `s`. If `s` does not end with `suffix`, a string equal to `s` is returned.
+
+    See also [`chopprefix`](@ref).
+
+    # Examples
+    ```jldoctest
+    julia> chopsuffix("Hamburger", "er")
+    "Hamburg"
+    julia> chopsuffix("Hamburger", "hotdog")
+    "Hamburger"
+    ```
+    """
+    function chopsuffix(s::AbstractString, suffix::AbstractString)
+        a, b = Iterators.Reverse(s), Iterators.Reverse(suffix)
+        k = lastindex(s)
+        i, j = iterate(a), iterate(b)
+        while true
+            j === nothing && i === nothing && return SubString(s, 1, 0) # s == suffix: empty result
+            j === nothing && return @inbounds SubString(s, firstindex(s), k) # ran out of suffix: success!
+            i === nothing && return SubString(s) # ran out of source: failure
+            i[1] == j[1] || return SubString(s) # mismatch: failure
+            k = i[2]
+            i, j = iterate(a, k), iterate(b, j[2])
+        end
+    end
+
+    function chopsuffix(s::Union{String, SubString{String}},
+                        suffix::Union{String, SubString{String}})
+        if !isempty(suffix) && endswith(s, suffix)
+            astart = ncodeunits(s) - ncodeunits(suffix) + 1
+            @inbounds SubString(s, firstindex(s), prevind(s, astart))
+        else
+            SubString(s)
+        end
+    end
+
+    export chopprefix, chopsuffix
 end
 
 include("deprecated.jl")
