@@ -54,6 +54,12 @@ and then as needed add
 @compat ...compat syntax...
 ```
 
+or 
+
+```julia
+Compat.function_available_in_later_julia_version(args..., kwargs...)
+```
+
 wherever you want to use syntax that differs in the latest Julia
 `master` (the development version of Julia). The `compat syntax` is usually
 the syntax on Julia `master`. However, in a few cases where this is not possible,
