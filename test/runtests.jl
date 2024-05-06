@@ -845,3 +845,65 @@ end
     @test_skip repr("text/plain", Compat.LogRange(1,2,3)) == "3-element Compat.LogRange{Float64, Base.TwicePrecision{Float64}}:\n 1.0, 1.41421, 2.0"
     @test_skip repr("text/plain", Compat.LogRange(1,2,0)) == "LogRange{Float64}(1.0, 2.0, 0)"  # empty case
 end
+
+# https://github.com/JuliaLang/julia/pull/40995
+@testset "chopprefix, chopsuffix" begin
+    SubStr(s) = SubString("abc$(s)de", firstindex(s) + 3, lastindex(s) + 3)
+
+    for S in (String, SubStr, Test.GenericString)
+        for T in (String, SubStr, Test.GenericString, Regex)
+            S === Test.GenericString && T === Regex && continue # not supported
+            @test chopprefix(S("fo∀\n"), T("bog")) == "fo∀\n"
+            @test chopprefix(S("fo∀\n"), T("\n∀foΔ")) == "fo∀\n"
+            @test chopprefix(S("fo∀\n"), T("∀foΔ")) == "fo∀\n"
+            @test chopprefix(S("fo∀\n"), T("f")) == "o∀\n"
+            @test chopprefix(S("fo∀\n"), T("fo")) == "∀\n"
+            @test chopprefix(S("fo∀\n"), T("fo∀")) == "\n"
+            @test chopprefix(S("fo∀\n"), T("fo∀\n")) == ""
+            @test chopprefix(S("\nfo∀"), T("bog")) == "\nfo∀"
+            @test chopprefix(S("\nfo∀"), T("\n∀foΔ")) == "\nfo∀"
+            @test chopprefix(S("\nfo∀"), T("\nfo∀")) == ""
+            @test chopprefix(S("\nfo∀"), T("\n")) == "fo∀"
+            @test chopprefix(S("\nfo∀"), T("\nf")) == "o∀"
+            @test chopprefix(S("\nfo∀"), T("\nfo")) == "∀"
+            @test chopprefix(S("\nfo∀"), T("\nfo∀")) == ""
+            @test chopprefix(S(""), T("")) == ""
+            @test chopprefix(S(""), T("asdf")) == ""
+            @test chopprefix(S(""), T("∃∃∃")) == ""
+            @test chopprefix(S("εfoo"), T("ε")) == "foo"
+            @test chopprefix(S("ofoε"), T("o")) == "foε"
+            @test chopprefix(S("∃∃∃∃"), T("∃")) == "∃∃∃"
+            @test chopprefix(S("∃∃∃∃"), T("")) == "∃∃∃∃"
+
+            @test chopsuffix(S("fo∀\n"), T("bog")) == "fo∀\n"
+            @test chopsuffix(S("fo∀\n"), T("\n∀foΔ")) == "fo∀\n"
+            @test chopsuffix(S("fo∀\n"), T("∀foΔ")) == "fo∀\n"
+            @test chopsuffix(S("fo∀\n"), T("\n")) == "fo∀"
+            @test chopsuffix(S("fo∀\n"), T("∀\n")) == "fo"
+            @test chopsuffix(S("fo∀\n"), T("o∀\n")) == "f"
+            @test chopsuffix(S("fo∀\n"), T("fo∀\n")) == ""
+            @test chopsuffix(S("\nfo∀"), T("bog")) == "\nfo∀"
+            @test chopsuffix(S("\nfo∀"), T("\n∀foΔ")) == "\nfo∀"
+            @test chopsuffix(S("\nfo∀"), T("\nfo∀")) == ""
+            @test chopsuffix(S("\nfo∀"), T("∀")) == "\nfo"
+            @test chopsuffix(S("\nfo∀"), T("o∀")) == "\nf"
+            @test chopsuffix(S("\nfo∀"), T("fo∀")) == "\n"
+            @test chopsuffix(S("\nfo∀"), T("\nfo∀")) == ""
+            @test chopsuffix(S(""), T("")) == ""
+            @test chopsuffix(S(""), T("asdf")) == ""
+            @test chopsuffix(S(""), T("∃∃∃")) == ""
+            @test chopsuffix(S("fooε"), T("ε")) == "foo"
+            @test chopsuffix(S("εofo"), T("o")) == "εof"
+            @test chopsuffix(S("∃∃∃∃"), T("∃")) == "∃∃∃"
+            @test chopsuffix(S("∃∃∃∃"), T("")) == "∃∃∃∃"
+        end
+
+        if S !== Test.GenericString
+            @test chopprefix(S("∃∃∃b∃"), r"∃+") == "b∃"
+            @test chopsuffix(S("∃b∃∃∃"), r"∃+") == "∃b"
+        end
+
+        @test isa(chopprefix(S("foo"), "fo"), SubString)
+        @test isa(chopsuffix(S("foo"), "oo"), SubString)
+    end
+end
