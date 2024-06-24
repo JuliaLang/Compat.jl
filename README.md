@@ -54,11 +54,13 @@ and then as needed add
 @compat ...compat syntax...
 ```
 
-wherever you want to use syntax that differs in the latest Julia
+wherever you want to use _syntax_ that differs in the latest Julia
 `master` (the development version of Julia). The `compat syntax` is usually
 the syntax on Julia `master`. However, in a few cases where this is not possible,
 a slightly different syntax might be used.
 Please check the list below for the specific syntax you need.
+
+Note that if you want to use a _function_ `new_f` defined in later Julia versions, it is redefined in Compat (as `Compat.new_f`) and exported, so you don't need to change anything to your code beyond the initial import. 
 
 ## Compatibility
 
