@@ -1158,7 +1158,7 @@ end
             elseif N < 1
                 throw(ArgumentError("expected `N` in `Fix{N}` to be integer greater than 0, but got $N"))
             end
-            new{N,(f isa F ? F : Type{F}),_stable_typeof(x)}(f, x)
+            new{N,(f isa Type{F} ? Type{F} : F),_stable_typeof(x)}(f, x)
         end
     end
 
