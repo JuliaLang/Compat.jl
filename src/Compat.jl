@@ -1124,6 +1124,13 @@ end
 
 # https://github.com/JuliaLang/julia/pull/54653: add Fix
 @static if !isdefined(Base, :Fix)
+    @static if !isdefined(Base, :_stable_typeof)
+        _stable_typeof(x) = typeof(x)
+        _stable_typeof(::Type{T}) where {T} = isdefined(Base, Symbol(T)) ? Type{T} : DataType
+    else
+        using Base: _stable_typeof
+    end
+
     """
         Fix{N}(f, x)
 
@@ -1145,13 +1152,13 @@ end
         f::F
         x::T
 
-        function Fix{N}(f::F, x) where {N,F}
+        function Fix{N}(f::Union{F,Type{F}}, x) where {N,F}
             if !(N isa Int)
                 throw(ArgumentError("expected type parameter in `Fix` to be `Int`, but got `$N::$(typeof(N))`"))
             elseif N < 1
                 throw(ArgumentError("expected `N` in `Fix{N}` to be integer greater than 0, but got $N"))
             end
-            new{N,Base._stable_typeof(f),Base._stable_typeof(x)}(f, x)
+            new{N,(f isa F ? F : Type{F}),_stable_typeof(x)}(f, x)
         end
     end
 
