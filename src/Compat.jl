@@ -1126,7 +1126,7 @@ end
 @static if !isdefined(Base, :Fix)
     @static if !isdefined(Base, :_stable_typeof)
         _stable_typeof(x) = typeof(x)
-        _stable_typeof(::Type{T}) where {T} = isdefined(Base, Symbol(T)) ? Type{T} : DataType
+        _stable_typeof(::Type{T}) where {T} = Type{T}
     else
         using Base: _stable_typeof
     end
