@@ -996,9 +996,13 @@ end
 
             # Can call with variable number of arguments:
             @test fixed_vararg_f(1, 2, 3, 4) == 1 + 10 * 6 + sum((2, 3, 4))
-            @inferred fixed_vararg_f(1, 2, 3, 4)
+            if VERSION >= v"1.7.0"
+                @inferred fixed_vararg_f(1, 2, 3, 4)
+            end
             @test fixed_vararg_f(5) == 5 + 10 * 6
-            @inferred fixed_vararg_f(5)
+            if VERSION >= v"1.7.0"
+                @inferred fixed_vararg_f(5)
+            end
         end
         @testset "Errors should propagate normally" begin
             error_f = (x, y) -> sin(x * y)
