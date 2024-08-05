@@ -1149,6 +1149,8 @@ if VERSION < v"1.12.0-DEV.974"  # contrib/commit-name.sh 2635dea
     _insertdims(A::AbstractArray, dim::Integer) = _insertdims(A, (Int(dim),))
 
     export insertdims
+else
+    using Base: insertdims, _insertdims
 end
 
 include("deprecated.jl")
