@@ -1169,13 +1169,13 @@ end
     (f::Fix{2})(arg; kws...) = f.f(arg, f.x; kws...)
 
     @doc """
-    Alias for `Fix{1}`. See [`Fix`](@ref Base.Fix).
+    Alias for `Fix{1}`. See [`Fix`](@ref Compat.Fix).
     """ Fix1
 
     const Fix1{F,T} = Fix{1,F,T}
 
     @doc """
-    Alias for `Fix{2}`. See [`Fix`](@ref Base.Fix).
+    Alias for `Fix{2}`. See [`Fix`](@ref Compat.Fix).
     """ Fix2
 
     const Fix2{F,T} = Fix{2,F,T}
