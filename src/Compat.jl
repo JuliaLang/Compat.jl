@@ -1138,10 +1138,6 @@ end
     `x` fixed at position `N::Int`. In other words, `Fix{3}(f, x)` behaves similarly to
     `(y1, y2, y3...; kws...) -> f(y1, y2, x, y3...; kws...)`.
 
-    !!! compat "Julia 1.12"
-        This general functionality requires at least Julia 1.12, while `Fix1` and `Fix2`
-        are available earlier.
-
     !!! note
         When nesting multiple `Fix`, note that the `N` in `Fix{N}` is _relative_ to the current
         available arguments, rather than an absolute ordering on the target function. For example,
