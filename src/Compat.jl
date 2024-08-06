@@ -1123,7 +1123,7 @@ if VERSION < v"1.8.0-DEV.1016"
 end
 
 # https://github.com/JuliaLang/julia/pull/54653: add Fix
-@static if !isdefined(Base, :Fix)
+@static if !isdefined(Base, :Fix) # VERSION < v"1.12.0-DEV.981"
     @static if !isdefined(Base, :_stable_typeof)
         _stable_typeof(x) = typeof(x)
         _stable_typeof(::Type{T}) where {T} = Type{T}
