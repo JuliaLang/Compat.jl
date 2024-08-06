@@ -1143,6 +1143,13 @@ end
         available arguments, rather than an absolute ordering on the target function. For example,
         `Fix{1}(Fix{2}(f, 4), 4)` fixes the first and second arg, while `Fix{2}(Fix{1}(f, 4), 4)`
         fixes the first and third arg.
+
+    !!! note
+        Note that `Compat.Fix{1}`/`Fix{2}` are not the same as `Base.Fix1`/`Fix2` on Julia
+        versions earlier than `1.12.0-DEV.981`. Therefore, if you wish to use this as a way
+        to _dispatch_ on `Fix{N}`, you may wish to declare a method for both
+        `Compat.Fix{1}`/`Fix{2}` as well as `Base.Fix1`/`Fix2`, conditional on
+        a `@static if !isdefined(Base, :Fix); ...; end`.
     """ Fix
 
     struct Fix{N,F,T} <: Function
