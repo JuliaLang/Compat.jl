@@ -72,7 +72,7 @@ changes in `julia`.
 
 ## Supported features
 
-* `Fix{N}` which fixes an argument at the `N`th position ([#54653]) (since Compat 4.16.0)
+* `Compat.Fix{N}` which fixes an argument at the `N`th position ([#54653]) (since Compat 4.16.0)
 
 * `chopprefix(s, prefix)` and `chopsuffix(s, suffix)` ([#40995]) (since Compat 4.15.0)
 
