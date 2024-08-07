@@ -1122,6 +1122,74 @@ if VERSION < v"1.8.0-DEV.1016"
     export chopprefix, chopsuffix
 end
 
+# https://github.com/JuliaLang/julia/pull/54653: add Fix
+@static if !isdefined(Base, :Fix) # VERSION < v"1.12.0-DEV.981"
+    @static if !isdefined(Base, :_stable_typeof)
+        _stable_typeof(x) = typeof(x)
+        _stable_typeof(::Type{T}) where {T} = Type{T}
+    else
+        using Base: _stable_typeof
+    end
+
+    @doc """
+        Fix{N}(f, x)
+
+    A type representing a partially-applied version of a function `f`, with the argument
+    `x` fixed at position `N::Int`. In other words, `Fix{3}(f, x)` behaves similarly to
+    `(y1, y2, y3...; kws...) -> f(y1, y2, x, y3...; kws...)`.
+
+    !!! note
+        When nesting multiple `Fix`, note that the `N` in `Fix{N}` is _relative_ to the current
+        available arguments, rather than an absolute ordering on the target function. For example,
+        `Fix{1}(Fix{2}(f, 4), 4)` fixes the first and second arg, while `Fix{2}(Fix{1}(f, 4), 4)`
+        fixes the first and third arg.
+
+    !!! note
+        Note that `Compat.Fix{1}`/`Fix{2}` are not the same as `Base.Fix1`/`Fix2` on Julia
+        versions earlier than `1.12.0-DEV.981`. Therefore, if you wish to use this as a way
+        to _dispatch_ on `Fix{N}`, you may wish to declare a method for both
+        `Compat.Fix{1}`/`Fix{2}` as well as `Base.Fix1`/`Fix2`, conditional on
+        a `@static if !isdefined(Base, :Fix); ...; end`.
+    """ Fix
+
+    struct Fix{N,F,T} <: Function
+        f::F
+        x::T
+
+        function Fix{N}(f::F, x) where {N,F}
+            if !(N isa Int)
+                throw(ArgumentError("expected type parameter in `Fix` to be `Int`, but got `$N::$(typeof(N))`"))
+            elseif N < 1
+                throw(ArgumentError("expected `N` in `Fix{N}` to be integer greater than 0, but got $N"))
+            end
+            new{N,_stable_typeof(f),_stable_typeof(x)}(f, x)
+        end
+    end
+
+    function (f::Fix{N})(args::Vararg{Any,M}; kws...) where {N,M}
+        M < N-1 && throw(ArgumentError("expected at least $(N-1) arguments to `Fix{$N}`, but got $M"))
+        return f.f(args[begin:begin+(N-2)]..., f.x, args[begin+(N-1):end]...; kws...)
+    end
+
+    # Special cases for improved constant propagation
+    (f::Fix{1})(arg; kws...) = f.f(f.x, arg; kws...)
+    (f::Fix{2})(arg; kws...) = f.f(arg, f.x; kws...)
+
+    @doc """
+    Alias for `Fix{1}`. See [`Fix`](@ref Compat.Fix).
+    """ Fix1
+
+    const Fix1{F,T} = Fix{1,F,T}
+
+    @doc """
+    Alias for `Fix{2}`. See [`Fix`](@ref Compat.Fix).
+    """ Fix2
+
+    const Fix2{F,T} = Fix{2,F,T}
+else
+    using Base: Fix, Fix1, Fix2
+end
+
 include("deprecated.jl")
 
 end # module Compat
