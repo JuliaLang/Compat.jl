@@ -1122,6 +1122,37 @@ if VERSION < v"1.8.0-DEV.1016"
     export chopprefix, chopsuffix
 end
 
+if VERSION < v"1.12.0-DEV.974"  # contrib/commit-name.sh 2635dea
+
+    insertdims(A; dims) = _insertdims(A, dims)
+
+    function _insertdims(A::AbstractArray{T, N}, dims::NTuple{M, Int}) where {T, N, M}
+        for i in eachindex(dims)
+            1 ≤ dims[i] || throw(ArgumentError("the smallest entry in dims must be ≥ 1"))
+            dims[i] ≤ N+M || throw(ArgumentError("the largest entry in dims must be not larger than the dimension of the array and the length of dims added"))
+            for j = 1:i-1
+                dims[j] == dims[i] && throw(ArgumentError("inserted dims must be unique"))
+            end
+        end
+
+        # acc is a tuple, where the first entry is the final shape
+        # the second entry off acc is a counter for the axes of A
+        inds = Base._foldoneto((acc, i) ->
+                            i ∈ dims
+                                ? ((acc[1]..., Base.OneTo(1)), acc[2])
+                                : ((acc[1]..., axes(A, acc[2])), acc[2] + 1),
+                            ((), 1), Val(N+M))
+        new_shape = inds[1]
+        return reshape(A, new_shape)
+    end
+
+    _insertdims(A::AbstractArray, dim::Integer) = _insertdims(A, (Int(dim),))
+
+    export insertdims
+else
+    using Base: insertdims, _insertdims
+end
+                                
 # https://github.com/JuliaLang/julia/pull/54653: add Fix
 @static if !isdefined(Base, :Fix) # VERSION < v"1.12.0-DEV.981"
     @static if !isdefined(Base, :_stable_typeof)
