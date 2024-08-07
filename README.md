@@ -74,6 +74,8 @@ changes in `julia`.
 
 * `insertdims(D; dims)` is the opposite of `dropdims` ([#45793]) (since Compat 4.16.0)
 
+* `Compat.Fix{N}` which fixes an argument at the `N`th position ([#54653]) (since Compat 4.16.0)
+
 * `chopprefix(s, prefix)` and `chopsuffix(s, suffix)` ([#40995]) (since Compat 4.15.0)
 
 * `logrange(lo, hi; length)` is like `range` but with a constant ratio, not difference. ([#39071]) (since Compat 4.14.0) Note that on Julia 1.8 and earlier, the version from Compat has slightly lower floating-point accuracy than the one in Base (Julia 1.11 and later).
@@ -190,8 +192,9 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#43852]: https://github.com/JuliaLang/julia/issues/43852
 [#45052]: https://github.com/JuliaLang/julia/issues/45052
 [#45607]: https://github.com/JuliaLang/julia/issues/45607
+[#45793]: https://github.com/JuliaLang/julia/issues/45793
 [#47354]: https://github.com/JuliaLang/julia/issues/47354
 [#47679]: https://github.com/JuliaLang/julia/pull/47679
 [#48038]: https://github.com/JuliaLang/julia/issues/48038
 [#50105]: https://github.com/JuliaLang/julia/issues/50105
-[#45793]: https://github.com/JuliaLang/julia/pull/45793
+[#54653]: https://github.com/JuliaLang/julia/issues/54653
