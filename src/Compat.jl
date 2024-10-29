@@ -4,15 +4,16 @@ include("compatmacro.jl")
 
 # https://github.com/JuliaLang/julia/pull/47679
 if VERSION < v"1.11.0-DEV.1562"
-    Base.allunique(f, xs) = allunique(Base.Generator(f, xs))
-    function Base.allunique(f::F, t::Tuple) where {F}
+    allunique(f, xs) = Base.allunique(Base.Generator(f, xs))
+    function allunique(f::F, t::Tuple) where {F}
         length(t) < 2 && return true
         length(t) < 32 || return Base._hashed_allunique(Base.Generator(f, t))
-        return allunique(map(f, t))
+        return Base.allunique(map(f, t))
     end
+    allunique(args...) = Base.allunique(args...)
 
-    Base.allequal(f, xs) = allequal(Base.Generator(f, xs))
-    function Base.allequal(f, xs::Tuple)
+    allequal(f, xs) = Base.allequal(Base.Generator(f, xs))
+    function allequal(f, xs::Tuple)
         length(xs) <= 1 && return true
         f1 = f(xs[1])
         for x in Base.tail(xs)
@@ -20,11 +21,17 @@ if VERSION < v"1.11.0-DEV.1562"
         end
         return true
     end
+    allequal(args...) = Base.allequal(args...)
+else
+    const allunique = Base.allunique
+    const allequal = Base.allequal
 end
 
 # https://github.com/JuliaLang/julia/pull/47354
-if VERSION < v"1.11.0-DEV.1579"
-    Iterators.cycle(xs, n::Integer) = Iterators.flatten(Iterators.repeated(xs, n))
+@static if VERSION < v"1.11.0-DEV.1579"
+    include("Iterators.jl")
+else
+    const Iterators = Base.Iterators
 end
 
 # https://github.com/JuliaLang/julia/pull/39071

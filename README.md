@@ -76,9 +76,9 @@ changes in `julia`.
 
 * `logrange(lo, hi; length)` is like `range` but with a constant ratio, not difference. ([#39071]) (since Compat 4.14.0)
 
-* `allequal(f, itr)` and `allunique(f, itr)` methods. ([#47679]) (since Compat 4.13.0)
+* `Compat.allequal(f, itr)` and `Compat.allunique(f, itr)` methods. ([#47679]) (since Compat 4.13.0)
 
-* `Iterators.cycle(itr, n)` is the lazy version of `repeat(vector, n)`. ([#47354]) (since Compat 4.13.0)
+* `Compat.Iterators.cycle(itr, n)` is the lazy version of `repeat(vector, n)`. ([#47354]) (since Compat 4.13.0)
 
 * `@compat public foo, bar` marks `foo` and `bar` as public in Julia 1.11+ and is a no-op in Julia 1.10 and earlier. ([#50105]) (since Compat 3.47.0, 4.10.0)
 
