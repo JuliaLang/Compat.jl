@@ -2,12 +2,6 @@ module Compat
 
 include("compatmacro.jl")
 
-# https://github.com/JuliaLang/julia/pull/43852
-using Base: @assume_effects
-
-# https://github.com/JuliaLang/julia/pull/42125
-using Base: @constprop
-
 # https://github.com/JuliaLang/julia/pull/47679
 if VERSION < v"1.11.0-DEV.1562"
     Base.allunique(f, xs) = allunique(Base.Generator(f, xs))
