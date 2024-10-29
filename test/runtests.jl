@@ -35,35 +35,35 @@ end
 
 # https://github.com/JuliaLang/julia/pull/47679
 @testset "allunique(f, xs)" begin
-    @test allunique(sin, 1:3)
-    @test !allunique(sin, [1,2,3,1])
-    @test allunique(sin, (1, 2, pi, im))  # eltype Any
-    @test allunique(abs2, 1:100)
-    @test !allunique(abs, -10:10)
-    @test allunique(abs2, Vector{Any}(1:100))
+    @test Compat.allunique(sin, 1:3)
+    @test !Compat.allunique(sin, [1,2,3,1])
+    @test Compat.allunique(sin, (1, 2, pi, im))  # eltype Any
+    @test Compat.allunique(abs2, 1:100)
+    @test !Compat.allunique(abs, -10:10)
+    @test Compat.allunique(abs2, Vector{Any}(1:100))
     # These cases don't call the function at all:
-    @test allunique(error, [])
-    @test_skip allunique(error, [1]) # depends on updated code in Base to work
+    @test Compat.allunique(error, [])
+    @test_skip Compat.allunique(error, [1]) # depends on updated code in Base to work
 end
 @testset "allequal(f, xs)" begin
-    @test allequal(abs2, [3, -3])
-    @test allequal(x -> 1, rand(3))
-    @test !allequal(x -> rand(), [1,1,1])
+    @test Compat.allequal(abs2, [3, -3])
+    @test Compat.allequal(x -> 1, rand(3))
+    @test !Compat.allequal(x -> rand(), [1,1,1])
     # tuples
-    @test allequal(abs2, (3, -3))
-    @test allequal(x -> 1, Tuple(rand(3)))
-    @test !allequal(x -> rand(), (1,1,1))
+    @test Compat.allequal(abs2, (3, -3))
+    @test Compat.allequal(x -> 1, Tuple(rand(3)))
+    @test !Compat.allequal(x -> rand(), (1,1,1))
     # These cases don't call the function at all:
-    @test allequal(error, [])
-    @test allequal(error, ())
-    @test allequal(error, (x for x in 1:3 if false))
-    @test_skip allequal(error, [1])  # fixed not by new code but by upgrades to old code
-    @test allequal(error, (1,))
+    @test Compat.allequal(error, [])
+    @test Compat.allequal(error, ())
+    @test Compat.allequal(error, (x for x in 1:3 if false))
+    @test_skip Compat.allequal(error, [1])  # fixed not by new code but by upgrades to old code
+    @test Compat.allequal(error, (1,))
 end
 
 # https://github.com/JuliaLang/julia/pull/47354
 @testset "cycle(iter, n)"  begin
-    using Base.Iterators: cycle
+    using Compat.Iterators: cycle
     @test collect(cycle(0:3, 2)) == [0, 1, 2, 3, 0, 1, 2, 3]
     @test collect(cycle(Iterators.filter(iseven, 1:4), 2)) == [2, 4, 2, 4]
     # @test collect(take(cycle(countfrom(11), 3), 4)) == 11:14  # this iterator is defined in Base's tests
