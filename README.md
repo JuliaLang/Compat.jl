@@ -25,21 +25,19 @@ pkg> add Compat
 and add a [version specifier line](https://julialang.github.io/Pkg.jl/v1/compatibility/#Version-specifier-format-1)
 such as `Compat = "3.22, 4"` in the `[compat]`section of the `Project.toml` file
 in your package directory. The version in the latter should be the minimum
-version that supports all needed features (see list below). Note that Compat v4
-requires Julia v1.6, but some features may have been backported to Compat v3
+version that supports all needed features (see list below). Note that Compat v5
+requires Julia v1.10, but some features may have been backported to Compat v4
 (see the
-[feature list of the release-3 branch](https://github.com/JuliaLang/Compat.jl/tree/release-3#supported-features)).
+[feature list of the release-4 branch](https://github.com/JuliaLang/Compat.jl/tree/release-4#supported-features)).
 If you require any of those backported features, be sure to specify the correct
-compatibility in your `Project.toml`. E.g. if the feature from Compat v4.x has
-been backported to v3.y, use `Compat = 3.y, 4.x`. If you use a feature that had
-originally been added in Compat v3 (e.g. in 3.x), don't forget to also declare
-compatibility with v4 with `Compat = 3.x, 4` (unless you use one the very few
-[things that got removed between Compat v3 and v4](https://github.com/JuliaLang/Compat.jl/releases/tag/v4.0.0),
-which you most probably don't).
+compatibility in your `Project.toml`. E.g. if the feature from Compat v5.x has
+been backported to v4.y, use `Compat = 4.y, 5.x`. If you use a feature that had
+originally been added in Compat v4 (e.g. in 4.x), don't forget to also declare
+compatibility with v5 with `Compat = 4.x, 5`.
 
 To minimize dependency conflicts between packages it is recommended that packages
-allow for both appropriate v4 and v3 versions of Compat.jl in their Project.toml
-(except for rare cases of packages that support only v4 or v3 version of Compat.jl).
+allow for both appropriate v5 and v4 versions of Compat.jl in their Project.toml
+(except for rare cases of packages that support only v5 or v4 version of Compat.jl).
 
 Then, in your package, shortly after the `module` statement include a line like
 this:
