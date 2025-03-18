@@ -1,5 +1,6 @@
 using Compat
 using Dates
+using InteractiveUtils
 using TOML
 using Test
 
@@ -1071,3 +1072,26 @@ end
         end
     end
 end
+
+@testset "gcsafe_ccall" begin
+    function gc_safe_ccall()
+        # jl_rand is marked as JL_NOTSAFEPOINT
+        @gcsafe_ccall jl_rand()::UInt64
+    end
+
+    let llvm = sprint(code_llvm, gc_safe_ccall, ())
+        # check that the call works
+        @test gc_safe_ccall() isa UInt64
+        # v1.10 is hard to test since ccall are just raw runtime pointers
+        if VERSION >= v"1.11"
+            if !Compat.HAS_CCALL_GCSAFE
+                # check for the gc_safe store
+                @test occursin("jl_gc_safe_enter", llvm)
+                @test occursin("jl_gc_safe_leave", llvm)
+            else
+                @test occursin("store atomic i8 2", llvm)
+            end
+        end
+    end
+end
+
