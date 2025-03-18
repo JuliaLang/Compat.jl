@@ -1073,6 +1073,8 @@ end
     end
 end
 
+@static if VERSION >= v"1.8"
+
 @testset "gcsafe_ccall" begin
     function gc_safe_ccall()
         # jl_rand is marked as JL_NOTSAFEPOINT
@@ -1094,4 +1096,6 @@ end
         end
     end
 end
+
+end # VERSION >= v"1.8"
 
