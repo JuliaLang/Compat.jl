@@ -194,7 +194,8 @@ end
     Stacktrace:.*
 
     caused by: UndefVarError: `?__not_a_binding__`? not defined( in `Main`)?
-    Stacktrace:.*
+    (Suggestion: check for spelling errors or missing imports.
+    )?Stacktrace:.*
     """s, sprint(show, excs_with_bts))
 
     # Check that the ExceptionStack without backtraces `show`s correctly:
@@ -211,7 +212,8 @@ end
     Stacktrace:.*
 
     caused by: UndefVarError: `?__not_a_binding__`? not defined( in `Main`)?
-    Stacktrace:.*
+    (Suggestion: check for spelling errors or missing imports.
+    )?Stacktrace:.*
     """s, sprint(Base.display_error, excs_with_bts))
 
     # Check that the ExceptionStack without backtraces `display_error`s correctly:
