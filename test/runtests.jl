@@ -1073,17 +1073,15 @@ end
     end
 end
 
-@static if VERSION >= v"1.8"
-
 @testset "gcsafe_ccall" begin
     function gc_safe_ccall()
-        # jl_rand is marked as JL_NOTSAFEPOINT
-        @gcsafe_ccall jl_rand()::UInt64
+        # jl_errno is marked as JL_NOTSAFEPOINT
+        @gcsafe_ccall jl_errno()::Cint
     end
 
     let llvm = sprint(code_llvm, gc_safe_ccall, ())
         # check that the call works
-        @test gc_safe_ccall() isa UInt64
+        @test gc_safe_ccall() isa Cint
         # v1.10 is hard to test since ccall are just raw runtime pointers
         if VERSION >= v"1.11"
             if !Compat.HAS_CCALL_GCSAFE
@@ -1096,6 +1094,3 @@ end
         end
     end
 end
-
-end # VERSION >= v"1.8"
-

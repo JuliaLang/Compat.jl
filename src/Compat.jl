@@ -1226,8 +1226,6 @@ end
 # when callbacks occur, the code should ensure the GC is not running by wrapping the code
 # in the `@gcunsafe` macro
 
-if VERSION >= v"1.8"
-
 const HAS_CCALL_GCSAFE = VERSION >= v"1.13.0-DEV.70" || v"1.12-DEV.2029" <= VERSION < v"1.13-"
 
 """
@@ -1293,8 +1291,6 @@ else
         return ccall_macro_lower(Base.ccall_macro_parse(expr)...)
     end
 end # HAS_CCALL_GCSAFE
-
-end # VERSION >= v"1.8"
 
 include("deprecated.jl")
 
