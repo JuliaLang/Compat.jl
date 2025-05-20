@@ -72,6 +72,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `filter` can now act on a `NamedTuple` [#50795]. (since Compat 4.17.0)
+
 * `insertdims(D; dims)` is the opposite of `dropdims` ([#45793]) (since Compat 4.16.0)
 
 * `Compat.Fix{N}` which fixes an argument at the `N`th position ([#54653]) (since Compat 4.16.0)
@@ -197,4 +199,5 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#47679]: https://github.com/JuliaLang/julia/pull/47679
 [#48038]: https://github.com/JuliaLang/julia/issues/48038
 [#50105]: https://github.com/JuliaLang/julia/issues/50105
+[#50795]: https://github.com/JuliaLang/julia/issues/50795
 [#54653]: https://github.com/JuliaLang/julia/issues/54653

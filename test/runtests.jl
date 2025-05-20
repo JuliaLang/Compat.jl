@@ -1071,3 +1071,12 @@ end
         end
     end
 end
+
+# https://github.com/JuliaLang/julia/pull/50795
+@testset "filter on NamedTuple" begin
+    @test filter(isodd, (a=1,b=2,c=3)) === (a=1, c=3)
+    @test filter(i -> true, (;)) === (;)
+    longnt = NamedTuple{ntuple(i -> Symbol(:a, i), 20)}(ntuple(identity, 20))
+    @test filter(iseven, longnt) === NamedTuple{ntuple(i -> Symbol(:a, 2i), 10)}(ntuple(i -> 2i, 10))
+    @test filter(x -> x<2, (longnt..., z=1.5)) === (a1=1, z=1.5)
+end
