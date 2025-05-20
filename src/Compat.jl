@@ -799,7 +799,10 @@ end
 
 # https://github.com/JuliaLang/julia/pull/50795
 if VERSION < v"1.11.0-DEV.1457"
-    Base.filter(f, xs::NamedTuple) = xs[filter(k -> f(xs[k]), keys(xs))]
+    Base.filter(f, xs::NamedTuple) = _getindex(xs, filter(k -> f(xs[k]), keys(xs)))
+    # `getindex(::NamedTuple, ::Tuple{Vararg{Symbol}})` is not defined in Julia 1.6.
+    # Introduced in https://github.com/JuliaLang/julia/pull/38878.
+    @inline _getindex(t::NamedTuple, idxs::Tuple{Vararg{Symbol}}) = NamedTuple{idxs}(t)
 end
 
 # https://github.com/JuliaLang/julia/pull/45052
