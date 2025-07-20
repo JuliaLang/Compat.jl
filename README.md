@@ -72,6 +72,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `@__FUNCTION__` is a macro that returns the innermost enclosing function ([#58940]) (since Compat 4.18.0)
+
 * `filter` can now act on a `NamedTuple` [#50795]. (since Compat 4.17.0)
 
 * `insertdims(D; dims)` is the opposite of `dropdims` ([#45793]) (since Compat 4.16.0)
@@ -201,3 +203,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#50105]: https://github.com/JuliaLang/julia/issues/50105
 [#50795]: https://github.com/JuliaLang/julia/issues/50795
 [#54653]: https://github.com/JuliaLang/julia/issues/54653
+[#58940]: https://github.com/JuliaLang/julia/issues/58940

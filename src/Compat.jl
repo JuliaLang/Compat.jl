@@ -1229,6 +1229,61 @@ else
     using Base: Fix, Fix1, Fix2
 end
 
+# https://github.com/JuliaLang/julia/pull/58940
+@static if !isdefined(Base, Symbol("@__FUNCTION__"))
+    _function_macro_error() = throw(ArgumentError("`Compat.@__FUNCTION__` is not available in this context"))
+
+    macro __FUNCTION__()
+        esc(quote
+            $(Expr(:isdefined, :var"#self#")) || $(_function_macro_error)()
+            var"#self#"
+        end)
+    end
+
+    @doc """
+        @__FUNCTION__
+
+    Get the innermost enclosing function object.
+
+    !!! warning
+        The Compat.jl version of `@__FUNCTION__` differs from the Base version in
+        VERSION < v"1.13.0-DEV.880" in two contexts:
+            (1) it _will_ throw an error when used inside (i) callable structs and (ii) constructors
+            defined inside a struct definition,
+            (2) it will _not_ throw an error when used inside a comprehension or generator.
+
+    !!! note
+        `@__FUNCTION__` has the same scoping behavior as `return`: when used
+        inside a closure, it refers to the closure and not the outer function.
+        Some macros, including [`@spawn`](@ref Threads.@spawn), [`@async`](@ref), etc.,
+        wrap their input in closures. When `@__FUNCTION__` is used within such code,
+        it will refer to the closure created by the macro rather than the enclosing function.
+
+    # Examples
+
+    `@__FUNCTION__` enables recursive anonymous functions:
+
+    ```jldoctest
+    julia> factorial = (n -> n <= 1 ? 1 : n * (@__FUNCTION__)(n - 1));
+
+    julia> factorial(5)
+    120
+    ```
+
+    `@__FUNCTION__` can be combined with `nameof` to identify a function's
+    name from within its body:
+
+    ```jldoctest
+    julia> bar() = nameof(@__FUNCTION__);
+
+    julia> bar()
+    :bar
+    ```
+    """ :(@__FUNCTION__)
+
+    export @__FUNCTION__
+end
+
 include("deprecated.jl")
 
 end # module Compat
