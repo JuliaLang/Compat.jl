@@ -1248,8 +1248,7 @@ end
     !!! warning
         The Compat.jl version of `@__FUNCTION__` differs from the Base version in
         VERSION < v"1.13.0-DEV.880" in two contexts:
-            (1) it _will_ throw an error when used inside (i) callable structs and (ii) constructors
-            defined inside a struct definition,
+            (1) it _will_ throw an error when used in certain contexts (such as callable structs), and
             (2) it will _not_ throw an error when used inside a comprehension or generator.
 
     !!! note
