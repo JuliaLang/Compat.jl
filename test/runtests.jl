@@ -1233,7 +1233,7 @@ end
             end
             if isdefined(Base, Symbol("@__FUNCTION__"))
                 @test occursin("Cols", Cols(1, 2, 3))
-            else
+            elseif VERSION > v"1.9.0-"
                 @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") Cols(1, 2, 3)
             end
         end
