@@ -1167,7 +1167,7 @@ end
         if isdefined(Base, Symbol("@__FUNCTION__"))
             @test c() === c
         else
-            @test_throws "`Compat.@__FUNCTION__` is not available in this context" c()
+            @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") c()
         end
 
         # In closures, var"#self#" should refer to the enclosing function,
@@ -1197,7 +1197,7 @@ end
                 @test cs() === cs
                 @test cs(10) === 52
             else
-                @test_throws "`Compat.@__FUNCTION__` is not available in this context" cs()
+                @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") cs()
             end
         end
 
@@ -1214,7 +1214,7 @@ end
             @test c(2; y=4).y == 4
             @test c(2; y=4, a=5, b=6, c=7).kws[:c] == 7
         else
-            @test_throws "`Compat.@__FUNCTION__` is not available in this context" c(1)
+            @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") c(1)
         end
     end
 
@@ -1234,7 +1234,7 @@ end
             if isdefined(Base, Symbol("@__FUNCTION__"))
                 @test occursin("Cols", Cols(1, 2, 3))
             else
-                @test_throws "`Compat.@__FUNCTION__` is not available in this context" Cols(1, 2, 3)
+                @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") Cols(1, 2, 3)
             end
         end
 
@@ -1250,7 +1250,7 @@ end
         if isdefined(Base, Symbol("@__FUNCTION__"))
             @test @eval($f() === $f)
         else
-            @test_throws "`Compat.@__FUNCTION__` is not available in this context" @eval($f())
+            @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") @eval($f())
         end
     end
 
