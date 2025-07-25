@@ -1193,12 +1193,8 @@ end
         @eval (obj::CallableStruct3)(x) = (@__FUNCTION__).value + x
 
         let cs = CallableStruct3(42)
-            if isdefined(Base, Symbol("@__FUNCTION__"))
-                @test cs() === cs
-                @test cs(10) === 52
-            else
-                @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") cs()
-            end
+            @test cs() === cs broken=!isdefined(Base, Symbol("@__FUNCTION__"))
+            @test cs(10) === 52 broken=!isdefined(Base, Symbol("@__FUNCTION__"))
         end
 
         # Callable struct with args and kwargs
