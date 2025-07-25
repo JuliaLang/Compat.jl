@@ -72,7 +72,8 @@ changes in `julia`.
 
 ## Supported features
 
-* `@__FUNCTION__` is a macro that returns the innermost enclosing function ([#58940]) (since Compat 4.18.0)
+* `@__FUNCTION__` is a macro that returns the innermost enclosing function ([#58940]) (since Compat 4.18.0).
+  * *Note: the Compat version of this macro does not work in callable structs.*
 
 * `filter` can now act on a `NamedTuple` [#50795]. (since Compat 4.17.0)
 
