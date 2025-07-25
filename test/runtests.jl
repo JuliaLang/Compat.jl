@@ -1164,7 +1164,11 @@ end
         end
         @eval using .$A: CallableStruct
         c = CallableStruct(5)
-        @test c() === c broken=!isdefined(Base, Symbol("@__FUNCTION__"))
+        if isdefined(Base, Symbol("@__FUNCTION__"))
+            @test c() === c
+        else
+            @test_broken c() === c
+        end
 
         # In closures, var"#self#" should refer to the enclosing function,
         # NOT the enclosing struct instance
@@ -1189,8 +1193,13 @@ end
         @eval (obj::CallableStruct3)(x) = (@__FUNCTION__).value + x
 
         let cs = CallableStruct3(42)
-            @test cs() === cs broken=!isdefined(Base, Symbol("@__FUNCTION__"))
-            @test cs(10) === 52 broken=!isdefined(Base, Symbol("@__FUNCTION__"))
+            if isdefined(Base, Symbol("@__FUNCTION__"))
+                @test cs() === cs
+                @test cs(10) === 52
+            else
+                @test_broken cs() === cs
+                @test_broken cs(10) === 52
+            end
         end
 
         # Callable struct with args and kwargs
@@ -1200,10 +1209,17 @@ end
             return (; func=(@__FUNCTION__), x, args, y, kws)
         end
         c = CallableStruct4()
-        @test c(1).func === c broken=!isdefined(Base, Symbol("@__FUNCTION__"))
-        @test c(2, 3).args == (3,) broken=!isdefined(Base, Symbol("@__FUNCTION__"))
-        @test c(2; y=4).y == 4 broken=!isdefined(Base, Symbol("@__FUNCTION__"))
-        @test c(2; y=4, a=5, b=6, c=7).kws[:c] == 7 broken=!isdefined(Base, Symbol("@__FUNCTION__"))
+        if isdefined(Base, Symbol("@__FUNCTION__"))
+            @test c(1).func === c
+            @test c(2, 3).args == (3,)
+            @test c(2; y=4).y == 4
+            @test c(2; y=4, a=5, b=6, c=7).kws[:c] == 7
+        else
+            @test_broken c(1).func === c
+            @test_broken c(2, 3).args == (3,)
+            @test_broken c(2; y=4).y == 4
+            @test_broken c(2; y=4, a=5, b=6, c=7).kws[:c] == 7
+        end
     end
 
     @testset "Special cases" begin
@@ -1219,7 +1235,11 @@ end
                 operator
                 Cols(args...; operator=union) = (new{typeof(args)}(args, operator); string(@__FUNCTION__))
             end
-            @test occursin("Cols", Cols(1, 2, 3)) broken=!isdefined(Base, Symbol("@__FUNCTION__"))
+            if isdefined(Base, Symbol("@__FUNCTION__"))
+                @test occursin("Cols", Cols(1, 2, 3))
+            else
+                @test_broken occursin("Cols", Cols(1, 2, 3))
+            end
         end
 
         # Should not access arg-map for local variables
@@ -1231,7 +1251,11 @@ end
                 @__FUNCTION__
             end
         end
-        @test @eval($f() === $f) broken=!isdefined(Base, Symbol("@__FUNCTION__"))
+        if isdefined(Base, Symbol("@__FUNCTION__"))
+            @test @eval($f() === $f)
+        else
+            @test_broken @eval($f() === $f)
+        end
     end
 
     if isdefined(Base, Symbol("@__FUNCTION__"))
