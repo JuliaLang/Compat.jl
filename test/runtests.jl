@@ -1235,11 +1235,7 @@ end
                 operator
                 Cols(args...; operator=union) = (new{typeof(args)}(args, operator); string(@__FUNCTION__))
             end
-            if isdefined(Base, Symbol("@__FUNCTION__"))
-                @test occursin("Cols", Cols(1, 2, 3))
-            else
-                @test_broken occursin("Cols", Cols(1, 2, 3))
-            end
+            @test occursin("Cols", Cols(1, 2, 3))
         end
 
         # Should not access arg-map for local variables
