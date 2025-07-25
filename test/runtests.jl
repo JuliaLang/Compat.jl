@@ -1164,11 +1164,7 @@ end
         end
         @eval using .$A: CallableStruct
         c = CallableStruct(5)
-        if isdefined(Base, Symbol("@__FUNCTION__"))
-            @test c() === c
-        else
-            @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") c()
-        end
+        @test c() === c broken=!isdefined(Base, Symbol("@__FUNCTION__"))
 
         # In closures, var"#self#" should refer to the enclosing function,
         # NOT the enclosing struct instance
@@ -1204,14 +1200,10 @@ end
             return (; func=(@__FUNCTION__), x, args, y, kws)
         end
         c = CallableStruct4()
-        if isdefined(Base, Symbol("@__FUNCTION__"))
-            @test c(1).func === c
-            @test c(2, 3).args == (3,)
-            @test c(2; y=4).y == 4
-            @test c(2; y=4, a=5, b=6, c=7).kws[:c] == 7
-        else
-            @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") c(1)
-        end
+        @test c(1).func === c broken=!isdefined(Base, Symbol("@__FUNCTION__"))
+        @test c(2, 3).args == (3,) broken=!isdefined(Base, Symbol("@__FUNCTION__"))
+        @test c(2; y=4).y == 4 broken=!isdefined(Base, Symbol("@__FUNCTION__"))
+        @test c(2; y=4, a=5, b=6, c=7).kws[:c] == 7 broken=!isdefined(Base, Symbol("@__FUNCTION__"))
     end
 
     @testset "Special cases" begin
@@ -1227,11 +1219,7 @@ end
                 operator
                 Cols(args...; operator=union) = (new{typeof(args)}(args, operator); string(@__FUNCTION__))
             end
-            if isdefined(Base, Symbol("@__FUNCTION__"))
-                @test occursin("Cols", Cols(1, 2, 3))
-            elseif VERSION > v"1.9.0-"
-                @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") Cols(1, 2, 3)
-            end
+            @test occursin("Cols", Cols(1, 2, 3)) broken=!isdefined(Base, Symbol("@__FUNCTION__"))
         end
 
         # Should not access arg-map for local variables
@@ -1243,11 +1231,7 @@ end
                 @__FUNCTION__
             end
         end
-        if isdefined(Base, Symbol("@__FUNCTION__"))
-            @test @eval($f() === $f)
-        else
-            @test_throws ArgumentError("`Compat.@__FUNCTION__` is not available in this context") @eval($f())
-        end
+        @test @eval($f() === $f) broken=!isdefined(Base, Symbol("@__FUNCTION__"))
     end
 
     if isdefined(Base, Symbol("@__FUNCTION__"))
