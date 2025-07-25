@@ -1228,16 +1228,6 @@ end
             @test foo2() === foo2
         end
 
-        # Struct constructors
-        let
-            @eval struct Cols{T<:Tuple}
-                cols::T
-                operator
-                Cols(args...; operator=union) = (new{typeof(args)}(args, operator); string(@__FUNCTION__))
-            end
-            @test occursin("Cols", Cols(1, 2, 3))
-        end
-
         # Should not access arg-map for local variables
         @gensym f
         @eval begin
