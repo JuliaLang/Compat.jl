@@ -1080,3 +1080,182 @@ end
     @test filter(iseven, longnt) === NamedTuple{ntuple(i -> Symbol(:a, 2i), 10)}(ntuple(i -> 2i, 10))
     @test filter(x -> x<2, (longnt..., z=1.5)) === (a1=1, z=1.5)
 end
+
+# https://github.com/JuliaLang/julia/pull/58940
+@testset "@__FUNCTION__" begin
+    @testset "Basic usage" begin
+        # @__FUNCTION__ in regular functions
+        test_function_basic() = @__FUNCTION__
+        @test test_function_basic() === test_function_basic
+    end
+
+    @testset "Recursion" begin
+        # Factorial with @__FUNCTION__
+        factorial_function(n) = n <= 1 ? 1 : n * (@__FUNCTION__)(n - 1)
+        @test factorial_function(5) == 120
+
+        # Fibonacci with @__FUNCTION__
+        struct RecursiveCallableStruct; end
+        @eval (::RecursiveCallableStruct)(n) = n <= 1 ? n : (@__FUNCTION__)(n-1) + (@__FUNCTION__)(n-2)
+        @test RecursiveCallableStruct()(10) === 55
+
+        # Anonymous function recursion
+        @test (n -> n <= 1 ? 1 : n * (@__FUNCTION__)(n - 1))(5) == 120
+    end
+
+    @testset "Closures and nested functions" begin
+        # Prevents boxed closures
+        function make_closure()
+            fib(n) = n <= 1 ? 1 : (@__FUNCTION__)(n - 1) + (@__FUNCTION__)(n - 2)
+            return fib
+        end
+        Test.@inferred make_closure()
+        closure = make_closure()
+        @test closure(5) == 8
+        Test.@inferred closure(5)
+
+        # Complex closure of closures
+        function f1()
+            function f2()
+                function f3()
+                    return @__FUNCTION__
+                end
+                return (@__FUNCTION__), f3()
+            end
+            return (@__FUNCTION__), f2()...
+        end
+        Test.@inferred f1()
+        @test f1()[1] === f1
+        @test f1()[2] !== f1
+        @test f1()[3] !== f1
+        @test f1()[3]() === f1()[3]
+        @test f1()[2]()[2]() === f1()[3]
+    end
+
+    @testset "Do blocks" begin
+        function test_do_block()
+            result = map([1, 2, 3]) do x
+                return (@__FUNCTION__, x)
+            end
+            # All should refer to the same do-block function
+            @test all(r -> r[1] === result[1][1], result)
+            # Values should be different
+            @test [r[2] for r in result] == [1, 2, 3]
+            # It should be different than `test_do_block`
+            @test result[1][1] !== test_do_block
+        end
+        test_do_block()
+    end
+
+    @testset "Keyword arguments" begin
+        # @__FUNCTION__ with kwargs
+        foo(; n) = n <= 1 ? 1 : n * (@__FUNCTION__)(; n = n - 1)
+        @test foo(n = 5) == 120
+    end
+
+    @testset "Callable structs" begin
+        # @__FUNCTION__ in callable structs
+        @gensym A
+        @eval module $A
+            import ..@__FUNCTION__
+
+            struct CallableStruct{T}; val::T; end
+            (c::CallableStruct)() = @__FUNCTION__
+        end
+        @eval using .$A: CallableStruct
+        c = CallableStruct(5)
+        if isdefined(Base, Symbol("@__FUNCTION__"))
+            @test c() === c
+        else
+            @test_broken c() === c
+        end
+
+        # In closures, var"#self#" should refer to the enclosing function,
+        # NOT the enclosing struct instance
+        struct CallableStruct2; end
+        @eval function (obj::CallableStruct2)()
+            function inner_func()
+                @__FUNCTION__
+            end
+            inner_func
+        end
+
+        let cs = CallableStruct2()
+            @test cs()() === cs()
+            @test cs()() !== cs
+        end
+
+        # Accessing values via self-reference
+        struct CallableStruct3
+            value::Int
+        end
+        @eval (obj::CallableStruct3)() = @__FUNCTION__
+        @eval (obj::CallableStruct3)(x) = (@__FUNCTION__).value + x
+
+        let cs = CallableStruct3(42)
+            if isdefined(Base, Symbol("@__FUNCTION__"))
+                @test cs() === cs
+                @test cs(10) === 52
+            else
+                @test_broken cs() === cs
+                @test_broken cs(10) === 52
+            end
+        end
+
+        # Callable struct with args and kwargs
+        struct CallableStruct4
+        end
+        @eval function (obj::CallableStruct4)(x, args...; y=2, kws...)
+            return (; func=(@__FUNCTION__), x, args, y, kws)
+        end
+        c = CallableStruct4()
+        if isdefined(Base, Symbol("@__FUNCTION__"))
+            @test c(1).func === c
+            @test c(2, 3).args == (3,)
+            @test c(2; y=4).y == 4
+            @test c(2; y=4, a=5, b=6, c=7).kws[:c] == 7
+        else
+            @test_broken c(1).func === c
+            @test_broken c(2, 3).args == (3,)
+            @test_broken c(2; y=4).y == 4
+            @test_broken c(2; y=4, a=5, b=6, c=7).kws[:c] == 7
+        end
+    end
+
+    @testset "Special cases" begin
+        # Generated functions
+        let @generated foo2() = :(@__FUNCTION__)
+            @test foo2() === foo2
+        end
+
+        # Should not access arg-map for local variables
+        @gensym f
+        @eval begin
+            function $f end
+            function ($f::typeof($f))()
+                $f = 1
+                @__FUNCTION__
+            end
+        end
+        if isdefined(Base, Symbol("@__FUNCTION__"))
+            @test @eval($f() === $f)
+        else
+            @test_broken @eval($f() === $f)
+        end
+    end
+
+    if isdefined(Base, Symbol("@__FUNCTION__"))
+        @testset "Error upon misuse" begin
+            @gensym B
+            @test_throws(
+                "\"@__FUNCTION__\" can only be used inside a function",
+                @eval(module $B; @__FUNCTION__; end)
+            )
+
+            @test_throws(
+                "\"@__FUNCTION__\" not allowed inside comprehension or generator",
+                @eval([(@__FUNCTION__) for _ in 1:10])
+            )
+        end
+    end
+end
