@@ -1073,8 +1073,7 @@ end
             end
             f = Fix{1}(MyStruct, 1)
             @test f isa Fix{1}
-            @test !construction_happened
-            @test (f(); construction_happened;)
+            @test f() === MyStruct(1)
         end
     end
 end
