@@ -1063,7 +1063,6 @@ end
             @test_throws ArgumentError("expected type parameter in `Fix` to be `Int`, but got `1::UInt64`") Fix{UInt64(1)}(>, 1)
         end
         @testset "Specialize to structs not in `Base`" begin
-            construction_happened::Bool = false
             struct MyStruct
                 x::Int
             end
