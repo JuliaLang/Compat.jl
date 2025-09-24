@@ -1066,10 +1066,6 @@ end
             construction_happened::Bool = false
             struct MyStruct
                 x::Int
-                function MyStruct(x::Int)
-                    construction_happened = true
-                    new(x)
-                end
             end
             f = Fix{1}(MyStruct, 1)
             @test f isa Fix{1}
