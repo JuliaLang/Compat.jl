@@ -29,9 +29,6 @@ jobs:
         include:
           - os: macOS-latest
             arch: aarch64
-            version: '1.7'
-          - os: macOS-latest
-            arch: aarch64
             version: '1.8'
           - os: macOS-latest
             arch: aarch64
