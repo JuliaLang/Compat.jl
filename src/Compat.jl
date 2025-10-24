@@ -1160,7 +1160,7 @@ if VERSION < v"1.12.0-DEV.974"  # contrib/commit-name.sh 2635dea
 else
     using Base: insertdims, _insertdims
 end
-                                
+
 # https://github.com/JuliaLang/julia/pull/54653: add Fix
 @static if !isdefined(Base, :Fix) # VERSION < v"1.12.0-DEV.981"
     @static if !isdefined(Base, :_stable_typeof)
@@ -1281,6 +1281,95 @@ end
     """ :(@__FUNCTION__)
 
     export @__FUNCTION__
+end
+
+# https://github.com/JuliaLang/julia/pull/59951
+@static if VERSION < v"1.13.0-0"
+    function filter_test_files(files::Vector, args::Vector)
+        # Parse args to extract file filters
+        filter_args = String[]
+        use_regex = false
+
+        # Check for --files-regex= argument (takes precedence)
+        regex_idx = findfirst(arg -> startswith(arg, "--files-regex="), args)
+        if regex_idx !== nothing
+            # Extract comma-separated list from --files-regex=
+            pattern_str = args[regex_idx][15:end]  # Skip "--files-regex="
+            append!(filter_args, split(pattern_str, ','))
+            use_regex = true
+        else
+            # Check for --files= argument
+            files_idx = findfirst(arg -> startswith(arg, "--files="), args)
+            if files_idx !== nothing
+                # Extract comma-separated list from --files=
+                files_str = args[files_idx][9:end]  # Skip "--files="
+                append!(filter_args, split(files_str, ','))
+            end
+        end
+
+        # Return all files if no filters
+        isempty(filter_args) && return files
+
+        # Filter files based on basename matching
+        return filter(files) do file
+            name = basename(file)
+            if use_regex
+                any(arg -> occursin(Regex(arg), name), filter_args)
+            else
+                any(arg -> occursin(arg, name), filter_args)
+            end
+        end
+    end
+
+    """
+        @include_files(files)
+
+    Include test files from a list, optionally filtered by command-line test arguments.
+
+    When running tests via `Pkg.test()`, files can be filtered by passing `test_args`
+    with the `--files=` or `--files-regex=` flag. If no test args are provided, all files are included.
+
+    This macro is part of `Test` in Julia 1.13+. In earlier versions, it's provided
+    by Compat in the `Compat` module (not re-exported into `Test`).
+
+    # Example
+    ```julia
+    using Test
+    using Compat
+
+    # Include common utilities
+    include("utils.jl")
+
+    @include_files [
+        "foo.jl",
+        "bar.jl",
+        "baz.jl",
+    ]
+    ```
+
+    ## Usage patterns:
+
+    - `Pkg.test()` → includes all files
+    - `Pkg.test(test_args=["--files=foo"])` → includes only "foo.jl"
+    - `Pkg.test(test_args=["--files=foo,bar"])` → includes "foo.jl" and "bar.jl"
+    - `Pkg.test(test_args=["--files-regex=^test_.*\\.jl\$"])` → uses regex pattern matching
+    - `Pkg.test(test_args=["--files-regex=foo|bar"])` → includes files matching "foo" or "bar"
+    """
+    macro include_files(files)
+        quote
+            let test_files = $(esc(files))
+                # Filter files based on ARGS
+                filtered_files = Compat.filter_test_files(test_files, ARGS)
+
+                # Include filtered files
+                for file in filtered_files
+                    include(file)
+                end
+            end
+        end
+    end
+
+    export @include_files
 end
 
 include("deprecated.jl")

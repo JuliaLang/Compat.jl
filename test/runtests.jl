@@ -940,7 +940,7 @@ end
          @test insertdims(dropdims(b; dims); dims) == b
      end
 end
-    
+
 # https://github.com/JuliaLang/julia/pull/54653: add Fix
 @testset "Fix" begin
     function test_fix1(Fix1=Compat.Fix1)
@@ -1259,4 +1259,73 @@ end
             )
         end
     end
+end
+
+if VERSION < v"1.13.0-0"
+# https://github.com/JuliaLang/julia/pull/59951
+@testset "@include_files" begin
+    files = ["test_foo.jl", "test_bar.jl", "test_baz.jl"]
+
+    @test Compat.filter_test_files(files, String[]) == files
+    @test Compat.filter_test_files(files, ["--files=foo"]) == ["test_foo.jl"]
+    @test Compat.filter_test_files(files, ["--files=foo,bar"]) == ["test_foo.jl", "test_bar.jl"]
+    @test Compat.filter_test_files(files, ["--files=ba"]) == ["test_bar.jl", "test_baz.jl"]
+    @test Compat.filter_test_files(files, ["--files=nomatch"]) == String[]
+    @test Compat.filter_test_files(files, ["--files=foo", "bar"]) == ["test_foo.jl"]  # Other args ignored
+    @test Compat.filter_test_files(files, ["foo"]) == files  # No --files= means no filtering
+    @test Compat.filter_test_files(files, ["bar", "baz"]) == files  # No --files= means no filtering
+
+    # Test regex patterns
+    @test Compat.filter_test_files(files, ["--files-regex=^test_foo"]) == ["test_foo.jl"]
+    @test Compat.filter_test_files(files, ["--files-regex=foo|bar"]) == ["test_foo.jl", "test_bar.jl"]
+    @test Compat.filter_test_files(files, ["--files-regex=ba[rz]"]) == ["test_bar.jl", "test_baz.jl"]
+    @test Compat.filter_test_files(files, ["--files-regex=^test_.*\\.jl\$"]) == files
+    @test Compat.filter_test_files(files, ["--files-regex=nomatch"]) == String[]
+    @test Compat.filter_test_files(files, ["--files-regex=foo", "--files=bar"]) == ["test_foo.jl"]  # --files-regex takes precedence
+
+    # Test @include_files macro in subprocess
+    test_file = joinpath(@__DIR__, "include_test", "runtests.jl")
+
+    # Test 1: No args - all files included
+    output = read(`$(Base.julia_cmd()) --startup-file=no $test_file`, String)
+    @test occursin("FOO_RAN", output)
+    @test occursin("BAR_RAN", output)
+    @test occursin("BAZ_RAN", output)
+
+    # Test 2: --files= with single filter
+    output = read(`$(Base.julia_cmd()) --startup-file=no $test_file --files=foo`, String)
+    @test occursin("FOO_RAN", output)
+    @test !occursin("BAR_RAN", output)
+    @test !occursin("BAZ_RAN", output)
+
+    # Test 3: --files= with multiple filters
+    output = read(`$(Base.julia_cmd()) --startup-file=no $test_file --files=bar,baz`, String)
+    @test !occursin("FOO_RAN", output)
+    @test occursin("BAR_RAN", output)
+    @test occursin("BAZ_RAN", output)
+
+    # Test 4: --files= with comma-separated list
+    output = read(`$(Base.julia_cmd()) --startup-file=no $test_file --files=foo,bar`, String)
+    @test occursin("FOO_RAN", output)
+    @test occursin("BAR_RAN", output)
+    @test !occursin("BAZ_RAN", output)
+
+    # Test 5: Bare args without --files= should include all files
+    output = read(`$(Base.julia_cmd()) --startup-file=no $test_file foo bar`, String)
+    @test occursin("FOO_RAN", output)
+    @test occursin("BAR_RAN", output)
+    @test occursin("BAZ_RAN", output)
+
+    # Test 6: --files-regex= with pattern
+    output = read(`$(Base.julia_cmd()) --startup-file=no $test_file --files-regex=foo\|bar`, String)
+    @test occursin("FOO_RAN", output)
+    @test occursin("BAR_RAN", output)
+    @test !occursin("BAZ_RAN", output)
+
+    # Test 7: --files-regex= with anchored pattern
+    output = read(`$(Base.julia_cmd()) --startup-file=no $test_file --files-regex=^test_foo`, String)
+    @test occursin("FOO_RAN", output)
+    @test !occursin("BAR_RAN", output)
+    @test !occursin("BAZ_RAN", output)
+end
 end
