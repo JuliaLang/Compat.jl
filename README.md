@@ -141,6 +141,8 @@ changes in `julia`.
 
 * `VersionNumber(::VersionNumber)` defined as a no-op constructor ([#45052]) (since Compat 4.12)
 
+* `chopprefix` and `chopsuffix` accept an `AbstractChar` prefix/suffix ([#59425]) (since Compat 14.19)
+
 ## Developer tips
 
 One of the most important rules for `Compat.jl` is to avoid breaking user code
@@ -205,3 +207,4 @@ Note that you should specify the correct minimum version for `Compat` in the
 [#50795]: https://github.com/JuliaLang/julia/issues/50795
 [#54653]: https://github.com/JuliaLang/julia/issues/54653
 [#58940]: https://github.com/JuliaLang/julia/issues/58940
+[#59425]: https://github.com/JuliaLang/julia/issues/59425
