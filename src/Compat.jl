@@ -1132,6 +1132,10 @@ end
 
 # https://github.com/JuliaLang/julia/pull/59425
 if VERSION < v"1.13.0-DEV.1078"
+    if VERSION >= v"1.8.0-DEV.1016"
+        # Extend from Base without qualification (avoids duplicating the definitions)
+        import Base: chopprefix, chopsuffix
+    end
     function chopprefix(s::AbstractString, prefix::AbstractChar)
         if !isempty(s) && first(s) == prefix
             return SubString(s, nextind(s, firstindex(s)))
