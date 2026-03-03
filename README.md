@@ -72,6 +72,8 @@ changes in `julia`.
 
 ## Supported features
 
+* `@include_files` is a clone of Test.jl's `@include_files` that was added in Julia 1.13.
+
 * `@__FUNCTION__` is a macro that returns the innermost enclosing function ([#58940]) (since Compat 4.18.0).
   * *Note: the Compat version of this macro does not work in callable structs.*
 
