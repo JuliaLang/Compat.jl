@@ -907,6 +907,11 @@ end
 
         @test isa(chopprefix(S("foo"), "fo"), SubString)
         @test isa(chopsuffix(S("foo"), "oo"), SubString)
+
+        @test chopprefix(S(""), 'z') == chopsuffix(S(""), 'z') == ""
+        @test chopprefix(S("吃齋"), '🍖') == chopsuffix(S("吃齋"), '🍖') == "吃齋"
+        @test chopprefix(S("äwesome"), 'ä') == "wesome"
+        @test chopsuffix(S("äwesome"), 'e') == "äwesom"
     end
 end
 

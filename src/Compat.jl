@@ -1130,6 +1130,28 @@ if VERSION < v"1.8.0-DEV.1016"
     export chopprefix, chopsuffix
 end
 
+# https://github.com/JuliaLang/julia/pull/59425
+if VERSION < v"1.13.0-DEV.1078"
+    if VERSION >= v"1.8.0-DEV.1016"
+        # Extend from Base without qualification (avoids duplicating the definitions)
+        import Base: chopprefix, chopsuffix
+    end
+    function chopprefix(s::AbstractString, prefix::AbstractChar)
+        if !isempty(s) && first(s) == prefix
+            return SubString(s, nextind(s, firstindex(s)))
+        else
+            return SubString(s)
+        end
+    end
+    function chopsuffix(s::AbstractString, suffix::AbstractChar)
+        if !isempty(s) && last(s) == suffix
+            return SubString(s, firstindex(s), prevind(s, lastindex(s)))
+        else
+            return SubString(s)
+        end
+    end
+end
+
 if VERSION < v"1.12.0-DEV.974"  # contrib/commit-name.sh 2635dea
 
     insertdims(A; dims) = _insertdims(A, dims)
